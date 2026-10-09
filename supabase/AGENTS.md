@@ -4,16 +4,16 @@ Postgres schema and auth email templates for the Awebound store. Used by the Sup
 
 ## Layout
 
-| Path               | Purpose                                                                                                     |
-| ------------------ | ----------------------------------------------------------------------------------------------------------- |
-| `migrations/*.sql` | Ordered, append-only migrations. Never edit one that has been applied to a shared database; add a new file. |
-| `templates/*.html` | Supabase Auth email templates (magic link + code, confirmation).                                            |
-| `config.toml`      | Local CLI config: auth, Google provider, Resend SMTP (off locally; Inbucket catches mail). No seed.         |
+| Path               | Purpose                                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `migrations/*.sql` | Ordered, append-only migrations. Never edit one that has been applied to a shared database; add a new file.    |
+| `templates/*.html` | Supabase Auth email templates (magic link + code, confirmation).                                               |
+| `config.toml`      | Local CLI config: auth, Google provider, Resend SMTP (off locally; the local mail catcher gets mail). No seed. |
 
 ## Schema in one glance
 
 - `profiles` — 1:1 with `auth.users`, created by the `on_auth_user_created` trigger.
-- `contact_messages`, `subscribers` — written only by the API's secret key; RLS on with no policies.
+- `contact_messages`, `subscribers` — written only by the server with the secret key; RLS on with no policies.
 
 ## Rules
 

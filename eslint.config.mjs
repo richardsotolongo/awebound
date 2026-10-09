@@ -1,4 +1,4 @@
-// Shared ESLint flat config for the API and packages. apps/web extends it with Next's rules.
+// ESLint flat config for the workspace packages (packages/brand). apps/web uses Next's config.
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";

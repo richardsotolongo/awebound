@@ -1,17 +1,15 @@
 {
   "name": "awebound",
   "private": true,
-  "description": "Awebound storefront: Next.js web app, Express API, Fourthwall commerce, Supabase auth and data.",
+  "description": "Awebound storefront: one Next.js app with Fourthwall commerce and Supabase auth.",
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=20.9.0"
   },
   "scripts": {
-    "dev": "pnpm --parallel --filter @awebound/web --filter @awebound/api dev",
-    "dev:web": "pnpm --filter @awebound/web dev",
-    "dev:api": "pnpm --filter @awebound/api dev",
+    "dev": "pnpm --filter @awebound/web dev",
     "build": "pnpm -r build",
-    "start": "pnpm --parallel --filter @awebound/web --filter @awebound/api start",
+    "start": "pnpm --filter @awebound/web start",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "format": "prettier --write .",

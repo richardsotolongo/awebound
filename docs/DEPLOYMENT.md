@@ -1,89 +1,62 @@
 # Deployment (Vercel)
 
-The repo holds two apps, so it deploys as **two Vercel projects from the same GitHub repo**:
+The site is one Next.js app, deployed as **one Vercel project**:
 
-| Vercel project | Root Directory | Framework preset | Domain               |
-| -------------- | -------------- | ---------------- | -------------------- |
-| `awebound-web` | `apps/web`     | Next.js          | `awebound.store`     |
-| `awebound-api` | `apps/api`     | Other            | `api.awebound.store` |
+| Vercel project | Root Directory | Framework preset | Domain           |
+| -------------- | -------------- | ---------------- | ---------------- |
+| `awebound-web` | `apps/web`     | Next.js          | `awebound.store` |
 
-Each app carries a `vercel.json` with its install and build commands, so the only setting you must change by hand is the **Root Directory** (Vercel reads `vercel.json` from there and cannot set the Root Directory itself).
+`apps/web/vercel.json` holds the install and build commands, so the only setting you must change by hand is the **Root Directory** (Vercel reads `vercel.json` from there and cannot set the Root Directory itself).
 
 ## Why "No Output Directory named public" happens
 
 That error means the project was imported at the repo root. The root `package.json` has no Next.js, so Vercel falls back to the "Other" preset, which expects a static `public` folder. Setting the Root Directory to `apps/web` fixes it.
 
-## 1. Fix the existing project (it becomes the web project)
+## 1. Project settings
 
 1. Vercel → the project → **Settings → Build and Deployment**.
 2. **Root Directory**: `apps/web`. Leave "Include files outside the root directory in the Build Step" on (the app imports `packages/*`).
 3. **Framework Preset**: Next.js.
-4. **Build Command, Output Directory, Install Command**: turn every override off. `apps/web/vercel.json` sets install (`pnpm install --filter @awebound/web...`) and build (`pnpm build`); Next.js needs no output directory.
+4. **Build Command, Output Directory, Install Command**: turn every override off. `apps/web/vercel.json` sets install (`pnpm install --filter @awebound/web...`) and build (`pnpm build`).
 5. **Node.js Version** (same page): 22.x.
-6. Add the web environment variables (below), then **Deployments → Redeploy**.
 
-Rename the project to `awebound-web` if you like (Settings → General); the CORS pattern below assumes that name.
+## 2. Environment variables
 
-## 2. Create the API project
-
-1. **Add New → Project**, import `richardsotolongo/awebound` again.
-2. **Root Directory**: `apps/api`. **Framework Preset**: Other. Leave build, output and install overrides off.
-3. Add the API environment variables (below) and deploy.
-
-`pnpm build:vercel` bundles the Express app and every dependency into one function using Vercel's Build Output API (`apps/api/.vercel/output`, see `apps/api/tsup.vercel.config.ts`). All paths route to that function. Check it at `https://<api-domain>/health`.
-
-## 3. Environment variables
-
-The full, commented list is in [`/.env.example`](../.env.example), split into a WEB block and an API block. Paste each block into its project (Settings → Environment Variables → you can paste a whole `.env` block at once), fill the empty keys, and apply to Production and Preview.
-
-Minimum to go live:
-
-**awebound-web**
+Settings → Environment Variables. [`apps/web/.env.example`](../apps/web/.env.example) lists every variable with a comment. Apply them to Production and Preview.
 
 ```
 NEXT_PUBLIC_SITE_URL=https://awebound.store
-NEXT_PUBLIC_API_URL=https://api.awebound.store
+FOURTHWALL_STOREFRONT_TOKEN=<Fourthwall admin → Settings → For developers>
+NEXT_PUBLIC_SUPABASE_URL=<Supabase → Project settings → API>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<same page>
+SUPABASE_SECRET_KEY=<same page, secret key>
+RESEND_API_KEY=<Resend → API keys>
+EMAIL_FROM=Awebound <noreply@awebound.store>
+CONTACT_INBOX=contact@awebound.store
 ```
 
-Plus `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for accounts. `NEXT_PUBLIC_*` values are baked in at build time: redeploy the web project after changing them.
-
-**awebound-api**
-
-```
-NODE_ENV=production
-WEB_ORIGIN=https://awebound.store,https://www.awebound.store,https://awebound-web-*.vercel.app
-PUBLIC_SITE_URL=https://awebound.store
-TRUST_PROXY=1
-RESEND_API_KEY=re_...
-FOURTHWALL_STOREFRONT_TOKEN=ptkn_...
-```
-
-- `RESEND_API_KEY` and `FOURTHWALL_STOREFRONT_TOKEN` are required in production. Without one of them the API answers every request with `500 misconfigured` and the function log names the missing variable.
-- The shop lists only products that exist in Fourthwall with a slug matching the brand content (see `docs/TODOS.md` → Fourthwall). Until they are created there, the shop is empty.
+- `FOURTHWALL_STOREFRONT_TOKEN` must be set **before** a deploy: the build prerenders the home page and sitemap from Fourthwall. Without it the build still passes, but the shop is empty and the logs say `FOURTHWALL_STOREFRONT_TOKEN is not set`.
+- The shop lists only products that are public in Fourthwall and match the brand content by slug (see `docs/TODOS.md` → Fourthwall).
+- `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox.
 - `FOURTHWALL_CHECKOUT_DOMAIN` is optional (default `awebound-store-shop.fourthwall.com`); set it if you connect a custom shop domain in Fourthwall.
-- Add `SUPABASE_URL` and `SUPABASE_SECRET_KEY` for accounts and to keep contact messages and drop-note sign-ups in the database (without Supabase they are only emailed or held in memory).
+- `NEXT_PUBLIC_*` values are baked in at build time: redeploy after changing them.
 
-## 4. Domains and DNS
+## 3. Domains and DNS
 
 1. `awebound-web` → Settings → Domains: add `awebound.store` and `www.awebound.store` (redirect `www` to the apex).
-2. `awebound-api` → Settings → Domains: add `api.awebound.store`.
-3. At your registrar, create the records Vercel shows for each domain (an `A` record for the apex and `CNAME` records for `www` and `api`), or move the domain's nameservers to Vercel.
+2. At your registrar, create the records Vercel shows (an `A` record for the apex and a `CNAME` for `www`), or move the domain's nameservers to Vercel.
 
 Then update the services that know the site's address:
 
 - Supabase → Authentication → URL configuration: Site URL `https://awebound.store`; redirect URLs `https://awebound.store/auth/callback` and `https://awebound.store/auth/confirm`.
-- Resend: verify `awebound.store` (SPF, DKIM, DMARC) so `hello@awebound.store` can send.
+- Resend: verify `awebound.store` (SPF, DKIM, DMARC) so `noreply@awebound.store` can send.
 - Google OAuth consent screen: privacy and terms URLs on `awebound.store`.
 
-## 5. Order of a first launch
+## 4. Check a deploy
 
-1. Deploy the API; open `/health` and `/v1/products`.
-2. Set `NEXT_PUBLIC_API_URL` on the web project; redeploy the web project.
-3. Add the domains; update `NEXT_PUBLIC_SITE_URL`, `WEB_ORIGIN`, `PUBLIC_SITE_URL` if they changed; redeploy both.
-4. Walk through shop → product → bag → checkout (it should land on Fourthwall's checkout) and send a test contact message.
+Walk through shop → product → bag → checkout (it should land on Fourthwall's checkout) and send a test contact message.
 
 ## Notes
 
-- Every push to `main` deploys both projects. To skip builds a commit didn't touch, set **Ignored Build Step** in each project to `git diff --quiet HEAD^ HEAD -- . ../../packages ../../pnpm-lock.yaml`.
-- Rate limits are per function instance (in memory). That's fine at launch; see `docs/TODOS.md` for a shared store.
-- Running the API somewhere else (Render, Railway, Fly) still works: `pnpm --filter @awebound/api build`, then `node apps/api/dist/main.js`.
+- Every push to `main` deploys. To skip builds a commit didn't touch, set **Ignored Build Step** to `git diff --quiet HEAD^ HEAD -- . ../../packages ../../pnpm-lock.yaml`.
+- Rate limits are per server instance (in memory). Add a Vercel Firewall rate-limit rule for real protection (see `docs/TODOS.md`).
