@@ -6,7 +6,7 @@
 @import "../styles/sheet.css";
 @import "../styles/shop.css";
 @import "../styles/product.css";
-@import "../styles/journey.css";
+@import "../styles/home.css";
 @import "../styles/prose.css";
 
 /* Let Tailwind see the class names used inside the brand package's components. */

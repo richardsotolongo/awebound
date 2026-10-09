@@ -40,7 +40,7 @@ export async function startCheckout(
   // Previews aren't in Fourthwall yet, so there is nothing to put in a cart.
   if (lines.some((l) => catalog.findBySlug(l.productSlug)?.preview)) {
     throw new UserError(
-      "Checkout for the Behold release opens soon. Leave your email in the bag and we’ll tell you the day it opens.",
+      "Ordering isn’t open yet. Your bag keeps your selections, and we’ll email you when ordering opens if you leave your address.",
     );
   }
 

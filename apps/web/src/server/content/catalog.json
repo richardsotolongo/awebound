@@ -1,5 +1,5 @@
 {
-  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (ID, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a Fourthwall product, Fourthwall supplies its variants, prices, stock and photos. Until then the product shows as a preview: the price, sizes and images here (apps/web/public/products), with checkout opening soon. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image, hover image, then the rest.",
+  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a Fourthwall product, Fourthwall supplies its variants, prices, stock and photos. Until then the product shows as a preview: the price, sizes and images here (apps/web/public/products, styled mockups made by assets/mockups), with ordering not yet open. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest.",
   "categories": [
     {
       "slug": "tees",
@@ -9,7 +9,7 @@
     },
     {
       "slug": "oversized-tees",
-      "name": "Oversized tees",
+      "name": "Oversized Tees",
       "cut": "Oversized tee",
       "sizes": ["S", "M", "L", "XL", "2XL"]
     },
@@ -24,8 +24,9 @@
     {
       "slug": "behold",
       "name": "Behold",
+      "number": "01",
       "tagline": "A call to see Christ’s power, holiness, sacrifice, and resurrection.",
-      "story": "Six pieces, one call: look and see who he is. The holy one, the Lord of the storm, the Lamb of God, the risen King.",
+      "story": "Behold means look, and keep looking. When John the Baptist saw Jesus coming toward him, he called everyone near him to see the Lamb of God, and older English Bibles begin his words with “Behold.” These six pieces carry the same call: see His holiness, His power over the storm, His mercy, His resurrection, the life He gives, and the Lamb who takes away the sin of the world.",
       "scriptureRef": "John 1:29"
     }
   ],
@@ -56,13 +57,21 @@
       "priceCents": 3500,
       "featured": true,
       "releasedAt": "2026-10-09",
-      "scriptureRef": "Exodus 3:5",
+      "scripture": {
+        "reference": "Exodus 3:5",
+        "excerpt": true,
+        "niv": "Take off your sandals, for the place where you are standing is holy ground.",
+        "kjv": "Put off thy shoes from off thy feet, for the place whereon thou standest is holy ground."
+      },
       "story": {
+        "theme": "Holiness",
+        "call": "Behold His holiness",
+        "motif": "ground",
         "art": "The bush that burned and was not consumed, its roots spread wide over the desert floor beneath the wordmark.",
-        "front": "Small Thornbound wordmark with a single flame, left chest; flame mark on the left sleeve",
-        "back": "Thornbound wordmark over the burning bush, its roots and the desert hills",
+        "meaning": "Moses turned aside to look at a bush that was on fire but did not burn up, and God called to him from the flames. Before anything else, God told him where he was standing: holy ground. The design keeps that order. The fire rises over everything, the roots hold the ground beneath it, and the reference sits at the hem.",
+        "front": "Small Awebound wordmark with a single flame, left chest; flame mark on the left sleeve",
+        "back": "Awebound wordmark over the burning bush, its roots and the desert hills",
         "inks": "Bone",
-        "paraphrase": "God called to Moses from the burning bush: take off your sandals, this ground is holy.",
         "fit": "Regular tee · classic fit, set-in sleeves",
         "material": null
       },
@@ -70,7 +79,7 @@
         {
           "view": "back",
           "url": "/products/holy-ground/back.webp",
-          "alt": "Holy Ground tee, back: the burning bush beneath the Thornbound wordmark, Exodus 3:5"
+          "alt": "Holy Ground tee, back: the burning bush beneath the Awebound wordmark, Exodus 3:5"
         },
         {
           "view": "front",
@@ -93,15 +102,23 @@
       "category": "oversized-tees",
       "colors": ["Faded black"],
       "priceCents": 4000,
-      "featured": true,
+      "featured": false,
       "releasedAt": "2026-10-09",
-      "scriptureRef": "Mark 4:41",
+      "scripture": {
+        "reference": "Mark 4:41",
+        "excerpt": false,
+        "niv": "They were terrified and asked each other, “Who is this? Even the wind and the waves obey him!”",
+        "kjv": "And they feared exceedingly, and said one to another, What manner of man is this, that even the wind and the sea obey him?"
+      },
       "story": {
+        "theme": "Power",
+        "call": "Behold His power",
+        "motif": "sea",
         "art": "Storm clouds break over a raging sea, and on the horizon a cross stands in the light.",
-        "front": "Thornbound wordmark over the storm, the waves and the cross on the horizon",
-        "back": "Mark 4:41 in engraved capitals above a breaking wave",
+        "meaning": "The disciples were fishermen who knew that sea, and the storm still frightened them. Jesus spoke to the wind and the waves, and everything went still. What stayed with them was the question that followed: who is this? The front shows the storm breaking around a cross on the horizon. The back carries the disciples’ question in full.",
+        "front": "Awebound wordmark over the storm, the waves and the cross on the horizon",
+        "back": "The words of Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
         "inks": "Bone",
-        "paraphrase": "Jesus spoke to the wind and the waves, and they went still. His disciples asked who he could be.",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
         "material": null
       },
@@ -114,7 +131,7 @@
         {
           "view": "back",
           "url": "/products/still-the-storm/back.webp",
-          "alt": "Still the Storm oversized tee, back: Mark 4:41 above a breaking wave"
+          "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
         },
         {
           "view": "detail",
@@ -134,13 +151,21 @@
       "priceCents": 4000,
       "featured": true,
       "releasedAt": "2026-10-09",
-      "scriptureRef": "Isaiah 1:18",
+      "scripture": {
+        "reference": "Isaiah 1:18",
+        "excerpt": true,
+        "niv": "Though your sins are like scarlet, they shall be as white as snow",
+        "kjv": "Though your sins be as scarlet, they shall be as white as snow"
+      },
       "story": {
+        "theme": "Mercy",
+        "call": "Behold His mercy",
+        "motif": "bloom",
         "art": "A crown of thorns breaks into lilies, framing the wordmark beneath a cross.",
-        "front": "Large Thornbound wordmark across the chest in deep red",
+        "meaning": "Through Isaiah, God calls His people to come and settle the matter, and promises that sins as deep as scarlet will be made white as snow. The crown of thorns is the cost of that mercy, and the lilies are what grows from it. Deep red on a bone shirt: scarlet and snow, worn together.",
+        "front": "Large Awebound wordmark across the chest in deep red",
         "back": "Crown of thorns blooming into lilies around the wordmark and Isaiah 1:18",
         "inks": "Deep red, bone",
-        "paraphrase": "Sins red as scarlet, made white as snow. What was thorn becomes bloom.",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
         "material": null
       },
@@ -171,15 +196,23 @@
       "category": "oversized-tees",
       "colors": ["Washed sand"],
       "priceCents": 4000,
-      "featured": true,
+      "featured": false,
       "releasedAt": "2026-10-09",
-      "scriptureRef": "Matthew 28:6",
+      "scripture": {
+        "reference": "Matthew 28:6",
+        "excerpt": false,
+        "niv": "He is not here; he has risen, just as he said. Come and see the place where he lay.",
+        "kjv": "He is not here: for he is risen, as he said. Come, see the place where the Lord lay."
+      },
       "story": {
+        "theme": "Resurrection",
+        "call": "Behold, He is risen",
+        "motif": "stone",
         "art": "The stone rolls away from the tomb in a sweep of blue, and the doorway stands empty.",
+        "meaning": "Early on the first day of the week, the women came to the tomb and found the stone rolled away. The angel told them Jesus was not there: He had risen, just as He said. The front shows the empty tomb with the stone still moving. The back sets the angel’s announcement in heavy capitals, as plain as news.",
         "front": "The open tomb and rolling stone across the hem; small wordmark, left chest",
-        "back": "Matthew 28:6 in heavy capitals over the stone in its blue sweep",
+        "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) over the stone in its blue sweep",
         "inks": "Black, cobalt blue",
-        "paraphrase": "The angel told the women he was not there. He had risen, just as he said.",
         "fit": "Regular oversized · dropped shoulder, boxy body",
         "material": null
       },
@@ -192,7 +225,7 @@
         {
           "view": "back",
           "url": "/products/stone-in-motion/back.webp",
-          "alt": "Stone in Motion oversized tee, back: Matthew 28:6 over the rolling stone"
+          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, over the rolling stone"
         },
         {
           "view": "detail",
@@ -210,15 +243,23 @@
       "category": "oversized-tees",
       "colors": ["Washed forest"],
       "priceCents": 4000,
-      "featured": true,
+      "featured": false,
       "releasedAt": "2026-10-09",
-      "scriptureRef": "Philippians 1:21",
+      "scripture": {
+        "reference": "Philippians 1:21",
+        "excerpt": false,
+        "niv": "For to me, to live is Christ and to die is gain.",
+        "kjv": "For to me to live is Christ, and to die is gain."
+      },
       "story": {
+        "theme": "Life",
+        "call": "Behold what we live for",
+        "motif": "hourglass",
         "art": "An hourglass holds a cross above and a sprouting seed below, between the words of Philippians 1:21.",
+        "meaning": "Paul wrote these words in chains, not knowing whether he would live or die, and found that either way he could not lose. The hourglass holds a cross above and a sprouting seed below: time running out, and a life that goes on. To live is to live for Christ; to die is to be with Him.",
         "front": "To live is Christ, to die is gain, set around the hourglass",
-        "back": "Small Thornbound wordmark below the collar",
+        "back": "Small Awebound wordmark below the collar",
         "inks": "Bone",
-        "paraphrase": "Paul wrote that living means living for Christ, and dying is even better.",
         "fit": "Regular oversized · dropped shoulder, boxy body",
         "material": null
       },
@@ -226,7 +267,7 @@
         {
           "view": "front",
           "url": "/products/to-live-is-christ/front.webp",
-          "alt": "To Live Is Christ oversized tee, front: the hourglass between the words of Philippians 1:21"
+          "alt": "To Live Is Christ oversized tee, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
         },
         {
           "view": "back",
@@ -249,15 +290,23 @@
       "category": "hats",
       "colors": ["Washed black twill"],
       "priceCents": 3000,
-      "featured": true,
+      "featured": false,
       "releasedAt": "2026-10-09",
-      "scriptureRef": "John 1:29",
+      "scripture": {
+        "reference": "John 1:29",
+        "excerpt": true,
+        "niv": "Look, the Lamb of God, who takes away the sin of the world!",
+        "kjv": "Behold the Lamb of God, which taketh away the sin of the world."
+      },
       "story": {
+        "theme": "Sacrifice",
+        "call": "Behold the Lamb",
+        "motif": "rays",
         "art": "The Lamb of God, embroidered in raised bone thread across the front panel.",
+        "meaning": "When John the Baptist saw Jesus coming toward him, he named Him: the Lamb of God, who takes away the sin of the world. It is the call this whole release is named for. The lamb is embroidered in raised bone thread with a single mark of red, and the reference sits on the side of the cap.",
         "front": "Raised embroidered lamb in bone thread",
-        "back": "Thornbound wordmark with red thorns above the snap; John 1:29 on the side",
+        "back": "Awebound wordmark with red thorns above the snap; John 1:29 on the side",
         "inks": "Bone and red thread",
-        "paraphrase": "John saw Jesus coming and named him: the Lamb of God who takes away the sin of the world.",
         "fit": "Otto mid-profile snapback · structured crown, adjustable snap",
         "material": null
       },
@@ -270,7 +319,7 @@
         {
           "view": "back",
           "url": "/products/lambs-mark/rear.webp",
-          "alt": "Lamb’s Mark snapback, rear: the Thornbound wordmark with red thorns"
+          "alt": "Lamb’s Mark snapback, rear: the Awebound wordmark with red thorns"
         },
         {
           "view": "side",

@@ -3,7 +3,7 @@
 import { LILY } from "@awebound/brand";
 import { motion, useTransform, type MotionValue } from "motion/react";
 import type { ComponentType, ReactNode } from "react";
-import type { MotifName } from "@/lib/release";
+import type { MotifName } from "@/shared";
 import { MarkPath } from "./mark-path";
 
 /**

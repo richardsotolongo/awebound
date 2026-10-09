@@ -7,15 +7,16 @@ The whole site: Next.js 16 App Router. Server Components read the catalog direct
 ```
 src/
 ├─ app/                    routes (pages, route handlers, sitemap, robots, icons)
-│  ├─ page.tsx             home: Opening, the Behold curtain, six pinned scenes, release grid, seed
-│  ├─ shop/                listing (CatalogView) and product pages
+│  ├─ page.tsx             home: hero (clothes + release status), latest release intro + grid, two design stories, founder story, release sign-up
+│  ├─ shop/                listing (collection selector + category tabs) and product pages
+│  ├─ collections/         every release by name; /collections/<slug> opens the shop filtered to it
 │  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in, account
 │  └─ auth/                callback (OAuth/PKCE), confirm (email token hash), sign-out (POST)
 ├─ features/               one folder per feature (UI)
-│  ├─ home-journey/        Opening, BeholdReveal (curtain), VisionScene + motifs, VisionIndex rail, SeedScene
-│  ├─ release/             ReleaseCard (numbered product card), ReleaseHeader (shop title + I–VI index)
-│  ├─ catalog/             URL state (catalog-state.tsx), toolbar, filters, chips, grid, query helpers
-│  ├─ product/             gallery, purchase (color/size/add to bag), size guide
+│  ├─ home/                Hero, DesignStory (featured piece + line-art motif), motifs, mark-path
+│  ├─ release/             ReleaseCard (the brand ProductCard fed from a ProductSummary)
+│  ├─ catalog/             CatalogView (collection/category selectors), ShopHeader, URL state, toolbar, filters, chips, grid, query helpers
+│  ├─ product/             gallery, purchase (color/size, Save to bag or Add to bag), delivery and returns summary, size guide
 │  ├─ bag/                 zustand store (persisted), drawer, bag page, checkout + notify form
 │  ├─ contact/ auth/ account/ legal/
 ├─ server/                 server-only code (never import it from a Client Component, except actions.ts)
@@ -29,12 +30,13 @@ src/
 │  ├─ email.ts, email-templates.ts   Resend, or the terminal in development
 │  ├─ errors.ts            UserError, Result, run(), parse()
 │  ├─ env.ts               server-only env (zod)
-│  └─ content/             catalog.json: the brand story per product (ID, release, position, Scripture, copy, preview price)
+│  ├─ scripture.ts         resolves Scripture records to the site's translation (SCRIPTURE_TRANSLATION), site verses, the notice
+│  └─ content/             catalog.json (per product: code, release, position, Scripture record, design story, preview price, images), verses.json
 ├─ shared/                 zod schemas, types and helpers used by both server and browser
 ├─ components/             site chrome: header, footer, Sheet (native <dialog>), PageHeader, Reveal, icons
 ├─ lib/                    public env (zod), Supabase clients (browser, server, admin), site config,
-│                          release.ts (the release's editorial copy: order, themes, “Behold …” calls, KJV verses)
-├─ styles/                 site.css, sheet.css, shop.css, product.css, journey.css, prose.css (all @layer components)
+│                          delivery.ts (confirmed fulfillment facts; null until confirmed)
+├─ styles/                 site.css, sheet.css, shop.css, product.css, home.css, prose.css (all @layer components)
 └─ proxy.ts                Next 16 proxy (formerly middleware): refreshes Supabase session, guards /account
 ```
 
@@ -43,16 +45,19 @@ src/
 - **Data**: Server Components call `server/catalog.ts` directly, wrapped in `withFallback` so a Fourthwall outage renders an empty state instead of crashing. Fourthwall's product list is fetched with `next: { revalidate: 60 }`, so the home page and sitemap stay static and refresh every minute. Don't add `no-store` on the catalog path.
 - **Server Actions** (`server/actions.ts`) are the only way the browser reaches the server. Each one parses its input with a schema from `shared/`, reads the user from the Supabase session, and returns `Result<T>`: `{ ok: true, data }` or `{ ok: false, error, fields? }`. Next hides thrown messages in production, so never rely on a thrown error reaching the client; throw `UserError` for messages the shopper should see.
 - **Secrets** stay in `server/` and `lib/supabase/admin.ts` (`import "server-only"`). Brand content is server-only too, so the catalog JSON never ships to the browser.
-- **Shop state lives in the URL** (`q`, `category`, `collection`, `color`, `size`, `minPrice`, `maxPrice`, `sort`). Use `useCatalogState()`; it updates optimistically and replaces the URL in a transition.
+- **Shop state lives in the URL** (`collection`, `category`, `q`, `color`, `size`, `minPrice`, `maxPrice`, `sort`). Collection and category are links (`shopHref`), so they push history: no `collection` means Latest Drop (the newest release, from `CatalogIndex.releases()`), `all` means every collection. The sheet's filters use `useCatalogState()`, which updates optimistically and replaces the URL in a transition.
+- **Scripture**: never hard-code a verse in a component. Products carry `scripture` (a `ScriptureQuote` resolved on the server); site verses come from `VERSES` in `server/scripture.ts`. Render with the brand `ScriptureQuote` / `ScriptureRef`, which add the quotation marks and the "— NIV, excerpt" label.
+- **Release status**: `Release.status` is `preview` until every piece in it is in Fourthwall. Hero buttons, the shop header, product pages and the bag switch their labels and preview messages from it and from `product.preview`.
+- **Internal codes**: `code` stays in data (SKUs, records) but is never rendered, searched or put in metadata.
 - **Bag**: `useBag` (zustand, persisted to localStorage, rehydrated after mount). The `validateBag` action re-prices it whenever it's shown; never trust client prices. `startCheckout` answers `{ url }` and the browser goes to Fourthwall's hosted checkout.
 - **Auth**: Supabase via `@supabase/ssr`. Passwordless only (Google OAuth, email link or 6-digit code). Everything degrades to "Accounts open soon" when `NEXT_PUBLIC_SUPABASE_*` is unset.
 - **Styling**: brand classes (`.aw-*`) for type and components, Tailwind utilities for layout, tokens for every color. No raw hex. Garment swatches go through `colorCss(color)` from `@/shared`: the brand token when the color is known, otherwise Fourthwall's swatch hex (product data, not styling). Fonts are self-hosted from `@fontsource-variable/*` via `next/font/local` (no Google Fonts requests).
-- **Motion**: `motion/react`. Standard entrances use `<Reveal>` (300ms fade + 12px rise). `MotionConfig reducedMotion="user"` is set globally; the journey also switches to still frames and un-pinned sections in CSS under `prefers-reduced-motion`. Round computed SVG coordinates (`toFixed`) so server and client render the same markup.
+- **Motion**: never hide words. `<Reveal>` is CSS only: a short scroll-linked rise that starts at 40% opacity, so text is readable without JavaScript, in browsers without scroll-driven animation and with reduced motion. The hero rises in 420ms; the Behold name opens from the center as it scrolls in; design stories draw their line art (`motion/react`) while the words stay still. Anchors land below the header (`scroll-margin-top` on every `[id]`). Round computed SVG coordinates (`toFixed`) so server and client render the same markup.
 - **React 19 lint rules**: don't call setState synchronously in effects. Adjust state during render when a prop changes (see `product-grid.tsx`, `site-header.tsx`).
-- **Images**: product images are plain `<img>` (photos come from Fourthwall's CDN). `public/products/<slug>/` holds the owner's mockups cropped into front, back, side and `detail` (print close-up) views; previews and products without Fourthwall photos use them, and the home scenes use `detail` while the catalog uses the site's own images.
-- **The release**: `lib/release.ts` only frames the catalog: order, numeral, theme, the “Behold …” headline and the KJV verse, keyed by product slug. Keep its order in step with `position` in `server/content/catalog.json`. A product without an entry still lists, numbered by its `position`. For a new release, replace `RELEASE` and `VISIONS`.
-- **Previews**: a content entry with no Fourthwall product is listed with `preview: true` (content price, sizes and mockups; SKUs like `A3-B01-FADED-BLACK-M`). The bag shows "Checkout opens soon" with a notify form instead of the checkout button, and `startCheckout` refuses preview lines.
-- **Scroll scenes**: each scene maps scroll to a 0–1 progress (`useScroll` + `useTransform`). Motifs draw in the margin of a box 18% larger than the photo (`.vision-plate`). Line art only: no flames, embers, shake or crosses other than the Thorn Cross.
+- **Images**: product images are plain `<img>` (photos come from Fourthwall's CDN). `public/products/<slug>/` holds styled mockups (garment cutouts on matte stone, made by `assets/mockups/compose.py`): the listing view shows the whole garment, `detail` is the artwork close-up used by the design stories. Previews and products without Fourthwall photos use them.
+- **A new release**: add a collection (slug, name, number, tagline, story, scriptureRef) and its products to `catalog.json`, each with a Scripture record (exact NIV and KJV text) and a design story (theme, call, motif, art, meaning). Latest Drop, the home page, Collections and the shop selector pick it up. `featured: true` picks the two home design stories.
+- **Previews**: a content entry with no Fourthwall product is listed with `preview: true` (content price, sizes and mockups; SKUs like `A3-B01-FADED-BLACK-M`). The product page says ordering isn't open and offers "Save to bag"; the bag explains it only saves selections and shows a notify form instead of checkout; `startCheckout` refuses preview lines.
+- **Motifs** (`features/home/motifs.tsx`): line art drawn in the margin of a box 18% larger than the image (`.story-plate`), driven by a 0–1 progress. No flames, embers or shake.
 
 ## Commands
 
@@ -63,4 +68,4 @@ pnpm --filter @awebound/web lint
 pnpm --filter @awebound/web build
 ```
 
-No tests (owner's instruction). Verify by building and walking the flows in a browser: search → filter → product → add to bag → checkout (lands on Fourthwall); back-in-stock notify; contact; sign-in. Check error messages with `pnpm build && pnpm start` too: `next dev` shows thrown messages that production hides.
+No tests (owner's instruction). Verify by building and walking the flows in a browser on desktop and a phone width, with and without reduced motion: hero buttons and anchors → collection + category selectors (e.g. Behold + Hats, an empty combination) → product → Save to bag / Add to bag → checkout (lands on Fourthwall once live); notify; contact; sign-in. Check error messages with `pnpm build && pnpm start` too: `next dev` shows thrown messages that production hides.

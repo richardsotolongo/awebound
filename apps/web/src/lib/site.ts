@@ -5,19 +5,21 @@ export const SITE = {
   name: "Awebound",
   tagline: "Bound in awe. Worn without shame.",
   description:
-    "Christian apparel made to start conversations about Jesus Christ. The first release, Behold: five tees and a cap carrying engraved art and Scripture.",
+    "Awebound creates Christian apparel rooted in Scripture and reverence for Jesus Christ. Release 01, Behold: five tees and a cap with bold artwork and expressive lettering.",
   contactEmail: CONTACT_EMAIL,
 } as const;
 
 export const MAIN_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
-  { label: "Behold", href: "/#behold" },
+  { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
 export const FOOTER_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
+  { label: "Collections", href: "/collections" },
+  { label: "About", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Refunds", href: "/refunds" },
   { label: "Privacy", href: "/privacy" },

@@ -46,11 +46,11 @@ function layout(siteUrl: string, eyebrow: string, body: string): string {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.warmBone};"><tr><td align="center" style="padding:48px 16px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
 <tr><td align="center" style="padding-bottom:32px;"><img src="${siteUrl}/email/wordmark-oxblood.png" width="200" height="93" alt="Awebound" style="display:block;border:0;"></td></tr>
-<tr><td style="background:${C.paper};border:1px solid ${C.line};padding:40px 32px;font-family:Archivo,'Helvetica Neue',Arial,sans-serif;color:${C.coal};font-size:16px;line-height:26px;">
+<tr><td style="background:${C.paper};border:1px solid ${C.line};padding:40px 32px;font-family:Manrope,'Helvetica Neue',Arial,sans-serif;color:${C.coal};font-size:16px;line-height:26px;">
 <p style="margin:0 0 12px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.muted};">${eyebrow}</p>
 ${body}
 </td></tr>
-<tr><td align="center" style="padding-top:24px;font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.muted};">Bound in awe. Worn without shame.</td></tr>
+<tr><td align="center" style="padding-top:24px;font-family:Manrope,'Helvetica Neue',Arial,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.muted};">Bound in awe. Worn without shame.</td></tr>
 </table></td></tr></table></body></html>`;
 }
 

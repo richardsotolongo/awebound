@@ -9,12 +9,11 @@ import { FilterPanel } from "./filter-panel";
 
 interface ShopToolbarProps {
   facets: CatalogFacets;
-  hideCollections?: boolean;
   total: number;
 }
 
-/** Search, sort, and the filter sheet on phones and tablets. */
-export function ShopToolbar({ facets, hideCollections, total }: ShopToolbarProps) {
+/** Search, sort, and the sheet with color, size and price filters. */
+export function ShopToolbar({ facets, total }: ShopToolbarProps) {
   const state = useCatalogState();
   const searchId = useId();
   const sortId = useId();
@@ -23,7 +22,6 @@ export function ShopToolbar({ facets, hideCollections, total }: ShopToolbarProps
   const [filtersOpen, setFiltersOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const active =
-    state.getList("collection").length +
     state.getList("color").length +
     state.getList("size").length +
     (state.get("minPrice") || state.get("maxPrice") ? 1 : 0);
@@ -63,7 +61,7 @@ export function ShopToolbar({ facets, hideCollections, total }: ShopToolbarProps
           type="search"
           inputMode="search"
           autoComplete="off"
-          placeholder="Search designs, verses, colors"
+          placeholder="Search names, verses, colors"
           value={q}
           onChange={(e) => onSearch(e.target.value)}
         />
@@ -117,8 +115,14 @@ export function ShopToolbar({ facets, hideCollections, total }: ShopToolbarProps
         title="Filters"
         footer={
           <div className="aw-btn-row" style={{ justifyContent: "space-between" }}>
-            <button type="button" className="aw-btn aw-btn-link" onClick={state.clear}>
-              Clear all
+            <button
+              type="button"
+              className="aw-btn aw-btn-link"
+              onClick={() =>
+                state.update({ color: null, size: null, minPrice: null, maxPrice: null })
+              }
+            >
+              Clear filters
             </button>
             <button
               type="button"
@@ -130,7 +134,7 @@ export function ShopToolbar({ facets, hideCollections, total }: ShopToolbarProps
           </div>
         }
       >
-        <FilterPanel facets={facets} hideCollections={hideCollections} />
+        <FilterPanel facets={facets} />
       </Sheet>
     </div>
   );

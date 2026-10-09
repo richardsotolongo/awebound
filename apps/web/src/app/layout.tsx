@@ -8,24 +8,35 @@ import { SiteHeader } from "@/components/site-header";
 import { BagDrawer } from "@/features/bag/bag-drawer";
 import { siteUrl } from "@/lib/env";
 import { SITE } from "@/lib/site";
+import { TRANSLATION_NOTICE } from "@/server/scripture";
 import "./globals.css";
 
-// Self-hosted (SIL Open Font License) so pages never call a third-party font server.
-const cinzel = localFont({
-  src: "../../node_modules/@fontsource-variable/cinzel/files/cinzel-latin-wght-normal.woff2",
-  variable: "--font-cinzel",
-  weight: "400 900",
-  display: "swap",
-  fallback: ["Trajan Pro", "Georgia", "serif"],
-});
-
-const archivo = localFont({
-  src: "../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2",
-  variable: "--font-archivo",
+// Self-hosted (SIL Open Font License) so pages never call a third-party font server. Only the
+// files actually used are loaded: Grenze Gotisch for display headings, Manrope for body and
+// interface, and the one Cormorant Garamond italic weight used for Scripture.
+const grenze = localFont({
+  src: "../../node_modules/@fontsource-variable/grenze-gotisch/files/grenze-gotisch-latin-wght-normal.woff2",
+  variable: "--font-grenze",
   weight: "100 900",
   display: "swap",
-  declarations: [{ prop: "font-stretch", value: "62% 125%" }],
+  fallback: ["Georgia", "serif"],
+});
+
+const manrope = localFont({
+  src: "../../node_modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2",
+  variable: "--font-manrope",
+  weight: "200 800",
+  display: "swap",
   fallback: ["Helvetica Neue", "Arial", "sans-serif"],
+});
+
+const cormorant = localFont({
+  src: "../../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2",
+  variable: "--font-cormorant",
+  weight: "500",
+  style: "italic",
+  display: "swap",
+  fallback: ["Georgia", "Times New Roman", "serif"],
 });
 
 export const metadata: Metadata = {
@@ -55,7 +66,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-theme="dark" className={`${cinzel.variable} ${archivo.variable}`}>
+    <html
+      lang="en"
+      data-theme="dark"
+      className={`${grenze.variable} ${manrope.variable} ${cormorant.variable}`}
+    >
       <body>
         <a className="aw-skip" href="#main">
           Skip to content
@@ -63,7 +78,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers>
           <SiteHeader />
           <main id="main">{children}</main>
-          <SiteFooter />
+          <SiteFooter notice={TRANSLATION_NOTICE} />
           <BagDrawer />
         </Providers>
       </body>

@@ -84,9 +84,8 @@ const sections: LegalSection[] = [
     title: "Changes and cancellations",
     body: (
       <p>
-        Production usually starts within a day of your order. Email us as soon as you can and we’ll
-        change or cancel the order if it hasn’t gone to print. Once production has started we can’t
-        cancel it.
+        Production can start soon after you order. Email us as soon as you can and we’ll change or
+        cancel the order if it hasn’t gone to print. Once production has started we can’t cancel it.
       </p>
     ),
   },

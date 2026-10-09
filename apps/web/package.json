@@ -13,8 +13,9 @@
   },
   "dependencies": {
     "@awebound/brand": "workspace:*",
-    "@fontsource-variable/archivo": "^5.3.0",
-    "@fontsource-variable/cinzel": "^5.3.0",
+    "@fontsource-variable/grenze-gotisch": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/cormorant-garamond": "^5.3.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
     "motion": "^14.0.0",

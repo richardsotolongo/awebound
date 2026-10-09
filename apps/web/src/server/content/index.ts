@@ -9,7 +9,9 @@ import {
   type Color,
   type ProductImage,
   type ProductStory,
+  type ScriptureQuote,
 } from "@/shared";
+import { quote, ScriptureRecordSchema } from "../scripture";
 import raw from "./catalog.json";
 
 const ContentImage = z.object({ view: ImageViewSchema, url: z.string(), alt: z.string() });
@@ -37,7 +39,8 @@ const BrandContentSchema = z.object({
       priceCents: z.number().int().nonnegative(),
       featured: z.boolean(),
       releasedAt: z.string(),
-      scriptureRef: z.string(),
+      /** The piece's shared Scripture record (every translation the site can quote). */
+      scripture: ScriptureRecordSchema,
       /** Product slug in the Fourthwall shop when it differs from `slug`. */
       fourthwallSlug: z.string().optional(),
       story: ProductStorySchema,
@@ -64,7 +67,8 @@ export interface ProductContent {
   sizes: string[];
   featured: boolean;
   releasedAt: string;
-  scriptureRef: string;
+  /** The piece's verse in the website's translation. */
+  scripture: ScriptureQuote;
   story: ProductStory;
   /** Mockups in display order, shown for previews and when the Fourthwall product has no photos. */
   images: [ProductImage, ...ProductImage[]];
@@ -109,7 +113,7 @@ function loadBrandContent(): BrandContent {
       sizes: category.sizes,
       featured: p.featured,
       releasedAt: p.releasedAt,
-      scriptureRef: p.scriptureRef,
+      scripture: quote(p.scripture),
       story: p.story,
       images: [first, ...rest],
     };

@@ -1,0 +1,15 @@
+{
+  "$comment": "Scripture quoted on the website outside the product pages. Each record holds the exact wording in every translation the site can show (SCRIPTURE_TRANSLATION picks one). Excerpts end where the quoted part ends, without added punctuation.",
+  "notAshamed": {
+    "reference": "Romans 1:16",
+    "excerpt": true,
+    "niv": "For I am not ashamed of the gospel, because it is the power of God that brings salvation to everyone who believes",
+    "kjv": "For I am not ashamed of the gospel of Christ: for it is the power of God unto salvation to every one that believeth"
+  },
+  "planted": {
+    "reference": "1 Corinthians 3:6",
+    "excerpt": false,
+    "niv": "I planted the seed, Apollos watered it, but God has been making it grow.",
+    "kjv": "I have planted, Apollos watered; but God gave the increase."
+  }
+}

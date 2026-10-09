@@ -9,7 +9,7 @@ interface PageHeaderProps {
   children?: ReactNode;
 }
 
-/** Title block for inner pages: eyebrow, Cinzel H1, one short paragraph. */
+/** Title block for inner pages: eyebrow, display H1, one short paragraph. */
 export function PageHeader({ eyebrow, title, intro, scripture, children }: PageHeaderProps) {
   return (
     <header className="page-header">

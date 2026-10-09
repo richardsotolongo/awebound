@@ -17,9 +17,11 @@ The separate Express API (`apps/api`) was folded into the Next.js app. Vercel an
 
 - [x] **Commerce and fulfillment provider**: Fourthwall (hosted checkout, payments and fulfillment; no separate payment processor). Built and always on; setup is under "Fourthwall" below.
 - [x] **First release**: Behold, five tees and a cap, one release instead of pillar collections; the Lamb’s Mark cap closes it.
-- [x] **Bible translation**: King James Version, on the pieces and the site. Public domain in the US.
+- [x] **Bible translation**: the website quotes the NIV (one Scripture record per piece in the content file; `SCRIPTURE_TRANSLATION=KJV` switches back). The printed designs keep their approved lettering, some of it in King James wording.
+- [ ] **NIV permission (before launch)**: submit Biblica's Permission Request Form (biblica.com/permissions) for website use, confirm the exact copyright notice they want (the site shows the standard one in the footer, FAQ and Terms), and ask about printed merchandise if a future design uses NIV wording. Until it's granted you can set `SCRIPTURE_TRANSLATION=KJV` in Vercel to keep NIV text off the public site.
+- [ ] **Founder story**: the home page and About use only Richard's stated reasons (people not ashamed to express their faith, faith at the forefront, every design tells a story about Jesus Christ, starting conversations). Add a personal line or two in his own words if he wants a fuller story (`apps/web/src/app/page.tsx`, `apps/web/src/app/about/page.tsx`).
 - [ ] **Prices in Fourthwall**: tees $40, Holy Ground $35, the cap $30 (the site shows these from the content file until the products are live in Fourthwall, then Fourthwall's prices).
-- [ ] **Shipping**: destinations, rates, production and delivery times (then update the FAQ "Shipping" answers).
+- [ ] **Shipping**: destinations, rates, production and delivery times. Once confirmed, set `productionTime` and `shippingTime` in `apps/web/src/lib/delivery.ts` (the product pages show them beside the buy button) and update the FAQ "Shipping" answers.
 - [ ] **Blank supplier and fabric**: fill `story.material` per product and replace the approximate size charts in `apps/web/src/features/product/size-guide.tsx`.
 - [ ] **Legal details**: business entity name and the state whose law governs (`LEGAL` in `apps/web/src/lib/site.ts`).
 - [ ] **Social links** (Instagram, TikTok) for the footer.
@@ -56,14 +58,14 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 - [ ] Name colors like the brand garments (`Washed coal`, `Faded black`, `Warm bone`, …) so the site shows the brand swatches. Other names fall back to Fourthwall's swatch color.
 - [ ] Shipping, taxes, order and shipping emails: configure in Fourthwall (it sends them).
 - [ ] Place a test order end to end, then refund it in Fourthwall.
-- [ ] Copy once live: remove "Checkout is opening soon" from the FAQ, "once checkout opens" from `/privacy` and the account page, and "when checkout opens" from the drop-notes welcome email (`apps/web/src/server/email-templates.ts`); state shipping times, and name Fourthwall as the commerce partner in `/privacy`.
+- [ ] Copy once live: the release-status labels and preview messages switch on their own when every Behold piece is in Fourthwall. Still by hand: "once checkout opens" in `/privacy` and the account page, "when checkout opens" in the welcome email (`apps/web/src/server/email-templates.ts`), shipping times (`lib/delivery.ts`), and naming Fourthwall as the commerce partner in `/privacy`.
 - [ ] Optional: order history on `/account` from Fourthwall's order webhooks (needs an `orders` table and a webhook route).
 
 ## Content
 
-- [ ] **Product photography**, uploaded to each Fourthwall product (back first, then front and details; flat lays on light warm grey per the brand guide). The sample art in `apps/web/public/products` only shows for products without Fourthwall photos.
+- [ ] **Product photography** of real samples, uploaded to each Fourthwall product (the whole garment first, then the other side and artwork close-ups), styled like the mockups: matte stone backdrop per piece, light from the upper left, soft shadow (see `docs/BRAND.md`). Until then the site uses styled mockups (`apps/web/public/products`, made by `assets/mockups/compose.py` from the untouched originals in `assets/mockups/source`). If Fourthwall product photos are on white, they'll show on white: upload styled images there too.
 - [ ] **Legal review** of `/privacy`, `/terms` and `/refunds`. They are drafts written for this setup, not legal advice. Update `LEGAL.lastUpdated` when they change.
-- [ ] **Update the `awebound-brand` guide**: it still says to quote the NLT, lists the three pillars and their collection families, and calls the Thorn Cross the only cross (Still the Storm, Thorns to Lilies and To Live Is Christ use other crosses). Agents read it, so until then they will steer toward the old rules.
+- [ ] **Save the updated `awebound-brand` guide** (proposed in chat; the same text is in `docs/BRAND.md`). Its `references/` files still describe the old pillars, NLT and Cinzel/Archivo; the new SKILL.md says it overrides them, but refresh them when convenient.
 - [ ] **Wordmark cleanup** by a designer before large back prints; physical test of the proposed minimum print (1.75 in) and embroidery (2.25 in) sizes.
 - [ ] **Lookbook page**, if wanted (the brand's default header link; left out until there's content).
 - [ ] **Unsubscribe link** in drop-note emails before the first marketing send (today people unsubscribe by replying).

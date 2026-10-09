@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/features/legal/legal-page";
+import { TRANSLATION_NOTICE } from "@/server/scripture";
 import { LEGAL, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -94,10 +95,7 @@ const sections: LegalSection[] = [
           photos and site content belong to {LEGAL.businessName}. You may not copy or use them
           commercially without written permission.
         </p>
-        <p>
-          Scripture quotations are from the King James Version (KJV), which is in the public domain
-          in the United States.
-        </p>
+        <p>{TRANSLATION_NOTICE}</p>
       </>
     ),
   },

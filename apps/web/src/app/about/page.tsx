@@ -1,105 +1,152 @@
-import { AltarPanel, Button, ScriptureRef, ThornRule } from "@awebound/brand";
+import { AltarPanel, Button, ScriptureQuote, ThornRule } from "@awebound/brand";
 import type { Metadata } from "next";
 import { Reveal } from "@/components/reveal";
+import { TRANSLATION, TRANSLATION_NAME, VERSES } from "@/server/scripture";
 
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Awebound is Christian apparel for people who are not ashamed to wear their faith. Every design tells a story about Jesus Christ.",
+    "Why Awebound exists: Christian apparel rooted in Scripture and reverence for Jesus Christ, for people who are not ashamed to express their faith.",
   alternates: { canonical: "/about" },
 };
 
-const STORY = [
+/** Why each part of a design is there. */
+const TOGETHER = [
   {
-    title: "Faith first",
-    body: "Awebound was built with faith at the forefront of every design. Each piece starts with a passage of Scripture and the story it tells. The art comes second, and it has to be worthy of the first.",
+    title: "Scripture",
+    body: "Every design starts with one moment in Scripture that shows who Jesus Christ is. Not a slogan: a passage you can find, read and sit with.",
   },
   {
-    title: "Made to start conversations",
-    body: "A shirt is a quiet way to say something out loud. When someone asks what yours means, you get to tell them about Jesus Christ. That is the seed. We plant it; God makes it grow.",
+    title: "Biblical imagery",
+    body: "A burning bush, a stilled sea, a rolled-away stone. Symbols let the moment be seen at a glance and remembered long after.",
+  },
+  {
+    title: "Expressive lettering",
+    body: "The words are drawn, not typed, with the weight the moment deserves, so they can be read from across a room.",
+  },
+  {
+    title: "Clothing",
+    body: "It goes where you go: to class, to work, into ordinary days. That is where the story gets seen, and where someone asks about it.",
   },
 ];
 
-/** How every design tells its story. Written to hold for every release, not just this one. */
+/** How every design is made. Written to hold for every release. */
 const DESIGN_STORY = [
   {
     numeral: "I",
     title: "It begins in Scripture",
-    body: "Every design starts with one moment in Scripture that shows who Jesus Christ is. Not a slogan. A moment you can find, read and sit with.",
+    body: "We choose one moment that calls people to see Jesus Christ as He is, and read it in context before anything is drawn.",
   },
   {
     numeral: "II",
     title: "The art holds the moment",
-    body: "We draw it as an engraving, in symbols only, so the moment can be seen and remembered. Out of reverence, we never put a face on God.",
+    body: "It is drawn as an engraving, in symbols only, so the moment can be seen and remembered. Out of reverence, we never put a face on God.",
   },
   {
     numeral: "III",
     title: "The reference carries it on",
-    body: "The full reference is printed with the art, so anyone who asks can look it up for themselves. The story doesn’t end with the person wearing it. It gets passed on.",
+    body: "The full reference is part of the design, so anyone who asks can look it up for themselves. The story doesn’t end with the person wearing it.",
   },
 ];
 
-const COMMITMENTS = [
-  "Symbols only. Out of reverence, we never depict Jesus, God the Father or the Holy Spirit as a person.",
-  "Scripture by full reference on every piece, so it can be looked up and read. When we quote a verse, on a piece or on this site, we use the King James Version.",
-  "The clothes come first: considered art, honest materials and fits named plainly.",
-  "No fear, no guilt, no hype. Just the story, worn boldly.",
-];
-
 export default function AboutPage() {
+  const reverence = [
+    "Symbols only. Out of reverence, we never depict Jesus, God the Father or the Holy Spirit as a person.",
+    `Scripture is quoted exactly, with its full reference. On this website we quote the ${TRANSLATION_NAME}.${
+      TRANSLATION === "NIV"
+        ? " Lettering printed on some designs uses the King James wording, and every approved design is kept exactly as it was drawn."
+        : ""
+    }`,
+    "The design gets the same care as the meaning: considered artwork, honest materials and fits named plainly.",
+    "No fear, no guilt, no hype. Just the story, worn boldly.",
+  ];
+
   return (
     <>
       <AltarPanel
         eyebrow="Our story"
-        title="Not ashamed"
-        body="Awebound is Christian apparel for people who are not ashamed to express their faith. Our goal is simple: that every piece starts a conversation about Jesus Christ, and that every design tells a story about our Lord and Savior."
-        scripture="Romans 1:16"
+        title="Bound in awe. Worn without shame."
+        body="Awebound creates clothing rooted in Scripture and reverence for Jesus Christ, for people who are not ashamed to express their faith."
       />
 
-      <section
-        data-theme="light"
-        className="section"
-        style={{ background: "var(--surface-page)", color: "var(--ink)" }}
-        aria-labelledby="story-title"
-      >
-        <div className="aw-container" style={{ display: "grid", gap: "var(--space-16)" }}>
-          <h2 id="story-title" className="visually-hidden">
-            What we believe
-          </h2>
-          <div
-            style={{
-              display: "grid",
-              gap: "var(--space-12)",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            }}
-          >
-            {STORY.map((s, i) => (
-              <Reveal key={s.title} delay={i * 0.06}>
-                <article style={{ display: "grid", gap: "var(--space-4)" }}>
-                  <h3 className="aw-h3">{s.title}</h3>
-                  <p className="aw-body">{s.body}</p>
-                </article>
+      <section data-theme="light" className="section about-founder" aria-labelledby="founder-title">
+        <div className="aw-container about-split">
+          <Reveal className="about-split-head">
+            <p className="aw-label">Why Awebound exists</p>
+            <h2 id="founder-title" className="aw-h1">
+              Faith at the forefront
+            </h2>
+          </Reveal>
+          <div className="about-split-body">
+            <p className="aw-body">
+              Richard started Awebound for people who are not ashamed to express their faith and
+              want to wear it boldly. He built it with faith at the forefront of every design: each
+              piece begins in Scripture and tells a story about our Lord and Savior, Jesus Christ.
+            </p>
+            <p className="aw-body">
+              The hope is that every piece starts a conversation about Him. Not because the shirt
+              does the talking, but because when someone asks what it means, the person wearing it
+              gets to answer. We plant the seed; God makes it grow.
+            </p>
+            <ScriptureQuote
+              text={VERSES.planted.text}
+              reference={VERSES.planted.reference}
+              translation={VERSES.planted.translation}
+              excerpt={VERSES.planted.excerpt}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="section aw-grain about-awe" aria-labelledby="awe-title">
+        <div className="aw-container about-split">
+          <Reveal className="about-split-head">
+            <p className="aw-label">The name</p>
+            <h2 id="awe-title" className="aw-h1">
+              What “bound in awe” means
+            </h2>
+          </Reveal>
+          <div className="about-split-body">
+            <p className="aw-body">
+              Awe is what happens when you see God as He is: holy, powerful, merciful, risen. To be
+              bound in awe is to be held there, letting reverence for Jesus Christ shape what you
+              make, what you wear and how you live.
+            </p>
+            <p className="aw-body">
+              Worn without shame is the other half. Paul wrote that he was not ashamed of the
+              gospel, because it is the power of God. Awebound is made for people who feel the same
+              way.
+            </p>
+            <ScriptureQuote
+              text={VERSES.notAshamed.text}
+              reference={VERSES.notAshamed.reference}
+              translation={VERSES.notAshamed.translation}
+              excerpt={VERSES.notAshamed.excerpt}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="section about-together" aria-labelledby="together-title">
+        <div className="aw-container" style={{ display: "grid", gap: "var(--space-12)" }}>
+          <Reveal className="about-together-head">
+            <p className="aw-label">Why it belongs together</p>
+            <h2 id="together-title" className="aw-h1">
+              Scripture, art, lettering, clothing
+            </h2>
+            <p className="aw-body">
+              Each part does a different job. Together they make something worth wearing and worth
+              asking about.
+            </p>
+          </Reveal>
+          <ul className="about-together-grid">
+            {TOGETHER.map((item, i) => (
+              <Reveal as="li" key={item.title} delay={i * 0.06}>
+                <h3 className="aw-h3">{item.title}</h3>
+                <p className="aw-body">{item.body}</p>
               </Reveal>
             ))}
-          </div>
-          <Reveal>
-            <figure
-              style={{
-                margin: 0,
-                display: "grid",
-                gap: "var(--space-4)",
-                justifyItems: "center",
-                textAlign: "center",
-              }}
-            >
-              <blockquote className="aw-h2" style={{ margin: 0, maxWidth: "24ch" }}>
-                For I am not ashamed of the gospel of Christ.
-              </blockquote>
-              <figcaption>
-                <ScriptureRef reference="Romans 1:16" translation="KJV" />
-              </figcaption>
-            </figure>
-          </Reveal>
+          </ul>
         </div>
       </section>
 
@@ -111,7 +158,7 @@ export default function AboutPage() {
               Every design tells a story
             </h2>
             <p className="aw-body">
-              One moment from Scripture, drawn to be seen and printed to be read. Whatever the
+              One moment from Scripture, drawn to be seen and lettered to be read. Whatever the
               release, every piece is made this way.
             </p>
           </Reveal>
@@ -129,15 +176,15 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="commitments-title" style={{ paddingTop: 0 }}>
+      <section className="section" aria-labelledby="reverence-title">
         <div className="aw-container" style={{ display: "grid", gap: "var(--space-12)" }}>
           <ThornRule />
           <div className="split split-even">
-            <h2 id="commitments-title" className="aw-h2">
-              What we hold to
+            <h2 id="reverence-title" className="aw-h1">
+              How reverence shapes the work
             </h2>
             <ul className="prose" style={{ margin: 0 }}>
-              {COMMITMENTS.map((c) => (
+              {reverence.map((c) => (
                 <li key={c}>{c}</li>
               ))}
             </ul>

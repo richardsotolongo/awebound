@@ -1,7 +1,8 @@
 /* Awebound tokens, from the awebound-brand skill (references/tokens.json).
    Dark (coal) is the default theme; set data-theme="light" on <html> or any wrapper for the bone-paper theme.
    This is the only file in the repo that may contain raw hex values.
-   Fonts: the web app loads Cinzel and Archivo with next/font and exposes --font-cinzel / --font-archivo. */
+   Fonts: the web app loads Grenze Gotisch, Manrope and Cormorant Garamond Italic with next/font and
+   exposes --font-grenze / --font-manrope / --font-cormorant. */
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
@@ -107,8 +108,9 @@
   --gutter-desktop: 48px;
   --tap-min: 44px;
   --header-height: 80px;
-  --font-display: var(--font-cinzel, "Cinzel"), "Trajan Pro", Georgia, serif;
-  --font-sans: var(--font-archivo, "Archivo"), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-grenze, "Grenze Gotisch"), Georgia, serif;
+  --font-sans: var(--font-manrope, "Manrope"), "Helvetica Neue", Arial, sans-serif;
+  --font-scripture: var(--font-cormorant, "Cormorant Garamond"), Georgia, "Times New Roman", serif;
   --ease-reverent: cubic-bezier(0.22, 0.61, 0.36, 1);
   --duration-fast: 200ms;
   --duration-base: 300ms;

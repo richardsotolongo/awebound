@@ -1,0 +1,464 @@
+/* Home page: hero, the latest release and its grid, two design stories, the founder story and
+   the release sign-up. Motion is short and never hides the words: only decoration animates. */
+@layer components {
+  /* 1. Hero: the clothes beside the headline. */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--space-12) var(--space-16);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 46% 80% at 22% 0%, var(--light-shaft), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--space-12);
+    align-items: center;
+  }
+  .hero-text {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+  }
+  .hero-text .aw-label {
+    color: var(--scripture);
+  }
+  .hero-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(46px, 5vw, 76px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .hero-title span {
+    display: block;
+  }
+  .hero-body {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+  .hero-pieces {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    aspect-ratio: 6 / 5;
+  }
+  .hero-pieces > li:first-child {
+    grid-row: 1 / 3;
+  }
+  .hero-pieces[data-count="1"] {
+    grid-template-columns: 1fr;
+    aspect-ratio: 4 / 5;
+  }
+  .hero-pieces[data-count="2"] {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    aspect-ratio: 8 / 5;
+  }
+  .hero-pieces[data-count="2"] > li:first-child {
+    grid-row: auto;
+  }
+  .hero-piece {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .hero-piece img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-base) var(--ease-reverent);
+  }
+  .hero-piece:hover img {
+    transform: scale(1.02);
+  }
+  .hero-piece-name {
+    position: absolute;
+    left: var(--space-3);
+    bottom: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    background: color-mix(in srgb, var(--surface-page) 82%, transparent);
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-text > *,
+    .hero-pieces > li {
+      animation: hero-rise 420ms var(--ease-reverent) both;
+    }
+    .hero-text > :nth-child(2) {
+      animation-delay: 40ms;
+    }
+    .hero-text > :nth-child(3) {
+      animation-delay: 80ms;
+    }
+    .hero-text > :nth-child(n + 4) {
+      animation-delay: 120ms;
+    }
+    .hero-pieces > li:nth-child(2) {
+      animation-delay: 60ms;
+    }
+    .hero-pieces > li:nth-child(3) {
+      animation-delay: 120ms;
+    }
+  }
+  @keyframes hero-rise {
+    from {
+      opacity: 0.35;
+      translate: 0 10px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+  @media (max-width: 899px) {
+    .hero {
+      padding-block: var(--space-6) var(--space-16);
+    }
+    .hero-in {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+    /* On phones the clothes come first, so the first screen shows what Awebound makes. */
+    .hero-pieces {
+      order: -1;
+      max-height: 46svh;
+      margin-inline: auto;
+      width: min(100%, calc(46svh * 1.2));
+    }
+    .hero-text {
+      gap: var(--space-4);
+    }
+    .hero-pieces > li + li .hero-piece-name {
+      display: none;
+    }
+    .hero-body {
+      font-size: 17px;
+    }
+  }
+
+  /* 2–3. The latest release: a short introduction, then every piece. */
+  .behold {
+    padding-block: var(--space-16);
+    border-top: 1px solid var(--line);
+  }
+  .behold-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: var(--space-8) var(--space-16);
+    align-items: end;
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--line);
+  }
+  .behold-name {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .behold-name .aw-label {
+    color: var(--scripture);
+  }
+  .behold-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(76px, 11vw, 168px);
+    line-height: 0.86;
+    color: var(--ink);
+  }
+  .behold-text {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .behold-tagline {
+    margin: 0;
+    font-weight: 700;
+    font-size: 21px;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 36ch;
+  }
+  .home-grid {
+    list-style: none;
+    margin: var(--space-12) 0 0;
+    padding: 0;
+  }
+  .behold-note {
+    margin: var(--space-8) 0 0;
+    text-align: center;
+  }
+  .behold-note a {
+    color: var(--accent-text);
+  }
+  /* The curtain: the name opens from the center as it scrolls in. Short, and only the name. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .behold-title {
+        animation: behold-open linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 70%;
+      }
+    }
+  }
+  @keyframes behold-open {
+    from {
+      clip-path: inset(0 38% 0 38%);
+      opacity: 0.5;
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+    }
+  }
+  @media (max-width: 899px) {
+    .behold {
+      padding-block: var(--space-16) var(--space-12);
+    }
+    .behold-intro {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      padding-bottom: var(--space-8);
+    }
+    .behold-tagline {
+      font-size: 19px;
+    }
+    .home-grid {
+      margin-top: var(--space-8);
+    }
+  }
+
+  /* 4. Two design stories. */
+  .stories {
+    padding-block: var(--space-16) var(--space-24);
+    overflow-x: clip;
+  }
+  .stories-head {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+  .story {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-16);
+    align-items: center;
+    padding-block: var(--space-16);
+  }
+  .story + .story {
+    border-top: 1px solid var(--line);
+  }
+  .story[data-flip="true"] .story-art {
+    order: 2;
+  }
+  .story-art {
+    display: grid;
+    place-items: center;
+    padding: 9%;
+  }
+  .story-plate {
+    position: relative;
+    width: min(100%, 440px);
+    aspect-ratio: 4 / 5;
+  }
+  .story-plate img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .story-text {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+    max-width: 520px;
+  }
+  .story-text .aw-label {
+    color: var(--scripture);
+  }
+  .story-text .aw-h2 {
+    font-size: clamp(36px, 4vw, 52px);
+  }
+  @media (max-width: 899px) {
+    .story {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+      padding-block: var(--space-12);
+    }
+    .story[data-flip="true"] .story-art {
+      order: 0;
+    }
+    .story-art {
+      padding: 12% 14%;
+    }
+    .story-plate {
+      width: min(100%, 360px);
+    }
+  }
+
+  /* The line art around a featured image. The motif box is the image box grown by 18%. */
+  .motif {
+    position: absolute;
+    inset: -18%;
+    width: 136%;
+    height: 136%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .motif-sea,
+  .motif-ground,
+  .motif-stone {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      var(--ink) 16%,
+      var(--ink) 84%,
+      transparent
+    );
+    mask-image: linear-gradient(90deg, transparent, var(--ink) 16%, var(--ink) 84%, transparent);
+  }
+  /* motif line art */
+  .mo-line {
+    fill: none;
+    stroke: var(--line-strong);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.7;
+  }
+  .mo-strong {
+    stroke: var(--ink-subtle);
+    stroke-width: 1.6;
+    opacity: 0.9;
+  }
+  .mo-ray {
+    fill: none;
+    stroke: var(--scripture);
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: 0.4;
+  }
+  .mo-stream {
+    stroke-dasharray: 2 7;
+    animation: mo-fall 0.9s linear infinite;
+  }
+  @keyframes mo-fall {
+    to {
+      stroke-dashoffset: -18;
+    }
+  }
+  .mo-sand {
+    fill: var(--scripture);
+    opacity: 0.12;
+  }
+  .mo-stone {
+    fill: var(--surface-raised);
+    stroke: var(--ink-subtle);
+    stroke-width: 1.6;
+  }
+  .mo-mark path {
+    fill: var(--ink-subtle);
+  }
+  .mo-stop-light {
+    stop-color: var(--ink);
+    stop-opacity: 0.14;
+  }
+  .mo-stop-none {
+    stop-color: var(--ink);
+    stop-opacity: 0;
+  }
+
+  /* 5. Why Awebound: on bone paper, to break the dark page. */
+  .founder {
+    padding-block: var(--space-24);
+    background: var(--surface-page);
+    color: var(--ink);
+  }
+  .founder-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+  .founder-head {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .founder-text {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 62ch;
+  }
+  @media (max-width: 899px) {
+    .founder {
+      padding-block: var(--space-16);
+    }
+    .founder-in {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+
+  /* 6. Release updates sign-up. */
+  .updates {
+    padding-block: var(--space-24);
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+  .updates-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-8) var(--space-16);
+    align-items: end;
+  }
+  .updates-in > div {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .updates-in .aw-label {
+    color: var(--scripture);
+  }
+  @media (max-width: 899px) {
+    .updates {
+      padding-block: var(--space-16);
+    }
+    .updates-in {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mo-stream {
+      animation: none;
+    }
+    .hero-piece img {
+      transition: none;
+    }
+  }
+}

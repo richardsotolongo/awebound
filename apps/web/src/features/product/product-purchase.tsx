@@ -6,9 +6,14 @@ import { useMemo, useRef, useState } from "react";
 import { Sheet } from "@/components/sheet";
 import { useBag } from "@/features/bag/bag-store";
 import { NotifyForm } from "@/features/bag/notify-form";
+import { DeliverySummary } from "./delivery-summary";
 import { SizeGuide } from "./size-guide";
 
-/** Color, size and Add to bag. Adding opens the bag so the next step is always one tap away. */
+/**
+ * Price, color, size and the bag button, then delivery and returns in brief. While the release
+ * is in preview the button saves the selection to the bag and says plainly that nothing is
+ * ordered; once the piece is in Fourthwall it adds to the bag for checkout.
+ */
 export function ProductPurchase({ product }: { product: ProductDetail }) {
   const add = useBag((s) => s.add);
   const openBag = useBag((s) => s.open);
@@ -77,11 +82,9 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
       <div className="buy-option">
         <div className="buy-option-head">
           <span className="aw-label">Size</span>
-          {product.category.slug !== "hats" ? (
-            <Button variant="link" onClick={() => setGuideOpen(true)} aria-haspopup="dialog">
-              Size guide
-            </Button>
-          ) : null}
+          <Button variant="link" onClick={() => setGuideOpen(true)} aria-haspopup="dialog">
+            Size guide
+          </Button>
         </div>
         <div ref={sizesRef}>
           <SizeSelector
@@ -108,18 +111,33 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
           </p>
           <NotifyForm source="product" productSlug={product.slug} label="Your email" />
         </div>
-      ) : (
-        <>
+      ) : product.preview ? (
+        <div className="buy-preview">
+          <p className="buy-preview-title">Ordering isn’t open yet</p>
+          <p className="aw-small">
+            {product.collection.name} is in preview. Saving this piece keeps your size and color in
+            your bag on this device. It doesn’t place an order or charge you.
+          </p>
           <Button variant="primary" block onClick={addToBag}>
-            Add to bag
+            Save to bag
           </Button>
-          {product.preview ? (
-            <p className="field-help">
-              Checkout for this release opens soon. Your bag keeps it until then.
-            </p>
-          ) : null}
-        </>
+          <NotifyForm
+            source="product"
+            productSlug={product.slug}
+            label="Email me when ordering opens"
+          />
+        </div>
+      ) : (
+        <Button variant="primary" block onClick={addToBag}>
+          Add to bag
+        </Button>
       )}
+
+      <DeliverySummary
+        preview={product.preview}
+        process={product.category.slug === "hats" ? "embroidered" : "printed"}
+        onSizeGuide={() => setGuideOpen(true)}
+      />
 
       <Sheet
         id="size-guide"

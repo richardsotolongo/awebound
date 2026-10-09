@@ -143,8 +143,8 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 
 - **Catalog**. `server/fourthwall.ts` loads every product from the Storefront API (`GET /collections/all/products`, only public products are returned) and `server/catalog-merge.ts` merges it with the brand content in `server/content/catalog.json`:
   - Fourthwall is the truth for what can be bought: variants, prices, stock and photos.
-  - The content file is the truth for the story: product ID, release, position, cut, Scripture, copy.
-  - They match by slug: the Fourthwall product's URL slug equals the content `slug`, or the content entry sets `fourthwallSlug`. A Fourthwall product with no content stays hidden. A content entry with no Fourthwall product is listed as a **preview**: `preview: true`, the content `priceCents`, the category's sizes and the mockups. The bag shows "Checkout opens soon" with a notify form for previews, and `startCheckout` refuses them. The server logs both kinds of mismatch.
+  - The content file is the truth for the story: internal design code, release, position, cut, the Scripture record (exact NIV and KJV text, reference, excerpt flag; `server/scripture.ts` resolves it to `SCRIPTURE_TRANSLATION`), the design story and copy. Codes are never shown to customers.
+  - They match by slug: the Fourthwall product's URL slug equals the content `slug`, or the content entry sets `fourthwallSlug`. A Fourthwall product with no content stays hidden. A content entry with no Fourthwall product is listed as a **preview**: `preview: true`, the content `priceCents`, the category's sizes and the mockups. A release is "preview" while any of its pieces is (`CatalogIndex.releases()`), which drives "Coming Soon", Save to bag and the bag's notify form; `startCheckout` refuses preview lines. The server logs both kinds of mismatch.
   - Site SKUs are Fourthwall variant ids. Color names that match a brand garment color (`colors` in the content file) use the brand swatch; others use Fourthwall's swatch hex (`Color.swatch`, rendered with `colorCss`).
   - The product list is cached for 60 seconds in Next's data cache (stale copies keep serving while it refreshes). Search, filters and facets run on the merged set in memory.
   - Content images (`apps/web/public/products`) are the fallback for products without Fourthwall photos.
@@ -154,10 +154,11 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 ## Frontend
 
 - **Rendering**: catalog pages render on the server from `server/catalog.ts`; `withFallback` renders an empty state if Fourthwall is unreachable instead of failing the page. The home page and sitemap are static and refresh every minute.
-- **Shop state** is the URL. `CatalogStateProvider` reads search params, updates them optimistically (`useOptimistic`) and replaces the URL in a transition, so controls respond instantly while results stream in.
-- **Styling** in three layers: `tokens.css` (variables, both themes) → brand component classes (`.aw-*`, `@layer components`) → Tailwind utilities for layout with a theme limited to brand colors. Fonts (Cinzel, Archivo) are self-hosted via `next/font/local`.
-- **Motion**: `motion/react`. Standard entrances are 300ms fades with a 12px rise (`<Reveal>`). The home journey is the one deliberate exception: a curtain that tears from top to bottom over BEHOLD (a clip-path polygon driven by scroll), then six tall sections whose sticky panels map scroll progress to a light reveal on the art (a CSS mask), SVG line art around it and the KJV verse lighting word by word. `prefers-reduced-motion` turns pinning off in CSS and shows each scene finished.
-- **The release**: the catalog decides what exists and what it costs; `src/lib/release.ts` only frames each piece (numeral, theme, “Behold …” headline, KJV verse) by slug. Products sort by `position` within their release.
+- **Shop state** is the URL. Collection (none = Latest Drop, `all`, or a release slug) and category are links that push history; the sheet's filters go through `CatalogStateProvider`, which updates search params optimistically (`useOptimistic`) and replaces the URL in a transition. Latest Drop is the newest release with pieces, computed from the catalog.
+- **Styling** in three layers: `tokens.css` (variables, both themes) → brand component classes (`.aw-*`, `@layer components`) → Tailwind utilities for layout with a theme limited to brand colors. Fonts are self-hosted via `next/font/local`, one file each: Grenze Gotisch (display), Cormorant Garamond Italic 500 (Scripture), Manrope (everything else).
+- **Motion**: short and never hides words. `<Reveal>` is a CSS scroll-driven rise from 40% opacity (nothing without support or with reduced motion); the hero rises in 420ms; the Behold name opens from the center as it scrolls in; the two design stories draw SVG line art with `motion/react` while text stays put. No pinned sections. Every `[id]` has `scroll-margin-top` so anchors clear the sticky header.
+- **Releases**: everything about a release lives in the content file (collection + products with their story). Products sort by release (newest first), then `position`.
+- **Product images**: `assets/mockups/cutout.py` cuts each garment out of the approved mockups (kept intact in `assets/mockups/source`), `compose.py` places the cutouts on per-piece matte stone with one lighting and framing system and writes `apps/web/public/products`.
 - **Overlays** use the native `<dialog>` element (`components/sheet.tsx`): focus trapping, Escape and an inert page come from the browser.
 - **SEO**: per-page metadata and canonicals, Open Graph image, `sitemap.xml`, `robots.txt`, JSON-LD for products and the FAQ.
 
@@ -182,6 +183,7 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Sign-in (public)                                                      |
 | `SUPABASE_SECRET_KEY`                                              | Profiles, contact messages and sign-ups (server only)                 |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | Email. The key is required in production; the other two have defaults |
+| `SCRIPTURE_TRANSLATION`                                            | Website Scripture: `NIV` (default) or `KJV`                           |
 
 ## Deployment
 

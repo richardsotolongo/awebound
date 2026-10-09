@@ -136,14 +136,8 @@
     display: flex;
   }
   .product-grid > li > .aw-card,
-  .product-grid > li > .release-card,
   .scroll-rail > li > .aw-card {
     flex: 1;
-  }
-  .release-card {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: var(--space-3);
   }
   .aw-card-link {
     height: 100%;
@@ -157,6 +151,64 @@
     .product-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--space-4);
+    }
+  }
+  /* Phones: one piece per row, image beside the words (see .aw-card in the brand package). */
+  @media (max-width: 599px) {
+    .product-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3);
+    }
+  }
+
+  /* Release status: "Release 01 — Behold — Coming Soon". */
+  .release-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--scripture);
+  }
+  .release-status-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 22%, transparent);
+  }
+
+  /* Anchors land below the sticky header. */
+  :where([id]) {
+    scroll-margin-top: calc(var(--header-height) + var(--space-4));
+  }
+
+  /*
+   * The standard entrance: a short rise tied to scroll position. Content starts mostly visible
+   * (never hidden), and without scroll-driven animation or with reduced motion it simply shows.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal {
+        animation: reveal-rise linear both;
+        animation-timeline: view();
+        animation-range: entry var(--reveal-delay, 0%) entry calc(45% + var(--reveal-delay, 0%));
+      }
+    }
+  }
+  @keyframes reveal-rise {
+    from {
+      opacity: 0.4;
+      translate: 0 14px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
     }
   }
 }
@@ -200,10 +252,11 @@
     color: var(--ink-muted);
   }
   .design-story-num {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 56px;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 40px;
     line-height: 1;
+    letter-spacing: 0.04em;
     color: var(--scripture);
   }
   @media (max-width: 900px) {
@@ -215,6 +268,63 @@
       padding: var(--space-8) 0;
       border-left: 0;
       border-bottom: 1px solid var(--line);
+    }
+  }
+}
+
+@layer components {
+  /* About */
+  .about-founder {
+    background: var(--surface-page);
+    color: var(--ink);
+  }
+  .about-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+  .about-split-head {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .about-split-body {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .about-together-head {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 640px;
+  }
+  .about-together-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .about-together-grid > li {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line-strong);
+  }
+  @media (max-width: 1023px) {
+    .about-split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+    .about-together-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 599px) {
+    .about-together-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-6);
     }
   }
 }

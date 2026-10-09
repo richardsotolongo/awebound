@@ -32,6 +32,25 @@ export const CategorySchema = z.object({
 });
 export type Category = z.infer<typeof CategorySchema>;
 
+/** Translations the website can quote. Printed garment art keeps its own wording. */
+export const TRANSLATIONS = ["NIV", "KJV"] as const;
+export type Translation = (typeof TRANSLATIONS)[number];
+
+/**
+ * A Scripture quotation as the website shows it: exact wording in one translation, its full
+ * reference, and whether it is part of a verse. Resolved on the server from the content's shared
+ * Scripture record, so the home page, shop and product page always agree.
+ */
+export const ScriptureQuoteSchema = z.object({
+  /** Exact wording and punctuation; no surrounding quotation marks. */
+  text: z.string(),
+  reference: z.string(),
+  translation: z.enum(TRANSLATIONS),
+  /** True when the quote is part of the verse; shown as "NIV, excerpt". */
+  excerpt: z.boolean(),
+});
+export type ScriptureQuote = z.infer<typeof ScriptureQuoteSchema>;
+
 /**
  * A release: the pieces that drop together under one name and one call. The site launches with a
  * single release, Behold. (Kept as "collection" in code.)
@@ -39,12 +58,30 @@ export type Category = z.infer<typeof CategorySchema>;
 export const CollectionSchema = z.object({
   slug: CollectionSlugSchema,
   name: z.string(),
+  /** Release number as shown: "01". */
+  number: z.string(),
   /** One line under the name: what the release calls people to see. */
   tagline: z.string(),
+  /** A short introduction: the theme and its connection to Scripture. */
   story: z.string(),
   scriptureRef: z.string(),
 });
 export type Collection = z.infer<typeof CollectionSchema>;
+
+/** Collection filter values beside real release slugs. No value means the latest drop. */
+export const LATEST_DROP = "latest";
+export const ALL_COLLECTIONS = "all";
+
+/**
+ * A release as the site lists it. `status` is "preview" until every piece can be ordered, which
+ * switches the release-status labels and preview messages across the site.
+ */
+export const ReleaseSchema = CollectionSchema.extend({
+  pieces: z.number().int(),
+  releasedAt: z.string(),
+  status: z.enum(["preview", "open"]),
+});
+export type Release = z.infer<typeof ReleaseSchema>;
 
 export const ColorSchema = z.object({
   name: z.string(),
@@ -79,11 +116,14 @@ export const VariantSchema = z.object({
 export type Variant = z.infer<typeof VariantSchema>;
 
 export const ProductSummarySchema = z.object({
-  /** Lookbook ID, e.g. A3-B01 (hats use H: A3-H01). */
+  /**
+   * Internal design ID, e.g. A3-B01 (hats use H: A3-H01). Kept for records, SKUs and orders;
+   * never shown to customers.
+   */
   code: z.string(),
   slug: z.string(),
   name: z.string(),
-  collection: CollectionSchema.pick({ slug: true, name: true, tagline: true }),
+  collection: CollectionSchema.pick({ slug: true, name: true, number: true, tagline: true }),
   /** Order within its release, from 1. Drives the default sort and the I–VI numbering. */
   position: z.number().int().positive(),
   /**
@@ -97,7 +137,7 @@ export const ProductSummarySchema = z.object({
   currency: z.string().length(3),
   colors: z.array(ColorSchema),
   sizes: z.array(z.string()),
-  scriptureRef: z.string(),
+  scripture: ScriptureQuoteSchema,
   image: ProductImageSchema,
   hoverImage: ProductImageSchema.nullable(),
   featured: z.boolean(),
@@ -105,15 +145,24 @@ export const ProductSummarySchema = z.object({
 });
 export type ProductSummary = z.infer<typeof ProductSummarySchema>;
 
+export const MOTIF_NAMES = ["ground", "sea", "rays", "bloom", "stone", "hourglass"] as const;
+export type MotifName = (typeof MOTIF_NAMES)[number];
+
 /** Product copy, following the voice template in the brand skill. */
 export const ProductStorySchema = z.object({
-  /** One sentence on the back art and what it shows. */
+  /** What the piece calls people to see, in one word: "Holiness". */
+  theme: z.string(),
+  /** The design story's headline: "Behold His holiness". */
+  call: z.string(),
+  /** Line art drawn behind the piece when it is featured on the home page. */
+  motif: z.enum(MOTIF_NAMES),
+  /** One sentence on the main art and what it shows. */
   art: z.string(),
+  /** The full explanation: the moment in Scripture and how the artwork carries it. */
+  meaning: z.string(),
   front: z.string(),
   back: z.string(),
   inks: z.string(),
-  /** One plain-language line about the referenced verse (never the verse text). */
-  paraphrase: z.string(),
   /** Cut details, e.g. "Oversized tee · dropped shoulder, boxy body". */
   fit: z.string(),
   /** Fabric, once the blank supplier is confirmed. */
@@ -195,7 +244,9 @@ const FacetCount = z.object({ count: z.number().int() });
 export const CatalogFacetsSchema = z.object({
   categories: z.array(CategorySchema.extend(FacetCount.shape)),
   collections: z.array(
-    CollectionSchema.pick({ slug: true, name: true, tagline: true }).extend(FacetCount.shape),
+    CollectionSchema.pick({ slug: true, name: true, number: true, tagline: true }).extend(
+      FacetCount.shape,
+    ),
   ),
   colors: z.array(ColorSchema.extend(FacetCount.shape)),
   sizes: z.array(z.object({ size: z.string() }).extend(FacetCount.shape)),

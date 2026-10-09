@@ -1,4 +1,5 @@
 import {
+  LATEST_DROP,
   ProductQuerySchema,
   type CatalogFacets,
   type CollectionSlug,
@@ -6,7 +7,7 @@ import {
   type ProductQuery,
   type ProductSummary,
 } from "@/shared";
-import { colorCss, formatPrice } from "@/shared";
+import { formatPrice } from "@/shared";
 import type { ProductCardProps } from "@awebound/brand";
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -18,7 +19,8 @@ export function parseCatalogQuery(
   raw: RawSearchParams,
   locked: { collection?: CollectionSlug } = {},
 ): ProductQuery {
-  const input = { ...raw, page: undefined, pageSize: PAGE_SIZE };
+  // The collection is chosen by the collection selector (see collectionChoice), not parsed here.
+  const input = { ...raw, collection: undefined, page: undefined, pageSize: PAGE_SIZE };
   const parsed = ProductQuerySchema.safeParse(input);
   const query = parsed.success
     ? parsed.data
@@ -60,14 +62,15 @@ export const EMPTY_FACETS: CatalogFacets = {
   price: { min: 0, max: 0 },
 };
 
-/** Maps a listing product to the brand ProductCard. */
+/**
+ * Maps a listing product to the brand ProductCard: name, garment type, price and the piece's
+ * Scripture. The internal design code is never shown.
+ */
 export function toCardProps(p: ProductSummary, priority = false): ProductCardProps {
   return {
-    id: p.code,
     name: p.name,
-    base: `${p.category.cut} · ${p.baseColor}`,
-    swatches: p.colors.map(colorCss),
-    scripture: p.scriptureRef,
+    type: p.category.cut,
+    quote: p.scripture,
     image: p.image.url,
     imageAlt: p.image.alt,
     hoverImage: p.hoverImage?.url,
@@ -75,4 +78,33 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
     price: formatPrice(p.priceCents, p.currency),
     priority,
   };
+}
+
+/**
+ * The collection selector's value from the URL: no value (or "latest") is the Latest Drop,
+ * "all" is every collection, anything else a release slug.
+ */
+export function collectionChoice(raw: RawSearchParams): string {
+  const value = Array.isArray(raw.collection) ? raw.collection[0] : raw.collection;
+  const clean = value?.trim().toLowerCase();
+  return clean && /^[a-z0-9-]+$/.test(clean) ? clean : LATEST_DROP;
+}
+
+/** A shop URL with some params changed; `null` removes one. Always starts from page one. */
+export function shopHref(
+  basePath: string,
+  raw: RawSearchParams,
+  changes: Record<string, string | null>,
+): string {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(raw)) {
+    if (k === "page" || v === undefined) continue;
+    params.set(k, Array.isArray(v) ? v.join(",") : v);
+  }
+  for (const [k, v] of Object.entries(changes)) {
+    if (v === null) params.delete(k);
+    else params.set(k, v);
+  }
+  const qs = params.toString();
+  return qs ? `${basePath}?${qs}` : basePath;
 }

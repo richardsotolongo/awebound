@@ -47,3 +47,13 @@ export async function withFallback<T>(read: () => Promise<T>, fallback: T): Prom
     return fallback;
   }
 }
+
+/** Releases with pieces on the site, newest first. */
+export async function getReleases() {
+  return (await getCatalog()).releases();
+}
+
+/** The newest release ("Latest Drop"), or null when the catalog is empty. */
+export async function getLatestRelease() {
+  return (await getCatalog()).latestRelease();
+}

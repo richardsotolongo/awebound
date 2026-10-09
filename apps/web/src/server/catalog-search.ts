@@ -7,6 +7,7 @@ import {
   type ProductList,
   type ProductQuery,
   type ProductSummary,
+  type Release,
   type Variant,
 } from "@/shared";
 
@@ -28,7 +29,12 @@ export function toSummary(p: ProductDetail): ProductSummary {
     code: p.code,
     slug: p.slug,
     name: p.name,
-    collection: { slug: p.collection.slug, name: p.collection.name, tagline: p.collection.tagline },
+    collection: {
+      slug: p.collection.slug,
+      name: p.collection.name,
+      number: p.collection.number,
+      tagline: p.collection.tagline,
+    },
     position: p.position,
     preview: p.preview,
     category: p.category,
@@ -37,7 +43,7 @@ export function toSummary(p: ProductDetail): ProductSummary {
     currency: p.currency,
     colors: p.colors,
     sizes: p.sizes,
-    scriptureRef: p.scriptureRef,
+    scripture: p.scripture,
     image: p.image,
     hoverImage: p.hoverImage,
     featured: p.featured,
@@ -63,14 +69,18 @@ const normalize = (s: string) =>
 const stem = (w: string) => w.replace(/(ing|ed|es|s)$/, "");
 
 function haystack(p: ProductDetail): string[] {
+  // Internal design codes are left out: customers find a piece by its name, art and Scripture.
   const text = [
     p.name,
-    p.code,
-    p.scriptureRef,
+    p.scripture.reference,
+    p.scripture.text,
+    p.story.theme,
     p.story.art,
+    p.story.front,
     p.story.back,
     p.collection.name,
     p.category.name,
+    ...p.colors.map((c) => c.name),
   ].join(" ");
   return normalize(text)
     .split(/[^a-z0-9]+/)
@@ -95,7 +105,6 @@ export class CatalogIndex {
     const query = normalize(q?.trim() ?? "");
     if (!query) return 0;
     const name = normalize(p.name);
-    const code = normalize(p.code);
     const terms = query
       .split(/[^a-z0-9]+/)
       .filter(Boolean)
@@ -103,7 +112,7 @@ export class CatalogIndex {
     const words = this.words.get(p.slug) ?? [];
     const allTermsMatch =
       terms.length > 0 && terms.every((t) => words.some((w) => w.startsWith(t)));
-    if (!allTermsMatch && !name.includes(query) && !code.startsWith(query)) return null;
+    if (!allTermsMatch && !name.includes(query)) return null;
     return (
       terms.filter((t) => words.some((w) => w.startsWith(t))).length +
       (name.startsWith(query) ? 1 : 0)
@@ -135,11 +144,8 @@ export class CatalogIndex {
       ProductQuery["sort"],
       (a: { p: ProductDetail; rank: number }, b: { p: ProductDetail; rank: number }) => number
     > = {
-      featured: (a, b) =>
-        b.rank - a.rank ||
-        Number(b.p.featured) - Number(a.p.featured) ||
-        a.p.position - b.p.position ||
-        byDefault(a.p, b.p),
+      // Release order: newest release first, then each piece's place in it (I–VI).
+      featured: (a, b) => b.rank - a.rank || byDefault(a.p, b.p),
       newest: (a, b) => byDefault(a.p, b.p),
       "price-asc": (a, b) => a.p.priceCents - b.p.priceCents || byDefault(a.p, b.p),
       "price-desc": (a, b) => b.p.priceCents - a.p.priceCents || byDefault(a.p, b.p),
@@ -176,9 +182,10 @@ export class CatalogIndex {
         ...c,
         count: count("category", (p) => p.category.slug === c.slug),
       })),
-      collections: this.catalog.collections.map((c) => ({
+      collections: this.releases().map((c) => ({
         slug: c.slug,
         name: c.name,
+        number: c.number,
         tagline: c.tagline,
         count: count("collection", (p) => p.collection.slug === c.slug),
       })),
@@ -200,6 +207,30 @@ export class CatalogIndex {
         max: prices.length ? Math.ceil(Math.max(...prices) / 100) : 0,
       },
     };
+  }
+
+  /**
+   * Releases that have pieces on the site, newest first. A release with no pieces is never
+   * listed, so menus and filters only offer collections that exist.
+   */
+  releases(): Release[] {
+    return this.catalog.collections
+      .map((c) => {
+        const pieces = this.products.filter((p) => p.collection.slug === c.slug);
+        return {
+          ...c,
+          pieces: pieces.length,
+          releasedAt: pieces.reduce((max, p) => (p.releasedAt > max ? p.releasedAt : max), ""),
+          status: pieces.some((p) => p.preview) ? ("preview" as const) : ("open" as const),
+        };
+      })
+      .filter((r) => r.pieces > 0)
+      .sort((a, b) => b.releasedAt.localeCompare(a.releasedAt) || b.number.localeCompare(a.number));
+  }
+
+  /** The newest release: what "Latest Drop" points to. */
+  latestRelease(): Release | null {
+    return this.releases()[0] ?? null;
   }
 
   findBySlug(slug: string): ProductDetail | null {

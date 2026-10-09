@@ -1,11 +1,10 @@
 export default function Loading() {
   return (
-    <div className="aw-container" aria-busy="true" aria-live="polite">
-      <div className="page-header">
+    <div className="aw-container shop" aria-busy="true" aria-live="polite">
+      <div className="shop-head">
         <p className="aw-label">Shop</p>
-        <p className="aw-h1">Behold</p>
+        <p className="aw-h1">Loading the pieces…</p>
       </div>
-      <p className="aw-small">Loading the release…</p>
     </div>
   );
 }

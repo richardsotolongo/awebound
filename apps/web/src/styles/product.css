@@ -111,25 +111,36 @@
   }
   .buy-head {
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
   }
-  .buy-head .aw-h1 {
-    font-size: 34px;
-    line-height: 40px;
+  .buy-head .aw-label a {
+    color: inherit;
+    text-decoration: none;
   }
-  @media (max-width: 767px) {
-    .buy-head .aw-h1 {
-      font-size: 26px;
-      line-height: 32px;
-    }
+  .buy-head .aw-label a:hover {
+    color: var(--ink);
+  }
+  .buy-name {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: clamp(28px, 3vw, 36px);
+    line-height: 1.12;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .buy-head .aw-verse {
+    margin-top: var(--space-2);
   }
   .buy-price {
+    margin: 0;
     font-family: var(--font-sans);
-    font-stretch: 75%;
-    font-weight: 600;
-    font-size: 20px;
-    letter-spacing: 0.12em;
-    color: var(--accent-text);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
   .buy-option {
@@ -156,6 +167,12 @@
   }
   .spec dt {
     margin: 0;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 24px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
   }
   .spec dd {
     margin: 0;
@@ -176,46 +193,115 @@
     border-bottom: 1px solid var(--line);
   }
   .size-table th {
-    font-stretch: 75%;
-    font-weight: 600;
-    font-size: 12.5px;
-    letter-spacing: 0.2em;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
 }
 
 @layer components {
-  .buy-place {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--space-2);
-    margin: 0;
-    color: var(--ink-subtle);
+  .crumbs {
+    padding-block: var(--space-6);
   }
-  .buy-place > span:first-child {
-    font-family: var(--font-display);
-    font-size: 16px;
-    letter-spacing: 0.06em;
-    color: var(--scripture);
+  .crumbs a {
+    color: var(--ink-muted);
   }
-  .buy-place .aw-meta {
-    margin-left: auto;
-    color: var(--accent-text);
-  }
-  .buy-verse {
-    margin: 0;
+
+  /* Preview: ordering isn't open yet. */
+  .buy-preview {
     display: grid;
-    gap: var(--space-3);
-    padding-left: var(--space-4);
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
     border-left: 2px solid var(--scripture);
   }
-  .buy-verse blockquote {
+  .buy-preview-title {
     margin: 0;
-    font-size: 18px;
-    line-height: 28px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--ink);
+  }
+  .buy-preview .aw-small,
+  .notice .aw-small {
+    color: var(--ink-muted);
+  }
+  .notice .buy-preview-title {
+    margin-bottom: var(--space-2);
+  }
+
+  /* Delivery and returns, beside the buying controls. */
+  .delivery {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  .delivery-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+  .delivery-list > div {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+  .delivery-list dt {
+    margin: 0;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--ink);
+  }
+  .delivery-list dd {
+    margin: 0;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--ink-muted);
+  }
+  .delivery-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    margin: 0;
+  }
+  @media (max-width: 480px) {
+    .delivery-list > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+
+  /* The design story and product details, below the buying controls. */
+  .buy-story {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--line);
+  }
+  .buy-story .aw-label {
+    color: var(--scripture);
+  }
+  .buy-story-art {
+    color: var(--ink);
+  }
+  .buy-details {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--line);
+  }
+  .buy-details .spec {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .buy-details .field-help a {
+    color: var(--accent-text);
   }
   .piece-nav {
     display: grid;

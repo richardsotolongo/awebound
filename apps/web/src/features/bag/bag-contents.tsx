@@ -65,14 +65,14 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
           {/* eslint-disable-next-line @next/next/no-img-element -- small thumbnails from the catalog */}
           <img src={snapshot.image.url} alt="" />
           <div>
-            <span className="aw-meta">{snapshot.code}</span>
             <p className="bag-line-name">
               <Link href={`/shop/${snapshot.productSlug}`} onClick={onNavigate}>
                 {snapshot.name}
               </Link>
             </p>
             <p className="aw-small">
-              {snapshot.cut} · {snapshot.color} · {snapshot.size}
+              {snapshot.cut} · {snapshot.color} ·{" "}
+              {snapshot.size === "One size" ? "One size" : `Size ${snapshot.size}`}
             </p>
             {snapshot.available ? (
               <div className="qty" role="group" aria-label={`Quantity of ${snapshot.name}`}>
@@ -140,28 +140,31 @@ export function BagCheckout() {
           {formatPrice(subtotal)}
         </span>
       </div>
-      <p className="field-help">Shipping and tax are calculated at checkout.</p>
       {preview ? (
         <div className="notice">
-          <p className="aw-small" style={{ color: "var(--ink)" }}>
-            Checkout for the Behold release opens soon. Leave your email and we’ll tell you the day
-            it opens.
+          <p className="buy-preview-title">Ordering isn’t open yet</p>
+          <p className="aw-small">
+            Your bag saves your selections on this device. It doesn’t place an order or charge you.
+            Leave your email to hear when ordering opens.
           </p>
           <NotifyForm
             source="product"
             productSlug={preview.snapshot.productSlug}
-            label="Your email"
+            label="Email me when ordering opens"
           />
         </div>
       ) : (
-        <Button
-          variant="primary"
-          block
-          onClick={checkout}
-          disabled={state === "loading" || available.length === 0}
-        >
-          {state === "loading" ? "Opening checkout…" : "Check out"}
-        </Button>
+        <>
+          <p className="field-help">Shipping and tax are calculated at checkout.</p>
+          <Button
+            variant="primary"
+            block
+            onClick={checkout}
+            disabled={state === "loading" || available.length === 0}
+          >
+            {state === "loading" ? "Opening checkout…" : "Check out"}
+          </Button>
+        </>
       )}
       {state === "error" ? (
         <p className="aw-form-error" role="alert">
@@ -190,7 +193,7 @@ export function BagEmpty({ onNavigate }: { onNavigate?: () => void }) {
     <div style={{ display: "grid", gap: "var(--space-4)", justifyItems: "start" }}>
       <p className="aw-body">Your bag is empty.</p>
       <Button variant="secondary" href="/shop" onClick={onNavigate}>
-        Shop the release
+        Visit the shop
       </Button>
     </div>
   );

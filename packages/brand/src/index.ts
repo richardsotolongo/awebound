@@ -10,6 +10,7 @@ export {
 } from "./components/marks";
 export { Button, type ButtonProps, type ButtonVariant } from "./components/button";
 export { ScriptureRef, type ScriptureRefProps } from "./components/scripture-ref";
+export { ScriptureQuote, quoted, type ScriptureQuoteProps } from "./components/scripture-quote";
 export { ThornRule, type ThornRuleProps } from "./components/thorn-rule";
 export { Header, type HeaderProps, type NavLink } from "./components/header";
 export { Hero, type HeroProps, type Action } from "./components/hero";

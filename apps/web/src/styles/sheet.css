@@ -118,9 +118,7 @@
     border-bottom: 1px solid var(--line);
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 22px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 30px;
     color: var(--ink);
     text-decoration: none;
   }

@@ -6,44 +6,19 @@ import { useCatalogState } from "./catalog-state";
 
 interface FilterPanelProps {
   facets: CatalogFacets;
-  hideCollections?: boolean;
 }
 
-/** Release (once there is more than one), color, size and price filters. Counts reflect the other active filters. */
-export function FilterPanel({ facets, hideCollections }: FilterPanelProps) {
+/**
+ * Color, size and price filters. Collection and category have their own selectors above the
+ * grid. Counts reflect the other active filters.
+ */
+export function FilterPanel({ facets }: FilterPanelProps) {
   const state = useCatalogState();
-  const collections = state.getList("collection");
   const colors = state.getList("color");
   const sizes = state.getList("size");
 
   return (
     <div className="filters">
-      {!hideCollections && facets.collections.length > 1 ? (
-        <fieldset className="filter-group">
-          <legend className="aw-label">Release</legend>
-          {facets.collections.map((c) => (
-            <label
-              key={c.slug}
-              className="check"
-              data-empty={c.count === 0 && !collections.includes(c.slug)}
-            >
-              <input
-                type="checkbox"
-                checked={collections.includes(c.slug)}
-                onChange={() => state.toggle("collection", c.slug)}
-              />
-              <span>
-                {c.name}
-                <span className="visually-hidden">, {c.tagline}</span>
-              </span>
-              <span className="count" aria-label={`${c.count} pieces`}>
-                {c.count}
-              </span>
-            </label>
-          ))}
-        </fieldset>
-      ) : null}
-
       {facets.colors.length > 0 ? (
         <fieldset className="filter-group">
           <legend className="aw-label">Color{colors.length ? ` · ${colors.length}` : ""}</legend>

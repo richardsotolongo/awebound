@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { PageHeader } from "@/components/page-header";
 import { SITE } from "@/lib/site";
+import { TRANSLATION, TRANSLATION_NAME, TRANSLATION_NOTICE } from "@/server/scripture";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -26,11 +27,14 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "When can I order?",
-        text: "Checkout is opening soon. Add pieces to your bag and leave your email at checkout or in the footer, and we’ll tell you the moment it opens.",
+        text: "Each release opens for ordering after a short preview. While a release is in preview you can save pieces to your bag, which keeps your size and color but doesn’t place an order or charge you. Leave your email on the home page or in the footer and we’ll tell you when ordering opens. We announce a date only once it’s confirmed.",
         a: (
           <p>
-            Checkout is opening soon. Add pieces to your bag and leave your email at checkout or in
-            the footer, and we’ll tell you the moment it opens.
+            Each release opens for ordering after a short preview. While a release is in preview you
+            can save pieces to your bag, which keeps your size and color but doesn’t place an order
+            or charge you. Leave your email on the <Link href="/#updates">home page</Link> or in the
+            footer and we’ll tell you when ordering opens. We announce a date only once it’s
+            confirmed.
           </p>
         ),
       },
@@ -94,11 +98,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How long does delivery take?",
-        text: "Pieces are made to order and then shipped. Production and delivery times will be shown at checkout, and you’ll get tracking by email as soon as your order ships.",
+        text: "Every piece is made to order, then shipped. Production time and shipping time are confirmed before ordering opens and shown beside the buy button on every product page. You’ll get tracking by email when your order ships.",
         a: (
           <p>
-            Pieces are made to order and then shipped. Production and delivery times will be shown
-            at checkout, and you’ll get tracking by email as soon as your order ships.
+            Every piece is made to order, then shipped. Production time and shipping time are
+            confirmed before ordering opens and shown beside the buy button on every product page.
+            You’ll get tracking by email when your order ships.
           </p>
         ),
       },
@@ -145,22 +150,28 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "Why don’t your designs show Jesus?",
-        text: "Out of reverence, we use symbols only: the empty cross, thorns, broken chains, the empty tomb, lilies. The story is his; the art points to it.",
+        text: "Out of reverence, we use symbols only: the cross, thorns, the empty tomb, the Lamb, lilies. The story is His; the art points to it.",
         a: (
           <p>
-            Out of reverence, we use symbols only: the empty cross, thorns, broken chains, the empty
-            tomb, lilies. The story is his; the art points to it.
+            Out of reverence, we use symbols only: the cross, thorns, the empty tomb, the Lamb,
+            lilies. The story is His; the art points to it.
           </p>
         ),
       },
       {
         q: "Which Bible translation do you use?",
-        text: "Each piece carries a full Scripture reference. When we quote a verse, on a piece or on this site, we use the King James Version (KJV).",
+        text: `Scripture quoted on this website is from the ${TRANSLATION_NAME}. Every piece carries its full Scripture reference. Lettering printed on some designs uses the wording of the King James Version, and each approved design is kept exactly as it was drawn. ${TRANSLATION_NOTICE}`,
         a: (
-          <p>
-            Each piece carries a full Scripture reference. When we quote a verse, on a piece or on
-            this site, we use the King James Version (KJV).
-          </p>
+          <>
+            <p>
+              Scripture quoted on this website is from the {TRANSLATION_NAME}. Every piece carries
+              its full Scripture reference.
+              {TRANSLATION === "KJV"
+                ? " The lettering printed on some designs uses the same King James wording."
+                : " Lettering printed on some designs uses the wording of the King James Version, and each approved design is kept exactly as it was drawn."}
+            </p>
+            <p className="aw-small">{TRANSLATION_NOTICE}</p>
+          </>
         ),
       },
       {

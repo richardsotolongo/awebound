@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { CatalogView } from "@/features/catalog/catalog-view";
+import { CatalogView, resolveCollection } from "@/features/catalog/catalog-view";
 import type { RawSearchParams } from "@/features/catalog/query";
-import { ReleaseHeader } from "@/features/release/release-header";
-import { RELEASE } from "@/lib/release";
+import { ShopHeader } from "@/features/catalog/shop-header";
 
 export const metadata: Metadata = {
-  title: `Shop ${RELEASE.name}`,
-  description: `${RELEASE.name}, the first Awebound release: five tees and a cap. ${RELEASE.tagline}`,
+  title: "Shop",
+  description:
+    "Shop Awebound: Christian apparel rooted in Scripture. Browse the latest drop or every collection, by tees, oversized tees and hats.",
   alternates: { canonical: "/shop" },
 };
 
@@ -15,10 +15,12 @@ export default async function ShopPage({
 }: {
   searchParams: Promise<RawSearchParams>;
 }) {
+  const params = await searchParams;
+  const view = await resolveCollection(params);
   return (
-    <div className="aw-container">
-      <ReleaseHeader />
-      <CatalogView searchParams={await searchParams} basePath="/shop" />
+    <div className="aw-container shop">
+      <ShopHeader view={view} />
+      <CatalogView searchParams={params} basePath="/shop" view={view} />
     </div>
   );
 }

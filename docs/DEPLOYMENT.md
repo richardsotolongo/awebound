@@ -33,12 +33,14 @@ SUPABASE_SECRET_KEY=<same page, secret key>
 RESEND_API_KEY=<Resend → API keys>
 EMAIL_FROM=Awebound <noreply@awebound.store>
 CONTACT_INBOX=contact@awebound.store
+SCRIPTURE_TRANSLATION=NIV
 ```
 
 - `FOURTHWALL_STOREFRONT_TOKEN` connects the shop to Fourthwall. Without it (or for pieces not yet created in Fourthwall) the Behold pieces show as previews: the site's prices and mockups, add to bag works, and checkout says it opens soon. After adding it or new Fourthwall products, the home page picks them up within a minute; redeploy if you want it immediately.
 - The shop lists only products that are public in Fourthwall and match the brand content by slug (see `docs/TODOS.md` → Fourthwall).
 - `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox.
 - `FOURTHWALL_CHECKOUT_DOMAIN` is optional (default `awebound-store-shop.fourthwall.com`); set it if you connect a custom shop domain in Fourthwall.
+- `SCRIPTURE_TRANSLATION` picks the translation for Scripture quoted on the website: `NIV` (the default when unset) or `KJV`. Website use of the NIV needs Biblica's written permission; set `KJV` to keep NIV text off the public site until it's granted. Redeploy after changing it.
 - `NEXT_PUBLIC_*` values are baked in at build time: redeploy after changing them.
 
 ## 3. Domains and DNS

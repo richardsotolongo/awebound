@@ -2,42 +2,43 @@
 
 import { cx } from "../cx";
 import { BrandLink } from "../link";
-import { ScriptureRef } from "./scripture-ref";
+import { ScriptureQuote } from "./scripture-quote";
 
 export interface ProductCardProps {
-  /** Lookbook ID, e.g. A3-B01. */
-  id: string;
   name: string;
-  /** Cut and base color, e.g. "Oversized tee · Faded black". */
-  base?: string;
-  /** CSS colors, ideally var(--garment-*) tokens. */
-  swatches?: string[];
-  scripture?: string;
-  /** Back view first. */
+  /** Garment type, e.g. "Oversized tee". */
+  type?: string;
+  /** The piece's Scripture, quoted in full under the name. */
+  quote?: { text: string; reference: string; translation: string; excerpt?: boolean };
+  /** The whole garment, showing its main artwork. */
   image: string;
   imageAlt?: string;
-  /** Shown on hover, usually the front view. */
+  /** Shown on hover, usually the other side. */
   hoverImage?: string;
   href: string;
   price?: string;
   /** Load the image eagerly (above the fold). */
   priority?: boolean;
+  /** Heading level for the name; h3 under a section heading. */
+  as?: "h2" | "h3";
   className?: string;
 }
 
-/** A product tile: 4:5 back-print image, ID, Cinzel name, base color, color chips and the reference. */
+/**
+ * A product tile: the whole garment, its type and price, the name, then its Scripture in italic
+ * with the reference. The whole card links to the product page.
+ */
 export function ProductCard({
-  id,
   name,
-  base,
-  swatches,
-  scripture,
+  type,
+  quote,
   image,
   imageAlt,
   hoverImage,
   href,
   price,
   priority,
+  as: Heading = "h3",
   className,
 }: ProductCardProps) {
   return (
@@ -46,7 +47,7 @@ export function ProductCard({
         <div className="aw-card-media">
           <img
             src={image}
-            alt={imageAlt ?? `${name} back print`}
+            alt={imageAlt ?? name}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
           />
@@ -62,22 +63,20 @@ export function ProductCard({
           ) : null}
         </div>
         <div className="aw-card-meta">
-          <div className="aw-card-top">
-            <span className="aw-meta">{id}</span>
-            {price ? <span className="aw-meta">{price}</span> : null}
-          </div>
-          <h3 className="aw-card-name">{name}</h3>
-          {base ? <p className="aw-small">{base}</p> : null}
-          <div className="aw-card-foot">
-            {swatches && swatches.length > 0 ? (
-              <span className="aw-card-sw" aria-label={`${swatches.length} colors`}>
-                {swatches.map((s) => (
-                  <i key={s} style={{ background: s }} />
-                ))}
-              </span>
-            ) : null}
-            {scripture ? <ScriptureRef reference={scripture} align="start" /> : null}
-          </div>
+          <p className="aw-card-top">
+            {type ? <span>{type}</span> : null}
+            {price ? <span className="aw-card-price">{price}</span> : null}
+          </p>
+          <Heading className="aw-card-name">{name}</Heading>
+          {quote ? (
+            <ScriptureQuote
+              text={quote.text}
+              reference={quote.reference}
+              translation={quote.translation}
+              excerpt={quote.excerpt}
+              size="sm"
+            />
+          ) : null}
         </div>
       </BrandLink>
     </article>

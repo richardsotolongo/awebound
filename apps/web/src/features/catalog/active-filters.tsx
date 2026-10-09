@@ -1,6 +1,6 @@
 "use client";
 
-import { SORT_LABELS, type CatalogFacets, type Sort } from "@/shared";
+import { SORT_LABELS, type Sort } from "@/shared";
 import { CloseIcon } from "@/components/icons";
 import { useCatalogState } from "./catalog-state";
 
@@ -9,30 +9,15 @@ interface Chip {
   remove: () => void;
 }
 
-/** Result count and removable chips for every active filter. */
-export function ActiveFilters({
-  total,
-  facets,
-  lockedCollection,
-}: {
-  total: number;
-  facets: CatalogFacets;
-  lockedCollection?: boolean;
-}) {
+/**
+ * Result count and removable chips for search and the sheet's filters. Collection and category
+ * show as the active state of their selectors instead.
+ */
+export function ActiveFilters({ total }: { total: number }) {
   const state = useCatalogState();
   const chips: Chip[] = [];
   const q = state.get("q");
   if (q) chips.push({ label: `“${q}”`, remove: () => state.update({ q: null }) });
-  for (const slug of state.getList("category")) {
-    const name = facets.categories.find((c) => c.slug === slug)?.name ?? slug;
-    chips.push({ label: name, remove: () => state.toggle("category", slug) });
-  }
-  if (!lockedCollection) {
-    for (const slug of state.getList("collection")) {
-      const name = facets.collections.find((c) => c.slug === slug)?.name ?? slug;
-      chips.push({ label: name, remove: () => state.toggle("collection", slug) });
-    }
-  }
   for (const color of state.getList("color"))
     chips.push({ label: color, remove: () => state.toggle("color", color) });
   for (const size of state.getList("size"))
@@ -64,7 +49,13 @@ export function ActiveFilters({
         </button>
       ))}
       {chips.length > 1 ? (
-        <button type="button" className="aw-btn aw-btn-link" onClick={state.clear}>
+        <button
+          type="button"
+          className="aw-btn aw-btn-link"
+          onClick={() =>
+            state.update({ q: null, color: null, size: null, minPrice: null, maxPrice: null })
+          }
+        >
           Clear all
         </button>
       ) : null}

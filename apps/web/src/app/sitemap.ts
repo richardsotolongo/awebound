@@ -5,13 +5,21 @@ import { siteUrl } from "@/lib/env";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const pages = ["", "/shop", "/about", "/contact", "/faq", "/refunds", "/privacy", "/terms"].map(
-    (path) => ({
-      url: `${siteUrl}${path}`,
-      changeFrequency: "weekly" as const,
-      priority: path === "" ? 1 : path === "/shop" ? 0.9 : 0.5,
-    }),
-  );
+  const pages = [
+    "",
+    "/shop",
+    "/collections",
+    "/about",
+    "/contact",
+    "/faq",
+    "/refunds",
+    "/privacy",
+    "/terms",
+  ].map((path) => ({
+    url: `${siteUrl}${path}`,
+    changeFrequency: "weekly" as const,
+    priority: path === "" ? 1 : path === "/shop" ? 0.9 : 0.5,
+  }));
   const products = await withFallback(() => searchProducts({ pageSize: 48 }), {
     items: [],
     total: 0,

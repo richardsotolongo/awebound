@@ -64,25 +64,26 @@
     top: var(--space-4);
   }
 
-  /* Type styles */
+  /* Type styles. Three families, each with one job:
+     Grenze Gotisch (--font-display) for display headings and collection names, mixed case;
+     Cormorant Garamond Italic (--font-scripture) for Scripture quotations only;
+     Manrope (--font-sans) for everything else: body, labels, product names, prices, buttons. */
   .aw-label {
     margin: 0;
     font-family: var(--font-sans);
-    font-stretch: 75%;
-    font-weight: 600;
-    font-size: 12.5px;
+    font-weight: 700;
+    font-size: 12px;
     line-height: 16px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
   .aw-meta {
     font-family: var(--font-sans);
-    font-stretch: 75%;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 13px;
     line-height: 16px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--accent-text);
     font-variant-numeric: tabular-nums;
@@ -102,44 +103,55 @@
   }
   .aw-display,
   .aw-h1,
-  .aw-h2,
-  .aw-product-name {
+  .aw-h2 {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 600;
-    text-transform: uppercase;
+    letter-spacing: 0.005em;
     text-wrap: balance;
     color: var(--ink);
   }
   .aw-display {
-    font-size: 56px;
-    line-height: 58px;
-    letter-spacing: 0.04em;
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 1;
   }
   .aw-h1 {
-    font-size: 40px;
-    line-height: 44px;
-    letter-spacing: 0.03em;
+    font-size: clamp(36px, 4.4vw, 52px);
+    line-height: 1.05;
   }
   .aw-h2 {
-    font-size: 28px;
-    line-height: 32px;
-    letter-spacing: 0.03em;
+    font-size: clamp(30px, 3.2vw, 38px);
+    line-height: 1.1;
   }
   .aw-product-name {
-    font-size: 21px;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 20px;
     line-height: 26px;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: var(--ink);
   }
   .aw-h3 {
     margin: 0;
     font-family: var(--font-sans);
-    font-stretch: 78%;
     font-weight: 700;
     font-size: 20px;
-    line-height: 26px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    line-height: 27px;
+    color: var(--ink);
+  }
+  /* A Scripture quotation. The reference sits under it in upright type (ScriptureRef). */
+  .aw-quote {
+    margin: 0;
+    font-family: var(--font-scripture);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 23px;
+    line-height: 1.42;
+    letter-spacing: 0;
+    text-wrap: pretty;
     color: var(--ink);
   }
   @media (max-width: 767px) {
@@ -147,25 +159,16 @@
       font-size: 16px;
       line-height: 26px;
     }
-    .aw-display {
-      font-size: 36px;
-      line-height: 40px;
-    }
-    .aw-h1 {
-      font-size: 30px;
-      line-height: 34px;
-    }
-    .aw-h2 {
-      font-size: 24px;
-      line-height: 28px;
-    }
     .aw-product-name {
-      font-size: 19px;
+      font-size: 18px;
       line-height: 24px;
     }
     .aw-h3 {
       font-size: 18px;
-      line-height: 24px;
+      line-height: 25px;
+    }
+    .aw-quote {
+      font-size: 21px;
     }
   }
 
@@ -194,11 +197,10 @@
     border-radius: var(--radius-sm);
     border: 1px solid transparent;
     font-family: var(--font-sans);
-    font-stretch: 75%;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 13px;
     line-height: 13px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
@@ -255,16 +257,16 @@
     gap: var(--space-3);
   }
 
-  /* ScriptureRef */
+  /* ScriptureRef: the reference, upright, in the interface face. */
   .aw-scripture {
     display: inline-flex;
     align-items: center;
     gap: var(--space-3);
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.32em;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 12.5px;
+    line-height: 18px;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--scripture);
     white-space: nowrap;
@@ -281,7 +283,55 @@
     display: none;
   }
   .aw-scripture-tr {
-    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  /* ScriptureQuote: the words in italic, the reference upright beneath. */
+  .aw-verse {
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .aw-verse blockquote {
+    margin: 0;
+  }
+  .aw-verse blockquote p {
+    margin: 0;
+  }
+  .aw-verse-center {
+    justify-items: center;
+    text-align: center;
+  }
+  .aw-verse-sm .aw-quote {
+    font-size: 19px;
+    line-height: 1.4;
+    color: var(--ink-muted);
+  }
+  .aw-verse-sm .aw-scripture {
+    font-size: 11.5px;
+    gap: var(--space-2);
+    white-space: normal;
+  }
+  .aw-verse-sm .aw-scripture::after {
+    display: none;
+  }
+  .aw-verse-md .aw-quote {
+    font-size: 23px;
+  }
+  .aw-verse-lg .aw-quote {
+    font-size: clamp(25px, 2.3vw, 30px);
+    line-height: 1.36;
+  }
+  @media (max-width: 767px) {
+    .aw-verse-sm .aw-quote {
+      font-size: 18px;
+    }
+    .aw-verse-md .aw-quote {
+      font-size: 21px;
+    }
+    .aw-verse-lg .aw-quote {
+      font-size: 23px;
+    }
   }
 
   /* ThornRule */
@@ -338,11 +388,10 @@
   .aw-header-nav a,
   .aw-header-bag {
     font-family: var(--font-sans);
-    font-stretch: 75%;
     font-weight: 600;
     font-size: 13px;
     line-height: 16px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-muted);
     text-decoration: none;
@@ -503,55 +552,63 @@
     opacity: 1;
   }
   .aw-card-meta {
-    padding: var(--space-4);
+    min-width: 0;
+    padding: var(--space-4) var(--space-4) var(--space-6);
     display: grid;
-    gap: var(--space-1);
+    align-content: start;
+    gap: var(--space-2);
   }
   .aw-card-top {
     display: flex;
     justify-content: space-between;
     gap: var(--space-3);
+    margin: 0;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .aw-card-price {
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
   }
   .aw-card-name {
     margin: 0;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 21px;
-    line-height: 26px;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-size: 18px;
+    line-height: 24px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    text-wrap: balance;
     color: var(--ink);
   }
-  .aw-card-foot {
-    display: grid;
-    justify-items: start;
-    gap: var(--space-3);
-    margin-top: var(--space-2);
+  .aw-card .aw-verse {
+    margin-top: var(--space-1);
   }
-  .aw-card-sw {
-    display: flex;
-    gap: var(--space-1);
+  .aw-card-link:hover .aw-card-name {
+    color: var(--accent-text);
   }
-  .aw-card-sw i {
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--line-strong);
-  }
-  .aw-card .aw-scripture {
-    font-size: 12px;
-    letter-spacing: 0.26em;
-  }
-  .aw-card .aw-scripture::before,
-  .aw-card .aw-scripture::after {
-    width: 16px;
-  }
-  @media (max-width: 767px) {
-    .aw-card-name {
-      font-size: 17px;
-      line-height: 22px;
+  /* Phones: image beside the words, so all six pieces fit in a short scroll. */
+  @media (max-width: 599px) {
+    .aw-card-link {
+      display: grid;
+      grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
+      align-items: start;
     }
     .aw-card-meta {
-      padding: var(--space-3);
+      padding: var(--space-3) var(--space-4) var(--space-4);
+    }
+    .aw-card-name {
+      font-size: 16px;
+      line-height: 21px;
+    }
+    .aw-card-top {
+      font-size: 11px;
     }
   }
 
@@ -593,10 +650,9 @@
     border: 1px solid var(--line-strong);
     border-radius: var(--radius-sm);
     font-family: var(--font-sans);
-    font-stretch: 75%;
     font-weight: 600;
     font-size: 14px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.04em;
     cursor: pointer;
     transition:
       background-color var(--duration-fast),
@@ -796,6 +852,16 @@
     margin: 0 auto;
     padding: var(--space-4) var(--gutter-desktop) var(--space-8);
     color: var(--ink-subtle);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .aw-footer-legal p {
+    margin: 0;
+  }
+  .aw-footer-notice {
+    max-width: 90ch;
+    font-size: 12.5px;
+    line-height: 19px;
   }
   .aw-form-error {
     margin: 0;
