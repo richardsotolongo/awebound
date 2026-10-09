@@ -144,7 +144,7 @@ export class CatalogIndex {
       ProductQuery["sort"],
       (a: { p: ProductDetail; rank: number }, b: { p: ProductDetail; rank: number }) => number
     > = {
-      // Release order: newest release first, then each piece's place in it (I–VI).
+      // Release order: newest release first, then each piece's place in it.
       featured: (a, b) => b.rank - a.rank || byDefault(a.p, b.p),
       newest: (a, b) => byDefault(a.p, b.p),
       "price-asc": (a, b) => a.p.priceCents - b.p.priceCents || byDefault(a.p, b.p),

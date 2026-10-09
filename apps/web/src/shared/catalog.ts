@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Product categories. The slug is the URL value; `cut` is how a single product names its cut. */
-export const CATEGORY_SLUGS = ["tees", "oversized-tees", "tanks", "hats"] as const;
+export const CATEGORY_SLUGS = ["tees", "oversized-tees", "hoodies", "tanks", "hats"] as const;
 export const CategorySlugSchema = z.enum(CATEGORY_SLUGS);
 export type CategorySlug = z.infer<typeof CategorySlugSchema>;
 
@@ -124,7 +124,7 @@ export const ProductSummarySchema = z.object({
   slug: z.string(),
   name: z.string(),
   collection: CollectionSchema.pick({ slug: true, name: true, number: true, tagline: true }),
-  /** Order within its release, from 1. Drives the default sort and the I–VI numbering. */
+  /** Order within its release, from 1. Drives the default sort. */
   position: z.number().int().positive(),
   /**
    * True while the piece is on the site but not yet in Fourthwall: it shows with the site's price

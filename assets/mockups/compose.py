@@ -32,6 +32,7 @@ STYLE = {
     "thorns-to-lilies": {"stone": (48, 46, 45)},  # smoked charcoal behind the bone tee
     "stone-in-motion": {"stone": (118, 110, 99)},  # darker limestone behind the sand tee
     "to-live-is-christ": {"stone": (146, 129, 117)},  # warm taupe behind the forest tee
+    "torn-veil": {"stone": (170, 167, 161)},  # pale ash stone behind the black hoodie
     "lambs-mark": {"stone": (214, 205, 189), "accent": (92, 36, 42)},  # bone stone, burgundy
 }
 
@@ -44,6 +45,7 @@ VIEWS = {
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.47, 0.72)},
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.56, 0.5, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.52, 0.72)},
+    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.55, 0.74)},
     "lambs-mark": {"views": ["front", "rear", "side"], "detail": ("front", 0.4, 0.36, 0.56)},
 }
 

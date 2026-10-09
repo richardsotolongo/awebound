@@ -153,6 +153,19 @@
       gap: var(--space-4);
     }
   }
+  /* A last card alone on its row sits in the middle, not stranded on the left. */
+  @media (min-width: 1024px) {
+    .product-grid:not([data-wide="true"]) > li:last-child:nth-child(3n + 1):not(:first-child) {
+      grid-column: 2;
+    }
+  }
+  @media (min-width: 600px) and (max-width: 1023px) {
+    .product-grid > li:last-child:nth-child(2n + 1):not(:first-child) {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: calc(50% - var(--space-2));
+    }
+  }
   /* Phones: one piece per row, image beside the words (see .aw-card in the brand package). */
   @media (max-width: 599px) {
     .product-grid {

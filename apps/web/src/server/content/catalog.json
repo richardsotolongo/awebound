@@ -14,6 +14,12 @@
       "sizes": ["S", "M", "L", "XL", "2XL"]
     },
     {
+      "slug": "hoodies",
+      "name": "Hoodies",
+      "cut": "Hoodie",
+      "sizes": ["S", "M", "L", "XL", "2XL"]
+    },
+    {
       "slug": "hats",
       "name": "Hats",
       "cut": "Cap",
@@ -26,7 +32,7 @@
       "name": "Behold",
       "number": "01",
       "tagline": "A call to see Christ’s power, holiness, sacrifice, and resurrection.",
-      "story": "Behold means look, and keep looking. When John the Baptist saw Jesus coming toward him, he called everyone near him to see the Lamb of God, and older English Bibles begin his words with “Behold.” These six pieces carry the same call: see His holiness, His power over the storm, His mercy, His resurrection, the life He gives, and the Lamb who takes away the sin of the world.",
+      "story": "Behold means look, and keep looking. When John the Baptist saw Jesus coming toward him, he called everyone near him to see the Lamb of God, and older English Bibles begin his words with “Behold.” These seven pieces carry the same call: see His holiness, His power over the storm, His mercy, the veil torn open by His death, His resurrection, the life He gives, and the Lamb who takes away the sin of the world.",
       "scriptureRef": "John 1:29"
     }
   ],
@@ -43,7 +49,8 @@
     "Washed charcoal twill": "cap-washed-charcoal-twill",
     "Oxblood corduroy": "cap-oxblood-corduroy",
     "Sandstone": "cap-sandstone",
-    "Washed forest": "garment-washed-forest"
+    "Washed forest": "garment-washed-forest",
+    "Black": "garment-black"
   },
   "products": [
     {
@@ -188,10 +195,57 @@
       ]
     },
     {
+      "code": "A3-B06",
+      "slug": "torn-veil",
+      "name": "Torn Veil",
+      "position": 4,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": ["Black"],
+      "priceCents": 6000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 27:51",
+        "excerpt": true,
+        "niv": "At that moment the curtain of the temple was torn in two from top to bottom.",
+        "kjv": "And, behold, the veil of the temple was rent in twain from the top to the bottom"
+      },
+      "story": {
+        "theme": "Presence",
+        "call": "Behold, the way is open",
+        "motif": "rays",
+        "art": "A red temple curtain torn from top to bottom, light pouring through the tear above the clouds, beneath the words “The veil is torn.”",
+        "meaning": "When Jesus gave up His spirit on the cross, the curtain in the temple, the veil that closed off the Most Holy Place, was torn in two from top to bottom. Torn from the top down, it was opened from God’s side: through Christ’s death, the way into His presence stands open. The back shows the curtain torn wide with light breaking through; the front keeps only the wordmark.",
+        "front": "Awebound wordmark in bone with red thorns, center chest",
+        "back": "“The veil is torn” in heavy gothic capitals above a red curtain torn open, light breaking through over the clouds, with Matthew 27:51 below",
+        "inks": "Bone, deep red",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/torn-veil/back.webp",
+          "alt": "Torn Veil hoodie, back: “The veil is torn” above a red curtain torn open with light breaking through, Matthew 27:51"
+        },
+        {
+          "view": "front",
+          "url": "/products/torn-veil/front.webp",
+          "alt": "Torn Veil hoodie, front: the wordmark with red thorns, center chest"
+        },
+        {
+          "view": "detail",
+          "url": "/products/torn-veil/detail.webp",
+          "alt": "Torn Veil back print, close up"
+        }
+      ]
+    },
+    {
       "code": "A3-B04",
       "slug": "stone-in-motion",
       "name": "Stone in Motion",
-      "position": 4,
+      "position": 5,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Washed sand"],
@@ -238,7 +292,7 @@
       "code": "A3-B05",
       "slug": "to-live-is-christ",
       "name": "To Live Is Christ, To Die Is Gain",
-      "position": 5,
+      "position": 6,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Washed forest"],
@@ -285,7 +339,7 @@
       "code": "A3-H01",
       "slug": "lambs-mark",
       "name": "Lamb’s Mark",
-      "position": 6,
+      "position": 7,
       "collection": "behold",
       "category": "hats",
       "colors": ["Washed black twill"],

@@ -5,7 +5,7 @@ export const SITE = {
   name: "Awebound",
   tagline: "Bound in awe. Worn without shame.",
   description:
-    "Awebound creates Christian apparel rooted in Scripture and reverence for Jesus Christ. Release 01, Behold: five tees and a cap with bold artwork and expressive lettering.",
+    "Awebound creates Christian apparel rooted in Scripture and reverence for Jesus Christ. Release 01, Behold: five tees, a hoodie and a cap with bold artwork and expressive lettering.",
   contactEmail: CONTACT_EMAIL,
 } as const;
 

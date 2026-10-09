@@ -76,13 +76,13 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How do your pieces fit?",
-        text: "Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts: regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier still. The cap is a mid-profile snapback that adjusts at the back. Each product page has a size guide.",
+        text: "Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts: regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier still. The hoodie is a relaxed fit with a dropped shoulder. The cap is a mid-profile snapback that adjusts at the back. Each product page has a size guide.",
         a: (
           <p>
             Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts:
             regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier
-            still. The cap is a mid-profile snapback that adjusts at the back. Each product page has
-            a size guide.
+            still. The hoodie is a relaxed fit with a dropped shoulder. The cap is a mid-profile
+            snapback that adjusts at the back. Each product page has a size guide.
           </p>
         ),
       },

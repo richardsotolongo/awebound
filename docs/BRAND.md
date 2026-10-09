@@ -2,7 +2,7 @@
 
 > This is the repo copy of the `awebound-brand` skill's guide. Keep the two in step.
 
-Awebound is an independent Christian apparel brand, founded by Richard, for believers aged 18 to 30 who are not ashamed to express their faith and want to wear it boldly. Awebound creates clothing rooted in Scripture and reverence for Jesus Christ: bold artwork and expressive lettering carry the stories of His holiness, mercy and resurrection into the everyday. The range covers tees, oversized tees, tank tops and hats, with more to come.
+Awebound is an independent Christian apparel brand, founded by Richard, for believers aged 18 to 30 who are not ashamed to express their faith and want to wear it boldly. Awebound creates clothing rooted in Scripture and reverence for Jesus Christ: bold artwork and expressive lettering carry the stories of His holiness, mercy and resurrection into the everyday. The range covers tees, oversized tees, hoodies, tank tops and hats, with more to come.
 
 Tagline: **Bound in awe. Worn without shame.** (Romans 1:16 is behind the second half.)
 
@@ -50,9 +50,9 @@ Avoid gothic type for paragraphs, sizing, numbers and roman numerals (they turn 
 
 ## Releases and the shop
 
-- A **release** (a collection in code) is a small set of pieces drawn from one call in Scripture, numbered in order: Release 01 is **Behold**, "A call to see Christ’s power, holiness, sacrifice, and resurrection." The name comes from John 1:29 (older English Bibles begin John's words with "Behold"; the NIV says "Look").
+- A **release** (a collection in code) is a small set of pieces drawn from one call in Scripture, numbered in order: Release 01 is **Behold** (five tees, a hoodie and a cap), "A call to see Christ’s power, holiness, sacrifice, and resurrection." The name comes from John 1:29 (older English Bibles begin John's words with "Behold"; the NIV says "Look").
 - **Latest Drop** always means the newest release with pieces on the site, worked out from the catalog, never hard-coded. Say "Latest Drop", not "New Collection".
-- The shop has two selectors that combine: **Collection** (Latest Drop, All Collections, then each release by name) and **Category** (All Products, Tees, Oversized Tees, Hats). Show accurate counts and a clear active state, an empty state that says what is missing with a reset, and shareable URLs (`/shop?collection=behold&category=hats`; `/collections/<slug>` opens the shop filtered to it).
+- The shop has two selectors that combine: **Collection** (Latest Drop, All Collections, then each release by name) and **Category** (All Products, Tees, Oversized Tees, Hoodies, Hats). Show accurate counts and a clear active state, an empty state that says what is missing with a reset, and shareable URLs (`/shop?collection=behold&category=hats`; `/collections/<slug>` opens the shop filtered to it).
 - The main navigation is Shop, Collections, About, Contact. **Collections** lists only releases that exist: never fictional or empty "coming soon" collections.
 - **Release status**. While a release is in preview (its pieces aren't orderable yet): show "Release 01 — Behold — Coming Soon" by the opening buttons; buttons read **Explore Behold** and **Get Release Updates** (to the email sign-up); product pages say "Ordering isn’t open yet", the button reads **Save to bag**, and the bag explains that it saves selections on this device and doesn't place an order or charge anyone. Never announce a launch date until it is confirmed. Once ordering opens, labels switch (Shop Behold, Add to bag, Check out) and preview messages go.
 
@@ -77,7 +77,7 @@ Motion is short and never hides words: decoration may draw or move, but artwork,
 ## Imagery and product photos
 
 - Product images are **styled mockups** until real samples are photographed: a clean cutout of the approved mockup placed on a matte stone surface with a fine grain, light from the upper left, a soft realistic shadow falling down and to the right, and enough contrast to set the garment apart. One system for every piece: the same 4:5 canvas, margins and garment scale (tees about three quarters of the width); only the stone color changes.
-- Behold pairings: Holy Ground, muted warm stone; Still the Storm, blue-grey stone; Thorns to Lilies, smoked charcoal; Stone in Motion, darker limestone; To Live Is Christ, warm taupe; Lamb's Mark, muted bone stone with a narrow, restrained burgundy band at the base.
+- Behold pairings: Holy Ground, muted warm stone; Still the Storm, blue-grey stone; Thorns to Lilies, smoked charcoal; Torn Veil, pale ash stone; Stone in Motion, darker limestone; To Live Is Christ, warm taupe; Lamb's Mark, muted bone stone with a narrow, restrained burgundy band at the base.
 - The product stays the focal point: preserve the artwork and garment colors exactly; the listing image always shows the whole garment; artwork crops are secondary images; no props or textures over the print; no fog, dramatic effects, glows or white outlines; clean garment edges. Changing the page color doesn't fix an embedded white background: cut the garment out and composite it.
 - Keep the source mockups intact. In the repo, `assets/mockups/source` holds the originals, `cutout.py` makes the cutouts and `compose.py` builds the site images.
 - New apparel art: symbols only (above), engraved line work, bone, black, deep red and the occasional single accent ink (Stone in Motion's cobalt).
@@ -111,14 +111,15 @@ Explore [release] · Get Release Updates · Shop [release] (once ordering opens)
 
 ## Behold (Release 01)
 
-| Piece                             | Garment, color                                | Price | Scripture on the site (NIV)                                                                                      | Theme        |
-| --------------------------------- | --------------------------------------------- | ----- | ---------------------------------------------------------------------------------------------------------------- | ------------ |
-| Holy Ground                       | Tee, Faded black                              | $35   | “Take off your sandals, for the place where you are standing is holy ground.” Exodus 3:5 — NIV, excerpt          | Holiness     |
-| Still the Storm                   | Oversized tee (larger), Faded black           | $40   | “They were terrified and asked each other, ‘Who is this? Even the wind and the waves obey him!’” Mark 4:41 — NIV | Power        |
-| Thorns to Lilies                  | Oversized tee (larger), Warm bone             | $40   | “Though your sins are like scarlet, they shall be as white as snow” Isaiah 1:18 — NIV, excerpt                   | Mercy        |
-| Stone in Motion                   | Oversized tee, Washed sand                    | $40   | “He is not here; he has risen, just as he said. Come and see the place where he lay.” Matthew 28:6 — NIV         | Resurrection |
-| To Live Is Christ, To Die Is Gain | Oversized tee, Washed forest                  | $40   | “For to me, to live is Christ and to die is gain.” Philippians 1:21 — NIV                                        | Life         |
-| Lamb's Mark                       | Otto mid-profile snapback, Washed black twill | $30   | “Look, the Lamb of God, who takes away the sin of the world!” John 1:29 — NIV, excerpt                           | Sacrifice    |
+| Piece                             | Garment, color                                | Price             | Scripture on the site (NIV)                                                                                      | Theme        |
+| --------------------------------- | --------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- | ------------ |
+| Holy Ground                       | Tee, Faded black                              | $35               | “Take off your sandals, for the place where you are standing is holy ground.” Exodus 3:5 — NIV, excerpt          | Holiness     |
+| Still the Storm                   | Oversized tee (larger), Faded black           | $40               | “They were terrified and asked each other, ‘Who is this? Even the wind and the waves obey him!’” Mark 4:41 — NIV | Power        |
+| Thorns to Lilies                  | Oversized tee (larger), Warm bone             | $40               | “Though your sins are like scarlet, they shall be as white as snow” Isaiah 1:18 — NIV, excerpt                   | Mercy        |
+| Torn Veil                         | Relaxed hoodie, Black                         | $60 (placeholder) | “At that moment the curtain of the temple was torn in two from top to bottom.” Matthew 27:51 — NIV, excerpt      | Presence     |
+| Stone in Motion                   | Oversized tee, Washed sand                    | $40               | “He is not here; he has risen, just as he said. Come and see the place where he lay.” Matthew 28:6 — NIV         | Resurrection |
+| To Live Is Christ, To Die Is Gain | Oversized tee, Washed forest                  | $40               | “For to me, to live is Christ and to die is gain.” Philippians 1:21 — NIV                                        | Life         |
+| Lamb's Mark                       | Otto mid-profile snapback, Washed black twill | $30               | “Look, the Lamb of God, who takes away the sin of the world!” John 1:29 — NIV, excerpt                           | Sacrifice    |
 
 Site-wide verses: Romans 1:16 (excerpt, "worn without shame") and 1 Corinthians 3:6 ("I planted the seed, Apollos watered it, but God has been making it grow.").
 

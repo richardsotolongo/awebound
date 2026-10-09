@@ -20,6 +20,7 @@ import numpy as np
 from PIL import Image
 from pymatting import estimate_alpha_cf, estimate_foreground_ml
 from scipy import ndimage
+from skimage.morphology import convex_hull_image
 from skimage.segmentation import watershed
 
 HERE = Path(__file__).parent
@@ -48,11 +49,18 @@ SHEETS: dict[str, dict] = {
     "stone-in-motion": {
         "light": True,
         "touching": True,
+        # The front's right sleeve lies over the tip of the back's left sleeve.
+        "first_view_area": [(0, 0), (763, 0), (763, 400), (788, 463), (772, 485), (772, 1024), (0, 1024)],
         "views": [("front", (20, 85, 770, 935)), ("back", (770, 85, 1520, 935))],
     },
     "to-live-is-christ": {
         "light": False,
         "views": [("front", (0, 70, 768, 985)), ("back", (768, 70, 1536, 985))],
+    },
+    "torn-veil": {
+        "light": False,
+        "touching": True,
+        "views": [("front", (10, 75, 768, 935)), ("back", (768, 75, 1526, 935))],
     },
     "lambs-mark": {
         "light": False,
@@ -134,6 +142,13 @@ def split_garments(slug: str, sheet: dict) -> dict[str, np.ndarray]:
         y, x = np.unravel_index(np.argmax(np.where(inside, dist, 0)), dist.shape)
         markers[y, x] = i
     labels = watershed(-dist, markers, mask=mask)
+    if "first_view_area" in sheet:
+        # Where one garment overlaps the other the narrowest point is the wrong cut: follow the
+        # outline of the garment in front instead, given as a polygon in sheet coordinates.
+        area = np.zeros(mask.shape, np.uint8)
+        poly = np.array([(x - x0, y - y0) for x, y in sheet["first_view_area"]], np.int32)
+        cv2.fillPoly(area, [poly], 1)
+        labels = np.where(mask, np.where(area > 0, 1, 2), 0)
     others = {}
     for i, (view, (l, t, r, b)) in enumerate(sheet["views"], start=1):
         other = (labels > 0) & (labels != i)
@@ -162,7 +177,31 @@ def refine(rgb8: np.ndarray, mask: np.ndarray, exclude: np.ndarray | None = None
     trimap[~ndimage.binary_dilation(hard, iterations=3)] = 0.0
     if exclude is not None:
         trimap[exclude] = 0.0
-    return estimate_alpha_cf(rgb8 / 255.0, trimap)
+    alpha = estimate_alpha_cf(rgb8 / 255.0, trimap)
+    if exclude is not None:
+        # Where two garments touched there is no backdrop between them to matte against, so the
+        # cut edge is drawn clean (lightly anti-aliased) instead of matted into a fuzzy fringe.
+        seam = ndimage.binary_dilation(exclude, iterations=8)
+        clean = ndimage.gaussian_filter(hard.astype(np.float64), 0.7)
+        alpha = np.where(seam, clean, alpha)
+    return alpha
+
+
+def heal(alpha: np.ndarray, fg: np.ndarray, exclude: np.ndarray):
+    """Where the neighbouring garment overlapped this one (a sleeve tip tucked behind the other
+    view's sleeve), the cut leaves a notch. Close it with the outline's convex hull near the seam
+    and fill the fabric from the surrounding pixels."""
+    hard = alpha > 0.5
+    near = ndimage.binary_dilation(exclude, iterations=14)
+    hull = convex_hull_image(hard & near) & near
+    fill = hull & ~hard
+    if not fill.any():
+        return alpha, fg
+    rgb = (np.clip(fg, 0, 1) * 255).astype(np.uint8)
+    rgb = cv2.inpaint(rgb, fill.astype(np.uint8), 4, cv2.INPAINT_TELEA)
+    solid = ndimage.gaussian_filter((hard | fill).astype(np.float64), 0.7)
+    alpha = np.where(near, solid, alpha)
+    return alpha, rgb / 255.0
 
 
 def cut(
@@ -177,6 +216,8 @@ def cut(
     mask = garment_mask(rgb8, light, everything=exclude is not None)
     alpha = np.clip(refine(rgb8, mask, exclude), 0, 1)
     fg = estimate_foreground_ml(rgb8 / 255.0, alpha)
+    if exclude is not None:
+        alpha, fg = heal(alpha, fg, exclude)
     out = np.dstack([np.clip(fg, 0, 1), alpha])
     img = Image.fromarray((out * 255).round().astype(np.uint8), "RGBA")
     return img.crop(img.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox())

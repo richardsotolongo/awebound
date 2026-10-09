@@ -6,7 +6,7 @@ import { ShopHeader } from "@/features/catalog/shop-header";
 export const metadata: Metadata = {
   title: "Shop",
   description:
-    "Shop Awebound: Christian apparel rooted in Scripture. Browse the latest drop or every collection, by tees, oversized tees and hats.",
+    "Shop Awebound: Christian apparel rooted in Scripture. Browse the latest drop or every collection, by tees, oversized tees, hoodies and hats.",
   alternates: { canonical: "/shop" },
 };
 

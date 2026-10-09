@@ -22,6 +22,13 @@ const CHARTS: Record<
     { size: "XL", chest: 27, length: 30.5 },
     { size: "2XL", chest: 29, length: 31.5 },
   ],
+  hoodies: [
+    { size: "S", chest: 22, length: 27 },
+    { size: "M", chest: 24, length: 28 },
+    { size: "L", chest: 26, length: 29 },
+    { size: "XL", chest: 28, length: 30 },
+    { size: "2XL", chest: 30, length: 31 },
+  ],
   tanks: [
     { size: "S", chest: 17, length: 27 },
     { size: "M", chest: 19, length: 28 },
@@ -75,7 +82,9 @@ export function SizeGuide({ category, cut }: { category: CategorySlug; cut: stri
         you love and compare.
         {category === "oversized-tees"
           ? " Oversized tees run wide on purpose; size down for a closer fit."
-          : ""}
+          : category === "hoodies"
+            ? " The hoodie has a relaxed fit with room to layer; size down for a closer fit."
+            : ""}
       </p>
     </div>
   );
