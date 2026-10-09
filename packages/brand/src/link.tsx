@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, type AnchorHTMLAttributes, type ComponentType, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  type AnchorHTMLAttributes,
+  type ComponentType,
+  type ReactNode,
+} from "react";
 
 export type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 export type LinkComponent = ComponentType<LinkProps>;
@@ -15,7 +21,13 @@ const BrandLinkContext = createContext<LinkComponent>(PlainAnchor);
  * Lets brand components render the host framework's link (for example next/link) for internal
  * hrefs. External, mailto and tel links always render a plain anchor.
  */
-export function BrandLinkProvider({ link, children }: { link: LinkComponent; children: ReactNode }) {
+export function BrandLinkProvider({
+  link,
+  children,
+}: {
+  link: LinkComponent;
+  children: ReactNode;
+}) {
   return <BrandLinkContext.Provider value={link}>{children}</BrandLinkContext.Provider>;
 }
 

@@ -24,7 +24,17 @@ export interface HeroProps {
 }
 
 /** The page opener. Carries the page's only oxblood glow. One hero per page. */
-export function Hero({ eyebrow, title, body, primary, secondary, scripture, image, imageAlt, className }: HeroProps) {
+export function Hero({
+  eyebrow,
+  title,
+  body,
+  primary,
+  secondary,
+  scripture,
+  image,
+  imageAlt,
+  className,
+}: HeroProps) {
   return (
     <section className={cx("aw-hero", "aw-grain", image && "aw-hero-split", className)}>
       <div className="aw-hero-text">

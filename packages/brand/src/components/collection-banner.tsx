@@ -32,7 +32,12 @@ export function CollectionBanner({
 }: CollectionBannerProps) {
   return (
     <section
-      className={cx("aw-banner", tone === "feature" ? "aw-banner-feature" : "aw-banner-coal", "aw-grain", className)}
+      className={cx(
+        "aw-banner",
+        tone === "feature" ? "aw-banner-feature" : "aw-banner-coal",
+        "aw-grain",
+        className,
+      )}
     >
       <div className="aw-banner-in">
         <p className="aw-label">{pillar}</p>

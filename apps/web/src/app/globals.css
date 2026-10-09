@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "@awebound/brand/tokens.css";
+@import "@awebound/brand/components.css";
+@import "@awebound/brand/theme.css";
+@import "../styles/site.css";
+@import "../styles/sheet.css";
+@import "../styles/shop.css";
+@import "../styles/product.css";
+@import "../styles/journey.css";
+@import "../styles/prose.css";
+
+/* Let Tailwind see the class names used inside the brand package's components. */
+@source "../../../../packages/brand/src";

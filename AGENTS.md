@@ -10,15 +10,15 @@ Payments and fulfillment are **not chosen yet** (Printful, Printify, Fourthwall 
 
 ## Workspace map
 
-| Path | What lives there | Agent notes |
-| --- | --- | --- |
-| `apps/web` | Next.js App Router storefront | `apps/web/AGENTS.md` |
-| `apps/api` | Express API, clean architecture | `apps/api/AGENTS.md` |
-| `packages/brand` | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme | `packages/brand/AGENTS.md` |
-| `packages/shared` | zod schemas, DTO types, typed API client, catalog seed data | contract between web and API |
-| `packages/tsconfig` | Shared tsconfig bases | |
-| `supabase` | SQL migrations, seed, auth email templates | `supabase/AGENTS.md` |
-| `docs` | `ARCHITECTURE.md`, `TODOS.md` | keep them current when you change structure |
+| Path                | What lives there                                             | Agent notes                                 |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------- |
+| `apps/web`          | Next.js App Router storefront                                | `apps/web/AGENTS.md`                        |
+| `apps/api`          | Express API, clean architecture                              | `apps/api/AGENTS.md`                        |
+| `packages/brand`    | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme | `packages/brand/AGENTS.md`                  |
+| `packages/shared`   | zod schemas, DTO types, typed API client, catalog seed data  | contract between web and API                |
+| `packages/tsconfig` | Shared tsconfig bases                                        |                                             |
+| `supabase`          | SQL migrations, seed, auth email templates                   | `supabase/AGENTS.md`                        |
+| `docs`              | `ARCHITECTURE.md`, `TODOS.md`                                | keep them current when you change structure |
 
 Internal packages are consumed as TypeScript source (no build step): Next transpiles them via `transpilePackages`, the API bundles them with tsup.
 
@@ -45,7 +45,7 @@ The API runs without Supabase when `CATALOG_SOURCE=seed` (the default in `.env.e
    - The Thorn Cross is the only cross; upright and whole.
    - Symbols only: never depict Jesus, God the Father or the Spirit as a person. No skulls, gore or occult marks.
    - Scripture by full reference ("Galatians 5:1", ranges with an en dash). Quote verses only in the NLT, credited "(NLT)".
-   - Style through CSS variables / Tailwind theme tokens. No raw hex outside `packages/brand/src/styles/tokens.css`.
+   - Style through CSS variables / Tailwind theme tokens. Raw hex lives only in `packages/brand` (`tokens.css`, and `hex.ts` for meta tags and images). HTML email templates are the one exception, because email clients ignore CSS variables.
    - Oxblood (`primary`) is a fill, never text on coal. One primary button and one glow per screen.
    - Copy: reverent, short sentences, sentence case, no exclamation marks, no hype words, no guilt.
 5. **Secrets** live in `.env` files that are git-ignored. Add every new variable to the matching `.env.example` and to the zod env schema (`apps/api/src/infrastructure/config/env.ts`, `apps/web/src/lib/env.ts`).

@@ -51,7 +51,14 @@ export function ProductCard({
             decoding="async"
           />
           {hoverImage ? (
-            <img className="aw-card-alt" src={hoverImage} alt="" aria-hidden="true" loading="lazy" decoding="async" />
+            <img
+              className="aw-card-alt"
+              src={hoverImage}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+            />
           ) : null}
         </div>
         <div className="aw-card-meta">

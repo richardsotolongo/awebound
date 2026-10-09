@@ -724,7 +724,8 @@
   .aw-select {
     appearance: none;
     padding-right: var(--space-12);
-    background-image: linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%),
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%),
       linear-gradient(135deg, var(--ink-muted) 50%, transparent 50%);
     background-position:
       calc(100% - 22px) 50%,

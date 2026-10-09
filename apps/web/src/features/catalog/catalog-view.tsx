@@ -1,0 +1,119 @@
+import { Button } from "@awebound/brand";
+import { toSearchParams, type CollectionSlug } from "@awebound/shared";
+import Link from "next/link";
+import { serverApi } from "@/lib/api-server";
+import { ActiveFilters } from "./active-filters";
+import { CatalogStateProvider } from "./catalog-state";
+import { FilterPanel } from "./filter-panel";
+import { ProductGrid } from "./product-grid";
+import {
+  EMPTY_FACETS,
+  EMPTY_LIST,
+  parseCatalogQuery,
+  toApiQuery,
+  type RawSearchParams,
+} from "./query";
+import { ShopToolbar } from "./shop-toolbar";
+
+interface CatalogViewProps {
+  searchParams: RawSearchParams;
+  /** Path the filters navigate within, e.g. /shop or /collections/broken-bond. */
+  basePath: string;
+  /** Pins the listing to one collection (collection pages). */
+  collection?: CollectionSlug;
+}
+
+async function read<T>(load: () => Promise<T>, fallback: T): Promise<{ data: T; failed: boolean }> {
+  try {
+    return { data: await load(), failed: false };
+  } catch (error) {
+    console.error(
+      "[awebound] catalog read failed:",
+      error instanceof Error ? error.message : error,
+    );
+    return { data: fallback, failed: true };
+  }
+}
+
+/** The full shop experience: category tabs, search, sort, filters, chips and the results grid. */
+export async function CatalogView({ searchParams, basePath, collection }: CatalogViewProps) {
+  const query = parseCatalogQuery(searchParams, { collection });
+  const apiQuery = toApiQuery(query);
+  const [list, facets] = await Promise.all([
+    read(() => serverApi.listProducts(apiQuery), EMPTY_LIST),
+    read(() => serverApi.getFacets(apiQuery), EMPTY_FACETS),
+  ]);
+  const queryKey = toSearchParams(apiQuery).toString();
+  const activeCategory = query.category?.length === 1 ? query.category[0] : undefined;
+
+  const tabHref = (slug?: string) => {
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(searchParams)) {
+      if (k === "category" || k === "page" || v === undefined) continue;
+      params.set(k, Array.isArray(v) ? v.join(",") : v);
+    }
+    if (slug) params.set("category", slug);
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  };
+  const allCount = facets.data.categories.reduce((n, c) => n + c.count, 0);
+
+  return (
+    <CatalogStateProvider lockedKeys={collection ? ["collection"] : []}>
+      <nav className="shop-tabs" aria-label="Categories">
+        <Link href={tabHref()} aria-current={!activeCategory ? "page" : undefined} scroll={false}>
+          All <span className="count">{allCount}</span>
+        </Link>
+        {facets.data.categories.map((c) => (
+          <Link
+            key={c.slug}
+            href={tabHref(c.slug)}
+            aria-current={activeCategory === c.slug ? "page" : undefined}
+            scroll={false}
+          >
+            {c.name} <span className="count">{c.count}</span>
+          </Link>
+        ))}
+      </nav>
+
+      <div className="shop-layout">
+        <aside className="shop-aside" aria-label="Filters">
+          <FilterPanel facets={facets.data} hideCollections={Boolean(collection)} />
+        </aside>
+        <div>
+          <ShopToolbar
+            facets={facets.data}
+            hideCollections={Boolean(collection)}
+            total={list.data.total}
+          />
+          <ActiveFilters
+            total={list.data.total}
+            facets={facets.data}
+            lockedCollection={Boolean(collection)}
+          />
+
+          {list.failed ? (
+            <div className="shop-empty" role="status">
+              <p className="aw-h3">The shop is resting</p>
+              <p className="aw-body">
+                We couldn’t load the collection just now. Try again in a moment.
+              </p>
+            </div>
+          ) : list.data.items.length === 0 ? (
+            <div className="shop-empty">
+              <p className="aw-h3">Nothing matches that yet</p>
+              <p className="aw-body">
+                Try fewer filters, or search for a verse, a color or a design.
+              </p>
+              <Button variant="secondary" href={basePath}>
+                Clear filters
+              </Button>
+            </div>
+          ) : (
+            <ProductGrid initial={list.data} query={apiQuery} queryKey={queryKey} />
+          )}
+        </div>
+      </div>
+    </CatalogStateProvider>
+  );
+}

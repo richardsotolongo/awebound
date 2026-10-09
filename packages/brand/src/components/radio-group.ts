@@ -6,7 +6,12 @@ import { useRef, type KeyboardEvent } from "react";
  * Roving-tabindex keyboard support for a radiogroup made of buttons:
  * arrow keys move and select, Home/End jump, disabled options are skipped.
  */
-export function useRadioGroup(options: string[], value: string | undefined, onChange: ((v: string) => void) | undefined, disabled: string[] = []) {
+export function useRadioGroup(
+  options: string[],
+  value: string | undefined,
+  onChange: ((v: string) => void) | undefined,
+  disabled: string[] = [],
+) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const enabled = options.filter((o) => !disabled.includes(o));
   const focusTarget = value && enabled.includes(value) ? value : enabled[0];

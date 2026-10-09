@@ -1,0 +1,143 @@
+/* Sheets: native <dialog> panels for the bag, phone menu, filters and size guide.
+   showModal() gives focus trapping, Escape and an inert page; CSS handles the slide. */
+@layer components {
+  .aw-sheet {
+    position: fixed;
+    inset: 0 0 0 auto;
+    margin: 0;
+    width: min(440px, 100vw);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    padding: 0;
+    border: 0;
+    border-left: 1px solid var(--line);
+    background: var(--surface-overlay);
+    color: var(--ink);
+    box-shadow: var(--shadow-raised);
+    overflow: hidden;
+    transform: translateX(100%);
+    transition:
+      transform var(--duration-base) var(--ease-reverent),
+      overlay var(--duration-base) allow-discrete,
+      display var(--duration-base) allow-discrete;
+  }
+  .aw-sheet[data-side="left"] {
+    inset: 0 auto 0 0;
+    border-left: 0;
+    border-right: 1px solid var(--line);
+    transform: translateX(-100%);
+  }
+  .aw-sheet[open] {
+    transform: translateX(0);
+  }
+  @starting-style {
+    .aw-sheet[open] {
+      transform: translateX(100%);
+    }
+    .aw-sheet[data-side="left"][open] {
+      transform: translateX(-100%);
+    }
+  }
+  .aw-sheet::backdrop {
+    background: var(--scrim);
+    opacity: 0;
+    transition:
+      opacity var(--duration-base),
+      overlay var(--duration-base) allow-discrete,
+      display var(--duration-base) allow-discrete;
+  }
+  .aw-sheet[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .aw-sheet[open]::backdrop {
+      opacity: 0;
+    }
+  }
+  html:has(.aw-sheet[open]) {
+    overflow: hidden;
+  }
+
+  .aw-sheet-in {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+  }
+  .aw-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--line);
+    min-height: var(--header-height);
+    box-sizing: border-box;
+  }
+  .aw-sheet-body {
+    overflow-y: auto;
+    padding: var(--space-6);
+    overscroll-behavior: contain;
+  }
+  .aw-sheet-foot {
+    padding: var(--space-6);
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: var(--space-4);
+    background: var(--surface-overlay);
+  }
+  /* In the overlay surface, small accent text and subtle ink fall under 4.5:1; lift them. */
+  .aw-sheet .aw-meta {
+    color: var(--ink);
+  }
+  .aw-sheet .field-help,
+  .aw-sheet .check .count,
+  .aw-sheet .aw-small {
+    color: var(--ink-muted);
+  }
+  .aw-sheet .aw-btn-link {
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aw-sheet,
+    .aw-sheet::backdrop {
+      transition: none;
+    }
+  }
+
+  /* Phone menu */
+  .mobile-nav {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .mobile-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .mobile-nav a[aria-current="page"] {
+    color: var(--accent-text);
+  }
+  .mobile-nav-secondary {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-8);
+  }
+  .mobile-nav-secondary a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-size: 16px;
+    min-height: var(--tap-min);
+    display: flex;
+    align-items: center;
+  }
+}

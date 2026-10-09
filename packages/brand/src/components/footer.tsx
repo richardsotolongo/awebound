@@ -17,7 +17,12 @@ export interface FooterProps {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** The site footer: small Thorn Cross and tagline, a drop-notes sign-up and policy links. */
-export function Footer({ links = [], tagline = "Royal heritage. Freedom. Resurrection.", year, onSubscribe }: FooterProps) {
+export function Footer({
+  links = [],
+  tagline = "Royal heritage. Freedom. Resurrection.",
+  year,
+  onSubscribe,
+}: FooterProps) {
   const inputId = useId();
   const errorId = useId();
   const [email, setEmail] = useState("");

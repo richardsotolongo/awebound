@@ -21,7 +21,17 @@ export interface AltarPanelProps {
 }
 
 /** A warm-bone panel that breaks the dark page and carries the signature lockup. One or two per page. */
-export function AltarPanel({ mark = "wordmark", eyebrow, title, body, scripture, action, children, id, className }: AltarPanelProps) {
+export function AltarPanel({
+  mark = "wordmark",
+  eyebrow,
+  title,
+  body,
+  scripture,
+  action,
+  children,
+  id,
+  className,
+}: AltarPanelProps) {
   return (
     <section id={id} className={cx("aw-altar", className)}>
       <div className="aw-altar-in">

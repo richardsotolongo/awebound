@@ -10,7 +10,12 @@ export interface ScriptureRefProps {
 }
 
 /** A Scripture reference set like a tour-poster credit. Reference only, never the verse text. */
-export function ScriptureRef({ reference, translation, align = "center", className }: ScriptureRefProps) {
+export function ScriptureRef({
+  reference,
+  translation,
+  align = "center",
+  className,
+}: ScriptureRefProps) {
   return (
     <span className={cx("aw-scripture", align === "start" && "aw-scripture-start", className)}>
       {reference}

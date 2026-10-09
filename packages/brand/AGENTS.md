@@ -4,15 +4,15 @@ The Awebound brand system as code. Source of truth is the `awebound-brand` skill
 
 ## Contents
 
-| Path | Purpose |
-| --- | --- |
-| `src/styles/tokens.css` | Every color, space, radius, font and motion token as CSS variables. Dark (coal) default; `[data-theme="light"]` for bone-paper editorial sections. **The only file allowed to hold raw hex.** |
-| `src/styles/components.css` | Brand component classes (`.aw-*`) in `@layer base` / `@layer components`, so Tailwind utilities can override layout. |
-| `src/styles/theme.css` | Tailwind v4 `@theme inline` mapping: brand colors only (`bg-surface`, `text-ink`, `text-accent-text`, `border-line`…), radii `none`/`sm` (2px). Default palette removed on purpose. |
-| `src/components/*` | Typed React ports of the skill's components: `Wordmark`, `ThornCross`, `Mark`, `Button`, `ScriptureRef`, `ThornRule`, `Header`, `Hero`, `ProductCard`, `Swatches`, `SizeSelector`, `CollectionBanner`, `AltarPanel`, `Footer`. |
-| `src/link.tsx` | `BrandLinkProvider` lets components render `next/link` for internal hrefs. |
-| `src/marks/paths.ts` | Generated SVG path data. Regenerate with `pnpm --filter @awebound/brand paths`; never edit by hand. |
-| `assets/` | Original SVG logos and marks, and the lookbook concept mockups. |
+| Path                        | Purpose                                                                                                                                                                                                                                        |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/styles/tokens.css`     | Every color, space, radius, font and motion token as CSS variables. Dark (coal) default; `[data-theme="light"]` for bone-paper editorial sections. Raw hex lives here and in `src/hex.ts` (for `<meta theme-color>`, generated images, email). |
+| `src/styles/components.css` | Brand component classes (`.aw-*`) in `@layer base` / `@layer components`, so Tailwind utilities can override layout.                                                                                                                           |
+| `src/styles/theme.css`      | Tailwind v4 `@theme inline` mapping: brand colors only (`bg-surface`, `text-ink`, `text-accent-text`, `border-line`…), radii `none`/`sm` (2px). Default palette removed on purpose.                                                            |
+| `src/components/*`          | Typed React ports of the skill's components: `Wordmark`, `ThornCross`, `Mark`, `Button`, `ScriptureRef`, `ThornRule`, `Header`, `Hero`, `ProductCard`, `Swatches`, `SizeSelector`, `CollectionBanner`, `AltarPanel`, `Footer`.                 |
+| `src/link.tsx`              | `BrandLinkProvider` lets components render `next/link` for internal hrefs.                                                                                                                                                                     |
+| `src/marks/paths.ts`        | Generated SVG path data. Regenerate with `pnpm --filter @awebound/brand paths`; never edit by hand.                                                                                                                                            |
+| `assets/`                   | Original SVG logos and marks, and the lookbook concept mockups.                                                                                                                                                                                |
 
 ## Rules
 

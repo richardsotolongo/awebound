@@ -1,0 +1,17 @@
+{
+  "extends": "@awebound/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "src",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "next.config.ts",
+    "scripts"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -71,13 +71,22 @@ export function Header({
         </BrandLink>
         <nav className="aw-header-nav" aria-label="Main">
           {links.map((l) => (
-            <BrandLink key={l.label} href={l.href} aria-current={current === l.label ? "page" : undefined}>
+            <BrandLink
+              key={l.label}
+              href={l.href}
+              aria-current={current === l.label ? "page" : undefined}
+            >
               {l.label}
             </BrandLink>
           ))}
         </nav>
         {onBag ? (
-          <button type="button" className="aw-header-bag" onClick={onBag} aria-label={`Bag, ${bagCount} items`}>
+          <button
+            type="button"
+            className="aw-header-bag"
+            onClick={onBag}
+            aria-label={`Bag, ${bagCount} items`}
+          >
             {bagLabel}
           </button>
         ) : (

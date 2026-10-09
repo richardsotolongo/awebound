@@ -1,0 +1,156 @@
+/* Site chrome and shared page furniture. Tokens only; see packages/brand for the system. */
+@layer components {
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+  .site-header .aw-header {
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: saturate(1.1) blur(10px);
+  }
+
+  .page-header {
+    padding-block: var(--space-16) var(--space-12);
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .page-header .aw-body {
+    max-width: 60ch;
+  }
+  @media (max-width: 767px) {
+    .page-header {
+      padding-block: var(--space-12) var(--space-8);
+    }
+  }
+
+  .section {
+    padding-block: var(--space-24);
+  }
+  @media (max-width: 767px) {
+    .section {
+      padding-block: var(--space-16);
+    }
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition:
+      color var(--duration-fast),
+      border-color var(--duration-fast);
+  }
+  .icon-btn:hover {
+    color: var(--ink);
+    border-color: var(--line);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .field-help {
+    margin: 0;
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--ink-subtle);
+  }
+
+  .notice {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent-text);
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .scroll-rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+  @media (max-width: 767px) {
+    .scroll-rail {
+      grid-auto-columns: 72%;
+      gap: var(--space-4);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: var(--space-4);
+      margin-inline: calc(var(--gutter-mobile) * -1);
+      padding-inline: var(--gutter-mobile);
+      scrollbar-width: thin;
+    }
+    .scroll-rail > * {
+      scroll-snap-align: start;
+    }
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+  .split-even {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: var(--space-8);
+  }
+  @media (max-width: 1023px) {
+    .split,
+    .split-even {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  /* Cards in a row share one height, whatever the name length. */
+  .product-grid > li,
+  .scroll-rail > li {
+    display: flex;
+  }
+  .product-grid > li > .aw-card,
+  .scroll-rail > li > .aw-card {
+    flex: 1;
+  }
+  .aw-card-link {
+    height: 100%;
+  }
+  @media (min-width: 1100px) {
+    .product-grid[data-wide="true"] {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 1023px) {
+    .product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+  }
+}
