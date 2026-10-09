@@ -1,0 +1,120 @@
+/* Awebound tokens, from the awebound-brand skill (references/tokens.json).
+   Dark (coal) is the default theme; set data-theme="light" on <html> or any wrapper for the bone-paper theme.
+   This is the only file in the repo that may contain raw hex values.
+   Fonts: the web app loads Cinzel and Archivo with next/font and exposes --font-cinzel / --font-archivo. */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-page: #0d0c0b;
+  --surface: #151413;
+  --surface-raised: #1d1b19;
+  --surface-overlay: #2a2724;
+  --line: #3a3632;
+  --line-strong: #78716a;
+  --ink: #f0e6d2;
+  --ink-muted: #c9bfae;
+  --ink-subtle: #8c847a;
+  --accent-text: #c47a55;
+  --scripture: #b89651;
+  --primary: #782b35;
+  --primary-hover: #8a3240;
+  --on-primary: #f0e6d2;
+  --focus-ring: #c47a55;
+  --panel-feature: #693a3d;
+  --on-feature: #f0e6d2;
+  --on-feature-muted: #c9bfae;
+  --altar: #e8ddc9;
+  --on-altar: #151413;
+  --on-altar-muted: #4a443d;
+  --altar-mark: #782b35;
+  --altar-scripture: #6e5728;
+  --panel-inverse: #e8ddc9;
+  --brand-coal: #151413;
+  --brand-bone: #f0e6d2;
+  --brand-oxblood: #782b35;
+  --brand-warm-bone: #e8ddc9;
+  --bb-copper: #a65d3d;
+  --bb-faded-burgundy: #8e4a55;
+  --bb-washed-oxblood: #693a3d;
+  --bb-charcoal: #2f2b29;
+  --copper-300: #c47a55;
+  --scripture-gold: #b89651;
+  --rh-plum: #4f3949;
+  --rh-dusty-blue: #8fa6b5;
+  --rh-muted-gold: #b49a5b;
+  --ra-faded-cobalt: #486f9b;
+  --ra-dawn-gold: #b89651;
+  --ra-moss: #91a078;
+  --ra-olive: #4c5140;
+  --garment-washed-coal: #363330;
+  --garment-warm-bone: #e8ddc9;
+  --garment-washed-deep-plum: #4f3949;
+  --garment-faded-black: #292726;
+  --garment-washed-oxblood: #693a3d;
+  --garment-washed-sand: #d6c8ab;
+  --garment-washed-graphite: #44423e;
+  --garment-washed-deep-olive: #4c5140;
+  --cap-washed-black-twill: #242322;
+  --cap-oxblood-corduroy: #672c3b;
+  --cap-washed-charcoal-twill: #41403c;
+  --cap-sandstone: #d0be9c;
+  --cap-espresso-brim: #48372a;
+  --cap-deep-espresso: #3b2f28;
+  --cap-bone-front: #e6ddc9;
+  --cap-charcoal-mesh: #353331;
+  --cap-dusty-indigo-nylon: #5d7185;
+  --bucket-washed-olive-twill: #5e604b;
+  --shadow-raised: 0 16px 40px -16px #000000cc;
+  --glow-primary: 0 0 160px 48px #782b3559;
+  /* Light from above: the home journey's shafts and the hero reveal. Derived from bone, not a new color. */
+  --light-shaft: #f0e6d21f;
+  --scrim: #0d0c0bcc;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --surface-page: #f3ebdc;
+  --surface: #ede3d0;
+  --surface-raised: #f8f2e7;
+  --surface-overlay: #fbf8f2;
+  --line: #cfc4b1;
+  --line-strong: #85796a;
+  --ink: #151413;
+  --ink-muted: #4a443d;
+  --ink-subtle: #665f57;
+  --accent-text: #8e4a55;
+  --scripture: #6e5728;
+  --focus-ring: #782b35;
+  --panel-inverse: #2f2b29;
+  --shadow-raised: 0 12px 32px -16px #15141333;
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --radius-0: 0px;
+  --radius-sm: 2px;
+  --container-max: 1200px;
+  --gutter-mobile: 16px;
+  --gutter-desktop: 48px;
+  --tap-min: 44px;
+  --header-height: 80px;
+  --font-display: var(--font-cinzel, "Cinzel"), "Trajan Pro", Georgia, serif;
+  --font-sans: var(--font-archivo, "Archivo"), "Helvetica Neue", Arial, sans-serif;
+  --ease-reverent: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --duration-fast: 200ms;
+  --duration-base: 300ms;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-height: 64px;
+  }
+}

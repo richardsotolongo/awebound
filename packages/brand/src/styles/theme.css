@@ -1,0 +1,47 @@
+/* Tailwind v4 theme for Awebound. Import after "tailwindcss" and tokens.css.
+   Every value points at a token from tokens.css, so utilities follow data-theme.
+   The default Tailwind palette and radii are removed so only brand values are available.
+   Type styles are brand classes (.aw-display, .aw-h2, .aw-label, ...), not Tailwind font utilities. */
+@theme inline {
+  --color-*: initial;
+  --color-surface-page: var(--surface-page);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-accent-text: var(--accent-text);
+  --color-scripture: var(--scripture);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
+  --color-focus-ring: var(--focus-ring);
+  --color-panel-feature: var(--panel-feature);
+  --color-on-feature: var(--on-feature);
+  --color-on-feature-muted: var(--on-feature-muted);
+  --color-altar: var(--altar);
+  --color-on-altar: var(--on-altar);
+  --color-on-altar-muted: var(--on-altar-muted);
+  --color-altar-mark: var(--altar-mark);
+  --color-altar-scripture: var(--altar-scripture);
+  --color-bb-copper: var(--bb-copper);
+  --color-bb-charcoal: var(--bb-charcoal);
+  --color-scrim: var(--scrim);
+
+  --radius-*: initial;
+  --radius-none: var(--radius-0);
+  --radius-sm: 2px;
+
+  /* Theme keys never reuse a token's own name, so no variable can point at itself. */
+  --shadow-*: initial;
+  --shadow-lift: var(--shadow-raised);
+  --shadow-glow: var(--glow-primary);
+
+  --container-site: var(--container-max);
+  --ease-brand: var(--ease-reverent);
+
+  --default-font-family: var(--font-sans);
+}

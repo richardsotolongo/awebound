@@ -1,0 +1,40 @@
+{
+  "name": "@awebound/brand",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Awebound brand system: tokens, CSS, React components and SVG marks.",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": {
+      "style": "./src/styles/tokens.css",
+      "default": "./src/styles/tokens.css"
+    },
+    "./components.css": {
+      "style": "./src/styles/components.css",
+      "default": "./src/styles/components.css"
+    },
+    "./theme.css": {
+      "style": "./src/styles/theme.css",
+      "default": "./src/styles/theme.css"
+    },
+    "./assets/*": "./assets/*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "paths": "node scripts/extract-paths.mjs"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@awebound/tsconfig": "workspace:*",
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
+    "typescript": "~6.0.3"
+  }
+}

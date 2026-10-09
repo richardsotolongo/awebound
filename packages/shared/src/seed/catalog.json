@@ -1,0 +1,294 @@
+{
+  "$comment": "Sample catalog for development and the Supabase seed. PRICES ARE PLACEHOLDERS until the owner sets them. Images live in apps/web/public/products. Regenerate supabase/seed.sql with `pnpm db:seed` after editing.",
+  "currency": "USD",
+  "categories": [
+    { "slug": "tees", "name": "Tees", "cut": "Tee", "placeholderPriceCents": 3800, "sizes": ["S", "M", "L", "XL", "2XL"] },
+    { "slug": "oversized-tees", "name": "Oversized tees", "cut": "Oversized tee", "placeholderPriceCents": 4400, "sizes": ["S", "M", "L", "XL", "2XL"] },
+    { "slug": "tanks", "name": "Tanks", "cut": "Tank", "placeholderPriceCents": 3400, "sizes": ["S", "M", "L", "XL", "2XL"] },
+    { "slug": "hats", "name": "Hats", "cut": "Cap", "placeholderPriceCents": 3200, "sizes": ["One size"] }
+  ],
+  "collections": [
+    {
+      "slug": "royal-heritage",
+      "name": "Royal Heritage",
+      "familyCode": "R",
+      "pillar": "Royal heritage",
+      "story": "The throne of grace and a kingdom that cannot be shaken, carved in arches and ornament.",
+      "scriptureRef": "Hebrews 4:16"
+    },
+    {
+      "slug": "broken-bond",
+      "name": "Broken Bond",
+      "familyCode": "B",
+      "pillar": "Freedom",
+      "story": "Chains broken and death without dominion. Stand firm in what was won.",
+      "scriptureRef": "Galatians 5:1"
+    },
+    {
+      "slug": "rolled-away",
+      "name": "Rolled Away",
+      "familyCode": "T",
+      "pillar": "Resurrection",
+      "story": "The stone rolled away and the tomb empty at dawn. New life, worn plainly.",
+      "scriptureRef": "Luke 24:1–6"
+    }
+  ],
+  "colors": {
+    "Faded black": "garment-faded-black",
+    "Washed coal": "garment-washed-coal",
+    "Warm bone": "garment-warm-bone",
+    "Washed deep plum": "garment-washed-deep-plum",
+    "Washed oxblood": "garment-washed-oxblood",
+    "Washed sand": "garment-washed-sand",
+    "Washed graphite": "garment-washed-graphite",
+    "Washed deep olive": "garment-washed-deep-olive",
+    "Washed black twill": "cap-washed-black-twill",
+    "Washed charcoal twill": "cap-washed-charcoal-twill",
+    "Oxblood corduroy": "cap-oxblood-corduroy",
+    "Sandstone": "cap-sandstone"
+  },
+  "products": [
+    {
+      "code": "A3-T02",
+      "slug": "third-morning",
+      "name": "Third Morning",
+      "collection": "rolled-away",
+      "category": "oversized-tees",
+      "colors": ["Washed coal", "Faded black"],
+      "soldOut": [["Faded black", "2XL"]],
+      "featured": true,
+      "releasedAt": "2026-09-20",
+      "scriptureRef": "Luke 24:1–6",
+      "story": {
+        "art": "The tomb stands open at dawn, the stone rolled back and light spilling from the doorway beneath the wordmark.",
+        "front": "Small Thorn Cross, left chest, bone ink",
+        "back": "Thornbound wordmark over the open tomb, rolled stone and rising sun",
+        "inks": "Bone, dawn gold",
+        "paraphrase": "At dawn the women found the stone moved and the tomb empty. He had risen.",
+        "fit": "Oversized tee · dropped shoulder, boxy body",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-t02-back.jpg", "alt": "Third Morning back print: the open tomb at dawn with the stone rolled aside" },
+        "front": { "url": "/products/a3-t02-front.svg", "alt": "Third Morning front: small Thorn Cross on the left chest" }
+      }
+    },
+    {
+      "code": "A3-B01",
+      "slug": "shattered-dominion",
+      "name": "Shattered Dominion",
+      "collection": "broken-bond",
+      "category": "oversized-tees",
+      "colors": ["Faded black", "Washed coal"],
+      "featured": true,
+      "releasedAt": "2026-08-14",
+      "scriptureRef": "Romans 6:9",
+      "story": {
+        "art": "A ring of rusted chain breaks apart around the Thorn Cross, its links falling loose beneath the wordmark.",
+        "front": "Small Thorn Cross, left chest, bone ink",
+        "back": "Thornbound wordmark over a ring of breaking chain around the Thorn Cross",
+        "inks": "Bone, copper",
+        "paraphrase": "Christ was raised and will never die again. Death has no hold on him.",
+        "fit": "Oversized tee · dropped shoulder, boxy body",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-b01-back.jpg", "alt": "Shattered Dominion back print: a ring of breaking chain around the cross" },
+        "front": { "url": "/products/a3-b01-front.svg", "alt": "Shattered Dominion front: small Thorn Cross on the left chest" }
+      }
+    },
+    {
+      "code": "A3-R01",
+      "slug": "throne-of-grace",
+      "name": "Throne of Grace",
+      "collection": "royal-heritage",
+      "category": "oversized-tees",
+      "colors": ["Washed coal"],
+      "featured": true,
+      "releasedAt": "2026-07-10",
+      "scriptureRef": "Hebrews 4:16",
+      "story": {
+        "art": "A carved arch frames the Thorn Cross above the wordmark, with olive branches gathered at its foot.",
+        "front": "Small Thorn Cross, left chest, bone ink",
+        "back": "Gothic arch, Thorn Cross and olive branches around the wordmark",
+        "inks": "Bone, oxblood",
+        "paraphrase": "Come boldly to the throne of grace and find mercy and help when you need it.",
+        "fit": "Oversized tee · dropped shoulder, boxy body",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-r01-back.jpg", "alt": "Throne of Grace back print: a carved arch framing the cross above olive branches" },
+        "front": { "url": "/products/a3-r01-front.svg", "alt": "Throne of Grace front: small Thorn Cross on the left chest" }
+      }
+    },
+    {
+      "code": "A3-B02",
+      "slug": "freed-in-awe",
+      "name": "Freed in Awe",
+      "collection": "broken-bond",
+      "category": "tees",
+      "colors": ["Washed coal", "Warm bone"],
+      "featured": true,
+      "releasedAt": "2026-08-14",
+      "scriptureRef": "Galatians 5:1",
+      "story": {
+        "art": "Open shackles hang beneath the wordmark, the chain between them snapped clean.",
+        "front": "Thornbound wordmark, small, center chest",
+        "back": "Open shackles and a snapped chain under the wordmark",
+        "inks": "Bone, copper",
+        "paraphrase": "Christ set us free so that we would stay free. Stand firm.",
+        "fit": "Tee · regular fit",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-b02-back.svg", "alt": "Freed in Awe back print: open shackles beneath the thorn wreath" },
+        "front": { "url": "/products/a3-b02-front.svg", "alt": "Freed in Awe front: small mark on the chest" }
+      }
+    },
+    {
+      "code": "A3-T01",
+      "slug": "stone-rolled-aside",
+      "name": "Stone Rolled Aside",
+      "collection": "rolled-away",
+      "category": "tees",
+      "colors": ["Warm bone", "Washed sand"],
+      "featured": false,
+      "releasedAt": "2026-09-20",
+      "scriptureRef": "Mark 16:4",
+      "story": {
+        "art": "A great round stone rests beside an open tomb, morning light behind it.",
+        "front": "Small Thorn Cross, left chest, coal ink",
+        "back": "The rolled stone and open tomb under the wordmark",
+        "inks": "Coal, dawn gold",
+        "paraphrase": "They looked up and saw the heavy stone already rolled aside.",
+        "fit": "Tee · regular fit",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-t01-back.svg", "alt": "Stone Rolled Aside back print: the lily over the open tomb" },
+        "front": { "url": "/products/a3-t01-front.svg", "alt": "Stone Rolled Aside front: small Thorn Cross on the left chest" }
+      }
+    },
+    {
+      "code": "A3-R02",
+      "slug": "unshaken-kingdom",
+      "name": "Unshaken Kingdom",
+      "collection": "royal-heritage",
+      "category": "tees",
+      "colors": ["Washed deep plum", "Faded black"],
+      "featured": false,
+      "releasedAt": "2026-07-10",
+      "scriptureRef": "Hebrews 12:28",
+      "story": {
+        "art": "Twin columns rise into an unbroken arch, a thorn vine running along the keystone.",
+        "front": "Small Thorn Cross, left chest, bone ink",
+        "back": "Columns and arch with a thorn vine above the wordmark",
+        "inks": "Bone, muted gold",
+        "paraphrase": "We are receiving a kingdom that cannot be shaken, so we worship with awe.",
+        "fit": "Tee · regular fit",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-r02-back.svg", "alt": "Unshaken Kingdom back print: the thorn wreath under an arch" },
+        "front": { "url": "/products/a3-r02-front.svg", "alt": "Unshaken Kingdom front: small Thorn Cross on the left chest" }
+      }
+    },
+    {
+      "code": "A3-B03",
+      "slug": "chains-snapped",
+      "name": "Chains Snapped",
+      "collection": "broken-bond",
+      "category": "tanks",
+      "colors": ["Washed graphite", "Faded black"],
+      "soldOut": [["Washed graphite", "S"]],
+      "featured": false,
+      "releasedAt": "2026-08-14",
+      "scriptureRef": "Psalm 107:14",
+      "story": {
+        "art": "A single chain splits at its center link, both halves falling away from a lily.",
+        "front": "Thornbound wordmark, small, center chest",
+        "back": "Split chain and lily under the wordmark",
+        "inks": "Bone, copper",
+        "paraphrase": "He led them out of darkness and deep gloom and snapped their chains.",
+        "fit": "Tank · relaxed armhole, straight hem",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-b03-back.svg", "alt": "Chains Snapped back print: a lily between the halves of a broken chain" },
+        "front": { "url": "/products/a3-b03-front.svg", "alt": "Chains Snapped front: small mark on the chest" }
+      }
+    },
+    {
+      "code": "A3-T03",
+      "slug": "he-is-risen",
+      "name": "He Is Risen",
+      "collection": "rolled-away",
+      "category": "tanks",
+      "colors": ["Washed sand", "Washed deep olive"],
+      "featured": false,
+      "releasedAt": "2026-09-20",
+      "scriptureRef": "Matthew 28:6",
+      "story": {
+        "art": "Lilies rise from the threshold of an empty tomb.",
+        "front": "Small Thorn Cross, left chest, coal ink",
+        "back": "Lilies at the tomb's threshold under the wordmark",
+        "inks": "Coal, moss",
+        "paraphrase": "He is not here. He has risen, just as he said he would.",
+        "fit": "Tank · relaxed armhole, straight hem",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-t03-back.svg", "alt": "He Is Risen back print: lilies rising" },
+        "front": { "url": "/products/a3-t03-front.svg", "alt": "He Is Risen front: small Thorn Cross on the left chest" }
+      }
+    },
+    {
+      "code": "A3-H01",
+      "slug": "thornbound-cap",
+      "name": "Thornbound Cap",
+      "collection": "broken-bond",
+      "category": "hats",
+      "colors": ["Washed black twill", "Washed charcoal twill"],
+      "featured": false,
+      "releasedAt": "2026-08-14",
+      "scriptureRef": "2 Corinthians 3:17",
+      "story": {
+        "art": "The small Thorn Cross, embroidered in bone thread on the front panel.",
+        "front": "Embroidered Thorn Cross, front panel, bone thread",
+        "back": "Small embroidered wordmark above the strap",
+        "inks": "Bone thread",
+        "paraphrase": "Where the Spirit of the Lord is, there is freedom.",
+        "fit": "Cap · unstructured six-panel, adjustable strap",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-h01-back.svg", "alt": "Thornbound Cap: embroidered Thorn Cross on the front panel" },
+        "front": { "url": "/products/a3-h01-front.svg", "alt": "Thornbound Cap from the side" }
+      }
+    },
+    {
+      "code": "A3-H02",
+      "slug": "kingdom-cap",
+      "name": "Kingdom Cap",
+      "collection": "royal-heritage",
+      "category": "hats",
+      "colors": ["Oxblood corduroy", "Sandstone"],
+      "featured": false,
+      "releasedAt": "2026-07-10",
+      "scriptureRef": "Psalm 145:13",
+      "story": {
+        "art": "A thorn wreath embroidered in bone thread on the front panel.",
+        "front": "Embroidered thorn wreath, front panel, bone thread",
+        "back": "Small embroidered wordmark above the strap",
+        "inks": "Bone thread",
+        "paraphrase": "His kingdom is everlasting. He rules through every generation.",
+        "fit": "Cap · unstructured six-panel, adjustable strap",
+        "material": null
+      },
+      "images": {
+        "back": { "url": "/products/a3-h02-back.svg", "alt": "Kingdom Cap: embroidered thorn wreath on the front panel" },
+        "front": { "url": "/products/a3-h02-front.svg", "alt": "Kingdom Cap from the side" }
+      }
+    }
+  ]
+}
