@@ -16,13 +16,14 @@
     "lint": "pnpm -r lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:seed": "node scripts/generate-seed-sql.mjs"
+    "db:seed": "tsx scripts/generate-seed-sql.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
     "eslint": "^9.39.5",
     "globals": "^17.13.0",
     "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.71.1"
   }

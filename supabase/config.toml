@@ -1,0 +1,69 @@
+# Supabase CLI configuration for local development (`supabase start`).
+# Production settings (redirect URLs, Google client, Resend SMTP) are set in the Supabase dashboard;
+# see docs/ARCHITECTURE.md → "Auth" and docs/TODOS.md.
+project_id = "awebound"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+# Local mail catcher: sign-in emails land at http://localhost:54324
+enabled = true
+port = 54324
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/auth/callback", "http://localhost:3000/auth/confirm"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+
+[auth.email]
+# Passwordless only: the site never asks for a password.
+enable_signup = true
+enable_confirmations = false
+double_confirm_changes = true
+otp_length = 6
+otp_expiry = 3600
+
+[auth.email.template.magic_link]
+subject = "Your Awebound sign-in link"
+content_path = "./supabase/templates/magic-link.html"
+
+[auth.email.template.confirmation]
+subject = "Confirm your email for Awebound"
+content_path = "./supabase/templates/confirmation.html"
+
+# Resend as the SMTP server. Enable in production (dashboard → Authentication → SMTP).
+[auth.email.smtp]
+enabled = false
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "no-reply@awebound.store"
+sender_name = "Awebound"
+
+# Google sign-in. Create an OAuth client in Google Cloud and set these in supabase/.env.
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+skip_nonce_check = false
