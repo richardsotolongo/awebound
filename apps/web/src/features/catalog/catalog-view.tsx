@@ -1,7 +1,7 @@
 import { Button } from "@awebound/brand";
-import { toSearchParams, type CollectionSlug } from "@awebound/shared";
+import { toSearchParams, type CollectionSlug } from "@/shared";
 import Link from "next/link";
-import { serverApi } from "@/lib/api-server";
+import { getFacets, searchProducts } from "@/server/catalog";
 import { ActiveFilters } from "./active-filters";
 import { CatalogStateProvider } from "./catalog-state";
 import { FilterPanel } from "./filter-panel";
@@ -40,8 +40,8 @@ export async function CatalogView({ searchParams, basePath, collection }: Catalo
   const query = parseCatalogQuery(searchParams, { collection });
   const apiQuery = toApiQuery(query);
   const [list, facets] = await Promise.all([
-    read(() => serverApi.listProducts(apiQuery), EMPTY_LIST),
-    read(() => serverApi.getFacets(apiQuery), EMPTY_FACETS),
+    read(() => searchProducts(apiQuery), EMPTY_LIST),
+    read(() => getFacets(apiQuery), EMPTY_FACETS),
   ]);
   const queryKey = toSearchParams(apiQuery).toString();
   const activeCategory = query.category?.length === 1 ? query.category[0] : undefined;

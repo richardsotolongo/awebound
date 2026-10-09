@@ -1,8 +1,8 @@
 "use client";
 
 import { Footer } from "@awebound/brand";
-import { api } from "@/lib/api";
 import { FOOTER_NAV, SITE } from "@/lib/site";
+import { subscribe } from "@/server/actions";
 
 export function SiteFooter() {
   return (
@@ -10,7 +10,8 @@ export function SiteFooter() {
       links={FOOTER_NAV}
       tagline={SITE.tagline}
       onSubscribe={async (email) => {
-        await api.subscribe({ email, source: "footer" });
+        const result = await subscribe({ email, source: "footer" });
+        if (!result.ok) throw new Error(result.error);
       }}
     />
   );

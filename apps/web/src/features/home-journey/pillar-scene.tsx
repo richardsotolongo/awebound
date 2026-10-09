@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, ScriptureRef } from "@awebound/brand";
-import type { CollectionSlug } from "@awebound/shared";
+import type { CollectionSlug } from "@/shared";
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, type ComponentType } from "react";
 import type { Pillar } from "@/lib/site";

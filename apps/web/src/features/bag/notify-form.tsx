@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { ApiError, type SubscribeRequest } from "@awebound/shared";
+import type { SubscribeRequest } from "@/shared";
 import { useId, useState, type FormEvent } from "react";
-import { api } from "@/lib/api";
+import { subscribe } from "@/server/actions";
 
 interface NotifyFormProps {
   source: SubscribeRequest["source"];
@@ -22,17 +22,13 @@ export function NotifyForm({ source, productSlug, label = "Email", help }: Notif
   async function submit(e: FormEvent) {
     e.preventDefault();
     setState("sending");
-    try {
-      await api.subscribe({ email, source, productSlug });
+    const result = await subscribe({ email, source, productSlug }).catch(() => null);
+    if (result?.ok) {
       setState("done");
-    } catch (err) {
+    } else {
       setState("error");
       setError(
-        err instanceof ApiError && err.fields?.email?.[0]
-          ? err.fields.email[0]
-          : err instanceof ApiError
-            ? err.message
-            : "That didn’t go through. Try again in a moment.",
+        result?.fields?.email ?? result?.error ?? "That didn’t go through. Try again in a moment.",
       );
     }
   }

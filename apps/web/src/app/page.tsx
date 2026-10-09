@@ -1,12 +1,12 @@
 import { AltarPanel, CollectionBanner, ProductCard, ThornRule } from "@awebound/brand";
-import type { ProductSummary } from "@awebound/shared";
+import type { ProductSummary } from "@/shared";
 import Link from "next/link";
 import { Fragment } from "react";
 import { Reveal } from "@/components/reveal";
 import { EMPTY_LIST, toCardProps } from "@/features/catalog/query";
 import { Opening } from "@/features/home-journey/opening";
 import { PillarScene } from "@/features/home-journey/pillar-scene";
-import { serverApi, withFallback } from "@/lib/api-server";
+import { searchProducts, withFallback } from "@/server/catalog";
 import { PILLARS } from "@/lib/site";
 
 export const revalidate = 60;
@@ -34,7 +34,7 @@ function Rail({ title, items, href }: { title: string; items: ProductSummary[]; 
 
 export default async function Home() {
   const catalog = await withFallback(
-    () => serverApi.listProducts({ pageSize: 48, sort: "featured" }),
+    () => searchProducts({ pageSize: 48, sort: "featured" }),
     EMPTY_LIST,
   );
   const inCollection = (slug: string) =>

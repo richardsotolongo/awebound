@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { serverApi, withFallback } from "@/lib/api-server";
+import { searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
 import { PILLARS } from "@/lib/site";
 
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
-  const products = await withFallback(() => serverApi.listProducts({ pageSize: 48 }), {
+  const products = await withFallback(() => searchProducts({ pageSize: 48 }), {
     items: [],
     total: 0,
     page: 1,

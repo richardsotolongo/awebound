@@ -1,14 +1,9 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import {
-  ApiError,
-  CONTACT_TOPIC_LABELS,
-  CONTACT_TOPICS,
-  type ContactTopic,
-} from "@awebound/shared";
+import { CONTACT_TOPIC_LABELS, CONTACT_TOPICS, type ContactTopic } from "@/shared";
 import { useId, useState, type FormEvent } from "react";
-import { api } from "@/lib/api";
+import { sendContact } from "@/server/actions";
 
 type Fields = Partial<Record<"name" | "email" | "topic" | "message", string>>;
 
@@ -24,29 +19,19 @@ export function ContactForm() {
     setState("sending");
     setFieldErrors({});
     setFormError("");
-    try {
-      await api.sendContact({
-        name: String(data.get("name") ?? ""),
-        email: String(data.get("email") ?? ""),
-        topic: String(data.get("topic") ?? "other") as ContactTopic,
-        message: String(data.get("message") ?? ""),
-        website: String(data.get("website") ?? ""),
-      });
+    const result = await sendContact({
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      topic: String(data.get("topic") ?? "other") as ContactTopic,
+      message: String(data.get("message") ?? ""),
+      website: String(data.get("website") ?? ""),
+    }).catch(() => null);
+    if (result?.ok) {
       setState("done");
-    } catch (err) {
+    } else {
       setState("error");
-      if (err instanceof ApiError && err.fields) {
-        setFieldErrors(
-          Object.fromEntries(Object.entries(err.fields).map(([k, v]) => [k, v[0]])) as Fields,
-        );
-        setFormError("Check the highlighted fields.");
-      } else {
-        setFormError(
-          err instanceof ApiError
-            ? err.message
-            : "That didn’t go through. Try again, or email us directly.",
-        );
-      }
+      setFieldErrors(result?.fields ?? {});
+      setFormError(result?.error ?? "That didn’t go through. Try again, or email us directly.");
     }
   }
 

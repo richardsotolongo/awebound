@@ -1,26 +1,15 @@
 import { ProductCard, ScriptureRef, ThornRule } from "@awebound/brand";
-import { ApiError, type ProductDetail } from "@awebound/shared";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { cache } from "react";
 import { Reveal } from "@/components/reveal";
 import { toCardProps } from "@/features/catalog/query";
 import { ProductGallery } from "@/features/product/product-gallery";
 import { ProductPurchase } from "@/features/product/product-purchase";
-import { serverApi, withFallback } from "@/lib/api-server";
 import { siteUrl } from "@/lib/env";
+import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 
 type Params = Promise<{ slug: string }>;
-
-const getProduct = cache(async (slug: string): Promise<ProductDetail | null> => {
-  try {
-    return await serverApi.getProduct(slug);
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 404) return null;
-    throw error;
-  }
-});
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const product = await getProduct((await params).slug).catch(() => null);
@@ -44,7 +33,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   if (!product) notFound();
 
   const related = await withFallback(
-    () => serverApi.listProducts({ collection: [product.collection.slug], pageSize: 5 }),
+    () => searchProducts({ collection: [product.collection.slug], pageSize: 5 }),
     { items: [], total: 0, page: 1, pageSize: 5, hasMore: false },
   );
   const others = related.items.filter((p) => p.slug !== product.slug).slice(0, 4);

@@ -1,10 +1,9 @@
 import { Button } from "@awebound/brand";
-import { createApiClient, type Profile } from "@awebound/shared";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { ProfileForm } from "@/features/account/profile-form";
-import { accountsEnabled, publicEnv } from "@/lib/env";
+import { accountsEnabled } from "@/lib/env";
 import { getServerSupabase } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -33,21 +32,15 @@ export default async function AccountPage() {
   const user = userData.user;
   if (!user) redirect("/sign-in?next=/account");
 
-  const { data: sessionData } = await supabase.auth.getSession();
-  const client = createApiClient({
-    baseUrl: process.env.API_URL?.trim() || publicEnv.NEXT_PUBLIC_API_URL,
-    getAccessToken: () => sessionData.session?.access_token ?? null,
-    init: { cache: "no-store" },
-  });
-  let profile: Profile | null = null;
-  try {
-    profile = await client.getMe();
-  } catch {
-    profile = null;
-  }
+  // RLS lets a signed-in user read their own profile row.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .maybeSingle<{ full_name: string | null }>();
 
   const meta = user.user_metadata as { full_name?: string; name?: string } | undefined;
-  const name = profile?.fullName ?? meta?.full_name ?? meta?.name ?? "";
+  const name = profile?.full_name ?? meta?.full_name ?? meta?.name ?? "";
   const provider = (user.app_metadata as { provider?: string } | undefined)?.provider;
 
   return (

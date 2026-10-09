@@ -1,6 +1,6 @@
 "use client";
 
-import { SORT_LABELS, SORT_OPTIONS, type CatalogFacets } from "@awebound/shared";
+import { SORT_LABELS, SORT_OPTIONS, type CatalogFacets } from "@/shared";
 import { useId, useRef, useState } from "react";
 import { CloseIcon, FilterIcon, SearchIcon } from "@/components/icons";
 import { Sheet } from "@/components/sheet";

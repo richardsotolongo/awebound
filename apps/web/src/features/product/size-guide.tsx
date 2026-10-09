@@ -1,4 +1,4 @@
-import type { CategorySlug } from "@awebound/shared";
+import type { CategorySlug } from "@/shared";
 
 /**
  * Approximate garment measurements (inches, laid flat) by cut. Replace with the chosen blank

@@ -1,6 +1,6 @@
 "use client";
 
-import { colorCss, type CatalogFacets } from "@awebound/shared";
+import { colorCss, type CatalogFacets } from "@/shared";
 import { useId, useState } from "react";
 import { useCatalogState } from "./catalog-state";
 

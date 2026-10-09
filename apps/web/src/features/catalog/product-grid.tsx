@@ -1,10 +1,10 @@
 "use client";
 
 import { ProductCard } from "@awebound/brand";
-import type { ProductList, ProductQueryInput } from "@awebound/shared";
+import type { ProductList, ProductQueryInput } from "@/shared";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { api } from "@/lib/api";
+import { loadMoreProducts } from "@/server/actions";
 import { useCatalogState } from "./catalog-state";
 import { toCardProps } from "./query";
 
@@ -38,19 +38,19 @@ export function ProductGrid({ initial, query, queryKey, wide }: ProductGridProps
   async function more() {
     setLoading(true);
     setError(false);
-    try {
-      const next = await api.listProducts({ ...query, page: page + 1 });
+    const result = await loadMoreProducts({ ...query, page: page + 1 }).catch(() => null);
+    if (result?.ok) {
+      const next = result.data;
       setItems((current) => [
         ...current,
         ...next.items.filter((n) => !current.some((c) => c.slug === n.slug)),
       ]);
       setPage(next.page);
       setHasMore(next.hasMore);
-    } catch {
+    } else {
       setError(true);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }
 
   return (

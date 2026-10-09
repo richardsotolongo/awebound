@@ -1,5 +1,5 @@
 import type { NavLink } from "@awebound/brand";
-import { CONTACT_EMAIL, type CollectionSlug } from "@awebound/shared";
+import { CONTACT_EMAIL, type CollectionSlug } from "@/shared";
 
 export const SITE = {
   name: "Awebound",

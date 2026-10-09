@@ -1,6 +1,6 @@
 "use client";
 
-import { SORT_LABELS, type CatalogFacets, type Sort } from "@awebound/shared";
+import { SORT_LABELS, type CatalogFacets, type Sort } from "@/shared";
 import { CloseIcon } from "@/components/icons";
 import { useCatalogState } from "./catalog-state";
 

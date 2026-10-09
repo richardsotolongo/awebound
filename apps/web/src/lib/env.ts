@@ -2,9 +2,9 @@ import { z } from "zod";
 
 const emptyToUndefined = (v: unknown) => (typeof v === "string" && v.trim() === "" ? undefined : v);
 
+/** Public settings, safe in the browser. Server-only ones live in src/server/env.ts. */
 const PublicEnvSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.preprocess(emptyToUndefined, z.url().default("http://localhost:3000")),
-  NEXT_PUBLIC_API_URL: z.preprocess(emptyToUndefined, z.url().default("http://localhost:4000")),
   NEXT_PUBLIC_SUPABASE_URL: z.preprocess(emptyToUndefined, z.url().optional()),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.preprocess(emptyToUndefined, z.string().optional()),
 });
@@ -12,7 +12,6 @@ const PublicEnvSchema = z.object({
 // Each variable is referenced by name so Next can inline it into the browser bundle.
 export const publicEnv = PublicEnvSchema.parse({
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
 });

@@ -5,8 +5,8 @@ import {
   type ProductList,
   type ProductQuery,
   type ProductSummary,
-} from "@awebound/shared";
-import { colorCss, formatPrice } from "@awebound/shared";
+} from "@/shared";
+import { colorCss, formatPrice } from "@/shared";
 import type { ProductCardProps } from "@awebound/brand";
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;

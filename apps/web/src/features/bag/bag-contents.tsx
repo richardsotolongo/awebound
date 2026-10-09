@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { ApiError, formatPrice, type BagIssue } from "@awebound/shared";
+import { formatPrice, type BagIssue } from "@/shared";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { startCheckout, validateBag } from "@/server/actions";
 import { bagSubtotal, useBag } from "./bag-store";
 
-/** Re-prices the bag against the API whenever it is shown. */
+/** Re-prices the bag on the server whenever it is shown. */
 export function useBagValidation(active: boolean) {
   const lines = useBag((s) => s.lines);
   const reconcile = useBag((s) => s.reconcile);
@@ -20,10 +20,11 @@ export function useBagValidation(active: boolean) {
   useEffect(() => {
     if (!active || lines.length === 0) return;
     let cancelled = false;
-    api
-      .validateBag({ lines: lines.map(({ sku, quantity }) => ({ sku, quantity })) })
-      .then((bag) => {
-        if (cancelled) return;
+    validateBag({ lines: lines.map(({ sku, quantity }) => ({ sku, quantity })) })
+      .then((result) => {
+        // On failure keep the local copy; checkout re-validates anyway.
+        if (cancelled || !result.ok) return;
+        const bag = result.data;
         setChecked({
           key: bag.lines.map((l) => `${l.sku}:${l.quantity}`).join("|"),
           issues: bag.issues,
@@ -38,9 +39,7 @@ export function useBagValidation(active: boolean) {
           );
         if (changed) reconcile(bag);
       })
-      .catch(() => {
-        // Offline: keep the local copy; checkout re-validates anyway.
-      });
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };
@@ -120,16 +119,14 @@ export function BagCheckout() {
   const checkout = useCallback(async () => {
     setState("loading");
     setError("");
-    try {
-      const { url } = await api.startCheckout({
-        lines: available.map(({ sku, quantity }) => ({ sku, quantity })),
-      });
-      window.location.assign(url);
-    } catch (err) {
+    const result = await startCheckout({
+      lines: available.map(({ sku, quantity }) => ({ sku, quantity })),
+    }).catch(() => null);
+    if (result?.ok) {
+      window.location.assign(result.data.url);
+    } else {
       setState("error");
-      setError(
-        err instanceof ApiError ? err.message : "Checkout didn’t start. Try again in a moment.",
-      );
+      setError(result?.error ?? "Checkout didn’t start. Try again in a moment.");
     }
   }, [available]);
 

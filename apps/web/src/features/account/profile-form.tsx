@@ -1,9 +1,8 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { ApiError } from "@awebound/shared";
 import { useId, useState, type FormEvent } from "react";
-import { api } from "@/lib/api";
+import { updateProfile } from "@/server/actions";
 
 export function ProfileForm({ initialName }: { initialName: string }) {
   const id = useId();
@@ -14,13 +13,13 @@ export function ProfileForm({ initialName }: { initialName: string }) {
   async function save(e: FormEvent) {
     e.preventDefault();
     setState("saving");
-    try {
-      const profile = await api.updateMe({ fullName: name });
-      setName(profile.fullName ?? "");
+    const result = await updateProfile({ fullName: name }).catch(() => null);
+    if (result?.ok) {
+      setName(result.data.fullName);
       setState("saved");
-    } catch (err) {
+    } else {
       setState("error");
-      setError(err instanceof ApiError ? err.message : "That didn’t save. Try again.");
+      setError(result?.error ?? "That didn’t save. Try again.");
     }
   }
 

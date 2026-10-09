@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProductImage } from "@awebound/shared";
+import type { ProductImage } from "@/shared";
 import { useRef, useState } from "react";
 
 /** Back print first, then front and details. Thumbnails on desktop; swipe with dots on phones. */

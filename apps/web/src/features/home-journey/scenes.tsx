@@ -71,7 +71,7 @@ export function ArchScene({ progress }: SceneProps) {
           <motion.path
             key={a}
             className="sc-ray"
-            d={`M300 118 L${300 + Math.tan((a * Math.PI) / 180) * 440} 560`}
+            d={`M300 118 L${(300 + Math.tan((a * Math.PI) / 180) * 440).toFixed(1)} 560`}
             style={{ pathLength: rays }}
           />
         ))}

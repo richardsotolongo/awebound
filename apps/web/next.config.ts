@@ -12,7 +12,7 @@ const securityHeaders = [
 
 const config: NextConfig = {
   // Internal workspace packages ship TypeScript source; Next compiles them.
-  transpilePackages: ["@awebound/brand", "@awebound/shared"],
+  transpilePackages: ["@awebound/brand"],
   reactStrictMode: true,
   poweredByHeader: false,
   images: {

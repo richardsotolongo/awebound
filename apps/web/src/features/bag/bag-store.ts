@@ -1,6 +1,6 @@
 "use client";
 
-import { MAX_LINE_QUANTITY, type Bag, type BagLine } from "@awebound/shared";
+import { MAX_LINE_QUANTITY, type Bag, type BagLine } from "@/shared";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 

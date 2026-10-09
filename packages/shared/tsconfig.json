@@ -1,4 +1,0 @@
-{
-  "extends": "@awebound/tsconfig/library.json",
-  "include": ["src"]
-}

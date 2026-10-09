@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, SizeSelector, Swatches } from "@awebound/brand";
-import { colorCss, formatPrice, type ProductDetail } from "@awebound/shared";
+import { colorCss, formatPrice, type ProductDetail } from "@/shared";
 import { useMemo, useRef, useState } from "react";
 import { Sheet } from "@/components/sheet";
 import { useBag } from "@/features/bag/bag-store";
