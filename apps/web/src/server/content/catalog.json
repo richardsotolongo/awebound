@@ -208,29 +208,29 @@
         "theme": "Resurrection",
         "call": "Behold, He is risen",
         "motif": "stone",
-        "art": "The stone rolls away from the tomb in a sweep of blue, and the doorway stands empty.",
-        "meaning": "Early on the first day of the week, the women came to the tomb and found the stone rolled away. The angel told them Jesus was not there: He had risen, just as He said. The front shows the empty tomb with the stone still moving. The back sets the angel’s announcement in heavy capitals, as plain as news.",
-        "front": "The open tomb and rolling stone across the hem; small wordmark, left chest",
-        "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) over the stone in its blue sweep",
+        "art": "The stone rolls away in a sweep of blue beneath the angel’s announcement.",
+        "meaning": "Early on the first day of the week, the women came to the tomb and found the stone rolled away. The angel told them Jesus was not there: He had risen, just as He said. The back sets the angel’s announcement in heavy capitals, as plain as news, with the stone still rolling in a sweep of blue below it. The front keeps only the wordmark.",
+        "front": "Small Awebound wordmark, center chest",
+        "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
         "inks": "Black, cobalt blue",
         "fit": "Regular oversized · dropped shoulder, boxy body",
         "material": null
       },
       "images": [
         {
-          "view": "front",
-          "url": "/products/stone-in-motion/front.webp",
-          "alt": "Stone in Motion oversized tee, front: the open tomb and the stone rolling away in a sweep of blue"
-        },
-        {
           "view": "back",
           "url": "/products/stone-in-motion/back.webp",
-          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, over the rolling stone"
+          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
+        },
+        {
+          "view": "front",
+          "url": "/products/stone-in-motion/front.webp",
+          "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
         },
         {
           "view": "detail",
           "url": "/products/stone-in-motion/detail.webp",
-          "alt": "Stone in Motion front print, close up"
+          "alt": "Stone in Motion back print, close up"
         }
       ]
     },

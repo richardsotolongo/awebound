@@ -42,7 +42,7 @@ VIEWS = {
     "holy-ground": {"views": ["back", "front"], "detail": ("back", 0.5, 0.42, 0.74)},
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.52, 0.74)},
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.47, 0.72)},
-    "stone-in-motion": {"views": ["front", "back"], "detail": ("front", 0.46, 0.66, 0.74)},
+    "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.56, 0.5, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.52, 0.72)},
     "lambs-mark": {"views": ["front", "rear", "side"], "detail": ("front", 0.4, 0.36, 0.56)},
 }

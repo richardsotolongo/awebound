@@ -47,7 +47,8 @@ SHEETS: dict[str, dict] = {
     },
     "stone-in-motion": {
         "light": True,
-        "views": [("front", (30, 80, 768, 950)), ("back", (768, 80, 1510, 950))],
+        "touching": True,
+        "views": [("front", (20, 85, 770, 935)), ("back", (770, 85, 1520, 935))],
     },
     "to-live-is-christ": {
         "light": False,
