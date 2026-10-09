@@ -15,6 +15,12 @@ type Filters = Pick<
   "q" | "category" | "collection" | "color" | "size" | "minPrice" | "maxPrice"
 >;
 
+/** Known sizes in display order; anything a provider adds goes after them. */
+const rankSize = (size: string, order: readonly string[]) => {
+  const i = order.indexOf(size);
+  return i === -1 ? order.length : i;
+};
+
 const normalize = (s: string) =>
   s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[–—]/g, "-");
 
@@ -45,7 +51,11 @@ export class InMemoryProductRepository implements ProductRepository {
   private readonly products: ProductDetail[];
   private readonly words = new Map<string, string[]>();
 
-  constructor(private readonly catalog: SeedCatalog) {
+  constructor(
+    private readonly catalog: SeedCatalog,
+    /** SKU → provider variant id, when the catalog is linked to a commerce provider. */
+    private readonly providerIds: ReadonlyMap<string, string> = new Map(),
+  ) {
     this.products = catalog.products;
     for (const p of this.products) this.words.set(p.slug, haystack(p));
   }
@@ -113,10 +123,10 @@ export class InMemoryProductRepository implements ProductRepository {
       this.products.filter((p) => this.matches(p, { ...query, [except]: undefined }) && pred(p))
         .length;
 
-    const colors = new Map<string, string>();
+    const colors = new Map<string, { token: string; swatch?: string }>();
     const sizes = new Set<string>();
     for (const p of this.products) {
-      for (const c of p.colors) colors.set(c.name, c.token);
+      for (const c of p.colors) colors.set(c.name, { token: c.token, swatch: c.swatch });
       for (const s of p.sizes) sizes.add(s);
     }
     const order = SIZE_ORDER as readonly string[];
@@ -135,13 +145,13 @@ export class InMemoryProductRepository implements ProductRepository {
       })),
       colors: [...colors]
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([name, token]) => ({
+        .map(([name, color]) => ({
           name,
-          token,
+          ...color,
           count: count("color", (p) => p.colors.some((c) => c.name === name)),
         })),
       sizes: [...sizes]
-        .sort((a, b) => order.indexOf(a) - order.indexOf(b))
+        .sort((a, b) => rankSize(a, order) - rankSize(b, order))
         .map((size) => ({
           size,
           count: count("size", (p) => p.variants.some((v) => v.available && v.size === size)),
@@ -162,7 +172,13 @@ export class InMemoryProductRepository implements ProductRepository {
     const found = new Map<string, VariantWithProduct>();
     for (const p of this.products) {
       for (const v of p.variants) {
-        if (wanted.has(v.sku)) found.set(v.sku, { variant: v, product: toSummary(p) });
+        if (wanted.has(v.sku)) {
+          found.set(v.sku, {
+            variant: v,
+            product: toSummary(p),
+            providerVariantId: this.providerIds.get(v.sku),
+          });
+        }
       }
     }
     return found;

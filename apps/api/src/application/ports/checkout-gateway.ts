@@ -1,9 +1,14 @@
 import type { CheckoutResult } from "@awebound/shared";
 import type { BagLine } from "../../domain/bag";
 
+export interface CheckoutLine extends BagLine {
+  /** The provider's variant id, from the catalog. Missing when the piece isn't linked yet. */
+  providerVariantId?: string;
+}
+
 export interface CheckoutSession {
   /** Priced, available lines only. */
-  lines: BagLine[];
+  lines: CheckoutLine[];
   subtotalCents: number;
   currency: string;
   email?: string;

@@ -6,7 +6,7 @@ import {
   type ProductQuery,
   type ProductSummary,
 } from "@awebound/shared";
-import { formatPrice } from "@awebound/shared";
+import { colorCss, formatPrice } from "@awebound/shared";
 import type { ProductCardProps } from "@awebound/brand";
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -66,7 +66,7 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
     id: p.code,
     name: p.name,
     base: `${p.category.cut} · ${p.baseColor}`,
-    swatches: p.colors.map((c) => `var(--${c.token})`),
+    swatches: p.colors.map(colorCss),
     scripture: p.scriptureRef,
     image: p.image.url,
     imageAlt: p.image.alt,

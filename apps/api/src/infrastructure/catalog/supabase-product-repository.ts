@@ -241,22 +241,31 @@ export class SupabaseProductRepository implements ProductRepository {
     if (skus.length === 0) return found;
     const { data, error } = await this.db
       .from("product_variants")
-      .select("sku, product:products!inner(code)")
+      .select("sku, provider_variant_id, product:products!inner(code)")
       .in("sku", skus);
     if (error) this.fail("variants.bySku", error);
-    const codes = [
-      ...new Set(
-        z
-          .array(z.object({ product: z.object({ code: z.string() }) }))
-          .parse(data)
-          .map((r) => r.product.code),
-      ),
-    ];
+    const rows = z
+      .array(
+        z.object({
+          sku: z.string(),
+          provider_variant_id: z.string().nullable(),
+          product: z.object({ code: z.string() }),
+        }),
+      )
+      .parse(data);
+    const providerIds = new Map(rows.map((r) => [r.sku, r.provider_variant_id ?? undefined]));
+    const codes = [...new Set(rows.map((r) => r.product.code))];
     const wanted = new Set(skus);
     for (const product of await this.loadProducts("code", codes)) {
       const summary = toSummary(product);
       for (const variant of product.variants) {
-        if (wanted.has(variant.sku)) found.set(variant.sku, { variant, product: summary });
+        if (wanted.has(variant.sku)) {
+          found.set(variant.sku, {
+            variant,
+            product: summary,
+            providerVariantId: providerIds.get(variant.sku),
+          });
+        }
       }
     }
     return found;

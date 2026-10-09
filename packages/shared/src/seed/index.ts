@@ -35,6 +35,8 @@ const CatalogSeedSchema = z.object({
       featured: z.boolean(),
       releasedAt: z.string(),
       scriptureRef: z.string(),
+      /** Product slug in the Fourthwall shop when it differs from `slug`. */
+      fourthwallSlug: z.string().optional(),
       story: ProductStorySchema,
       images: z.object({ back: SeedImage, front: SeedImage }),
     }),
@@ -48,6 +50,10 @@ export interface SeedCatalog {
   categories: Category[];
   collections: Collection[];
   products: ProductDetail[];
+  /** Garment color name → brand token, for matching provider color names. */
+  colorTokens?: Record<string, string>;
+  /** Site slug → Fourthwall product slug, for products whose slugs differ. */
+  fourthwallSlugs?: Record<string, string>;
 }
 
 function slugPart(value: string): string {
@@ -127,7 +133,17 @@ export function buildSeedCatalog(input: unknown = raw): SeedCatalog {
     };
   });
 
-  return { currency: seed.currency, categories, collections, products };
+  const fourthwallSlugs = Object.fromEntries(
+    seed.products.filter((p) => p.fourthwallSlug).map((p) => [p.slug, p.fourthwallSlug as string]),
+  );
+  return {
+    currency: seed.currency,
+    categories,
+    collections,
+    products,
+    colorTokens: seed.colors,
+    fourthwallSlugs,
+  };
 }
 
 export const seedCatalog: SeedCatalog = buildSeedCatalog();

@@ -46,10 +46,18 @@ export type Collection = z.infer<typeof CollectionSchema>;
 
 export const ColorSchema = z.object({
   name: z.string(),
-  /** Brand token without the leading dashes, e.g. "garment-faded-black". */
+  /** Brand token without the leading dashes, e.g. "garment-faded-black". Empty when unknown. */
   token: z.string(),
+  /** The provider's own swatch (hex), used only when no brand token matches the color name. */
+  swatch: z.string().optional(),
 });
 export type Color = z.infer<typeof ColorSchema>;
+
+/** CSS value for a color chip: the brand token when there is one, else the provider's swatch. */
+export function colorCss(color: Pick<Color, "token" | "swatch">): string {
+  if (color.token) return `var(--${color.token})`;
+  return color.swatch && /^#[0-9a-fA-F]{3,8}$/.test(color.swatch) ? color.swatch : "transparent";
+}
 
 export const ImageViewSchema = z.enum(["back", "front", "detail"]);
 export const ProductImageSchema = z.object({

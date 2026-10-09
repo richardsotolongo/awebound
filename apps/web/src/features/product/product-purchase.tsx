@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, SizeSelector, Swatches } from "@awebound/brand";
-import { formatPrice, type ProductDetail } from "@awebound/shared";
+import { colorCss, formatPrice, type ProductDetail } from "@awebound/shared";
 import { useMemo, useRef, useState } from "react";
 import { Sheet } from "@/components/sheet";
 import { useBag } from "@/features/bag/bag-store";
@@ -67,7 +67,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
           <span className="aw-label">Color</span>
         </div>
         <Swatches
-          colors={product.colors.map((c) => ({ name: c.name, hex: `var(--${c.token})` }))}
+          colors={product.colors.map((c) => ({ name: c.name, hex: colorCss(c) }))}
           value={color}
           onChange={changeColor}
         />

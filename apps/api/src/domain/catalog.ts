@@ -22,6 +22,8 @@ import type { ProductDetail, ProductSummary, Variant } from "@awebound/shared";
 export interface VariantWithProduct {
   variant: Variant;
   product: ProductSummary;
+  /** The commerce provider's id for this variant (e.g. a Fourthwall variant id), when linked. */
+  providerVariantId?: string;
 }
 
 /** Narrows a full product record to the listing shape. */

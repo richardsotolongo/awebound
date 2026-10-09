@@ -1,5 +1,5 @@
 export type { ProductRepository, ProductSearchResult } from "./product-repository";
-export type { CheckoutGateway, CheckoutSession } from "./checkout-gateway";
+export type { CheckoutGateway, CheckoutLine, CheckoutSession } from "./checkout-gateway";
 export type {
   FulfillmentGateway,
   FulfillmentOrder,

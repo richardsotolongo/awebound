@@ -1,6 +1,6 @@
 "use client";
 
-import type { CatalogFacets } from "@awebound/shared";
+import { colorCss, type CatalogFacets } from "@awebound/shared";
 import { useId, useState } from "react";
 import { useCatalogState } from "./catalog-state";
 
@@ -61,7 +61,7 @@ export function FilterPanel({ facets, hideCollections }: FilterPanelProps) {
                   disabled={c.count === 0 && !on}
                   onClick={() => state.toggle("color", c.name)}
                 >
-                  <i style={{ background: `var(--${c.token})` }} />
+                  <i style={{ background: colorCss(c) }} />
                 </button>
               );
             })}

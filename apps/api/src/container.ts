@@ -24,7 +24,10 @@ import {
 import { SupabaseProfileRepository } from "./infrastructure/accounts/supabase-profile-repository";
 import { InMemoryProductRepository } from "./infrastructure/catalog/in-memory-catalog";
 import { SupabaseProductRepository } from "./infrastructure/catalog/supabase-product-repository";
+import { FourthwallCheckoutGateway } from "./infrastructure/commerce/fourthwall-checkout-gateway";
 import { UnconfiguredCheckoutGateway } from "./infrastructure/commerce/unconfigured-checkout-gateway";
+import { FourthwallProductRepository } from "./infrastructure/fourthwall/fourthwall-product-repository";
+import { FourthwallStorefront } from "./infrastructure/fourthwall/storefront-client";
 import type { Env } from "./infrastructure/config/env";
 import { ConsoleMailer, ResendMailer } from "./infrastructure/email/mailers";
 import {
@@ -56,9 +59,21 @@ class UnavailableProfiles implements ProfileRepository {
   }
 }
 
-function createCheckoutGateway(env: Env, logger: AppLogger): CheckoutGateway {
+function createCheckoutGateway(
+  env: Env,
+  logger: AppLogger,
+  fourthwall: FourthwallStorefront | null,
+): CheckoutGateway {
+  if (env.COMMERCE_PROVIDER === "fourthwall" && fourthwall && env.FOURTHWALL_CHECKOUT_DOMAIN) {
+    return new FourthwallCheckoutGateway(
+      fourthwall,
+      env.FOURTHWALL_CHECKOUT_DOMAIN,
+      env.FOURTHWALL_CURRENCY,
+      logger,
+    );
+  }
   if (env.COMMERCE_PROVIDER !== "none") {
-    // Adapters for Printful, Printify, Fourthwall and Apliiq are not written yet (docs/TODOS.md).
+    // Adapters for Printful, Printify and Apliiq are not written yet (docs/TODOS.md).
     logger.warn(
       { provider: env.COMMERCE_PROVIDER },
       "commerce provider set but no adapter exists yet; checkout stays closed",
@@ -77,10 +92,22 @@ export function buildContainer(env: Env, logger: AppLogger) {
       ? createSupabaseAdmin(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY)
       : null;
 
+  const fourthwall = env.FOURTHWALL_STOREFRONT_TOKEN
+    ? new FourthwallStorefront({
+        apiUrl: env.FOURTHWALL_API_URL,
+        storefrontToken: env.FOURTHWALL_STOREFRONT_TOKEN,
+        currency: env.FOURTHWALL_CURRENCY,
+      })
+    : null;
+
+  // Fourthwall: live variants, prices, stock and photos merged with the brand content in
+  // packages/shared/src/seed/catalog.json. Supabase: everything from Postgres. Seed: offline.
   const products: ProductRepository =
-    env.CATALOG_SOURCE === "supabase" && supabase
-      ? new SupabaseProductRepository(supabase)
-      : new InMemoryProductRepository(seedCatalog);
+    env.CATALOG_SOURCE === "fourthwall" && fourthwall
+      ? new FourthwallProductRepository(fourthwall, seedCatalog, logger)
+      : env.CATALOG_SOURCE === "supabase" && supabase
+        ? new SupabaseProductRepository(supabase)
+        : new InMemoryProductRepository(seedCatalog);
 
   const contacts: ContactRepository = supabase
     ? new SupabaseContactRepository(supabase)
@@ -105,7 +132,7 @@ export function buildContainer(env: Env, logger: AppLogger) {
     ? new ResendMailer(env.RESEND_API_KEY, mailConfig)
     : new ConsoleMailer(mailConfig, logger);
 
-  const checkout = createCheckoutGateway(env, logger);
+  const checkout = createCheckoutGateway(env, logger, fourthwall);
   const validateBag = new ValidateBag(products);
 
   logger.info(
@@ -127,7 +154,7 @@ export function buildContainer(env: Env, logger: AppLogger) {
       getProductBySlug: new GetProductBySlug(products),
       listCollections: new ListCollections(products),
       validateBag,
-      startCheckout: new StartCheckout(validateBag, checkout, logger),
+      startCheckout: new StartCheckout(products, checkout, logger),
       submitContactMessage: new SubmitContactMessage(contacts, mailer, logger),
       subscribeToDropNotes: new SubscribeToDropNotes(subscribers, mailer, logger),
       getProfile: new GetProfile(profiles),
