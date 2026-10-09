@@ -28,7 +28,9 @@ export function toSummary(p: ProductDetail): ProductSummary {
     code: p.code,
     slug: p.slug,
     name: p.name,
-    collection: { slug: p.collection.slug, name: p.collection.name, pillar: p.collection.pillar },
+    collection: { slug: p.collection.slug, name: p.collection.name, tagline: p.collection.tagline },
+    position: p.position,
+    preview: p.preview,
     category: p.category,
     baseColor: p.baseColor,
     priceCents: p.priceCents,
@@ -126,13 +128,18 @@ export class CatalogIndex {
       .map((p) => ({ p, rank: this.rank(p, query.q) ?? 0 }));
 
     const byDefault = (a: ProductDetail, b: ProductDetail) =>
-      b.releasedAt.localeCompare(a.releasedAt) || a.name.localeCompare(b.name);
+      b.releasedAt.localeCompare(a.releasedAt) ||
+      a.position - b.position ||
+      a.name.localeCompare(b.name);
     const sorters: Record<
       ProductQuery["sort"],
       (a: { p: ProductDetail; rank: number }, b: { p: ProductDetail; rank: number }) => number
     > = {
       featured: (a, b) =>
-        b.rank - a.rank || Number(b.p.featured) - Number(a.p.featured) || byDefault(a.p, b.p),
+        b.rank - a.rank ||
+        Number(b.p.featured) - Number(a.p.featured) ||
+        a.p.position - b.p.position ||
+        byDefault(a.p, b.p),
       newest: (a, b) => byDefault(a.p, b.p),
       "price-asc": (a, b) => a.p.priceCents - b.p.priceCents || byDefault(a.p, b.p),
       "price-desc": (a, b) => b.p.priceCents - a.p.priceCents || byDefault(a.p, b.p),
@@ -172,7 +179,7 @@ export class CatalogIndex {
       collections: this.catalog.collections.map((c) => ({
         slug: c.slug,
         name: c.name,
-        pillar: c.pillar,
+        tagline: c.tagline,
         count: count("collection", (p) => p.collection.slug === c.slug),
       })),
       colors: [...colors]

@@ -3,8 +3,9 @@
 import { Button } from "@awebound/brand";
 import { formatPrice, type BagIssue } from "@/shared";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { startCheckout, validateBag } from "@/server/actions";
+import { NotifyForm } from "./notify-form";
 import { bagSubtotal, useBag } from "./bag-store";
 
 /** Re-prices the bag on the server whenever it is shown. */
@@ -115,8 +116,9 @@ export function BagCheckout() {
   const [error, setError] = useState("");
   const subtotal = bagSubtotal(lines);
   const available = lines.filter((l) => l.snapshot.available);
+  const preview = available.find((l) => l.snapshot.preview);
 
-  const checkout = useCallback(async () => {
+  async function checkout() {
     setState("loading");
     setError("");
     const result = await startCheckout({
@@ -128,7 +130,7 @@ export function BagCheckout() {
       setState("error");
       setError(result?.error ?? "Checkout didn’t start. Try again in a moment.");
     }
-  }, [available]);
+  }
 
   return (
     <>
@@ -139,14 +141,28 @@ export function BagCheckout() {
         </span>
       </div>
       <p className="field-help">Shipping and tax are calculated at checkout.</p>
-      <Button
-        variant="primary"
-        block
-        onClick={checkout}
-        disabled={state === "loading" || available.length === 0}
-      >
-        {state === "loading" ? "Opening checkout…" : "Check out"}
-      </Button>
+      {preview ? (
+        <div className="notice">
+          <p className="aw-small" style={{ color: "var(--ink)" }}>
+            Checkout for the Behold release opens soon. Leave your email and we’ll tell you the day
+            it opens.
+          </p>
+          <NotifyForm
+            source="product"
+            productSlug={preview.snapshot.productSlug}
+            label="Your email"
+          />
+        </div>
+      ) : (
+        <Button
+          variant="primary"
+          block
+          onClick={checkout}
+          disabled={state === "loading" || available.length === 0}
+        >
+          {state === "loading" ? "Opening checkout…" : "Check out"}
+        </Button>
+      )}
       {state === "error" ? (
         <p className="aw-form-error" role="alert">
           {error}
@@ -174,7 +190,7 @@ export function BagEmpty({ onNavigate }: { onNavigate?: () => void }) {
     <div style={{ display: "grid", gap: "var(--space-4)", justifyItems: "start" }}>
       <p className="aw-body">Your bag is empty.</p>
       <Button variant="secondary" href="/shop" onClick={onNavigate}>
-        Shop the collection
+        Shop the release
       </Button>
     </div>
   );

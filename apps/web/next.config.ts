@@ -18,6 +18,13 @@ const config: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // The first launch is one release, so the old collection pages point at the shop.
+  async redirects() {
+    return [
+      { source: "/collections", destination: "/shop", permanent: true },
+      { source: "/collections/:slug", destination: "/shop", permanent: true },
+    ];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

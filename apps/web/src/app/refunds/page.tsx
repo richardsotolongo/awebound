@@ -64,9 +64,7 @@ const sections: LegalSection[] = [
           Include your order number, the item and a clear photo of the problem (and of the label for
           size issues).
         </li>
-        <li>
-          We reply within two business days. In most cases you won’t need to send anything back.
-        </li>
+        <li>We reply within 72 hours. In most cases you won’t need to send anything back.</li>
         <li>You choose a replacement or a refund to your original payment method.</li>
       </ol>
     ),

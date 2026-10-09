@@ -19,7 +19,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** The site footer: small Thorn Cross and tagline, a drop-notes sign-up and policy links. */
 export function Footer({
   links = [],
-  tagline = "Royal heritage. Freedom. Resurrection.",
+  tagline = "Bound in awe. Worn without shame.",
   year,
   onSubscribe,
 }: FooterProps) {

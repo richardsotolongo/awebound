@@ -1,5 +1,6 @@
-/* The home page journey: opening reveal, pinned pillar scenes and their line art.
-   The one approved exception to the 200–300ms motion rule; reduced motion gets still frames. */
+/* The home page journey: opening reveal, the Behold curtain, six pinned scenes and the seed.
+   Scroll-driven motion here is the one approved exception to the 200–300ms rule; reduced
+   motion gets still, finished frames and no pinning. */
 @layer components {
   /* Opening */
   .journey-opening {
@@ -99,25 +100,157 @@
     }
   }
 
-  .journey-intro {
-    display: grid;
-    gap: var(--space-12);
-    padding-top: var(--space-8);
-    padding-bottom: var(--space-16);
+  /* ─── Behold: the curtain tears and the release name stands in the light ─── */
+  .veil {
+    position: relative;
+    height: 230vh;
   }
-  .journey-intro-text {
+  .veil-sticky {
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100svh - var(--header-height));
     display: grid;
-    gap: var(--space-3);
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .veil-light {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(
+        ellipse 46% 58% at 50% 42%,
+        color-mix(in srgb, var(--ink) 16%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(ellipse 22% 90% at 50% 0%, var(--light-shaft), transparent 75%);
+    pointer-events: none;
+  }
+  .veil-content {
+    display: grid;
     justify-items: center;
+    gap: var(--space-4);
+    padding-inline: var(--gutter-mobile);
     text-align: center;
   }
-
-  /* Pillar scenes: a tall section with a pinned panel */
-  .pillar {
-    position: relative;
-    height: 260vh;
+  .veil-word {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: clamp(52px, 15vw, 232px);
+    line-height: 0.9;
+    padding-inline-start: 0.06em; /* balance the trailing letter-space */
+    color: var(--ink);
+    background: linear-gradient(
+      100deg,
+      var(--ink-muted) 0%,
+      var(--ink-muted) 38%,
+      var(--ink) 48%,
+      var(--ink) 52%,
+      var(--ink-muted) 62%,
+      var(--ink-muted) 100%
+    );
+    background-size: 260% 100%;
+    background-position: -20% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
   }
-  .pillar-sticky {
+  .veil-detail {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+  }
+  .veil-tagline {
+    margin: 0;
+    max-width: 36ch;
+    font-size: 19px;
+    line-height: 28px;
+    color: var(--ink-muted);
+  }
+  .veil-themes {
+    list-style: none;
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-6);
+  }
+  .veil-themes a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    align-items: center;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-stretch: 75%;
+    font-size: 12.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-reverent);
+  }
+  .veil-themes a:hover,
+  .veil-themes a:focus-visible {
+    color: var(--ink);
+  }
+  .veil-num {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--scripture);
+  }
+  .veil-curtain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .veil-half {
+    position: absolute;
+    inset: 0;
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--ink) 22%, transparent));
+  }
+  .veil-cloth {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 45%, transparent, var(--surface-page) 95%),
+      repeating-linear-gradient(
+        90deg,
+        var(--surface) 0,
+        var(--surface-raised) 2.2%,
+        var(--surface) 4.6%,
+        var(--surface-page) 6.4%,
+        var(--surface) 8.2%
+      );
+  }
+  .veil-words {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: clamp(14px, 1.6vw, 18px);
+    color: var(--ink-subtle);
+    padding-inline-start: 0.32em;
+  }
+
+  /* ─── The six scenes ─── */
+  .visions {
+    position: relative;
+  }
+  .vision {
+    position: relative;
+    height: 190vh;
+  }
+  .vision-sticky {
     position: sticky;
     top: var(--header-height);
     height: calc(100svh - var(--header-height));
@@ -126,185 +259,479 @@
     padding-inline: var(--gutter-desktop);
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     align-items: center;
-    gap: var(--space-12);
+    gap: var(--space-16);
     overflow: hidden;
+    isolation: isolate;
   }
-  .pillar[data-flip="true"] .pillar-art {
+  .vision[data-flip="true"] .vision-art {
     order: 2;
   }
-  .pillar-art {
+  .vision-numeral {
+    position: absolute;
+    z-index: -1;
+    right: var(--gutter-desktop);
+    top: 4%;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(160px, 34vh, 380px);
+    line-height: 1;
+    color: var(--surface-raised);
+    pointer-events: none;
+    user-select: none;
+  }
+  .vision[data-flip="true"] .vision-numeral {
+    right: auto;
+    left: var(--gutter-desktop);
+  }
+  .vision-art {
+    position: relative;
     display: grid;
     place-items: center;
     height: 100%;
     min-height: 0;
   }
-  .pillar-art .scene {
-    width: 100%;
-    max-height: min(72svh, 620px);
+  /* The photo and its line art. The motif box is the photo box grown by 18% on each side. */
+  .vision-plate {
+    position: relative;
+    height: min(62svh, 560px);
+    aspect-ratio: 4 / 5;
+    max-width: 100%;
   }
-  .pillar-text {
+  .motif {
+    position: absolute;
+    inset: -18%;
+    width: 136%;
+    height: 136%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  /* Lines that run off the sides fade out instead of stopping short. */
+  .motif-sea,
+  .motif-ground,
+  .motif-stone {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      var(--ink) 16%,
+      var(--ink) 84%,
+      transparent
+    );
+    mask-image: linear-gradient(90deg, transparent, var(--ink) 16%, var(--ink) 84%, transparent);
+  }
+  .vision-frame {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+  .vision-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .vision-text {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+    max-width: 480px;
+  }
+  .vision-head {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .vision-head .aw-label {
+    color: var(--scripture);
+  }
+  .vision-call {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: clamp(34px, 4.4vw, 56px);
+    line-height: 1.04;
+    letter-spacing: 0.03em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .vision-verse {
+    margin: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .vision-verse p {
+    margin: 0;
+    font-size: clamp(19px, 1.7vw, 23px);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .vision-buy {
     display: grid;
     gap: var(--space-4);
     justify-items: start;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
+    width: 100%;
   }
-  .pillar-meter {
-    position: absolute;
-    right: var(--space-4);
+  .vision-piece {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .vision-price {
+    margin-left: var(--space-3);
+    color: var(--accent-text);
+  }
+
+  /* motif line art */
+  .mo-line {
+    fill: none;
+    stroke: var(--line-strong);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.7;
+  }
+  .mo-strong {
+    stroke: var(--ink-subtle);
+    stroke-width: 1.6;
+    opacity: 0.9;
+  }
+  .mo-ray {
+    fill: none;
+    stroke: var(--scripture);
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: 0.4;
+  }
+  .mo-stream {
+    stroke-dasharray: 2 7;
+    animation: mo-fall 0.9s linear infinite;
+  }
+  @keyframes mo-fall {
+    to {
+      stroke-dashoffset: -18;
+    }
+  }
+  .mo-sand {
+    fill: var(--scripture);
+    opacity: 0.12;
+  }
+  .mo-stone {
+    fill: var(--surface-raised);
+    stroke: var(--ink-subtle);
+    stroke-width: 1.6;
+  }
+  .mo-mark path {
+    fill: var(--ink-subtle);
+  }
+  .mo-stop-light {
+    stop-color: var(--ink);
+    stop-opacity: 0.14;
+  }
+  .mo-stop-none {
+    stop-color: var(--ink);
+    stop-opacity: 0;
+  }
+
+  /* I–VI rail */
+  .vision-index {
+    position: fixed;
+    z-index: 5;
+    right: var(--space-6);
     top: 50%;
-    width: 1px;
-    height: 120px;
     transform: translateY(-50%);
-    background: var(--line);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duration-base) var(--ease-reverent),
+      visibility var(--duration-base);
   }
-  .pillar[data-flip="true"] .pillar-meter {
-    right: auto;
-    left: var(--space-4);
+  .vision-index[data-visible="true"] {
+    opacity: 1;
+    visibility: visible;
   }
-  .pillar-meter span {
-    display: block;
-    width: 1px;
-    height: 100%;
-    background: var(--ink-muted);
-    transform-origin: top;
+  .vision-index ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+    border-right: 1px solid var(--line);
+  }
+  .vision-index a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    min-height: var(--tap-min);
+    padding-right: var(--space-4);
+    margin-right: -1px;
+    border-right: 1px solid transparent;
+    text-decoration: none;
+    color: var(--ink-subtle);
+    transition:
+      color var(--duration-fast) var(--ease-reverent),
+      border-color var(--duration-fast) var(--ease-reverent);
+  }
+  .vision-index-num {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    min-width: 2.2em;
+    text-align: right;
+  }
+  .vision-index-theme {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-stretch: 75%;
+    font-size: 11.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(6px);
+    transition:
+      opacity var(--duration-fast) var(--ease-reverent),
+      transform var(--duration-fast) var(--ease-reverent);
+  }
+  .vision-index a:hover .vision-index-theme,
+  .vision-index a:focus-visible .vision-index-theme,
+  .vision-index a[aria-current] .vision-index-theme {
+    opacity: 1;
+    transform: none;
+  }
+  .vision-index a:hover,
+  .vision-index a[aria-current] {
+    color: var(--ink);
+  }
+  .vision-index a[aria-current] {
+    border-right-color: var(--scripture);
+  }
+  .vision-index a[aria-current] .vision-index-num {
+    color: var(--scripture);
+  }
+
+  @media (max-width: 1280px) {
+    .vision-index-theme {
+      display: none;
+    }
+  }
+  @media (max-width: 1100px) {
+    .vision-index {
+      display: none;
+    }
   }
   @media (max-width: 900px) {
-    .pillar {
-      height: 220vh;
+    .veil {
+      height: 200vh;
     }
-    .pillar-sticky {
+    .vision {
+      height: 175vh;
+    }
+    .vision-sticky {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr) auto;
       align-content: center;
       gap: var(--space-4);
-      padding: var(--space-4) var(--gutter-mobile) var(--space-8);
+      padding: var(--space-4) var(--gutter-mobile) var(--space-6);
     }
-    .pillar[data-flip="true"] .pillar-art {
+    .vision[data-flip="true"] .vision-art {
       order: 0;
     }
-    .pillar-art .scene {
-      max-height: 40svh;
+    .vision-numeral {
+      top: auto;
+      bottom: 2%;
+      right: var(--gutter-mobile);
+      font-size: 44vw;
     }
-    .pillar-text {
+    .vision[data-flip="true"] .vision-numeral {
+      left: auto;
+      right: var(--gutter-mobile);
+    }
+    .vision-art {
+      padding-block: 6svh;
+    }
+    .vision-plate {
+      height: 34svh;
+    }
+    .vision-text {
+      gap: var(--space-3);
+      max-width: none;
+    }
+    .vision-call {
+      font-size: 28px;
+    }
+    .vision-verse {
+      gap: var(--space-2);
+    }
+    .vision-verse p {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    .vision-buy {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      padding-top: var(--space-3);
       gap: var(--space-3);
     }
-    .pillar-text .aw-body {
-      font-size: 15px;
-      line-height: 23px;
+    .vision-buy .aw-product-name {
+      font-size: 16px;
+      line-height: 20px;
     }
-    .pillar-meter {
-      display: none;
+    .veil-tagline {
+      font-size: 16px;
+      line-height: 24px;
     }
   }
+  @media (max-height: 640px) and (max-width: 900px) {
+    .vision-plate {
+      height: 28svh;
+    }
+  }
+
+  /* ─── The release grid ─── */
+  .release-section {
+    display: grid;
+    gap: var(--space-12);
+  }
+  .release-head {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+    text-align: center;
+  }
+  .release-head .aw-body {
+    color: var(--ink-muted);
+    max-width: 44ch;
+    margin: 0;
+  }
+  .release-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .release-card-num {
+    margin: 0;
+    color: var(--ink-subtle);
+  }
+  .release-card-num span {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    color: var(--scripture);
+  }
+
+  /* ─── Worn to be asked (bone paper) ─── */
+  .seed {
+    background: var(--surface-page);
+    color: var(--ink);
+    padding-block: var(--space-24);
+    overflow: hidden;
+  }
+  .seed-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-16);
+  }
+  .seed-art {
+    width: 100%;
+    max-width: 440px;
+    justify-self: center;
+    overflow: visible;
+  }
+  .seed-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .seed-fine {
+    fill: none;
+    stroke: var(--ink-muted);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+  }
+  .seed-ray {
+    fill: none;
+    stroke: var(--scripture);
+    stroke-width: 1;
+    stroke-linecap: round;
+    opacity: 0.5;
+  }
+  .seed-seed {
+    fill: var(--ink);
+  }
+  .seed-grain {
+    fill: color-mix(in srgb, var(--scripture) 22%, transparent);
+    stroke: var(--scripture);
+    stroke-width: 1.4;
+  }
+  .seed-text {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    max-width: 52ch;
+  }
+  .seed-text .aw-body {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .seed-mark {
+    color: var(--altar-mark);
+    margin-bottom: var(--space-4);
+  }
+  .seed-quote {
+    margin: var(--space-4) 0;
+    padding-left: var(--space-6);
+    border-left: 2px solid var(--scripture);
+    display: grid;
+    gap: var(--space-3);
+  }
+  .seed-quote blockquote {
+    margin: 0;
+    font-size: 20px;
+    line-height: 30px;
+    color: var(--ink);
+  }
+  @media (max-width: 900px) {
+    .seed {
+      padding-block: var(--space-16);
+    }
+    .seed-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+    .seed-art {
+      max-width: 280px;
+    }
+    .seed-quote blockquote {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .pillar {
+    .veil,
+    .vision {
       height: auto;
     }
-    .pillar-sticky {
+    .veil-sticky {
+      position: static;
+      height: auto;
+      padding-block: var(--space-24);
+    }
+    .vision-sticky {
       position: static;
       height: auto;
       padding-block: var(--space-16);
     }
-    .journey-cue-line {
+    .mo-stream {
       animation: none;
     }
-  }
-
-  .journey-rail {
-    padding-bottom: var(--space-24);
-  }
-  .journey-rail-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-  }
-
-  /* Scene line art */
-  .scene {
-    display: block;
-    overflow: visible;
-  }
-  .sc-line {
-    fill: none;
-    stroke: var(--ink-muted);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .sc-strong {
-    stroke: var(--ink);
-    stroke-width: 2;
-  }
-  .sc-fine {
-    fill: none;
-    stroke: var(--ink-subtle);
-    stroke-width: 1;
-    stroke-linecap: round;
-  }
-  .sc-chain {
-    fill: none;
-    stroke: var(--bb-copper);
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .scene-chain .sc-chain {
-    stroke-width: 3.2;
-  }
-  .scene-chain .sc-fine {
-    stroke-width: 1.4;
-  }
-  .sc-hi {
-    fill: none;
-    stroke: var(--ink);
-    stroke-width: 1.2;
-    stroke-linecap: round;
-    opacity: 0.55;
-  }
-  .sc-ray {
-    fill: none;
-    stroke: var(--scripture);
-    stroke-width: 1;
-    stroke-linecap: round;
-    opacity: 0.55;
-  }
-  .sc-sun {
-    fill: none;
-    stroke: var(--scripture);
-    stroke-width: 1.8;
-    stroke-linecap: round;
-  }
-  .sc-mark path {
-    fill: var(--ink);
-  }
-  .sc-lily path {
-    fill: var(--ink-muted);
-  }
-  .sc-door {
-    fill: var(--surface-page);
-  }
-  .sc-stone {
-    fill: var(--surface-raised);
-    stroke: var(--ink-muted);
-    stroke-width: 1.6;
-  }
-  .sc-stop-light {
-    stop-color: var(--ink);
-    stop-opacity: 0.2;
-  }
-  .sc-stop-none {
-    stop-color: var(--ink);
-    stop-opacity: 0;
-  }
-  .sc-stop-gold {
-    stop-color: var(--scripture);
-    stop-opacity: 0.85;
-  }
-  .sc-stop-bone {
-    stop-color: var(--ink);
-    stop-opacity: 0.9;
+    .vision-index {
+      display: none;
+    }
   }
 }

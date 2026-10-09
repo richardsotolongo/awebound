@@ -19,7 +19,7 @@ export default function NotFound() {
       <p className="aw-body">It may have moved, or the link may be mistyped.</p>
       <div className="aw-btn-row" style={{ justifyContent: "center" }}>
         <Button variant="primary" href="/shop">
-          Shop the collection
+          Shop the release
         </Button>
         <Button variant="secondary" href="/">
           Go home

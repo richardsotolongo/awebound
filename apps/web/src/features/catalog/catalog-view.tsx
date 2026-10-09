@@ -4,7 +4,6 @@ import Link from "next/link";
 import { getFacets, searchProducts } from "@/server/catalog";
 import { ActiveFilters } from "./active-filters";
 import { CatalogStateProvider } from "./catalog-state";
-import { FilterPanel } from "./filter-panel";
 import { ProductGrid } from "./product-grid";
 import {
   EMPTY_FACETS,
@@ -17,9 +16,9 @@ import { ShopToolbar } from "./shop-toolbar";
 
 interface CatalogViewProps {
   searchParams: RawSearchParams;
-  /** Path the filters navigate within, e.g. /shop or /collections/broken-bond. */
+  /** Path the filters navigate within, e.g. /shop. */
   basePath: string;
-  /** Pins the listing to one collection (collection pages). */
+  /** Pins the listing to one release. */
   collection?: CollectionSlug;
 }
 
@@ -35,7 +34,11 @@ async function read<T>(load: () => Promise<T>, fallback: T): Promise<{ data: T; 
   }
 }
 
-/** The full shop experience: category tabs, search, sort, filters, chips and the results grid. */
+/**
+ * The shop: category tabs, search, sort, a filter sheet, chips and the numbered grid. A release
+ * holds a handful of pieces, so filters live in a sheet instead of a sidebar and the grid gets
+ * the full width.
+ */
 export async function CatalogView({ searchParams, basePath, collection }: CatalogViewProps) {
   const query = parseCatalogQuery(searchParams, { collection });
   const apiQuery = toApiQuery(query);
@@ -64,22 +67,21 @@ export async function CatalogView({ searchParams, basePath, collection }: Catalo
         <Link href={tabHref()} aria-current={!activeCategory ? "page" : undefined} scroll={false}>
           All <span className="count">{allCount}</span>
         </Link>
-        {facets.data.categories.map((c) => (
-          <Link
-            key={c.slug}
-            href={tabHref(c.slug)}
-            aria-current={activeCategory === c.slug ? "page" : undefined}
-            scroll={false}
-          >
-            {c.name} <span className="count">{c.count}</span>
-          </Link>
-        ))}
+        {facets.data.categories
+          .filter((c) => c.count > 0 || activeCategory === c.slug)
+          .map((c) => (
+            <Link
+              key={c.slug}
+              href={tabHref(c.slug)}
+              aria-current={activeCategory === c.slug ? "page" : undefined}
+              scroll={false}
+            >
+              {c.name} <span className="count">{c.count}</span>
+            </Link>
+          ))}
       </nav>
 
       <div className="shop-layout">
-        <aside className="shop-aside" aria-label="Filters">
-          <FilterPanel facets={facets.data} hideCollections={Boolean(collection)} />
-        </aside>
         <div>
           <ShopToolbar
             facets={facets.data}
@@ -96,7 +98,7 @@ export async function CatalogView({ searchParams, basePath, collection }: Catalo
             <div className="shop-empty" role="status">
               <p className="aw-h3">The shop is resting</p>
               <p className="aw-body">
-                We couldn’t load the collection just now. Try again in a moment.
+                We couldn’t load the release just now. Try again in a moment.
               </p>
             </div>
           ) : list.data.items.length === 0 ? (

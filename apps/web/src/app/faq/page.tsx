@@ -72,12 +72,13 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How do your pieces fit?",
-        text: "Every product names its cut. Tees are a regular fit, oversized tees are cut wide with a dropped shoulder, tanks have a relaxed armhole and caps adjust at the back. Each product page has a size guide.",
+        text: "Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts: regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier still. The cap is a mid-profile snapback that adjusts at the back. Each product page has a size guide.",
         a: (
           <p>
-            Every product names its cut. Tees are a regular fit, oversized tees are cut wide with a
-            dropped shoulder, tanks have a relaxed armhole and caps adjust at the back. Each product
-            page has a size guide.
+            Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts:
+            regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier
+            still. The cap is a mid-profile snapback that adjusts at the back. Each product page has
+            a size guide.
           </p>
         ),
       },
@@ -154,11 +155,11 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Which Bible translation do you use?",
-        text: "Each piece carries a full Scripture reference. When we quote a verse, we use the New Living Translation (NLT).",
+        text: "Each piece carries a full Scripture reference. When we quote a verse, on a piece or on this site, we use the King James Version (KJV).",
         a: (
           <p>
-            Each piece carries a full Scripture reference. When we quote a verse, we use the New
-            Living Translation (NLT).
+            Each piece carries a full Scripture reference. When we quote a verse, on a piece or on
+            this site, we use the King James Version (KJV).
           </p>
         ),
       },

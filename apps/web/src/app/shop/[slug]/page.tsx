@@ -1,13 +1,14 @@
-import { ProductCard, ScriptureRef, ThornRule } from "@awebound/brand";
+import { ScriptureRef, ThornRule } from "@awebound/brand";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/reveal";
-import { toCardProps } from "@/features/catalog/query";
 import { ProductGallery } from "@/features/product/product-gallery";
 import { ProductPurchase } from "@/features/product/product-purchase";
-import { siteUrl } from "@/lib/env";
+import { ReleaseCard } from "@/features/release/release-card";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
+import { siteUrl } from "@/lib/env";
+import { toNumeral, visionFor } from "@/lib/release";
 
 type Params = Promise<{ slug: string }>;
 
@@ -32,11 +33,17 @@ export default async function ProductPage({ params }: { params: Params }) {
   const product = await getProduct(slug);
   if (!product) notFound();
 
-  const related = await withFallback(
-    () => searchProducts({ collection: [product.collection.slug], pageSize: 5 }),
-    { items: [], total: 0, page: 1, pageSize: 5, hasMore: false },
+  const release = await withFallback(
+    () => searchProducts({ collection: [product.collection.slug], pageSize: 48 }),
+    { items: [], total: 0, page: 1, pageSize: 48, hasMore: false },
   );
-  const others = related.items.filter((p) => p.slug !== product.slug).slice(0, 4);
+  const pieces = [...release.items].sort((a, b) => a.position - b.position);
+  const at = pieces.findIndex((p) => p.slug === product.slug);
+  const prev = at > 0 ? pieces[at - 1] : undefined;
+  const next = at >= 0 && at < pieces.length - 1 ? pieces[at + 1] : undefined;
+  const others = pieces.filter((p) => p.slug !== product.slug).slice(0, 3);
+  const vision = visionFor(product.slug);
+  const numeral = vision?.numeral ?? toNumeral(product.position);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -56,10 +63,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           Shop
         </Link>
         <span aria-hidden="true"> / </span>
-        <Link
-          href={`/collections/${product.collection.slug}`}
-          style={{ color: "var(--ink-muted)" }}
-        >
+        <Link href="/shop" style={{ color: "var(--ink-muted)" }}>
           {product.collection.name}
         </Link>
         <span aria-hidden="true"> / </span>
@@ -71,10 +75,14 @@ export default async function ProductPage({ params }: { params: Params }) {
 
         <div className="buy">
           <div className="buy-head">
-            <span className="aw-meta">{product.code}</span>
+            <p className="buy-place aw-label">
+              <span>{numeral}</span> {product.collection.name}
+              {vision ? ` · ${vision.theme}` : null}
+              <span className="aw-meta">{product.code}</span>
+            </p>
             <h1 className="aw-h1">{product.name}</h1>
             <p className="aw-small">
-              {product.category.cut} · {product.collection.name}
+              {product.category.cut} · {product.baseColor}
             </p>
           </div>
 
@@ -84,7 +92,16 @@ export default async function ProductPage({ params }: { params: Params }) {
             <p className="aw-body" style={{ color: "var(--ink)" }}>
               {product.story.art}
             </p>
-            <ScriptureRef reference={product.scriptureRef} align="start" />
+            {vision ? (
+              <figure className="buy-verse">
+                <blockquote>{vision.verse}</blockquote>
+                <figcaption>
+                  <ScriptureRef reference={vision.reference} translation="KJV" align="start" />
+                </figcaption>
+              </figure>
+            ) : (
+              <ScriptureRef reference={product.scriptureRef} align="start" />
+            )}
             <p className="aw-small">{product.story.paraphrase}</p>
           </div>
 
@@ -116,6 +133,34 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       </div>
 
+      {prev || next ? (
+        <nav className="piece-nav" aria-label="Other pieces in this release">
+          {prev ? (
+            <Link href={`/shop/${prev.slug}`} rel="prev" className="piece-nav-link">
+              <span className="aw-label">
+                Previous · {visionFor(prev.slug)?.numeral ?? toNumeral(prev.position)}
+              </span>
+              <span className="aw-product-name">{prev.name}</span>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <Link
+              href={`/shop/${next.slug}`}
+              rel="next"
+              className="piece-nav-link"
+              data-next="true"
+            >
+              <span className="aw-label">
+                Next · {visionFor(next.slug)?.numeral ?? toNumeral(next.position)}
+              </span>
+              <span className="aw-product-name">{next.name}</span>
+            </Link>
+          ) : null}
+        </nav>
+      ) : null}
+
       {others.length > 0 ? (
         <section className="section" aria-labelledby="related-title" style={{ paddingTop: 0 }}>
           <ThornRule />
@@ -130,18 +175,14 @@ export default async function ProductPage({ params }: { params: Params }) {
             <h2 id="related-title" className="aw-h2">
               More from {product.collection.name}
             </h2>
-            <Link href={`/collections/${product.collection.slug}`} className="aw-btn aw-btn-link">
-              Shop {product.collection.name}
+            <Link href="/shop" className="aw-btn aw-btn-link">
+              See all {pieces.length}
             </Link>
           </div>
-          <ul
-            className="product-grid"
-            data-wide="true"
-            style={{ listStyle: "none", margin: 0, padding: 0 }}
-          >
+          <ul className="product-grid" style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {others.map((p, i) => (
               <Reveal as="li" key={p.slug} delay={i * 0.05}>
-                <ProductCard {...toCardProps(p)} />
+                <ReleaseCard product={p} />
               </Reveal>
             ))}
           </ul>

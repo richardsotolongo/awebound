@@ -33,8 +33,16 @@ export async function startCheckout(
   input: BagLineInput[],
   customerId?: string,
 ): Promise<CheckoutResult> {
-  const lines = (await validateBag(input)).lines.filter((l) => l.available);
+  const catalog = await getCatalog();
+  const priced = priceBag(input, catalog.findVariants(input.map((l) => l.sku)));
+  const lines = priced.lines.filter((l) => l.available);
   if (lines.length === 0) throw new UserError("Your bag has nothing available to check out.");
+  // Previews aren't in Fourthwall yet, so there is nothing to put in a cart.
+  if (lines.some((l) => catalog.findBySlug(l.productSlug)?.preview)) {
+    throw new UserError(
+      "Checkout for the Behold release opens soon. Leave your email in the bag and we’ll tell you the day it opens.",
+    );
+  }
 
   let cartId: string;
   try {
@@ -50,7 +58,10 @@ export async function startCheckout(
     throw new UserError("Checkout is unreachable right now. Try again in a moment.");
   }
 
-  const domain = serverEnv.FOURTHWALL_CHECKOUT_DOMAIN.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+  const domain = serverEnv.FOURTHWALL_CHECKOUT_DOMAIN.replace(/^https?:\/\//, "").replace(
+    /\/.*$/,
+    "",
+  );
   const url = new URL(`https://${domain}/checkout/`);
   url.searchParams.set("cartCurrency", CURRENCY);
   url.searchParams.set("cartId", cartId);
@@ -106,6 +117,7 @@ export function priceBag(input: BagLineInput[], catalog: Map<string, VariantWith
       unitPriceCents: variant.priceCents,
       quantity,
       available: variant.available,
+      preview: product.preview,
     });
   }
 

@@ -1,15 +1,6 @@
-import {
-  AltarPanel,
-  Button,
-  Mark,
-  ScriptureRef,
-  ThornRule,
-  type SecondaryMarkName,
-} from "@awebound/brand";
+import { AltarPanel, Button, ScriptureRef, ThornRule } from "@awebound/brand";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Reveal } from "@/components/reveal";
-import { PILLARS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -25,23 +16,32 @@ const STORY = [
   },
   {
     title: "Made to start conversations",
-    body: "A shirt is a quiet way to say something out loud. Our pieces carry a symbol and a single reference, so when someone asks what it means, you get to tell them about Jesus Christ.",
-  },
-  {
-    title: "Every design tells a story",
-    body: "Chains broken. A stone rolled away. A throne of grace. Each design holds one moment from Scripture, engraved and set with its reference so the story can be looked up and read.",
+    body: "A shirt is a quiet way to say something out loud. When someone asks what yours means, you get to tell them about Jesus Christ. That is the seed. We plant it; God makes it grow.",
   },
 ];
 
-const PILLAR_MARKS: Record<string, SecondaryMarkName> = {
-  "royal-heritage": "thorn-wreath",
-  "broken-bond": "thorn-vine",
-  "rolled-away": "lily",
-};
+/** How every design tells its story. Written to hold for every release, not just this one. */
+const DESIGN_STORY = [
+  {
+    numeral: "I",
+    title: "It begins in Scripture",
+    body: "Every design starts with one moment in Scripture that shows who Jesus Christ is. Not a slogan. A moment you can find, read and sit with.",
+  },
+  {
+    numeral: "II",
+    title: "The art holds the moment",
+    body: "We draw it as an engraving, in symbols only, so the moment can be seen and remembered. Out of reverence, we never put a face on God.",
+  },
+  {
+    numeral: "III",
+    title: "The reference carries it on",
+    body: "The full reference is printed with the art, so anyone who asks can look it up for themselves. The story doesn’t end with the person wearing it. It gets passed on.",
+  },
+];
 
 const COMMITMENTS = [
   "Symbols only. Out of reverence, we never depict Jesus, God the Father or the Holy Spirit as a person.",
-  "Scripture by full reference on every piece. When we quote a verse, we use the New Living Translation.",
+  "Scripture by full reference on every piece, so it can be looked up and read. When we quote a verse, on a piece or on this site, we use the King James Version.",
   "The clothes come first: considered art, honest materials and fits named plainly.",
   "No fear, no guilt, no hype. Just the story, worn boldly.",
 ];
@@ -93,69 +93,39 @@ export default function AboutPage() {
               }}
             >
               <blockquote className="aw-h2" style={{ margin: 0, maxWidth: "24ch" }}>
-                For I am not ashamed of this Good News about Christ.
+                For I am not ashamed of the gospel of Christ.
               </blockquote>
               <figcaption>
-                <ScriptureRef reference="Romans 1:16" translation="NLT" />
+                <ScriptureRef reference="Romans 1:16" translation="KJV" />
               </figcaption>
             </figure>
           </Reveal>
         </div>
       </section>
 
-      <section className="section aw-grain" aria-labelledby="pillars-title">
-        <div className="aw-container" style={{ display: "grid", gap: "var(--space-12)" }}>
-          <div style={{ display: "grid", gap: "var(--space-3)" }}>
-            <p className="aw-label">The pillars</p>
-            <h2 id="pillars-title" className="aw-h2">
-              Royal heritage. Freedom. Resurrection.
+      <section className="section aw-grain design-story" aria-labelledby="design-story-title">
+        <div className="aw-container design-story-inner">
+          <Reveal className="design-story-head">
+            <p className="aw-label">How we make it</p>
+            <h2 id="design-story-title" className="aw-h1">
+              Every design tells a story
             </h2>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gap: "var(--space-8)",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            }}
-          >
-            {PILLARS.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 0.06}>
-                <article
-                  style={{
-                    display: "grid",
-                    gap: "var(--space-4)",
-                    justifyItems: "start",
-                    padding: "var(--space-8)",
-                    background: "var(--surface-raised)",
-                    height: "100%",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "var(--bb-copper)",
-                      height: 72,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Mark
-                      name={PILLAR_MARKS[p.slug] ?? "lily"}
-                      height={p.slug === "broken-bond" ? 28 : 64}
-                      title=""
-                    />
-                  </span>
-                  <p className="aw-label">{p.pillar}</p>
-                  <h3 className="aw-product-name">{p.family}</h3>
-                  <p className="aw-small">{p.story}</p>
-                  <ScriptureRef reference={p.scripture} align="start" />
-                  <Link href={`/collections/${p.slug}`} className="aw-btn aw-btn-link">
-                    Shop {p.family}
-                  </Link>
-                </article>
+            <p className="aw-body">
+              One moment from Scripture, drawn to be seen and printed to be read. Whatever the
+              release, every piece is made this way.
+            </p>
+          </Reveal>
+          <ol className="design-story-steps">
+            {DESIGN_STORY.map((step, i) => (
+              <Reveal as="li" key={step.title} delay={i * 0.08}>
+                <span className="design-story-num" aria-hidden="true">
+                  {step.numeral}
+                </span>
+                <h3 className="aw-h3">{step.title}</h3>
+                <p className="aw-body">{step.body}</p>
               </Reveal>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
@@ -174,17 +144,12 @@ export default function AboutPage() {
           </div>
           <div className="aw-btn-row">
             <Button variant="primary" href="/shop">
-              Shop the collection
+              Visit the shop
             </Button>
             <Button variant="secondary" href="/contact">
               Write to us
             </Button>
           </div>
-          <p className="field-help" style={{ maxWidth: "70ch" }}>
-            Scripture quotations marked NLT are taken from the Holy Bible, New Living Translation,
-            copyright © 1996, 2004, 2015 by Tyndale House Foundation. Used by permission of Tyndale
-            House Publishers, Carol Stream, Illinois 60188. All rights reserved.
-          </p>
         </div>
       </section>
     </>

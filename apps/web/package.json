@@ -9,8 +9,7 @@
     "build": "next build",
     "start": "next start --port 3000",
     "typecheck": "next typegen && tsc --noEmit",
-    "lint": "eslint .",
-    "art": "tsx scripts/generate-placeholder-art.ts"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@awebound/brand": "workspace:*",
@@ -35,7 +34,6 @@
     "@types/react-dom": "^19.3.0",
     "eslint-config-next": "16.4.0",
     "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   }
 }

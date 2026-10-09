@@ -21,7 +21,7 @@ export default async function AccountPage() {
           intro="You can still shop and check out as a guest."
         />
         <Button variant="secondary" href="/shop">
-          Shop the collection
+          Shop the release
         </Button>
       </div>
     );

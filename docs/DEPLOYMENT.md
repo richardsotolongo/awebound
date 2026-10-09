@@ -35,7 +35,7 @@ EMAIL_FROM=Awebound <noreply@awebound.store>
 CONTACT_INBOX=contact@awebound.store
 ```
 
-- `FOURTHWALL_STOREFRONT_TOKEN` must be set **before** a deploy: the build prerenders the home page and sitemap from Fourthwall. Without it the build still passes, but the shop is empty and the logs say `FOURTHWALL_STOREFRONT_TOKEN is not set`.
+- `FOURTHWALL_STOREFRONT_TOKEN` connects the shop to Fourthwall. Without it (or for pieces not yet created in Fourthwall) the Behold pieces show as previews: the site's prices and mockups, add to bag works, and checkout says it opens soon. After adding it or new Fourthwall products, the home page picks them up within a minute; redeploy if you want it immediately.
 - The shop lists only products that are public in Fourthwall and match the brand content by slug (see `docs/TODOS.md` → Fourthwall).
 - `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox.
 - `FOURTHWALL_CHECKOUT_DOMAIN` is optional (default `awebound-store-shop.fourthwall.com`); set it if you connect a custom shop domain in Fourthwall.

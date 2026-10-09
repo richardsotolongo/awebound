@@ -54,6 +54,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
       image: product.image,
       unitPriceCents: variant.priceCents,
       available: true,
+      preview: product.preview,
     });
     openBag();
   }
@@ -108,9 +109,16 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
           <NotifyForm source="product" productSlug={product.slug} label="Your email" />
         </div>
       ) : (
-        <Button variant="primary" block onClick={addToBag}>
-          Add to bag
-        </Button>
+        <>
+          <Button variant="primary" block onClick={addToBag}>
+            Add to bag
+          </Button>
+          {product.preview ? (
+            <p className="field-help">
+              Checkout for this release opens soon. Your bag keeps it until then.
+            </p>
+          ) : null}
+        </>
       )}
 
       <Sheet

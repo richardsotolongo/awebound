@@ -1,13 +1,13 @@
 import { SIZE_ORDER, type ProductDetail, type ProductImage } from "@/shared";
 import type { Catalog } from "./catalog-search";
-import type { BrandContent } from "./content";
+import type { BrandContent, ProductContent } from "./content";
 import type { FourthwallProduct, FourthwallVariant } from "./fourthwall";
 
 export interface MergedCatalog {
   catalog: Catalog;
   /** Fourthwall products with no matching brand content (not shown on the site). */
   unmatched: string[];
-  /** Content entries with no matching Fourthwall product (not for sale yet). */
+  /** Content entries with no matching Fourthwall product, listed as previews. */
   missing: string[];
 }
 
@@ -24,12 +24,55 @@ function sizeRank(size: string): number {
   return i === -1 ? SIZE_ORDER.length : i;
 }
 
-const VIEWS: ProductImage["view"][] = ["back", "front"];
+const skuPart = (value: string) =>
+  value
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+/**
+ * A content entry that isn't in Fourthwall yet: shown with the site's price, sizes and mockups so
+ * the release can be seen before it's for sale. Checkout refuses these lines (see server/bag.ts).
+ */
+function previewProduct(item: ProductContent): ProductDetail {
+  const variants = item.colors.flatMap((color) =>
+    item.sizes.map((size) => ({
+      sku: `${item.code}-${skuPart(color.name)}-${skuPart(size)}`,
+      color: color.name,
+      size,
+      available: true,
+      priceCents: item.priceCents,
+    })),
+  );
+  const [image, hoverImage = null] = item.images;
+  return {
+    code: item.code,
+    slug: item.slug,
+    name: item.name,
+    collection: item.collection,
+    position: item.position,
+    preview: true,
+    category: item.category,
+    baseColor: item.colors[0]?.name ?? "",
+    priceCents: item.priceCents,
+    currency: "USD",
+    colors: item.colors,
+    sizes: item.sizes,
+    scriptureRef: item.scriptureRef,
+    image,
+    hoverImage,
+    featured: item.featured,
+    releasedAt: item.releasedAt,
+    story: item.story,
+    images: item.images,
+    variants,
+  };
+}
 
 /**
  * Fourthwall is the source of truth for what can be bought (variants, prices, stock, photos);
- * the brand content is the source of truth for the story (ID, collection, cut, Scripture, copy).
- * A product appears on the site only when both exist, matched by slug.
+ * the brand content is the source of truth for the story (ID, release, position, Scripture, copy).
+ * Matched by slug. A content entry with no Fourthwall product yet is listed as a preview.
  * Variant SKUs on the site are the Fourthwall variant ids, so checkout can build the cart directly.
  */
 export function mergeFourthwallCatalog(
@@ -51,6 +94,7 @@ export function mergeFourthwallCatalog(
     const first = fw?.variants[0];
     if (!fw || !first) {
       missing.push(item.slug);
+      merged.push(previewProduct(item));
       continue;
     }
     used.add(fw.slug);
@@ -85,7 +129,8 @@ export function mergeFourthwallCatalog(
     const images: ProductImage[] =
       photos.length > 0
         ? photos.map((img, i) => {
-            const view = VIEWS[i] ?? "detail";
+            // Fourthwall photos carry no view, so assume they're listed in the site's order.
+            const view = item.images[i]?.view ?? "detail";
             return {
               url: img.transformedUrl || img.url,
               alt: `${item.name} ${item.category.cut.toLowerCase()}, ${view} view`,
@@ -99,6 +144,8 @@ export function mergeFourthwallCatalog(
       slug: item.slug,
       name: item.name,
       collection: item.collection,
+      position: item.position,
+      preview: false,
       category: item.category,
       baseColor: colors[0]?.name ?? fallbackColor,
       priceCents: Math.min(...variants.map((v) => v.priceCents)),

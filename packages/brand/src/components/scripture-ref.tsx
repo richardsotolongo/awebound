@@ -4,7 +4,7 @@ export interface ScriptureRefProps {
   /** Full book name, chapter and verse: "Galatians 5:1", ranges with an en dash: "Luke 24:1–6". */
   reference: string;
   /** Only when the full verse is quoted nearby. */
-  translation?: "NLT";
+  translation?: "KJV" | "NLT";
   align?: "center" | "start";
   className?: string;
 }

@@ -1,22 +1,22 @@
 # Awebound
 
-The website and store for **Awebound**, an independent Christian apparel brand for people who are not ashamed to express their faith. Every design tells a story about Jesus Christ and carries a full Scripture reference; the pillars are **Royal heritage. Freedom. Resurrection.**
+The website and store for **Awebound**, an independent Christian apparel brand for people who are not ashamed to express their faith. Every design tells a story about Jesus Christ and carries a full Scripture reference. The first release is **Behold**: five tees and a cap, a call to see Christ’s power, holiness, sacrifice, and resurrection.
 
 ![The Awebound home page: light from above reveals the Thorn Cross](docs/images/home.jpg)
 
 ## What's here
 
-| Area                    | What it does                                                                                                                                                                                                                                                                                                                                                          |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Home**                | A scroll journey. Light descends and reveals the Thorn Cross; then three pinned scenes drawn as engraved line art, one per pillar: an arch rises (Royal Heritage), a chain's center link opens (Broken Bond), the stone rolls away at dawn (Rolled Away). Each leads into that family's pieces. Visitors who prefer reduced motion get the finished frames, unpinned. |
-| **Shop**                | Search (designs, verses, colors), category tabs, collection / color / size-in-stock / price filters with live counts, five sort orders, removable filter chips, "Show more". All state lives in the URL, so every view is shareable.                                                                                                                                  |
-| **Product pages**       | Back print first, color and size pickers (sold-out sizes struck through), size guide, add to bag, the design story, Scripture reference and specs.                                                                                                                                                                                                                    |
-| **Bag and checkout**    | A persisted bag drawer that re-prices on the server. Checkout hands the bag to Fourthwall's hosted checkout, which takes payment, prints and ships; the site holds no payment code.                                                                                                                                                                                   |
-| **About, Contact, FAQ** | Brand story and pillars; a contact form that is stored and emailed to `contact@awebound.store`; answers to common questions.                                                                                                                                                                                                                                          |
-| **Policies**            | Refund policy (made to order: misprints, damage and wrong items within 30 days), privacy policy and terms of service, drafted for review.                                                                                                                                                                                                                             |
-| **Accounts**            | Passwordless only: Google, or a one-time email link or code. Guest checkout stays open to everyone.                                                                                                                                                                                                                                                                   |
+| Area                    | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Home**                | A scroll journey. Light descends on the Thorn Cross; a dark curtain tears from top to bottom to reveal BEHOLD; then six pinned scenes, one per piece (I Holiness to VI Sacrifice, ending on the Lamb). In each, the art is lit from above, engraved line art draws around it (rings of holy ground, a sea that goes still, a stone that rolls away) and the KJV verse lights word by word, with a I–VI rail to jump between them. Then the release grid and “Worn to be asked”, where a seed grows into wheat. Reduced motion gets finished frames, unpinned. |
+| **Shop**                | The release as a numbered index (I–VI), search (designs, verses, colors), category tabs, a filter sheet (color, size in stock, price), five sort orders and removable chips. All state lives in the URL, so every view is shareable.                                                                                                                                                                                                                                                                                                                          |
+| **Product pages**       | Back or front print first, color and size pickers (sold-out sizes struck through), size guide, add to bag, the KJV verse, specs and previous / next piece in the release.                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Bag and checkout**    | A persisted bag drawer that re-prices on the server. Checkout hands the bag to Fourthwall's hosted checkout, which takes payment, prints and ships; the site holds no payment code.                                                                                                                                                                                                                                                                                                                                                                           |
+| **About, Contact, FAQ** | Brand story and how every design tells its story; a contact form that is stored and emailed to `contact@awebound.store` (replies within 72 hours); answers to common questions.                                                                                                                                                                                                                                                                                                                                                                               |
+| **Policies**            | Refund policy (made to order: misprints, damage and wrong items within 30 days), privacy policy and terms of service, drafted for review.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **Accounts**            | Passwordless only: Google, or a one-time email link or code. Guest checkout stays open to everyone.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
-![The arch scene completed, with the Thorn Cross lit inside it](docs/images/journey-royal-heritage.jpg)
+![Behold the Lamb: the last of six scenes in the Behold release](docs/images/behold-lamb.jpg)
 
 ## Stack
 
@@ -49,7 +49,7 @@ pnpm dev
 
 Open http://localhost:3000. `apps/web/.env.example` lists every variable with a comment.
 
-The catalog and checkout always come from the Fourthwall shop, so set `FOURTHWALL_STOREFRONT_TOKEN` (Fourthwall admin → Settings → For developers). The shop lists the public Fourthwall products that match the brand content in `apps/web/src/server/content/catalog.json` by slug, and checkout hands off to Fourthwall's hosted checkout. Setup steps are in [docs/TODOS.md](docs/TODOS.md#fourthwall).
+The catalog and checkout come from the Fourthwall shop when `FOURTHWALL_STOREFRONT_TOKEN` is set (Fourthwall admin → Settings → For developers). Pieces in the content file that aren't in Fourthwall yet, or all of them without a token, show as previews with the site's prices and mockups, and checkout says it opens soon.
 
 Without Supabase keys accounts show "open soon" and contact messages and sign-ups aren't stored; without `RESEND_API_KEY` emails print to the terminal in development.
 
@@ -64,15 +64,14 @@ Then point `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` an
 
 ## Scripts
 
-| Command                           | What it does                                     |
-| --------------------------------- | ------------------------------------------------ |
-| `pnpm dev`                        | The site in watch mode                           |
-| `pnpm build`                      | Production build of every package                |
-| `pnpm start`                      | Run the built site                               |
-| `pnpm typecheck`                  | Type-check every package                         |
-| `pnpm lint`                       | ESLint everywhere (Next's rules for the web app) |
-| `pnpm format`                     | Prettier                                         |
-| `pnpm --filter @awebound/web art` | Regenerate the fallback product art              |
+| Command          | What it does                                     |
+| ---------------- | ------------------------------------------------ |
+| `pnpm dev`       | The site in watch mode                           |
+| `pnpm build`     | Production build of every package                |
+| `pnpm start`     | Run the built site                               |
+| `pnpm typecheck` | Type-check every package                         |
+| `pnpm lint`      | ESLint everywhere (Next's rules for the web app) |
+| `pnpm format`    | Prettier                                         |
 
 There are no automated tests in this repo, by design. Changes are verified with `typecheck`, `lint`, `build` and by running the flows in a browser.
 

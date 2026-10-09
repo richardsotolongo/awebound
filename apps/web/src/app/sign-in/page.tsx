@@ -56,7 +56,7 @@ export default async function SignInPage({
             <p className="aw-small">You can still shop and check out as a guest.</p>
             <div>
               <Button variant="secondary" href="/shop">
-                Shop the collection
+                Shop the release
               </Button>
             </div>
           </div>

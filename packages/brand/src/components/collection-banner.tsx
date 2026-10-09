@@ -6,8 +6,10 @@ import { Button } from "./button";
 import type { Action } from "./hero";
 
 export interface CollectionBannerProps {
+  /** The release or collection name. */
   family: string;
-  pillar: string;
+  /** Short label above the name, e.g. "Release 01". */
+  eyebrow: string;
   /** One sentence. */
   story?: string;
   /** "feature" (washed oxblood) for a new drop. */
@@ -19,10 +21,10 @@ export interface CollectionBannerProps {
   className?: string;
 }
 
-/** A collection intro: pillar label, family name, one line of story and one action. */
+/** A release intro: eyebrow label, name, one line of story and one action. */
 export function CollectionBanner({
   family,
-  pillar,
+  eyebrow,
   story,
   tone = "coal",
   action,
@@ -40,7 +42,7 @@ export function CollectionBanner({
       )}
     >
       <div className="aw-banner-in">
-        <p className="aw-label">{pillar}</p>
+        <p className="aw-label">{eyebrow}</p>
         <Heading className="aw-h2">{family}</Heading>
         {story ? <p className="aw-banner-story">{story}</p> : null}
         {children}

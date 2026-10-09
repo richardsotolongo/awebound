@@ -95,9 +95,8 @@ const sections: LegalSection[] = [
           commercially without written permission.
         </p>
         <p>
-          Scripture quotations marked NLT are taken from the Holy Bible, New Living Translation,
-          copyright © 1996, 2004, 2015 by Tyndale House Foundation. Used by permission of Tyndale
-          House Publishers, Carol Stream, Illinois 60188. All rights reserved.
+          Scripture quotations are from the King James Version (KJV), which is in the public domain
+          in the United States.
         </p>
       </>
     ),

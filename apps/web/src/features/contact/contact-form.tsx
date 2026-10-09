@@ -40,7 +40,7 @@ export function ContactForm() {
       <div className="notice" role="status">
         <p className="aw-h3">Thank you</p>
         <p className="aw-body">
-          Your message is on its way. We reply within two business days, and we’ve sent you a copy.
+          Your message is on its way. We reply within 72 hours, and we’ve sent you a copy.
         </p>
       </div>
     );

@@ -9,7 +9,7 @@ interface FilterPanelProps {
   hideCollections?: boolean;
 }
 
-/** Collection, color, size and price filters. Counts reflect the other active filters. */
+/** Release (once there is more than one), color, size and price filters. Counts reflect the other active filters. */
 export function FilterPanel({ facets, hideCollections }: FilterPanelProps) {
   const state = useCatalogState();
   const collections = state.getList("collection");
@@ -18,9 +18,9 @@ export function FilterPanel({ facets, hideCollections }: FilterPanelProps) {
 
   return (
     <div className="filters">
-      {!hideCollections && facets.collections.length > 0 ? (
+      {!hideCollections && facets.collections.length > 1 ? (
         <fieldset className="filter-group">
-          <legend className="aw-label">Collection</legend>
+          <legend className="aw-label">Release</legend>
           {facets.collections.map((c) => (
             <label
               key={c.slug}
@@ -34,7 +34,7 @@ export function FilterPanel({ facets, hideCollections }: FilterPanelProps) {
               />
               <span>
                 {c.name}
-                <span className="visually-hidden">, {c.pillar}</span>
+                <span className="visually-hidden">, {c.tagline}</span>
               </span>
               <span className="count" aria-label={`${c.count} pieces`}>
                 {c.count}

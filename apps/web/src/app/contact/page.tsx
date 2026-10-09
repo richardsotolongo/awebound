@@ -32,7 +32,7 @@ export default function ContactPage() {
             >
               {SITE.contactEmail}
             </a>
-            <p className="field-help">We reply within two business days.</p>
+            <p className="field-help">We reply within 72 hours.</p>
           </div>
           <div className="field">
             <p className="aw-label">Before you write</p>

@@ -26,6 +26,8 @@ export const BagLineSchema = z.object({
   unitPriceCents: z.number().int(),
   quantity: z.number().int(),
   available: z.boolean(),
+  /** The piece isn't in Fourthwall yet, so it can't be checked out (checkout opens soon). */
+  preview: z.boolean().default(false),
 });
 export type BagLine = z.infer<typeof BagLineSchema>;
 

@@ -4,19 +4,23 @@ import { ProductQuerySchema, type ProductQueryInput } from "@/shared";
 import { mergeFourthwallCatalog } from "./catalog-merge";
 import { CatalogIndex } from "./catalog-search";
 import { brandContent } from "./content";
+import { serverEnv } from "./env";
 import { listProducts } from "./fourthwall";
 
 let lastMismatch = "";
 
-/** The live Fourthwall shop merged with the brand content. Built once per request. */
+/**
+ * The live Fourthwall shop merged with the brand content. Built once per request. Without a
+ * storefront token (local development, or before Fourthwall is set up) every piece is a preview.
+ */
 export const getCatalog = cache(async () => {
-  const { catalog, unmatched, missing } = mergeFourthwallCatalog(
-    brandContent,
-    await listProducts(),
-  );
+  const live = serverEnv.FOURTHWALL_STOREFRONT_TOKEN ? await listProducts() : [];
+  const { catalog, unmatched, missing } = mergeFourthwallCatalog(brandContent, live);
   const mismatch = JSON.stringify({ notOnSite: unmatched, notInFourthwall: missing });
   if (mismatch !== lastMismatch && (unmatched.length || missing.length)) {
-    console.warn(`[catalog] products without a match are hidden: ${mismatch}`);
+    console.warn(
+      `[catalog] unmatched (Fourthwall-only hidden, site-only shown as previews): ${mismatch}`,
+    );
   }
   lastMismatch = mismatch;
   return new CatalogIndex(catalog);

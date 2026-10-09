@@ -6,7 +6,9 @@ Context for coding agents working in this repo. Read this first, then the `AGENT
 
 Awebound is an independent Christian apparel brand (tees, oversized tees, tanks, caps) for believers aged 18–30 who wear their faith boldly. This repo is its website: one Next.js app with a scroll-driven home page, a searchable shop, About, Contact, FAQ and policy pages, and passwordless sign-in.
 
-Commerce is **Fourthwall**, always on: it supplies live products, prices, stock and photos, and runs checkout, payment and fulfillment (a redirect to its hosted checkout). The server needs `FOURTHWALL_STOREFRONT_TOKEN`. The brand story for each product (ID, collection, Scripture, copy) lives in `apps/web/src/server/content/catalog.json` and is merged with Fourthwall by slug. Do not add a payment processor or another provider unless the owner asks.
+The site launches with one release, **Behold** (five tees and a cap). There are no pillars or collection families: a release is the unit (`collection` in code), and its pieces are numbered I–VI by `position` (Holy Ground, Still the Storm, Thorns to Lilies, Stone in Motion, To Live Is Christ, then the Lamb’s Mark cap last).
+
+Commerce is **Fourthwall**: it supplies live products, prices, stock and photos, and runs checkout, payment and fulfillment (a redirect to its hosted checkout). The brand story for each product (ID, release, position, Scripture, copy, preview price and mockups) lives in `apps/web/src/server/content/catalog.json` and is merged with Fourthwall by slug. A piece that isn’t in Fourthwall yet (or every piece, when `FOURTHWALL_STOREFRONT_TOKEN` is unset) shows as a **preview**: the content price and mockups, add to bag works, and checkout says it opens soon. Do not add a payment processor or another provider unless the owner asks.
 
 There is no separate backend. Pages read data in Server Components; the browser calls Server Actions (`apps/web/src/server/actions.ts`).
 
@@ -46,12 +48,12 @@ Deployment is one Vercel project (Root Directory `apps/web`); see `docs/DEPLOYME
    - The wordmark is artwork from `packages/brand` (`<Wordmark />`), never typed in a font. Minimum 120px wide.
    - The Thorn Cross is the only cross; upright and whole.
    - Symbols only: never depict Jesus, God the Father or the Spirit as a person. No skulls, gore or occult marks.
-   - Scripture by full reference ("Galatians 5:1", ranges with an en dash). Quote verses only in the NLT, credited "(NLT)".
+   - Scripture by full reference ("Galatians 5:1", ranges with an en dash). Quote verses only in the King James Version (the wording the designs use), credited "(KJV)". The KJV is public domain in the US, so no permission line is needed.
    - Style through CSS variables / Tailwind theme tokens. Raw hex lives only in `packages/brand` (`tokens.css`, and `hex.ts` for meta tags and images). HTML email templates are the one exception, because email clients ignore CSS variables.
    - Oxblood (`primary`) is a fill, never text on coal. One primary button and one glow per screen.
    - Copy: reverent, short sentences, sentence case, no exclamation marks, no hype words, no guilt.
 6. **Env variables:** add every new one to `apps/web/.env.example` (no real values) and its schema: `apps/web/src/lib/env.ts` for public `NEXT_PUBLIC_*` values, `apps/web/src/server/env.ts` for server-only ones.
-7. **Prices come from Fourthwall.** Never hard-code a price in copy.
+7. **Prices come from Fourthwall** for live pieces; previews use `priceCents` in the content file (the owner’s prices: tees $40, Holy Ground $35, the cap $30). Never hard-code a price in copy.
 8. Keep `docs/ARCHITECTURE.md` and `docs/TODOS.md` in step with structural changes.
 
 ## Conventions

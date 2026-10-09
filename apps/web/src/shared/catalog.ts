@@ -5,9 +5,8 @@ export const CATEGORY_SLUGS = ["tees", "oversized-tees", "tanks", "hats"] as con
 export const CategorySlugSchema = z.enum(CATEGORY_SLUGS);
 export type CategorySlug = z.infer<typeof CategorySlugSchema>;
 
-/** The three A3 families, one per brand pillar. */
-export const COLLECTION_SLUGS = ["royal-heritage", "broken-bond", "rolled-away"] as const;
-export const CollectionSlugSchema = z.enum(COLLECTION_SLUGS);
+/** Release slugs are free-form so a new release needs no code change (the first is "behold"). */
+export const CollectionSlugSchema = z.string().regex(/^[a-z0-9-]+$/);
 export type CollectionSlug = z.infer<typeof CollectionSlugSchema>;
 
 export const SORT_OPTIONS = ["featured", "newest", "price-asc", "price-desc", "name"] as const;
@@ -33,12 +32,15 @@ export const CategorySchema = z.object({
 });
 export type Category = z.infer<typeof CategorySchema>;
 
+/**
+ * A release: the pieces that drop together under one name and one call. The site launches with a
+ * single release, Behold. (Kept as "collection" in code.)
+ */
 export const CollectionSchema = z.object({
   slug: CollectionSlugSchema,
   name: z.string(),
-  /** Lookbook family letter: R, B or T. */
-  familyCode: z.string().length(1),
-  pillar: z.string(),
+  /** One line under the name: what the release calls people to see. */
+  tagline: z.string(),
   story: z.string(),
   scriptureRef: z.string(),
 });
@@ -59,7 +61,7 @@ export function colorCss(color: Pick<Color, "token" | "swatch">): string {
   return color.swatch && /^#[0-9a-fA-F]{3,8}$/.test(color.swatch) ? color.swatch : "transparent";
 }
 
-export const ImageViewSchema = z.enum(["back", "front", "detail"]);
+export const ImageViewSchema = z.enum(["back", "front", "side", "detail"]);
 export const ProductImageSchema = z.object({
   url: z.string(),
   alt: z.string(),
@@ -77,11 +79,18 @@ export const VariantSchema = z.object({
 export type Variant = z.infer<typeof VariantSchema>;
 
 export const ProductSummarySchema = z.object({
-  /** Lookbook ID, e.g. A3-B01. */
+  /** Lookbook ID, e.g. A3-B01 (hats use H: A3-H01). */
   code: z.string(),
   slug: z.string(),
   name: z.string(),
-  collection: CollectionSchema.pick({ slug: true, name: true, pillar: true }),
+  collection: CollectionSchema.pick({ slug: true, name: true, tagline: true }),
+  /** Order within its release, from 1. Drives the default sort and the I–VI numbering. */
+  position: z.number().int().positive(),
+  /**
+   * True while the piece is on the site but not yet in Fourthwall: it shows with the site's price
+   * and mockups, and checkout says it opens soon.
+   */
+  preview: z.boolean(),
   category: CategorySchema,
   baseColor: z.string(),
   priceCents: z.number().int().nonnegative(),
@@ -186,7 +195,7 @@ const FacetCount = z.object({ count: z.number().int() });
 export const CatalogFacetsSchema = z.object({
   categories: z.array(CategorySchema.extend(FacetCount.shape)),
   collections: z.array(
-    CollectionSchema.pick({ slug: true, name: true, pillar: true }).extend(FacetCount.shape),
+    CollectionSchema.pick({ slug: true, name: true, tagline: true }).extend(FacetCount.shape),
   ),
   colors: z.array(ColorSchema.extend(FacetCount.shape)),
   sizes: z.array(z.object({ size: z.string() }).extend(FacetCount.shape)),

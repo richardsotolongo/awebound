@@ -1,120 +1,85 @@
-import { AltarPanel, CollectionBanner, ProductCard, ThornRule } from "@awebound/brand";
+import { Button } from "@awebound/brand";
 import type { ProductSummary } from "@/shared";
-import Link from "next/link";
-import { Fragment } from "react";
 import { Reveal } from "@/components/reveal";
-import { EMPTY_LIST, toCardProps } from "@/features/catalog/query";
+import { EMPTY_LIST } from "@/features/catalog/query";
 import { Opening } from "@/features/home-journey/opening";
-import { PillarScene } from "@/features/home-journey/pillar-scene";
+import { SeedScene } from "@/features/home-journey/seed-scene";
+import { BeholdReveal } from "@/features/home-journey/veil";
+import { VisionIndex } from "@/features/home-journey/vision-index";
+import { VisionScene } from "@/features/home-journey/vision-scene";
+import { ReleaseCard } from "@/features/release/release-card";
 import { searchProducts, withFallback } from "@/server/catalog";
-import { PILLARS } from "@/lib/site";
+import { RELEASE, VISIONS } from "@/lib/release";
 
 export const revalidate = 60;
 
-function Rail({ title, items, href }: { title: string; items: ProductSummary[]; href: string }) {
-  if (items.length === 0) return null;
-  return (
-    <section className="aw-container journey-rail" aria-label={title}>
-      <div className="journey-rail-head">
-        <p className="aw-label">{title}</p>
-        <Link href={href} className="aw-btn aw-btn-link">
-          See all
-        </Link>
-      </div>
-      <ul className="scroll-rail" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-        {items.map((p, i) => (
-          <Reveal as="li" key={p.slug} delay={i * 0.06}>
-            <ProductCard {...toCardProps(p)} />
-          </Reveal>
-        ))}
-      </ul>
-    </section>
-  );
+/**
+ * The art for a scene: the print close-up shipped with the site while the catalog uses the
+ * site's own images, else the provider's listing photo (Fourthwall).
+ */
+function sceneImage(slug: string, product?: ProductSummary) {
+  const local = { url: `/products/${slug}/detail.webp`, alt: "" };
+  if (!product) return local;
+  return product.image.url.startsWith("/products/")
+    ? { url: local.url, alt: `${product.name}, print close up` }
+    : { url: product.image.url, alt: product.image.alt };
 }
 
 export default async function Home() {
   const catalog = await withFallback(
-    () => searchProducts({ pageSize: 48, sort: "featured" }),
+    () => searchProducts({ collection: [RELEASE.slug], pageSize: 48, sort: "featured" }),
     EMPTY_LIST,
   );
-  const inCollection = (slug: string) =>
-    catalog.items.filter((p) => p.collection.slug === slug).slice(0, 3);
-
-  // The newest drop is the collection with the most recent release.
-  const newest = [...catalog.items].sort((a, b) => b.releasedAt.localeCompare(a.releasedAt))[0];
-  const newestPillar = PILLARS.find((p) => p.slug === newest?.collection.slug);
-  const featured = catalog.items.filter((p) => p.featured).slice(0, 4);
+  const bySlug = new Map(catalog.items.map((p) => [p.slug, p]));
 
   return (
     <>
       <Opening />
+      <BeholdReveal />
 
-      <div id="pillars" className="aw-container journey-intro">
-        <ThornRule />
-        <Reveal className="journey-intro-text">
-          <p className="aw-label">Three pillars</p>
-          <p className="aw-h2">Royal heritage. Freedom. Resurrection.</p>
-          <p className="aw-body">
-            Every design carries one of them. Scroll to see what each one holds.
-          </p>
-        </Reveal>
+      <div id="visions" className="visions">
+        <VisionIndex visions={VISIONS} containerId="visions" />
+        {VISIONS.map((vision, i) => {
+          const product = bySlug.get(vision.slug);
+          return (
+            <VisionScene
+              key={vision.slug}
+              vision={vision}
+              product={product}
+              image={sceneImage(vision.slug, product)}
+              index={i}
+            />
+          );
+        })}
       </div>
 
-      {PILLARS.map((pillar, i) => (
-        <Fragment key={pillar.slug}>
-          <PillarScene pillar={pillar} index={i} />
-          <Rail
-            title={`From ${pillar.family}`}
-            items={inCollection(pillar.slug)}
-            href={`/collections/${pillar.slug}`}
-          />
-        </Fragment>
-      ))}
-
-      {newestPillar ? (
-        <CollectionBanner
-          tone="feature"
-          pillar="New drop"
-          family={newestPillar.family}
-          story={newestPillar.story}
-          action={{
-            label: `Shop ${newestPillar.family}`,
-            href: `/collections/${newestPillar.slug}`,
-          }}
-        />
-      ) : null}
-
-      {featured.length > 0 ? (
-        <section className="aw-container section" aria-labelledby="featured-title">
-          <div className="journey-rail-head" style={{ marginBottom: "var(--space-8)" }}>
-            <h2 id="featured-title" className="aw-h2">
-              Begin here
+      {catalog.items.length > 0 ? (
+        <section className="aw-container section release-section" aria-labelledby="release-title">
+          <Reveal className="release-head">
+            <p className="aw-label">
+              Release {RELEASE.number} · {catalog.items.length} pieces
+            </p>
+            <h2 id="release-title" className="aw-h1">
+              {RELEASE.name}
             </h2>
-            <Link href="/shop" className="aw-btn aw-btn-link">
-              Shop all
-            </Link>
-          </div>
-          <ul
-            className="product-grid"
-            data-wide="true"
-            style={{ listStyle: "none", margin: 0, padding: 0 }}
-          >
-            {featured.map((p, i) => (
-              <Reveal as="li" key={p.slug} delay={i * 0.06}>
-                <ProductCard {...toCardProps(p)} />
+            <p className="aw-body">{RELEASE.tagline}</p>
+          </Reveal>
+          <ul className="product-grid release-grid">
+            {catalog.items.map((p, i) => (
+              <Reveal as="li" key={p.slug} delay={(i % 3) * 0.06}>
+                <ReleaseCard product={p} />
               </Reveal>
             ))}
           </ul>
+          <div className="aw-btn-row" style={{ justifyContent: "center" }}>
+            <Button variant="secondary" href="/shop">
+              Shop the release
+            </Button>
+          </div>
         </section>
       ) : null}
 
-      <AltarPanel
-        eyebrow="Our story"
-        title="Faith at the forefront"
-        body="Awebound is for people who are not ashamed to wear their faith. Every design tells a story about our Lord and Savior, and every piece is made to start a conversation about him."
-        scripture="Romans 1:16"
-        action={{ label: "Read our story", href: "/about" }}
-      />
+      <SeedScene />
     </>
   );
 }

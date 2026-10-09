@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   CategorySchema,
   CollectionSchema,
+  ImageViewSchema,
   ProductStorySchema,
   type Category,
   type Collection,
@@ -11,10 +12,15 @@ import {
 } from "@/shared";
 import raw from "./catalog.json";
 
-const ContentImage = z.object({ url: z.string(), alt: z.string() });
+const ContentImage = z.object({ view: ImageViewSchema, url: z.string(), alt: z.string() });
 
 const BrandContentSchema = z.object({
-  categories: z.array(CategorySchema),
+  categories: z.array(
+    CategorySchema.extend({
+      /** Sizes a preview product offers until Fourthwall supplies the real ones. */
+      sizes: z.array(z.string()).min(1),
+    }),
+  ),
   collections: z.array(CollectionSchema),
   colors: z.record(z.string(), z.string()),
   products: z.array(
@@ -24,14 +30,19 @@ const BrandContentSchema = z.object({
       name: z.string(),
       collection: z.string(),
       category: z.string(),
+      /** Order within the release, from 1. */
+      position: z.number().int().positive(),
       colors: z.array(z.string()).min(1),
+      /** The site's price while the product is a preview; Fourthwall's price wins once it's live. */
+      priceCents: z.number().int().nonnegative(),
       featured: z.boolean(),
       releasedAt: z.string(),
       scriptureRef: z.string(),
       /** Product slug in the Fourthwall shop when it differs from `slug`. */
       fourthwallSlug: z.string().optional(),
       story: ProductStorySchema,
-      images: z.object({ back: ContentImage, front: ContentImage }),
+      /** Display order: listing image, hover image, then the rest. */
+      images: z.array(ContentImage).min(1),
     }),
   ),
 });
@@ -44,15 +55,19 @@ export interface ProductContent {
   /** Slug of the matching Fourthwall product (`slug` unless the content sets `fourthwallSlug`). */
   fourthwallSlug: string;
   collection: Collection;
+  position: number;
   category: Category;
   /** Brand garment colors for the design; the first is the base color. */
   colors: Color[];
+  /** Preview price and sizes, used until the product is in Fourthwall. */
+  priceCents: number;
+  sizes: string[];
   featured: boolean;
   releasedAt: string;
   scriptureRef: string;
   story: ProductStory;
-  /** Sample art (back, front), shown when the Fourthwall product has no photos. */
-  images: [ProductImage, ProductImage];
+  /** Mockups in display order, shown for previews and when the Fourthwall product has no photos. */
+  images: [ProductImage, ...ProductImage[]];
 }
 
 export interface BrandContent {
@@ -78,27 +93,30 @@ function loadBrandContent(): BrandContent {
       return { name, token };
     });
 
+    const [first, ...rest] = p.images;
+    if (!first) throw new Error(`${p.code}: needs at least one image`);
+
     return {
       code: p.code,
       slug: p.slug,
       name: p.name,
       fourthwallSlug: p.fourthwallSlug ?? p.slug,
       collection,
-      category,
+      position: p.position,
+      category: { slug: category.slug, name: category.name, cut: category.cut },
       colors,
+      priceCents: p.priceCents,
+      sizes: category.sizes,
       featured: p.featured,
       releasedAt: p.releasedAt,
       scriptureRef: p.scriptureRef,
       story: p.story,
-      images: [
-        { ...p.images.back, view: "back" },
-        { ...p.images.front, view: "front" },
-      ],
+      images: [first, ...rest],
     };
   });
 
   return {
-    categories: content.categories,
+    categories: content.categories.map(({ slug, name, cut }) => ({ slug, name, cut })),
     collections: content.collections,
     colorTokens: content.colors,
     products,

@@ -50,7 +50,7 @@ function layout(siteUrl: string, eyebrow: string, body: string): string {
 <p style="margin:0 0 12px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.muted};">${eyebrow}</p>
 ${body}
 </td></tr>
-<tr><td align="center" style="padding-top:24px;font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.muted};">Royal heritage. Freedom. Resurrection.</td></tr>
+<tr><td align="center" style="padding-top:24px;font-family:Archivo,'Helvetica Neue',Arial,sans-serif;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:${C.muted};">Bound in awe. Worn without shame.</td></tr>
 </table></td></tr></table></body></html>`;
 }
 
@@ -81,11 +81,11 @@ export function contactAcknowledgement(message: ContactMessage, siteUrl: string)
     "Message received",
     [
       p(`${escapeHtml(firstName)}, thank you for writing to Awebound.`),
-      p("A real person reads every message. Expect a reply within two business days."),
+      p("A real person reads every message. Expect a reply within 72 hours."),
       `<p style="margin:0;font-size:14px;color:${C.muted};">For anything about an order, reply to this email with your order number.</p>`,
     ].join(""),
   );
-  const text = `${firstName}, thank you for writing to Awebound.\n\nA real person reads every message. Expect a reply within two business days.\n\nFor anything about an order, reply to this email with your order number.`;
+  const text = `${firstName}, thank you for writing to Awebound.\n\nA real person reads every message. Expect a reply within 72 hours.\n\nFor anything about an order, reply to this email with your order number.`;
   return { subject, html, text };
 }
 

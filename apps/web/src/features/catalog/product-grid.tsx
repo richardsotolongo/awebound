@@ -1,12 +1,11 @@
 "use client";
 
-import { ProductCard } from "@awebound/brand";
 import type { ProductList, ProductQueryInput } from "@/shared";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { loadMoreProducts } from "@/server/actions";
 import { useCatalogState } from "./catalog-state";
-import { toCardProps } from "./query";
+import { ReleaseCard } from "@/features/release/release-card";
 
 interface ProductGridProps {
   initial: ProductList;
@@ -71,7 +70,7 @@ export function ProductGrid({ initial, query, queryKey, wide }: ProductGridProps
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
               transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
             >
-              <ProductCard {...toCardProps(p, i < 3)} />
+              <ReleaseCard product={p} priority={i < 3} />
             </motion.li>
           ))}
         </AnimatePresence>
