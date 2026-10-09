@@ -58,7 +58,7 @@ RESEND_API_KEY=re_...
 CATALOG_SOURCE=fourthwall
 COMMERCE_PROVIDER=fourthwall
 FOURTHWALL_STOREFRONT_TOKEN=ptkn_...
-FOURTHWALL_CHECKOUT_DOMAIN=your-shop.fourthwall.com
+FOURTHWALL_CHECKOUT_DOMAIN=awebound-store-shop.fourthwall.com
 ```
 
 - `RESEND_API_KEY` is required in production. Without it the API answers every request with `500 misconfigured` and the function log names the missing variable.

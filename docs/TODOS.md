@@ -38,7 +38,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 - [ ] Create the products in Fourthwall. Set each product's URL slug to the site slug in `packages/shared/src/seed/catalog.json` (`third-morning`, `shattered-dominion`, …), or add `"fourthwallSlug": "<fourthwall-slug>"` to that product's entry. New designs need an entry in the content file too (ID, collection, category, Scripture, copy); then run `pnpm db:seed` if you use Supabase.
 - [ ] Name colors like the brand garments (`Washed coal`, `Faded black`, `Warm bone`, …) so the site shows the brand swatches. Other names fall back to Fourthwall's swatch color.
 - [ ] Fourthwall admin → Settings → For developers: create a **Storefront token** → `FOURTHWALL_STOREFRONT_TOKEN`.
-- [ ] Note the shop's domain (`<shop>.fourthwall.com`, or a custom domain such as `shop.awebound.store` connected in Fourthwall) → `FOURTHWALL_CHECKOUT_DOMAIN`.
+- [x] Shop created: `awebound-store-shop.fourthwall.com` (Fourthwall shop "awebound.store") → `FOURTHWALL_CHECKOUT_DOMAIN`. Switch to a custom domain such as `shop.awebound.store` if you connect one in Fourthwall.
 - [ ] Set `CATALOG_SOURCE=fourthwall` and `COMMERCE_PROVIDER=fourthwall` on the API; redeploy. Check the API log for "products without a match are hidden" and fix any slugs it lists.
 - [ ] Shipping, taxes, order and shipping emails: configure in Fourthwall (it sends them).
 - [ ] Place a test order end to end, then refund it in Fourthwall.
