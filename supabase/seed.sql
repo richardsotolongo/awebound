@@ -121,25 +121,25 @@ insert into public.product_images (product_id, url, alt, view, sort_order)
 select p.id, i.url, i.alt, i.view, i.sort_order
 from (values
   ('A3-T02', '/products/a3-t02-back.jpg', 'Third Morning back print: the open tomb at dawn with the stone rolled aside', 'back', 0),
-  ('A3-T02', '/products/a3-t02-front.svg', 'Third Morning front: small Thorn Cross on the left chest', 'front', 1),
+  ('A3-T02', '/products/a3-t02-front.svg', 'Third Morning front: small Thorn Cross on the left chest (sample art)', 'front', 1),
   ('A3-B01', '/products/a3-b01-back.jpg', 'Shattered Dominion back print: a ring of breaking chain around the cross', 'back', 0),
-  ('A3-B01', '/products/a3-b01-front.svg', 'Shattered Dominion front: small Thorn Cross on the left chest', 'front', 1),
+  ('A3-B01', '/products/a3-b01-front.svg', 'Shattered Dominion front: small Thorn Cross on the left chest (sample art)', 'front', 1),
   ('A3-R01', '/products/a3-r01-back.jpg', 'Throne of Grace back print: a carved arch framing the cross above olive branches', 'back', 0),
-  ('A3-R01', '/products/a3-r01-front.svg', 'Throne of Grace front: small Thorn Cross on the left chest', 'front', 1),
-  ('A3-B02', '/products/a3-b02-back.svg', 'Freed in Awe back print: open shackles beneath the thorn wreath', 'back', 0),
-  ('A3-B02', '/products/a3-b02-front.svg', 'Freed in Awe front: small mark on the chest', 'front', 1),
-  ('A3-T01', '/products/a3-t01-back.svg', 'Stone Rolled Aside back print: the lily over the open tomb', 'back', 0),
-  ('A3-T01', '/products/a3-t01-front.svg', 'Stone Rolled Aside front: small Thorn Cross on the left chest', 'front', 1),
-  ('A3-R02', '/products/a3-r02-back.svg', 'Unshaken Kingdom back print: the thorn wreath under an arch', 'back', 0),
-  ('A3-R02', '/products/a3-r02-front.svg', 'Unshaken Kingdom front: small Thorn Cross on the left chest', 'front', 1),
-  ('A3-B03', '/products/a3-b03-back.svg', 'Chains Snapped back print: a lily between the halves of a broken chain', 'back', 0),
-  ('A3-B03', '/products/a3-b03-front.svg', 'Chains Snapped front: small mark on the chest', 'front', 1),
-  ('A3-T03', '/products/a3-t03-back.svg', 'He Is Risen back print: lilies rising', 'back', 0),
-  ('A3-T03', '/products/a3-t03-front.svg', 'He Is Risen front: small Thorn Cross on the left chest', 'front', 1),
-  ('A3-H01', '/products/a3-h01-back.svg', 'Thornbound Cap: embroidered Thorn Cross on the front panel', 'back', 0),
-  ('A3-H01', '/products/a3-h01-front.svg', 'Thornbound Cap from the side', 'front', 1),
-  ('A3-H02', '/products/a3-h02-back.svg', 'Kingdom Cap: embroidered thorn wreath on the front panel', 'back', 0),
-  ('A3-H02', '/products/a3-h02-front.svg', 'Kingdom Cap from the side', 'front', 1)
+  ('A3-R01', '/products/a3-r01-front.svg', 'Throne of Grace front: small Thorn Cross on the left chest (sample art)', 'front', 1),
+  ('A3-B02', '/products/a3-b02-back.svg', 'Freed in Awe back: the wordmark above a copper thorn wreath (sample art)', 'back', 0),
+  ('A3-B02', '/products/a3-b02-front.svg', 'Freed in Awe in warm bone, front: small wordmark on the chest (sample art)', 'front', 1),
+  ('A3-T01', '/products/a3-t01-back.svg', 'Stone Rolled Aside back: the wordmark above a lily (sample art)', 'back', 0),
+  ('A3-T01', '/products/a3-t01-front.svg', 'Stone Rolled Aside in washed sand, front: small Thorn Cross (sample art)', 'front', 1),
+  ('A3-R02', '/products/a3-r02-back.svg', 'Unshaken Kingdom back: the wordmark above a gold Thorn Cross (sample art)', 'back', 0),
+  ('A3-R02', '/products/a3-r02-front.svg', 'Unshaken Kingdom in faded black, front: small Thorn Cross (sample art)', 'front', 1),
+  ('A3-B03', '/products/a3-b03-back.svg', 'Chains Snapped back: the wordmark above a thorn vine (sample art)', 'back', 0),
+  ('A3-B03', '/products/a3-b03-front.svg', 'Chains Snapped in faded black, front: small wordmark on the chest (sample art)', 'front', 1),
+  ('A3-T03', '/products/a3-t03-back.svg', 'He Is Risen back: the wordmark above a lily (sample art)', 'back', 0),
+  ('A3-T03', '/products/a3-t03-front.svg', 'He Is Risen in washed deep olive, front: small Thorn Cross (sample art)', 'front', 1),
+  ('A3-H01', '/products/a3-h01-back.svg', 'Thornbound Cap in washed black twill with an embroidered Thorn Cross (sample art)', 'back', 0),
+  ('A3-H01', '/products/a3-h01-front.svg', 'Thornbound Cap in washed charcoal twill (sample art)', 'front', 1),
+  ('A3-H02', '/products/a3-h02-back.svg', 'Kingdom Cap in oxblood corduroy with an embroidered thorn wreath (sample art)', 'back', 0),
+  ('A3-H02', '/products/a3-h02-front.svg', 'Kingdom Cap in sandstone (sample art)', 'front', 1)
 ) as i (code, url, alt, view, sort_order)
 join public.products p on p.code = i.code;
 

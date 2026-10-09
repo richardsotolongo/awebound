@@ -1,4 +1,10 @@
-import { MAX_LINE_QUANTITY, type Bag, type BagIssue, type BagLine, type BagLineInput } from "@awebound/shared";
+import {
+  MAX_LINE_QUANTITY,
+  type Bag,
+  type BagIssue,
+  type BagLine,
+  type BagLineInput,
+} from "@awebound/shared";
 import type { VariantWithProduct } from "./catalog";
 
 export type { Bag, BagIssue, BagLine, BagLineInput };
@@ -21,16 +27,28 @@ export function priceBag(
   for (const [sku, requested] of merged) {
     const found = catalog.get(sku);
     if (!found) {
-      issues.push({ sku, kind: "not_found", message: "This item is no longer in the shop and was removed." });
+      issues.push({
+        sku,
+        kind: "not_found",
+        message: "This item is no longer in the shop and was removed.",
+      });
       continue;
     }
     const quantity = Math.min(requested, MAX_LINE_QUANTITY);
     if (quantity !== requested) {
-      issues.push({ sku, kind: "quantity_adjusted", message: `Limited to ${MAX_LINE_QUANTITY} per size.` });
+      issues.push({
+        sku,
+        kind: "quantity_adjusted",
+        message: `Limited to ${MAX_LINE_QUANTITY} per size.`,
+      });
     }
     const { variant, product } = found;
     if (!variant.available) {
-      issues.push({ sku, kind: "sold_out", message: `${product.name} in ${variant.color}, ${variant.size} is sold out.` });
+      issues.push({
+        sku,
+        kind: "sold_out",
+        message: `${product.name} in ${variant.color}, ${variant.size} is sold out.`,
+      });
     }
     lines.push({
       sku,

@@ -116,7 +116,10 @@ const csvList = <T extends z.ZodType>(item: T) =>
   z.preprocess((value) => {
     if (value === undefined || value === "") return undefined;
     const raw = Array.isArray(value) ? value : [value];
-    return raw.flatMap((v) => String(v).split(",")).map((v) => v.trim()).filter(Boolean);
+    return raw
+      .flatMap((v) => String(v).split(","))
+      .map((v) => v.trim())
+      .filter(Boolean);
   }, z.array(item).optional());
 
 const optionalNumber = z.preprocess(
@@ -135,7 +138,10 @@ export const ProductQuerySchema = z.object({
   minPrice: optionalNumber,
   maxPrice: optionalNumber,
   sort: SortSchema.default("featured"),
-  page: z.preprocess((v) => (v === undefined || v === "" ? undefined : Number(v)), z.number().int().min(1).default(1)),
+  page: z.preprocess(
+    (v) => (v === undefined || v === "" ? undefined : Number(v)),
+    z.number().int().min(1).default(1),
+  ),
   pageSize: z.preprocess(
     (v) => (v === undefined || v === "" ? undefined : Number(v)),
     z.number().int().min(1).max(48).default(12),
@@ -157,7 +163,9 @@ const FacetCount = z.object({ count: z.number().int() });
 
 export const CatalogFacetsSchema = z.object({
   categories: z.array(CategorySchema.extend(FacetCount.shape)),
-  collections: z.array(CollectionSchema.pick({ slug: true, name: true, pillar: true }).extend(FacetCount.shape)),
+  collections: z.array(
+    CollectionSchema.pick({ slug: true, name: true, pillar: true }).extend(FacetCount.shape),
+  ),
   colors: z.array(ColorSchema.extend(FacetCount.shape)),
   sizes: z.array(z.object({ size: z.string() }).extend(FacetCount.shape)),
   /** Whole dollars across the whole catalog. */

@@ -2,7 +2,14 @@ import { z } from "zod";
 
 export const CONTACT_EMAIL = "contact@awebound.store";
 
-export const CONTACT_TOPICS = ["order", "sizing", "returns", "wholesale", "press", "other"] as const;
+export const CONTACT_TOPICS = [
+  "order",
+  "sizing",
+  "returns",
+  "wholesale",
+  "press",
+  "other",
+] as const;
 export const ContactTopicSchema = z.enum(CONTACT_TOPICS);
 export type ContactTopic = z.infer<typeof ContactTopicSchema>;
 

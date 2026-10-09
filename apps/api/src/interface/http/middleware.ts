@@ -13,7 +13,13 @@ function setUser(res: Response, user: AuthenticatedUser) {
   (res.locals as { user?: AuthenticatedUser }).user = user;
 }
 
-function sendError(res: Response, status: number, code: ErrorCode, message: string, fields?: Record<string, string[]>) {
+function sendError(
+  res: Response,
+  status: number,
+  code: ErrorCode,
+  message: string,
+  fields?: Record<string, string[]>,
+) {
   const body: ApiErrorBody = { error: { code, message, ...(fields ? { fields } : {}) } };
   res.status(status).json(body);
 }
@@ -31,20 +37,31 @@ export function errorHandler(logger: Logger): ErrorRequestHandler {
   return (err: unknown, req, res, _next) => {
     if (err instanceof DomainError) {
       const [status, code] = KIND_TO_HTTP[err.kind];
-      if (status >= 500) logger.error({ err, cause: (err as { cause?: unknown }).cause, path: req.path }, err.message);
-      const fields = "fields" in err ? (err.fields as Record<string, string[]> | undefined) : undefined;
+      if (status >= 500)
+        logger.error(
+          { err, cause: (err as { cause?: unknown }).cause, path: req.path },
+          err.message,
+        );
+      const fields =
+        "fields" in err ? (err.fields as Record<string, string[]> | undefined) : undefined;
       return sendError(res, status, code, err.message, fields);
     }
     const status = (err as { status?: number; type?: string }).status;
     if (status === 400 || status === 413) {
-      return sendError(res, status, "bad_request", status === 413 ? "That request is too large." : "That request wasn’t valid JSON.");
+      return sendError(
+        res,
+        status,
+        "bad_request",
+        status === 413 ? "That request is too large." : "That request wasn’t valid JSON.",
+      );
     }
     logger.error({ err, path: req.path }, "unhandled error");
     sendError(res, 500, "internal", "Something went wrong on our side.");
   };
 }
 
-export const notFound: RequestHandler = (_req, res) => sendError(res, 404, "not_found", "No such endpoint.");
+export const notFound: RequestHandler = (_req, res) =>
+  sendError(res, 404, "not_found", "No such endpoint.");
 
 function bearer(req: Request): string | null {
   const header = req.headers.authorization;
@@ -83,14 +100,18 @@ export function limiter(windowMinutes: number, limit: number): RequestHandler {
     limit,
     standardHeaders: "draft-8",
     legacyHeaders: false,
-    handler: (_req, res) => sendError(res, 429, "rate_limited", "Too many tries. Wait a few minutes and try again."),
+    handler: (_req, res) =>
+      sendError(res, 429, "rate_limited", "Too many tries. Wait a few minutes and try again."),
   });
 }
 
 /** Lets CDNs and browsers cache public catalog reads briefly. */
 export function publicCache(seconds: number): RequestHandler {
   return (_req, res, next) => {
-    res.setHeader("Cache-Control", `public, max-age=${seconds}, stale-while-revalidate=${seconds * 5}`);
+    res.setHeader(
+      "Cache-Control",
+      `public, max-age=${seconds}, stale-while-revalidate=${seconds * 5}`,
+    );
     next();
   };
 }
@@ -100,7 +121,12 @@ export function requestLogger(logger: Logger): RequestHandler {
     const started = performance.now();
     res.on("finish", () => {
       logger.info(
-        { method: req.method, path: req.path, status: res.statusCode, ms: Math.round(performance.now() - started) },
+        {
+          method: req.method,
+          path: req.path,
+          status: res.statusCode,
+          ms: Math.round(performance.now() - started),
+        },
         "request",
       );
     });

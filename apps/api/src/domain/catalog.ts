@@ -30,7 +30,11 @@ export function toSummary(product: ProductDetail): ProductSummary {
     code: product.code,
     slug: product.slug,
     name: product.name,
-    collection: { slug: product.collection.slug, name: product.collection.name, pillar: product.collection.pillar },
+    collection: {
+      slug: product.collection.slug,
+      name: product.collection.name,
+      pillar: product.collection.pillar,
+    },
     category: product.category,
     baseColor: product.baseColor,
     priceCents: product.priceCents,

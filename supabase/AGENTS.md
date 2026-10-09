@@ -4,12 +4,12 @@ Postgres schema, seed and auth email templates for the Awebound store. Used by t
 
 ## Layout
 
-| Path | Purpose |
-| --- | --- |
+| Path               | Purpose                                                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- |
 | `migrations/*.sql` | Ordered, append-only migrations. Never edit one that has been applied to a shared database; add a new file. |
-| `seed.sql` | **Generated** by `pnpm db:seed` from `packages/shared/src/seed/catalog.json`. Don't hand-edit. |
-| `templates/*.html` | Supabase Auth email templates (magic link + code, confirmation). |
-| `config.toml` | Local CLI config: auth, Google provider, Resend SMTP (off locally; Inbucket catches mail). |
+| `seed.sql`         | **Generated** by `pnpm db:seed` from `packages/shared/src/seed/catalog.json`. Don't hand-edit.              |
+| `templates/*.html` | Supabase Auth email templates (magic link + code, confirmation).                                            |
+| `config.toml`      | Local CLI config: auth, Google provider, Resend SMTP (off locally; Inbucket catches mail).                  |
 
 ## Schema in one glance
 
@@ -21,6 +21,7 @@ Postgres schema, seed and auth email templates for the Awebound store. Used by t
 - `contact_messages`, `subscribers` — written only by the API's secret key; RLS on with no policies.
 
 Functions called by the API via `rpc()`:
+
 - `search_products(p_q, p_categories, p_collections, p_colors, p_sizes, p_min_cents, p_max_cents, p_sort, p_limit, p_offset)` → `(product_id, total_count)`
 - `catalog_facets(...same filters)` → jsonb `{categories, collections, colors, sizes, price}`; each facet ignores its own filter.
 

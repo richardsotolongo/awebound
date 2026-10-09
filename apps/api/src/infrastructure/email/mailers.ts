@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 import type { ContactMessage, Logger, Mailer } from "../../application/ports";
-import { contactAcknowledgement, contactNotification, subscriberWelcome, type RenderedEmail } from "./templates";
+import {
+  contactAcknowledgement,
+  contactNotification,
+  subscriberWelcome,
+  type RenderedEmail,
+} from "./templates";
 
 interface MailerConfig {
   from: string;
@@ -14,11 +19,19 @@ abstract class TemplateMailer implements Mailer {
   protected abstract deliver(to: string, email: RenderedEmail, replyTo?: string): Promise<void>;
 
   sendContactNotification(message: ContactMessage): Promise<void> {
-    return this.deliver(this.config.inbox, contactNotification(message, this.config.siteUrl), message.email);
+    return this.deliver(
+      this.config.inbox,
+      contactNotification(message, this.config.siteUrl),
+      message.email,
+    );
   }
 
   sendContactAcknowledgement(message: ContactMessage): Promise<void> {
-    return this.deliver(message.email, contactAcknowledgement(message, this.config.siteUrl), this.config.inbox);
+    return this.deliver(
+      message.email,
+      contactAcknowledgement(message, this.config.siteUrl),
+      this.config.inbox,
+    );
   }
 
   sendSubscriberWelcome(email: string): Promise<void> {
@@ -58,7 +71,16 @@ export class ConsoleMailer extends TemplateMailer {
   }
 
   protected async deliver(to: string, email: RenderedEmail, replyTo?: string): Promise<void> {
-    this.logger.info({ mail: { to: to.replace(/(.).+(@.*)/, "$1…$2"), replyTo: replyTo ? "set" : "none", subject: email.subject } }, "email (console mailer)");
+    this.logger.info(
+      {
+        mail: {
+          to: to.replace(/(.).+(@.*)/, "$1…$2"),
+          replyTo: replyTo ? "set" : "none",
+          subject: email.subject,
+        },
+      },
+      "email (console mailer)",
+    );
     console.info(`\n--- email: ${email.subject} ---\n${email.text}\n--- end ---\n`);
   }
 }

@@ -29,10 +29,13 @@ export interface FulfillmentOrder {
   shipTo: FulfillmentAddress;
 }
 
-export type FulfillmentStatus = "pending" | "in_production" | "shipped" | "delivered" | "canceled" | "failed";
+export type FulfillmentStatus =
+  "pending" | "in_production" | "shipped" | "delivered" | "canceled" | "failed";
 
 export interface FulfillmentGateway {
   readonly provider: string;
   createOrder(order: FulfillmentOrder): Promise<{ providerOrderId: string }>;
-  getOrderStatus(providerOrderId: string): Promise<{ status: FulfillmentStatus; trackingUrl?: string }>;
+  getOrderStatus(
+    providerOrderId: string,
+  ): Promise<{ status: FulfillmentStatus; trackingUrl?: string }>;
 }

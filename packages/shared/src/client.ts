@@ -7,7 +7,12 @@ import {
   ProductListSchema,
   type ProductQueryInput,
 } from "./catalog";
-import { BagSchema, CheckoutResultSchema, type BagValidateRequest, type CheckoutRequest } from "./commerce";
+import {
+  BagSchema,
+  CheckoutResultSchema,
+  type BagValidateRequest,
+  type CheckoutRequest,
+} from "./commerce";
 import { ApiError, ApiErrorBodySchema } from "./errors";
 import { OkSchema, type ContactRequest, type SubscribeRequest } from "./messages";
 
@@ -49,7 +54,11 @@ export function createApiClient(options: ApiClientOptions) {
   const fetcher = options.fetch ?? fetch;
   const base = options.baseUrl.replace(/\/$/, "");
 
-  async function request<S extends z.ZodType>(schema: S, path: string, opts: RequestOptions = {}): Promise<z.infer<S>> {
+  async function request<S extends z.ZodType>(
+    schema: S,
+    path: string,
+    opts: RequestOptions = {},
+  ): Promise<z.infer<S>> {
     const qs = opts.query ? toSearchParams(opts.query).toString() : "";
     const headers = new Headers(options.init?.headers);
     new Headers(opts.init?.headers).forEach((v, k) => headers.set(k, v));
@@ -70,7 +79,11 @@ export function createApiClient(options: ApiClientOptions) {
         body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
       });
     } catch {
-      throw new ApiError(0, "unavailable", "The store is unreachable right now. Try again in a moment.");
+      throw new ApiError(
+        0,
+        "unavailable",
+        "The store is unreachable right now. Try again in a moment.",
+      );
     }
 
     const text = await res.text();

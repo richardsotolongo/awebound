@@ -1,7 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ContactRequest, SubscribeRequest } from "@awebound/shared";
 import { z } from "zod";
-import type { ContactMessage, ContactRepository, SubscriberRepository } from "../../application/ports";
+import type {
+  ContactMessage,
+  ContactRepository,
+  SubscriberRepository,
+} from "../../application/ports";
 import { UnavailableError } from "../../domain/errors";
 
 const ContactRow = z.object({
@@ -16,7 +20,9 @@ const ContactRow = z.object({
 export class SupabaseContactRepository implements ContactRepository {
   constructor(private readonly db: SupabaseClient) {}
 
-  async save(input: Omit<ContactRequest, "website"> & { userId?: string }): Promise<ContactMessage> {
+  async save(
+    input: Omit<ContactRequest, "website"> & { userId?: string },
+  ): Promise<ContactMessage> {
     const { data, error } = await this.db
       .from("contact_messages")
       .insert({
@@ -34,7 +40,10 @@ export class SupabaseContactRepository implements ContactRepository {
   }
 
   async markEmailed(id: string): Promise<void> {
-    await this.db.from("contact_messages").update({ emailed_at: new Date().toISOString() }).eq("id", id);
+    await this.db
+      .from("contact_messages")
+      .update({ emailed_at: new Date().toISOString() })
+      .eq("id", id);
   }
 }
 

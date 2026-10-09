@@ -2,10 +2,34 @@
   "$comment": "Sample catalog for development and the Supabase seed. PRICES ARE PLACEHOLDERS until the owner sets them. Images live in apps/web/public/products. Regenerate supabase/seed.sql with `pnpm db:seed` after editing.",
   "currency": "USD",
   "categories": [
-    { "slug": "tees", "name": "Tees", "cut": "Tee", "placeholderPriceCents": 3800, "sizes": ["S", "M", "L", "XL", "2XL"] },
-    { "slug": "oversized-tees", "name": "Oversized tees", "cut": "Oversized tee", "placeholderPriceCents": 4400, "sizes": ["S", "M", "L", "XL", "2XL"] },
-    { "slug": "tanks", "name": "Tanks", "cut": "Tank", "placeholderPriceCents": 3400, "sizes": ["S", "M", "L", "XL", "2XL"] },
-    { "slug": "hats", "name": "Hats", "cut": "Cap", "placeholderPriceCents": 3200, "sizes": ["One size"] }
+    {
+      "slug": "tees",
+      "name": "Tees",
+      "cut": "Tee",
+      "placeholderPriceCents": 3800,
+      "sizes": ["S", "M", "L", "XL", "2XL"]
+    },
+    {
+      "slug": "oversized-tees",
+      "name": "Oversized tees",
+      "cut": "Oversized tee",
+      "placeholderPriceCents": 4400,
+      "sizes": ["S", "M", "L", "XL", "2XL"]
+    },
+    {
+      "slug": "tanks",
+      "name": "Tanks",
+      "cut": "Tank",
+      "placeholderPriceCents": 3400,
+      "sizes": ["S", "M", "L", "XL", "2XL"]
+    },
+    {
+      "slug": "hats",
+      "name": "Hats",
+      "cut": "Cap",
+      "placeholderPriceCents": 3200,
+      "sizes": ["One size"]
+    }
   ],
   "collections": [
     {
@@ -69,8 +93,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-t02-back.jpg", "alt": "Third Morning back print: the open tomb at dawn with the stone rolled aside" },
-        "front": { "url": "/products/a3-t02-front.svg", "alt": "Third Morning front: small Thorn Cross on the left chest" }
+        "back": {
+          "url": "/products/a3-t02-back.jpg",
+          "alt": "Third Morning back print: the open tomb at dawn with the stone rolled aside"
+        },
+        "front": {
+          "url": "/products/a3-t02-front.svg",
+          "alt": "Third Morning front: small Thorn Cross on the left chest (sample art)"
+        }
       }
     },
     {
@@ -93,8 +123,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-b01-back.jpg", "alt": "Shattered Dominion back print: a ring of breaking chain around the cross" },
-        "front": { "url": "/products/a3-b01-front.svg", "alt": "Shattered Dominion front: small Thorn Cross on the left chest" }
+        "back": {
+          "url": "/products/a3-b01-back.jpg",
+          "alt": "Shattered Dominion back print: a ring of breaking chain around the cross"
+        },
+        "front": {
+          "url": "/products/a3-b01-front.svg",
+          "alt": "Shattered Dominion front: small Thorn Cross on the left chest (sample art)"
+        }
       }
     },
     {
@@ -117,8 +153,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-r01-back.jpg", "alt": "Throne of Grace back print: a carved arch framing the cross above olive branches" },
-        "front": { "url": "/products/a3-r01-front.svg", "alt": "Throne of Grace front: small Thorn Cross on the left chest" }
+        "back": {
+          "url": "/products/a3-r01-back.jpg",
+          "alt": "Throne of Grace back print: a carved arch framing the cross above olive branches"
+        },
+        "front": {
+          "url": "/products/a3-r01-front.svg",
+          "alt": "Throne of Grace front: small Thorn Cross on the left chest (sample art)"
+        }
       }
     },
     {
@@ -141,8 +183,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-b02-back.svg", "alt": "Freed in Awe back print: open shackles beneath the thorn wreath" },
-        "front": { "url": "/products/a3-b02-front.svg", "alt": "Freed in Awe front: small mark on the chest" }
+        "back": {
+          "url": "/products/a3-b02-back.svg",
+          "alt": "Freed in Awe back: the wordmark above a copper thorn wreath (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-b02-front.svg",
+          "alt": "Freed in Awe in warm bone, front: small wordmark on the chest (sample art)"
+        }
       }
     },
     {
@@ -165,8 +213,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-t01-back.svg", "alt": "Stone Rolled Aside back print: the lily over the open tomb" },
-        "front": { "url": "/products/a3-t01-front.svg", "alt": "Stone Rolled Aside front: small Thorn Cross on the left chest" }
+        "back": {
+          "url": "/products/a3-t01-back.svg",
+          "alt": "Stone Rolled Aside back: the wordmark above a lily (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-t01-front.svg",
+          "alt": "Stone Rolled Aside in washed sand, front: small Thorn Cross (sample art)"
+        }
       }
     },
     {
@@ -189,8 +243,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-r02-back.svg", "alt": "Unshaken Kingdom back print: the thorn wreath under an arch" },
-        "front": { "url": "/products/a3-r02-front.svg", "alt": "Unshaken Kingdom front: small Thorn Cross on the left chest" }
+        "back": {
+          "url": "/products/a3-r02-back.svg",
+          "alt": "Unshaken Kingdom back: the wordmark above a gold Thorn Cross (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-r02-front.svg",
+          "alt": "Unshaken Kingdom in faded black, front: small Thorn Cross (sample art)"
+        }
       }
     },
     {
@@ -214,8 +274,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-b03-back.svg", "alt": "Chains Snapped back print: a lily between the halves of a broken chain" },
-        "front": { "url": "/products/a3-b03-front.svg", "alt": "Chains Snapped front: small mark on the chest" }
+        "back": {
+          "url": "/products/a3-b03-back.svg",
+          "alt": "Chains Snapped back: the wordmark above a thorn vine (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-b03-front.svg",
+          "alt": "Chains Snapped in faded black, front: small wordmark on the chest (sample art)"
+        }
       }
     },
     {
@@ -238,8 +304,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-t03-back.svg", "alt": "He Is Risen back print: lilies rising" },
-        "front": { "url": "/products/a3-t03-front.svg", "alt": "He Is Risen front: small Thorn Cross on the left chest" }
+        "back": {
+          "url": "/products/a3-t03-back.svg",
+          "alt": "He Is Risen back: the wordmark above a lily (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-t03-front.svg",
+          "alt": "He Is Risen in washed deep olive, front: small Thorn Cross (sample art)"
+        }
       }
     },
     {
@@ -262,8 +334,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-h01-back.svg", "alt": "Thornbound Cap: embroidered Thorn Cross on the front panel" },
-        "front": { "url": "/products/a3-h01-front.svg", "alt": "Thornbound Cap from the side" }
+        "back": {
+          "url": "/products/a3-h01-back.svg",
+          "alt": "Thornbound Cap in washed black twill with an embroidered Thorn Cross (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-h01-front.svg",
+          "alt": "Thornbound Cap in washed charcoal twill (sample art)"
+        }
       }
     },
     {
@@ -286,8 +364,14 @@
         "material": null
       },
       "images": {
-        "back": { "url": "/products/a3-h02-back.svg", "alt": "Kingdom Cap: embroidered thorn wreath on the front panel" },
-        "front": { "url": "/products/a3-h02-front.svg", "alt": "Kingdom Cap from the side" }
+        "back": {
+          "url": "/products/a3-h02-back.svg",
+          "alt": "Kingdom Cap in oxblood corduroy with an embroidered thorn wreath (sample art)"
+        },
+        "front": {
+          "url": "/products/a3-h02-front.svg",
+          "alt": "Kingdom Cap in sandstone (sample art)"
+        }
       }
     }
   ]

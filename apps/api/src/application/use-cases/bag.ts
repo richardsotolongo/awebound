@@ -40,7 +40,12 @@ export class StartCheckout {
       customerId,
     });
     this.logger.info(
-      { provider: this.checkout.provider, status: result.status, lines: lines.length, subtotalCents: bag.subtotalCents },
+      {
+        provider: this.checkout.provider,
+        status: result.status,
+        lines: lines.length,
+        subtotalCents: bag.subtotalCents,
+      },
       "checkout requested",
     );
     return result;

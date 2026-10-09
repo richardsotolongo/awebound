@@ -56,7 +56,10 @@ export class SubscribeToDropNotes {
   ) {}
 
   async execute(request: SubscribeRequest): Promise<void> {
-    const isNew = await this.subscribers.add({ ...request, email: request.email.trim().toLowerCase() });
+    const isNew = await this.subscribers.add({
+      ...request,
+      email: request.email.trim().toLowerCase(),
+    });
     if (!isNew) return;
     await this.mailer.sendSubscriberWelcome(request.email).catch((err: unknown) => {
       this.logger.warn({ err }, "subscriber welcome email failed");

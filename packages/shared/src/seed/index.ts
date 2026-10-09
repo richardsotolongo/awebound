@@ -70,7 +70,11 @@ function sortSizes(sizes: string[]): string[] {
 /** Builds full product records (variants included) from the JSON seed. */
 export function buildSeedCatalog(input: unknown = raw): SeedCatalog {
   const seed = CatalogSeedSchema.parse(input);
-  const categories: Category[] = seed.categories.map(({ slug, name, cut }) => ({ slug, name, cut }));
+  const categories: Category[] = seed.categories.map(({ slug, name, cut }) => ({
+    slug,
+    name,
+    cut,
+  }));
   const collections = seed.collections;
 
   const products: ProductDetail[] = seed.products.map((p) => {

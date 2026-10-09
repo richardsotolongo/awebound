@@ -10,20 +10,27 @@ import {
 } from "../../domain/catalog";
 import type { ProductRepository, ProductSearchResult } from "../../application/ports";
 
-type Filters = Pick<ProductQuery, "q" | "category" | "collection" | "color" | "size" | "minPrice" | "maxPrice">;
+type Filters = Pick<
+  ProductQuery,
+  "q" | "category" | "collection" | "color" | "size" | "minPrice" | "maxPrice"
+>;
 
 const normalize = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[–—]/g, "-");
+  s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[–—]/g, "-");
 
 /** Crude English stemming, close enough to Postgres for a small catalog: chains → chain, rolled → roll. */
 const stem = (w: string) => w.replace(/(ing|ed|es|s)$/, "");
 
 function haystack(p: ProductDetail): string[] {
-  const text = [p.name, p.code, p.scriptureRef, p.story.art, p.story.back, p.collection.name, p.category.name].join(" ");
+  const text = [
+    p.name,
+    p.code,
+    p.scriptureRef,
+    p.story.art,
+    p.story.back,
+    p.collection.name,
+    p.category.name,
+  ].join(" ");
   return normalize(text)
     .split(/[^a-z0-9]+/)
     .filter(Boolean)
@@ -48,11 +55,18 @@ export class InMemoryProductRepository implements ProductRepository {
     if (!query) return 0;
     const name = normalize(p.name);
     const code = normalize(p.code);
-    const terms = query.split(/[^a-z0-9]+/).filter(Boolean).map(stem);
+    const terms = query
+      .split(/[^a-z0-9]+/)
+      .filter(Boolean)
+      .map(stem);
     const words = this.words.get(p.slug) ?? [];
-    const allTermsMatch = terms.length > 0 && terms.every((t) => words.some((w) => w.startsWith(t)));
+    const allTermsMatch =
+      terms.length > 0 && terms.every((t) => words.some((w) => w.startsWith(t)));
     if (!allTermsMatch && !name.includes(query) && !code.startsWith(query)) return null;
-    return terms.filter((t) => words.some((w) => w.startsWith(t))).length + (name.startsWith(query) ? 1 : 0);
+    return (
+      terms.filter((t) => words.some((w) => w.startsWith(t))).length +
+      (name.startsWith(query) ? 1 : 0)
+    );
   }
 
   private matches(p: ProductDetail, f: Filters): boolean {
@@ -62,7 +76,8 @@ export class InMemoryProductRepository implements ProductRepository {
     if (f.minPrice !== undefined && p.priceCents < f.minPrice * 100) return false;
     if (f.maxPrice !== undefined && p.priceCents > f.maxPrice * 100) return false;
     if (f.color?.length && !p.variants.some((v) => f.color!.includes(v.color))) return false;
-    if (f.size?.length && !p.variants.some((v) => v.available && f.size!.includes(v.size))) return false;
+    if (f.size?.length && !p.variants.some((v) => v.available && f.size!.includes(v.size)))
+      return false;
     return true;
   }
 
@@ -73,8 +88,12 @@ export class InMemoryProductRepository implements ProductRepository {
 
     const byDefault = (a: ProductDetail, b: ProductDetail) =>
       b.releasedAt.localeCompare(a.releasedAt) || a.name.localeCompare(b.name);
-    const sorters: Record<ProductQuery["sort"], (a: { p: ProductDetail; rank: number }, b: { p: ProductDetail; rank: number }) => number> = {
-      featured: (a, b) => b.rank - a.rank || Number(b.p.featured) - Number(a.p.featured) || byDefault(a.p, b.p),
+    const sorters: Record<
+      ProductQuery["sort"],
+      (a: { p: ProductDetail; rank: number }, b: { p: ProductDetail; rank: number }) => number
+    > = {
+      featured: (a, b) =>
+        b.rank - a.rank || Number(b.p.featured) - Number(a.p.featured) || byDefault(a.p, b.p),
       newest: (a, b) => byDefault(a.p, b.p),
       "price-asc": (a, b) => a.p.priceCents - b.p.priceCents || byDefault(a.p, b.p),
       "price-desc": (a, b) => b.p.priceCents - a.p.priceCents || byDefault(a.p, b.p),
@@ -91,7 +110,8 @@ export class InMemoryProductRepository implements ProductRepository {
 
   async facets(query: ProductQuery): Promise<CatalogFacets> {
     const count = (except: keyof Filters, pred: (p: ProductDetail) => boolean) =>
-      this.products.filter((p) => this.matches(p, { ...query, [except]: undefined }) && pred(p)).length;
+      this.products.filter((p) => this.matches(p, { ...query, [except]: undefined }) && pred(p))
+        .length;
 
     const colors = new Map<string, string>();
     const sizes = new Set<string>();
@@ -115,7 +135,11 @@ export class InMemoryProductRepository implements ProductRepository {
       })),
       colors: [...colors]
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([name, token]) => ({ name, token, count: count("color", (p) => p.colors.some((c) => c.name === name)) })),
+        .map(([name, token]) => ({
+          name,
+          token,
+          count: count("color", (p) => p.colors.some((c) => c.name === name)),
+        })),
       sizes: [...sizes]
         .sort((a, b) => order.indexOf(a) - order.indexOf(b))
         .map((size) => ({

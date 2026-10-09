@@ -1,4 +1,10 @@
-import type { CatalogFacets, Collection, ProductDetail, ProductList, ProductQuery } from "../../domain/catalog";
+import type {
+  CatalogFacets,
+  Collection,
+  ProductDetail,
+  ProductList,
+  ProductQuery,
+} from "../../domain/catalog";
 import { NotFoundError } from "../../domain/errors";
 import type { ProductRepository } from "../ports";
 

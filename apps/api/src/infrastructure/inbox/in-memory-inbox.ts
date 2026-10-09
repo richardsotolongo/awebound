@@ -1,6 +1,11 @@
 import { randomUUID } from "node:crypto";
 import type { ContactRequest, SubscribeRequest } from "@awebound/shared";
-import type { ContactMessage, ContactRepository, Logger, SubscriberRepository } from "../../application/ports";
+import type {
+  ContactMessage,
+  ContactRepository,
+  Logger,
+  SubscriberRepository,
+} from "../../application/ports";
 
 /** Development stand-ins used when Supabase isn't configured. Data lives only as long as the process. */
 export class InMemoryContactRepository implements ContactRepository {
@@ -8,7 +13,9 @@ export class InMemoryContactRepository implements ContactRepository {
 
   constructor(private readonly logger: Logger) {}
 
-  async save(input: Omit<ContactRequest, "website"> & { userId?: string }): Promise<ContactMessage> {
+  async save(
+    input: Omit<ContactRequest, "website"> & { userId?: string },
+  ): Promise<ContactMessage> {
     const message: ContactMessage = {
       id: randomUUID(),
       name: input.name,
@@ -18,7 +25,10 @@ export class InMemoryContactRepository implements ContactRepository {
       createdAt: new Date(),
     };
     this.messages.push(message);
-    this.logger.info({ id: message.id, topic: message.topic }, "contact message kept in memory (no Supabase)");
+    this.logger.info(
+      { id: message.id, topic: message.topic },
+      "contact message kept in memory (no Supabase)",
+    );
     return message;
   }
 

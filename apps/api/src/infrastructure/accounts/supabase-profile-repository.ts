@@ -29,7 +29,11 @@ export class SupabaseProfileRepository implements ProfileRepository {
   constructor(private readonly db: SupabaseClient) {}
 
   async findById(id: string): Promise<Profile | null> {
-    const { data, error } = await this.db.from("profiles").select(COLUMNS).eq("id", id).maybeSingle();
+    const { data, error } = await this.db
+      .from("profiles")
+      .select(COLUMNS)
+      .eq("id", id)
+      .maybeSingle();
     if (error) throw Object.assign(new UnavailableError(), { cause: error });
     return data ? toProfile(ProfileRow.parse(data)) : null;
   }

@@ -31,10 +31,15 @@ lines.push(
   "",
 );
 
-lines.push("insert into public.collections (slug, name, family_code, pillar, story, scripture_ref, sort_order) values");
+lines.push(
+  "insert into public.collections (slug, name, family_code, pillar, story, scripture_ref, sort_order) values",
+);
 lines.push(
   collections
-    .map((c, i) => `  (${q(c.slug)}, ${q(c.name)}, ${q(c.familyCode)}, ${q(c.pillar)}, ${q(c.story)}, ${q(c.scriptureRef)}, ${i})`)
+    .map(
+      (c, i) =>
+        `  (${q(c.slug)}, ${q(c.name)}, ${q(c.familyCode)}, ${q(c.pillar)}, ${q(c.story)}, ${q(c.scriptureRef)}, ${i})`,
+    )
     .join(",\n") +
     "\non conflict (slug) do update set name = excluded.name, family_code = excluded.family_code, pillar = excluded.pillar," +
     " story = excluded.story, scripture_ref = excluded.scripture_ref, sort_order = excluded.sort_order;",
@@ -112,11 +117,23 @@ lines.push(
 );
 lines.push(
   products
-    .flatMap((p) => p.images.map((img, i) => `  (${q(p.code)}, ${q(img.url)}, ${q(img.alt)}, ${q(img.view)}, ${i})`))
+    .flatMap((p) =>
+      p.images.map(
+        (img, i) => `  (${q(p.code)}, ${q(img.url)}, ${q(img.alt)}, ${q(img.view)}, ${i})`,
+      ),
+    )
     .join(",\n"),
 );
-lines.push(") as i (code, url, alt, view, sort_order)", "join public.products p on p.code = i.code;", "", "commit;", "");
+lines.push(
+  ") as i (code, url, alt, view, sort_order)",
+  "join public.products p on p.code = i.code;",
+  "",
+  "commit;",
+  "",
+);
 
 const target = join(root, "supabase/seed.sql");
 writeFileSync(target, lines.join("\n"));
-console.info(`wrote ${target} (${products.length} products, ${products.reduce((n, p) => n + p.variants.length, 0)} variants)`);
+console.info(
+  `wrote ${target} (${products.length} products, ${products.reduce((n, p) => n + p.variants.length, 0)} variants)`,
+);

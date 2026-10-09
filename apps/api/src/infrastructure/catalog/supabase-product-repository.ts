@@ -52,7 +52,12 @@ const ProductRow = z.object({
     }),
   ),
   images: z.array(
-    z.object({ url: z.string(), alt: z.string(), view: z.enum(["back", "front", "detail"]), sort_order: z.number() }),
+    z.object({
+      url: z.string(),
+      alt: z.string(),
+      view: z.enum(["back", "front", "detail"]),
+      sort_order: z.number(),
+    }),
   ),
 });
 type ProductRow = z.infer<typeof ProductRow>;
@@ -81,21 +86,28 @@ function toCollection(row: z.infer<typeof CollectionRow>): Collection {
 function toProduct(row: ProductRow): ProductDetail {
   const order = SIZE_ORDER as readonly string[];
   const variants = [...row.variants].sort(
-    (a, b) => a.color_rank - b.color_rank || a.color_name.localeCompare(b.color_name) || a.size_rank - b.size_rank,
+    (a, b) =>
+      a.color_rank - b.color_rank ||
+      a.color_name.localeCompare(b.color_name) ||
+      a.size_rank - b.size_rank,
   );
   const colors: { name: string; token: string }[] = [];
   for (const v of variants) {
-    if (!colors.some((c) => c.name === v.color_name)) colors.push({ name: v.color_name, token: v.color_token });
+    if (!colors.some((c) => c.name === v.color_name))
+      colors.push({ name: v.color_name, token: v.color_token });
   }
-  const sizes = [...new Set(variants.map((v) => v.size))].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  const sizes = [...new Set(variants.map((v) => v.size))].sort(
+    (a, b) => order.indexOf(a) - order.indexOf(b),
+  );
   const images = [...row.images]
     .sort((a, b) => a.sort_order - b.sort_order)
     .map(({ url, alt, view }) => ({ url, alt, view }));
-  const back = images.find((i) => i.view === "back") ?? images[0] ?? {
-    url: "/products/placeholder.svg",
-    alt: `${row.name}`,
-    view: "back" as const,
-  };
+  const back = images.find((i) => i.view === "back") ??
+    images[0] ?? {
+      url: "/products/placeholder.svg",
+      alt: `${row.name}`,
+      view: "back" as const,
+    };
   const front = images.find((i) => i.view === "front") ?? null;
 
   return {
@@ -151,9 +163,12 @@ export class SupabaseProductRepository implements ProductRepository {
   constructor(private readonly db: SupabaseClient) {}
 
   private fail(context: string, error: unknown): never {
-    throw Object.assign(new UnavailableError("The shop is unreachable right now. Try again in a moment."), {
-      cause: { context, error },
-    });
+    throw Object.assign(
+      new UnavailableError("The shop is unreachable right now. Try again in a moment."),
+      {
+        cause: { context, error },
+      },
+    );
   }
 
   private async loadProducts(column: "code" | "slug", values: string[]): Promise<ProductDetail[]> {
@@ -224,10 +239,18 @@ export class SupabaseProductRepository implements ProductRepository {
   async findVariantsBySkus(skus: string[]): Promise<Map<string, VariantWithProduct>> {
     const found = new Map<string, VariantWithProduct>();
     if (skus.length === 0) return found;
-    const { data, error } = await this.db.from("product_variants").select("sku, product:products!inner(code)").in("sku", skus);
+    const { data, error } = await this.db
+      .from("product_variants")
+      .select("sku, product:products!inner(code)")
+      .in("sku", skus);
     if (error) this.fail("variants.bySku", error);
     const codes = [
-      ...new Set(z.array(z.object({ product: z.object({ code: z.string() }) })).parse(data).map((r) => r.product.code)),
+      ...new Set(
+        z
+          .array(z.object({ product: z.object({ code: z.string() }) }))
+          .parse(data)
+          .map((r) => r.product.code),
+      ),
     ];
     const wanted = new Set(skus);
     for (const product of await this.loadProducts("code", codes)) {
