@@ -1,4 +1,4 @@
-import type { SeedCatalog } from "@awebound/shared/seed";
+import type { BrandContent } from "@awebound/shared/content";
 import type { Logger, ProductRepository, ProductSearchResult } from "../../application/ports";
 import type {
   CatalogFacets,
@@ -23,7 +23,7 @@ export class FourthwallProductRepository implements ProductRepository {
 
   constructor(
     private readonly storefront: FourthwallStorefront,
-    private readonly content: SeedCatalog,
+    private readonly content: BrandContent,
     private readonly logger: Logger,
     private readonly ttlMs = 60_000,
   ) {}
@@ -37,7 +37,7 @@ export class FourthwallProductRepository implements ProductRepository {
         "fourthwall catalog: products without a match are hidden",
       );
     }
-    return new InMemoryProductRepository(merged.catalog, merged.providerIds);
+    return new InMemoryProductRepository(merged.catalog);
   }
 
   private async repo(): Promise<InMemoryProductRepository> {

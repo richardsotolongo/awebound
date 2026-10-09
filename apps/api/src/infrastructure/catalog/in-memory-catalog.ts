@@ -1,8 +1,8 @@
-import type { SeedCatalog } from "@awebound/shared/seed";
 import { SIZE_ORDER } from "@awebound/shared";
 import {
   toSummary,
   type CatalogFacets,
+  type Category,
   type Collection,
   type ProductDetail,
   type ProductQuery,
@@ -10,12 +10,19 @@ import {
 } from "../../domain/catalog";
 import type { ProductRepository, ProductSearchResult } from "../../application/ports";
 
+/** Everything the shop lists: categories and collections from the brand content, merged products. */
+export interface Catalog {
+  categories: Category[];
+  collections: Collection[];
+  products: ProductDetail[];
+}
+
 type Filters = Pick<
   ProductQuery,
   "q" | "category" | "collection" | "color" | "size" | "minPrice" | "maxPrice"
 >;
 
-/** Known sizes in display order; anything a provider adds goes after them. */
+/** Known sizes in display order; anything Fourthwall adds goes after them. */
 const rankSize = (size: string, order: readonly string[]) => {
   const i = order.indexOf(size);
   return i === -1 ? order.length : i;
@@ -24,7 +31,7 @@ const rankSize = (size: string, order: readonly string[]) => {
 const normalize = (s: string) =>
   s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[–—]/g, "-");
 
-/** Crude English stemming, close enough to Postgres for a small catalog: chains → chain, rolled → roll. */
+/** Crude English stemming, enough for a small catalog: chains → chain, rolled → roll. */
 const stem = (w: string) => w.replace(/(ing|ed|es|s)$/, "");
 
 function haystack(p: ProductDetail): string[] {
@@ -44,18 +51,14 @@ function haystack(p: ProductDetail): string[] {
 }
 
 /**
- * Offline catalog backed by the shared seed. Mirrors supabase/migrations/*_catalog_search.sql:
- * same filters, the same "each facet ignores its own filter" counting and the same sort order.
+ * Search, filters, facets and sorting over the merged Fourthwall catalog, held in memory.
+ * Each facet ignores its own filter when counting, so a chosen option never zeroes its siblings.
  */
 export class InMemoryProductRepository implements ProductRepository {
   private readonly products: ProductDetail[];
   private readonly words = new Map<string, string[]>();
 
-  constructor(
-    private readonly catalog: SeedCatalog,
-    /** SKU → provider variant id, when the catalog is linked to a commerce provider. */
-    private readonly providerIds: ReadonlyMap<string, string> = new Map(),
-  ) {
+  constructor(private readonly catalog: Catalog) {
     this.products = catalog.products;
     for (const p of this.products) this.words.set(p.slug, haystack(p));
   }
@@ -173,11 +176,7 @@ export class InMemoryProductRepository implements ProductRepository {
     for (const p of this.products) {
       for (const v of p.variants) {
         if (wanted.has(v.sku)) {
-          found.set(v.sku, {
-            variant: v,
-            product: toSummary(p),
-            providerVariantId: this.providerIds.get(v.sku),
-          });
+          found.set(v.sku, { variant: v, product: toSummary(p) });
         }
       }
     }

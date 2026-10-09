@@ -16,9 +16,9 @@ export class ValidateBag {
 }
 
 /**
- * Hands a priced bag to the configured commerce provider. Guest checkout is allowed;
+ * Hands a priced bag to the checkout (Fourthwall's hosted checkout). Guest checkout is allowed;
  * a signed-in shopper's id is passed along so orders can be linked to their profile later.
- * Prices come from the catalog again here, never from the client.
+ * Lines are re-read from the catalog here, never trusted from the client; Fourthwall prices the cart.
  */
 export class StartCheckout {
   constructor(
@@ -33,28 +33,12 @@ export class StartCheckout {
     ]);
     const currency = catalog.values().next().value?.product.currency ?? "USD";
     const bag = priceBag(request.lines, catalog, currency);
-    const lines = bag.lines
-      .filter((l) => l.available)
-      .map((l) => ({ ...l, providerVariantId: catalog.get(l.sku)?.providerVariantId }));
+    const lines = bag.lines.filter((l) => l.available);
     if (lines.length === 0) {
       throw new ValidationError("Your bag has nothing available to check out.");
     }
-    const result = await this.checkout.createCheckout({
-      lines,
-      subtotalCents: bag.subtotalCents,
-      currency: bag.currency,
-      email: request.email,
-      customerId,
-    });
-    this.logger.info(
-      {
-        provider: this.checkout.provider,
-        status: result.status,
-        lines: lines.length,
-        subtotalCents: bag.subtotalCents,
-      },
-      "checkout requested",
-    );
+    const result = await this.checkout.createCheckout({ lines, customerId });
+    this.logger.info({ lines: lines.length, subtotalCents: bag.subtotalCents }, "checkout started");
     return result;
   }
 }

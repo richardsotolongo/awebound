@@ -55,14 +55,12 @@ WEB_ORIGIN=https://awebound.store,https://www.awebound.store,https://awebound-we
 PUBLIC_SITE_URL=https://awebound.store
 TRUST_PROXY=1
 RESEND_API_KEY=re_...
-CATALOG_SOURCE=fourthwall
-COMMERCE_PROVIDER=fourthwall
 FOURTHWALL_STOREFRONT_TOKEN=ptkn_...
-FOURTHWALL_CHECKOUT_DOMAIN=awebound-store-shop.fourthwall.com
 ```
 
-- `RESEND_API_KEY` is required in production. Without it the API answers every request with `500 misconfigured` and the function log names the missing variable.
-- Until the Fourthwall shop is ready, use `CATALOG_SOURCE=seed` and `COMMERCE_PROVIDER=none`: the site shows the sample catalog and "Checkout opens soon".
+- `RESEND_API_KEY` and `FOURTHWALL_STOREFRONT_TOKEN` are required in production. Without one of them the API answers every request with `500 misconfigured` and the function log names the missing variable.
+- The shop lists only products that exist in Fourthwall with a slug matching the brand content (see `docs/TODOS.md` → Fourthwall). Until they are created there, the shop is empty.
+- `FOURTHWALL_CHECKOUT_DOMAIN` is optional (default `awebound-store-shop.fourthwall.com`); set it if you connect a custom shop domain in Fourthwall.
 - Add `SUPABASE_URL` and `SUPABASE_SECRET_KEY` for accounts and to keep contact messages and drop-note sign-ups in the database (without Supabase they are only emailed or held in memory).
 
 ## 4. Domains and DNS

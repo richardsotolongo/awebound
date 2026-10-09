@@ -6,6 +6,9 @@ import { z } from "zod";
  * stays in the API's environment.
  */
 
+const API_URL = "https://storefront-api.fourthwall.com/v1";
+const TIMEOUT_MS = 10_000;
+
 const Money = z.object({ value: z.number().min(0), currency: z.string() });
 
 const Image = z.object({
@@ -64,38 +67,29 @@ export class FourthwallApiError extends Error {
 }
 
 export interface FourthwallConfig {
-  apiUrl: string;
   storefrontToken: string;
   currency: string;
-  fetch?: typeof fetch;
-  timeoutMs?: number;
 }
 
 export class FourthwallStorefront {
-  private readonly base: string;
-  private readonly fetcher: typeof fetch;
-
-  constructor(private readonly config: FourthwallConfig) {
-    this.base = config.apiUrl.replace(/\/$/, "");
-    this.fetcher = config.fetch ?? fetch;
-  }
+  constructor(private readonly config: FourthwallConfig) {}
 
   private async request(path: string, init: RequestInit = {}, params: Record<string, string> = {}) {
-    const url = new URL(`${this.base}${path}`);
+    const url = new URL(`${API_URL}${path}`);
     url.searchParams.set("storefront_token", this.config.storefrontToken);
     url.searchParams.set("currency", this.config.currency);
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
 
     let res: Response;
     try {
-      res = await this.fetcher(url, {
+      res = await fetch(url, {
         ...init,
         headers: {
           accept: "application/json",
           "content-type": "application/json",
           ...init.headers,
         },
-        signal: AbortSignal.timeout(this.config.timeoutMs ?? 10_000),
+        signal: AbortSignal.timeout(TIMEOUT_MS),
       });
     } catch (err) {
       throw new FourthwallApiError(0, undefined, `Fourthwall unreachable: ${String(err)}`);

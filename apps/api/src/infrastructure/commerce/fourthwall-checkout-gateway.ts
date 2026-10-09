@@ -13,9 +13,9 @@ const SOLD_OUT_CODES = new Set([
 /**
  * Fourthwall takes payment and fulfills, so checkout is a redirect: build a Storefront API cart
  * from the bag and send the shopper to Fourthwall's hosted checkout on the shop's checkout domain.
+ * Site SKUs are Fourthwall variant ids (see merge-catalog.ts), so lines map straight to cart items.
  */
 export class FourthwallCheckoutGateway implements CheckoutGateway {
-  readonly provider = "fourthwall";
   private readonly domain: string;
 
   constructor(
@@ -28,19 +28,7 @@ export class FourthwallCheckoutGateway implements CheckoutGateway {
   }
 
   async createCheckout(session: CheckoutSession): Promise<CheckoutResult> {
-    const unlinked = session.lines.find((l) => !l.providerVariantId);
-    if (unlinked) {
-      throw new UnavailableError(
-        `${unlinked.name} isn’t ready for checkout yet. Remove it from your bag, or write to us and we’ll help.`,
-      );
-    }
-
-    const quantities = new Map<string, number>();
-    for (const line of session.lines) {
-      const id = line.providerVariantId!;
-      quantities.set(id, (quantities.get(id) ?? 0) + line.quantity);
-    }
-    const items = [...quantities].map(([variantId, quantity]) => ({ variantId, quantity }));
+    const items = session.lines.map((l) => ({ variantId: l.sku, quantity: l.quantity }));
 
     let cartId: string;
     try {
@@ -61,6 +49,6 @@ export class FourthwallCheckoutGateway implements CheckoutGateway {
     const url = new URL(`https://${this.domain}/checkout/`);
     url.searchParams.set("cartCurrency", this.currency);
     url.searchParams.set("cartId", cartId);
-    return { status: "redirect", url: url.toString() };
+    return { url: url.toString() };
   }
 }

@@ -46,17 +46,9 @@ export type Bag = z.infer<typeof BagSchema>;
 
 export const CheckoutRequestSchema = z.object({
   lines: z.array(BagLineInputSchema).min(1).max(50),
-  email: z.email().optional(),
 });
 export type CheckoutRequest = z.infer<typeof CheckoutRequestSchema>;
 
-/**
- * Checkout outcome. "redirect" sends the shopper to the provider's hosted checkout
- * (Fourthwall, or a payment page for Printful/Printify/Apliiq once one is chosen).
- * "unavailable" is what the store returns until a provider is configured.
- */
-export const CheckoutResultSchema = z.discriminatedUnion("status", [
-  z.object({ status: z.literal("redirect"), url: z.url() }),
-  z.object({ status: z.literal("unavailable"), message: z.string() }),
-]);
+/** Checkout outcome: the shopper is sent to Fourthwall's hosted checkout at `url`. */
+export const CheckoutResultSchema = z.object({ url: z.url() });
 export type CheckoutResult = z.infer<typeof CheckoutResultSchema>;

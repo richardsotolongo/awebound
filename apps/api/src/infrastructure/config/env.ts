@@ -29,7 +29,19 @@ export const EnvSchema = z
     PUBLIC_SITE_URL: z.url().default("http://localhost:3000"),
     TRUST_PROXY: flag,
 
-    CATALOG_SOURCE: z.enum(["seed", "supabase", "fourthwall"]).default("seed"),
+    // Fourthwall supplies the catalog and runs checkout. The storefront token is its API
+    // credential (Fourthwall admin → Settings → For developers); nothing works without it.
+    FOURTHWALL_STOREFRONT_TOKEN: optional.pipe(
+      z.string({
+        error:
+          "FOURTHWALL_STOREFRONT_TOKEN is required (Fourthwall admin → Settings → For developers)",
+      }),
+    ),
+    /** Domain of the shop's hosted checkout. Override once a custom domain is connected in Fourthwall. */
+    FOURTHWALL_CHECKOUT_DOMAIN: optional.transform(
+      (v) => v ?? "awebound-store-shop.fourthwall.com",
+    ),
+
     SUPABASE_URL: optional.pipe(z.url().optional()),
     SUPABASE_SECRET_KEY: optional,
     SUPABASE_JWT_SECRET: optional,
@@ -37,42 +49,8 @@ export const EnvSchema = z
     RESEND_API_KEY: optional,
     EMAIL_FROM: z.string().default("Awebound <hello@awebound.store>"),
     CONTACT_INBOX: z.email().default("contact@awebound.store"),
-
-    COMMERCE_PROVIDER: z
-      .enum(["none", "printful", "printify", "fourthwall", "apliiq"])
-      .default("none"),
-
-    // Fourthwall Storefront API (Fourthwall admin → Settings → For Developers).
-    FOURTHWALL_STOREFRONT_TOKEN: optional,
-    /** Domain of the Fourthwall shop's hosted checkout, e.g. awebound-shop.fourthwall.com. */
-    FOURTHWALL_CHECKOUT_DOMAIN: optional,
-    FOURTHWALL_API_URL: z.url().default("https://storefront-api.fourthwall.com/v1"),
-    FOURTHWALL_CURRENCY: z.string().length(3).default("USD"),
   })
   .superRefine((env, ctx) => {
-    if (env.CATALOG_SOURCE === "supabase" && (!env.SUPABASE_URL || !env.SUPABASE_SECRET_KEY)) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["CATALOG_SOURCE"],
-        message: "CATALOG_SOURCE=supabase needs SUPABASE_URL and SUPABASE_SECRET_KEY",
-      });
-    }
-    const usesFourthwall =
-      env.CATALOG_SOURCE === "fourthwall" || env.COMMERCE_PROVIDER === "fourthwall";
-    if (usesFourthwall && !env.FOURTHWALL_STOREFRONT_TOKEN) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["FOURTHWALL_STOREFRONT_TOKEN"],
-        message: "Fourthwall catalog or checkout needs FOURTHWALL_STOREFRONT_TOKEN",
-      });
-    }
-    if (env.COMMERCE_PROVIDER === "fourthwall" && !env.FOURTHWALL_CHECKOUT_DOMAIN) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["FOURTHWALL_CHECKOUT_DOMAIN"],
-        message: "COMMERCE_PROVIDER=fourthwall needs FOURTHWALL_CHECKOUT_DOMAIN",
-      });
-    }
     if (env.NODE_ENV === "production" && !env.RESEND_API_KEY) {
       ctx.addIssue({
         code: "custom",

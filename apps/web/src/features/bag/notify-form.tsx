@@ -12,7 +12,7 @@ interface NotifyFormProps {
   help?: string;
 }
 
-/** Email capture for "tell me when checkout opens / when this is back". */
+/** Email capture for drop notes and "tell me when this is back". */
 export function NotifyForm({ source, productSlug, label = "Email", help }: NotifyFormProps) {
   const id = useId();
   const [email, setEmail] = useState("");

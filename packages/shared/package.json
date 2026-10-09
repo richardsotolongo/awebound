@@ -2,12 +2,12 @@
   "name": "@awebound/shared",
   "version": "0.1.0",
   "private": true,
-  "description": "Contract between the Awebound web app and API: zod schemas, DTO types, the typed API client and the sample catalog.",
+  "description": "Contract between the Awebound web app and API: zod schemas, DTO types, the typed API client and the catalog's brand content.",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
-    "./seed": "./src/seed/index.ts"
+    "./content": "./src/content/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

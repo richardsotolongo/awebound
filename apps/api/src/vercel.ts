@@ -15,10 +15,7 @@ function boot(): Handler {
     const env = loadEnv();
     const logger = createLogger(env);
     const app = createApp(buildContainer(env, logger), env, logger);
-    logger.info(
-      { catalog: env.CATALOG_SOURCE, commerce: env.COMMERCE_PROVIDER },
-      "awebound api ready (vercel)",
-    );
+    logger.info("awebound api ready (vercel)");
     return (req, res) => app(req, res);
   } catch (err) {
     // Usually a missing or invalid environment variable. Log it and answer every request with a

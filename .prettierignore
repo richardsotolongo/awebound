@@ -3,6 +3,5 @@ node_modules
 dist
 .vercel
 pnpm-lock.yaml
-supabase/seed.sql
 packages/brand/src/marks/paths.ts
 apps/web/public

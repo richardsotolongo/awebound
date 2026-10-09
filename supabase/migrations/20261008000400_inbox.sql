@@ -18,7 +18,7 @@ create index contact_messages_created_idx on public.contact_messages (created_at
 create table public.subscribers (
   id            uuid primary key default gen_random_uuid(),
   email         text not null,
-  source        text not null check (source in ('footer', 'checkout', 'product')),
+  source        text not null check (source in ('footer', 'product')),
   product_slug  text,
   created_at    timestamptz not null default now(),
   unsubscribed_at timestamptz

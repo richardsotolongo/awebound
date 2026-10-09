@@ -4,8 +4,8 @@ What's left before launch, grouped by who has to act. Check items off as they la
 
 ## Decisions for the owner
 
-- [x] **Commerce and fulfillment provider**: Fourthwall (hosted checkout, payments and fulfillment; no separate payment processor). Adapters are built; setup is under "Fourthwall" below.
-- [ ] **Prices.** Set them in Fourthwall: with `CATALOG_SOURCE=fourthwall` the site shows Fourthwall's prices. The seed prices (tee $38, oversized tee $44, tank $34, cap $32) are placeholders for offline mode only.
+- [x] **Commerce and fulfillment provider**: Fourthwall (hosted checkout, payments and fulfillment; no separate payment processor). Adapters are built and always on; setup is under "Fourthwall" below.
+- [ ] **Prices.** Set them in Fourthwall; the site shows Fourthwall's prices.
 - [ ] **Shipping**: destinations, rates, production and delivery times (then update the FAQ "Shipping" answers).
 - [ ] **Blank supplier and fabric**: fill `story.material` per product and replace the approximate size charts in `apps/web/src/features/product/size-guide.tsx`.
 - [ ] **Legal details**: business entity name and the state whose law governs (`LEGAL` in `apps/web/src/lib/site.ts`).
@@ -15,9 +15,9 @@ What's left before launch, grouped by who has to act. Check items off as they la
 
 - [x] **GitHub push access.**
 - [ ] **Supabase project**
-  - [ ] Create the project; `supabase link`, then `supabase db push` to apply `supabase/migrations`.
-  - [ ] Load products: run `supabase/seed.sql` for the sample catalog, or insert real ones.
-  - [ ] API env: `CATALOG_SOURCE=supabase`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`. Web env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+  - [x] Create the project; `supabase link`, then `supabase db push` to apply `supabase/migrations`.
+  - [ ] Reset the database to the current migrations (the catalog tables were removed): `supabase db reset --linked`, then `supabase migration list --linked` shows helpers, profiles and inbox only. Delete leftover test users under Authentication → Users for a clean slate.
+  - [ ] API env: `SUPABASE_URL`, `SUPABASE_SECRET_KEY`. Web env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
   - [ ] Authentication → URL configuration: Site URL `https://awebound.store`; redirect URLs `https://awebound.store/auth/callback` and `https://awebound.store/auth/confirm` (plus localhost for development).
   - [ ] Authentication → Emails: paste `supabase/templates/magic-link.html` and `confirmation.html`; subjects as in `supabase/config.toml`.
 - [ ] **Google sign-in**
@@ -35,23 +35,19 @@ What's left before launch, grouped by who has to act. Check items off as they la
 
 Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 
-- [ ] Create the products in Fourthwall. Set each product's URL slug to the site slug in `packages/shared/src/seed/catalog.json` (`third-morning`, `shattered-dominion`, …), or add `"fourthwallSlug": "<fourthwall-slug>"` to that product's entry. New designs need an entry in the content file too (ID, collection, category, Scripture, copy); then run `pnpm db:seed` if you use Supabase.
+- [ ] Create the products in Fourthwall. Set each product's URL slug to the site slug in `packages/shared/src/content/catalog.json` (`third-morning`, `shattered-dominion`, …), or add `"fourthwallSlug": "<fourthwall-slug>"` to that product's entry. New designs need an entry in the content file too (ID, collection, category, Scripture, copy). A product shows on the site only when both exist.
 - [ ] Name colors like the brand garments (`Washed coal`, `Faded black`, `Warm bone`, …) so the site shows the brand swatches. Other names fall back to Fourthwall's swatch color.
-- [ ] Fourthwall admin → Settings → For developers: create a **Storefront token** → `FOURTHWALL_STOREFRONT_TOKEN`.
-- [x] Shop created: `awebound-store-shop.fourthwall.com` (Fourthwall shop "awebound.store") → `FOURTHWALL_CHECKOUT_DOMAIN`. Switch to a custom domain such as `shop.awebound.store` if you connect one in Fourthwall.
-- [ ] Set `CATALOG_SOURCE=fourthwall` and `COMMERCE_PROVIDER=fourthwall` on the API; redeploy. Check the API log for "products without a match are hidden" and fix any slugs it lists.
+- [ ] Fourthwall admin → Settings → For developers: create a **Storefront token** → `FOURTHWALL_STOREFRONT_TOKEN` on the API (Vercel) and in `apps/api/.env` for local development. The API won't start without it.
+- [x] Shop created: `awebound-store-shop.fourthwall.com` (Fourthwall shop "awebound.store"), the default checkout domain. Set `FOURTHWALL_CHECKOUT_DOMAIN` only if you connect a custom domain such as `shop.awebound.store` in Fourthwall.
+- [ ] On the Vercel API project, delete the retired variables `CATALOG_SOURCE`, `COMMERCE_PROVIDER`, `FOURTHWALL_CURRENCY` and `FOURTHWALL_API_URL`; redeploy. Check the API log for "products without a match are hidden" and fix any slugs it lists.
 - [ ] Shipping, taxes, order and shipping emails: configure in Fourthwall (it sends them).
 - [ ] Place a test order end to end, then refund it in Fourthwall.
-- [ ] Copy once live: remove "Checkout is opening soon" from the FAQ, state shipping times, and name Fourthwall as the commerce partner in `/privacy`.
+- [ ] Copy once live: remove "Checkout is opening soon" from the FAQ, "once checkout opens" from `/privacy` and the account page, and "when checkout opens" from the drop-notes welcome email (`apps/api/src/infrastructure/email/templates.ts`); state shipping times, and name Fourthwall as the commerce partner in `/privacy`.
 - [ ] Optional: order history on `/account` from Fourthwall's order webhooks (needs an `orders` table and a webhook endpoint).
-
-## Other providers (not planned)
-
-- [ ] Printful / Printify / Apliiq would need a payment processor's hosted checkout, a payment webhook and a `FulfillmentGateway` adapter, plus `orders` / `order_items` tables. Not in scope.
 
 ## Content
 
-- [ ] **Product photography** to replace the sample art in `apps/web/public/products` (back first, then front and details; flat lays on light warm grey per the brand guide).
+- [ ] **Product photography**, uploaded to each Fourthwall product (back first, then front and details; flat lays on light warm grey per the brand guide). The sample art in `apps/web/public/products` only shows for products without Fourthwall photos.
 - [ ] **Legal review** of `/privacy`, `/terms` and `/refunds`. They are drafts written for this setup, not legal advice. Update `LEGAL.lastUpdated` when they change.
 - [ ] **NLT permission check** with Tyndale before printing verse text on garments. The site quotes Romans 1:16 (NLT) with the required credit line.
 - [ ] **Wordmark cleanup** by a designer before large back prints; physical test of the proposed minimum print (1.75 in) and embroidery (2.25 in) sizes.

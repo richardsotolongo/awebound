@@ -1,34 +1,26 @@
 {
-  "$comment": "Sample catalog for development and the Supabase seed. PRICES ARE PLACEHOLDERS until the owner sets them. Images live in apps/web/public/products. Regenerate supabase/seed.sql with `pnpm db:seed` after editing.",
+  "$comment": "Brand content for the catalog: the story Fourthwall doesn't hold (ID, collection, category, Scripture, copy). Fourthwall supplies variants, prices, stock and photos; a product shows on the site only when its slug (or fourthwallSlug) matches a Fourthwall product. `colors` maps garment color names to brand swatch tokens. `images` are fallback art (apps/web/public/products) for products without Fourthwall photos.",
   "currency": "USD",
   "categories": [
     {
       "slug": "tees",
       "name": "Tees",
-      "cut": "Tee",
-      "placeholderPriceCents": 3800,
-      "sizes": ["S", "M", "L", "XL", "2XL"]
+      "cut": "Tee"
     },
     {
       "slug": "oversized-tees",
       "name": "Oversized tees",
-      "cut": "Oversized tee",
-      "placeholderPriceCents": 4400,
-      "sizes": ["S", "M", "L", "XL", "2XL"]
+      "cut": "Oversized tee"
     },
     {
       "slug": "tanks",
       "name": "Tanks",
-      "cut": "Tank",
-      "placeholderPriceCents": 3400,
-      "sizes": ["S", "M", "L", "XL", "2XL"]
+      "cut": "Tank"
     },
     {
       "slug": "hats",
       "name": "Hats",
-      "cut": "Cap",
-      "placeholderPriceCents": 3200,
-      "sizes": ["One size"]
+      "cut": "Cap"
     }
   ],
   "collections": [
@@ -79,7 +71,6 @@
       "collection": "rolled-away",
       "category": "oversized-tees",
       "colors": ["Washed coal", "Faded black"],
-      "soldOut": [["Faded black", "2XL"]],
       "featured": true,
       "releasedAt": "2026-09-20",
       "scriptureRef": "Luke 24:1–6",
@@ -260,7 +251,6 @@
       "collection": "broken-bond",
       "category": "tanks",
       "colors": ["Washed graphite", "Faded black"],
-      "soldOut": [["Washed graphite", "S"]],
       "featured": false,
       "releasedAt": "2026-08-14",
       "scriptureRef": "Psalm 107:14",

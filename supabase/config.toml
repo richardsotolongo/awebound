@@ -15,8 +15,8 @@ port = 54322
 major_version = 17
 
 [db.seed]
-enabled = true
-sql_paths = ["./seed.sql"]
+# Nothing to seed: the catalog comes from Fourthwall.
+enabled = false
 
 [studio]
 enabled = true

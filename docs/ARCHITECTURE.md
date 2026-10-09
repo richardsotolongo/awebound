@@ -39,19 +39,19 @@ flowchart LR
 
 - The **web app** renders pages. Server Components read the catalog through the API; Client Components handle search, filters, the bag and forms.
 - The **API** owns business rules: pricing the bag, search semantics, what happens at checkout, sending email, profile access.
-- **Supabase** stores data and runs authentication. The browser talks to Supabase Auth directly to sign in; everything else goes through the API.
-- **Fourthwall** (when `CATALOG_SOURCE` / `COMMERCE_PROVIDER` are `fourthwall`) supplies live products and stock, and runs checkout, payment and fulfillment.
+- **Supabase** stores profiles, contact messages and drop-note sign-ups, and runs authentication. The browser talks to Supabase Auth directly to sign in; everything else goes through the API.
+- **Fourthwall** supplies live products, prices, stock and photos, and runs checkout, payment and fulfillment.
 - **Resend** delivers all email: auth emails (via Supabase's SMTP setting) and the API's transactional mail.
 
 ## Monorepo and dependencies
 
-| Package             | Depends on    | Notes                                                                              |
-| ------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| `packages/tsconfig` | –             | Base, library, Node and Next.js compiler settings                                  |
-| `packages/shared`   | zod           | The contract: schemas, DTO types, `createApiClient`, `formatPrice`, sample catalog |
-| `packages/brand`    | react (peer)  | Tokens, component CSS, Tailwind theme, typed components, SVG marks                 |
-| `apps/api`          | shared        | Bundled with tsup; `@awebound/*` source is inlined into `dist/main.js`             |
-| `apps/web`          | shared, brand | Next compiles the packages via `transpilePackages`                                 |
+| Package             | Depends on    | Notes                                                                             |
+| ------------------- | ------------- | --------------------------------------------------------------------------------- |
+| `packages/tsconfig` | –             | Base, library, Node and Next.js compiler settings                                 |
+| `packages/shared`   | zod           | The contract: schemas, DTO types, `createApiClient`, `formatPrice`, brand content |
+| `packages/brand`    | react (peer)  | Tokens, component CSS, Tailwind theme, typed components, SVG marks                |
+| `apps/api`          | shared        | Bundled with tsup; `@awebound/*` source is inlined into `dist/main.js`            |
+| `apps/web`          | shared, brand | Next compiles the packages via `transpilePackages`                                |
 
 Internal packages ship TypeScript source, not build output. There is no package build step to forget.
 
@@ -60,24 +60,24 @@ Internal packages ship TypeScript source, not build output. There is no package 
 ```
 domain/            ← no imports from other layers or frameworks
 application/       ← use cases; depend on domain and on ports (interfaces) only
-infrastructure/    ← adapters that implement ports (Supabase, Resend, in-memory, JWT)
+infrastructure/    ← adapters that implement ports (Fourthwall, Supabase, Resend, in-memory, JWT)
 interface/http/    ← Express: parse with shared zod schemas, call one use case, map errors
 container.ts       ← composition root: picks adapters from env
 main.ts            ← loads .env, builds container and app, listens
 ```
 
-**Ports** (`application/ports`): `ProductRepository`, `CheckoutGateway`, `FulfillmentGateway`, `Mailer`, `ContactRepository`, `SubscriberRepository`, `ProfileRepository`, `TokenVerifier`, `Logger`.
+**Ports** (`application/ports`): `ProductRepository`, `CheckoutGateway`, `Mailer`, `ContactRepository`, `SubscriberRepository`, `ProfileRepository`, `TokenVerifier`, `Logger`.
 
 **Adapters chosen by `container.ts`:**
 
-| Port                              | With Supabase / keys                                                         | Without (local default)                          |
-| --------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------ |
-| ProductRepository                 | `SupabaseProductRepository` (SQL search RPCs) when `CATALOG_SOURCE=supabase` | `InMemoryProductRepository` over the shared seed |
-| Contact / Subscriber repositories | Supabase tables                                                              | in-memory                                        |
-| ProfileRepository                 | Supabase `profiles`                                                          | unavailable (503)                                |
-| TokenVerifier                     | `SupabaseTokenVerifier` (JWKS, or legacy HS256 secret)                       | disabled (503)                                   |
-| Mailer                            | `ResendMailer`                                                               | `ConsoleMailer`                                  |
-| CheckoutGateway                   | –                                                                            | `UnconfiguredCheckoutGateway` (always)           |
+| Port                              | With Supabase / keys                                                                                      | Without (local default) |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------- |
+| ProductRepository                 | `FourthwallProductRepository` (always; searches with `InMemoryProductRepository` over the merged catalog) | –                       |
+| CheckoutGateway                   | `FourthwallCheckoutGateway` (always)                                                                      | –                       |
+| Contact / Subscriber repositories | Supabase tables                                                                                           | in-memory               |
+| ProfileRepository                 | Supabase `profiles`                                                                                       | unavailable (503)       |
+| TokenVerifier                     | `SupabaseTokenVerifier` (JWKS, or legacy HS256 secret)                                                    | disabled (503)          |
+| Mailer                            | `ResendMailer`                                                                                            | `ConsoleMailer`         |
 
 **Errors**: use cases throw `ValidationError`, `NotFoundError`, `UnauthorizedError`, `ForbiddenError` or `UnavailableError`. The error handler maps them to HTTP status codes and the shared body `{ error: { code, message, fields? } }`.
 
@@ -100,39 +100,16 @@ main.ts            ← loads .env, builds container and app, listens
 
 ```mermaid
 erDiagram
-  collections ||--o{ products : "collection_slug"
-  categories  ||--o{ products : "category_slug"
-  products    ||--o{ product_variants : "product_id"
-  products    ||--o{ product_images : "product_id"
   auth_users  ||--|| profiles : "id"
   auth_users  |o--o{ contact_messages : "user_id"
 
-  products {
-    uuid id PK
-    text code "A3-B01"
-    text slug
-    int price_cents
-    text story_art "voice template fields"
-    text provider "printful | printify | fourthwall | apliiq"
-    text provider_product_id
-    tsvector search "generated"
-  }
-  product_variants {
-    text sku "A3-B01-FADED-BLACK-XL"
-    text color_name
-    text color_token "garment-*"
-    int color_rank
-    text size
-    bool available
-    int price_cents "null = product price"
-    text provider_variant_id
-  }
+  profiles { uuid id PK "auth.users.id" }
+  contact_messages { text topic "order | sizing | returns | ..." }
   subscribers { text email "unique, lower()" }
 ```
 
-- **Row-level security** is on for every table. Anyone may read published catalog rows. Profiles are readable and writable only by their owner. `contact_messages` and `subscribers` have no policies at all, so only the API's secret key can touch them.
-- **Search runs in Postgres**: `search_products(...)` (filter, full-text rank, sort, page, total count) and `catalog_facets(...)` (jsonb counts). `InMemoryProductRepository` mirrors their semantics for offline development; change both together.
-- **Seed**: `packages/shared/src/seed/catalog.json` is the single source for sample products. `pnpm db:seed` writes `supabase/seed.sql` from it; the offline API reads the same file. SKUs are identical in both, so a bag survives switching sources.
+- The catalog is not in Postgres: Fourthwall supplies it (see "Fourthwall" below).
+- **Row-level security** is on for every table. Profiles are readable and writable only by their owner. `contact_messages` and `subscribers` have no policies at all, so only the API's secret key can touch them.
 - **Profiles** are created by the `on_auth_user_created` trigger (name and avatar from Google when present).
 
 ## Auth
@@ -179,31 +156,23 @@ Templates use the signature lockup (oxblood wordmark on warm bone) as a hosted P
 
 1. The bag lives in the browser (zustand, persisted to localStorage, keyed by SKU).
 2. Whenever the bag is shown, `POST /v1/bag/validate` re-prices it. The client's prices are display copies only.
-3. **Check out** calls `POST /v1/checkout`. `StartCheckout` prices the bag again and hands the available lines to the `CheckoutGateway`.
-4. `COMMERCE_PROVIDER` picks the gateway. `none` → `UnconfiguredCheckoutGateway`: the drawer shows "Checkout opens soon" and offers a notify sign-up. `fourthwall` → `FourthwallCheckoutGateway`: the API creates a Fourthwall cart and the browser is sent to Fourthwall's hosted checkout.
+3. **Check out** calls `POST /v1/checkout`. `StartCheckout` re-reads the bag from the catalog and hands the available lines to the `CheckoutGateway`.
+4. `FourthwallCheckoutGateway` creates a Fourthwall cart and answers `{ url }`; the browser is sent to Fourthwall's hosted checkout.
 
-### Fourthwall (chosen provider)
+### Fourthwall
 
-Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code and no orders table. Two adapters, both in `apps/api/src/infrastructure/`:
+Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code and no orders table. Two adapters, both in `apps/api/src/infrastructure/`, both always on (`FOURTHWALL_STOREFRONT_TOKEN` is required):
 
-- **Catalog** (`CATALOG_SOURCE=fourthwall`, `fourthwall/fourthwall-product-repository.ts`). Loads every product from the Storefront API (`GET /collections/all/products`) and merges it with the brand content in `packages/shared/src/seed/catalog.json` (`fourthwall/merge-catalog.ts`):
+- **Catalog** (`fourthwall/fourthwall-product-repository.ts`). Loads every product from the Storefront API (`GET /collections/all/products`) and merges it with the brand content in `packages/shared/src/content/catalog.json` (`fourthwall/merge-catalog.ts`):
   - Fourthwall is the truth for what can be bought: variants, prices, stock and photos.
   - The content file is the truth for the story: product ID, collection, cut, Scripture, copy.
   - They match by slug: the Fourthwall product's URL slug equals the content `slug`, or the content entry sets `fourthwallSlug`. A product shows on the site only when both sides exist; the API logs the ones that don't match.
   - Site SKUs are Fourthwall variant ids. Color names that match a brand garment color (`colors` in the content file) use the brand swatch; others use Fourthwall's swatch hex (`Color.swatch`, rendered with `colorCss`).
   - Search, filters and facets run on the merged set with the in-memory engine. The merged catalog is cached for 60 seconds; if Fourthwall is unreachable the last good copy keeps serving.
-- **Checkout** (`COMMERCE_PROVIDER=fourthwall`, `commerce/fourthwall-checkout-gateway.ts`). `POST /carts` with the bag's variant ids and quantities, then `{ status: "redirect", url: "https://<FOURTHWALL_CHECKOUT_DOMAIN>/checkout/?cartCurrency=USD&cartId=…" }`. Sold-out errors from Fourthwall come back as a 400 asking the shopper to refresh the bag.
+  - Content images (`apps/web/public/products`) are the fallback for products without Fourthwall photos.
+- **Checkout** (`commerce/fourthwall-checkout-gateway.ts`). `POST /carts` with the bag's variant ids and quantities, then `{ url: "https://<FOURTHWALL_CHECKOUT_DOMAIN>/checkout/?cartCurrency=USD&cartId=…" }`. The checkout domain defaults to `awebound-store-shop.fourthwall.com`. Sold-out errors from Fourthwall come back as a 400 asking the shopper to refresh the bag.
 
-The storefront token is used only by the API. The Supabase catalog (`CATALOG_SOURCE=supabase`) can also drive Fourthwall checkout if `product_variants.provider_variant_id` holds the Fourthwall variant ids.
-
-### Plugging in a commerce provider
-
-| Provider                       | What the adapter does                                                                                                                                                                                                                                       |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Fourthwall** (built)         | Create a cart with the Storefront API from the bag lines; return `{ status: "redirect", url }` to Fourthwall's hosted checkout. Fourthwall takes payment and fulfills.                                                                                      |
-| **Printful, Printify, Apliiq** | These print and ship only. The adapter first sends the shopper to a payment provider's hosted checkout; a payment webhook then creates the order through a `FulfillmentGateway` adapter using `provider_variant_id`. Needs `orders` / `order_items` tables. |
-
-Steps: implement the port in `apps/api/src/infrastructure/commerce/`, add its env vars to `env.ts` and `.env.example`, select it in `createCheckoutGateway` (`container.ts`) from `COMMERCE_PROVIDER`, and sync provider ids into `products` / `product_variants`. See `docs/TODOS.md`.
+The storefront token is used only by the API. Until a product exists in Fourthwall with a matching slug, it doesn't show on the site.
 
 ## Frontend
 
@@ -216,7 +185,7 @@ Steps: implement the port in `apps/api/src/infrastructure/commerce/`, add its en
 
 ## Security
 
-- Secret keys (`SUPABASE_SECRET_KEY`, `RESEND_API_KEY`) exist only in the API's environment. The browser gets the Supabase publishable key and the API URL.
+- Secret keys (`SUPABASE_SECRET_KEY`, `RESEND_API_KEY`, `FOURTHWALL_STOREFRONT_TOKEN`) exist only in the API's environment. The browser gets the Supabase publishable key and the API URL.
 - CORS allows only `WEB_ORIGIN`. JSON bodies are capped at 32 KB. Helmet sets API headers; Next sets `nosniff`, `Referrer-Policy`, `X-Frame-Options` and `Permissions-Policy`.
 - Rate limits per IP on bag validation, checkout, contact and subscribe. Set `TRUST_PROXY=1` behind a proxy so limits see the real client address. Multiple API instances need a shared store (see TODOS).
 - Logs redact email addresses and authorization headers.
@@ -230,13 +199,11 @@ Steps: implement the port in `apps/api/src/infrastructure/commerce/`, add its en
 | `WEB_ORIGIN`                                                       | API   | CORS allow-list (comma-separated, `*` = one DNS label)         |
 | `PUBLIC_SITE_URL`                                                  | API   | Links and images in email                                      |
 | `TRUST_PROXY`                                                      | API   | `1` behind a load balancer                                     |
-| `CATALOG_SOURCE`                                                   | API   | `seed` (default), `supabase` or `fourthwall`                   |
+| `FOURTHWALL_STOREFRONT_TOKEN`                                      | API   | Fourthwall catalog and checkout (required)                     |
+| `FOURTHWALL_CHECKOUT_DOMAIN`                                       | API   | Optional; defaults to `awebound-store-shop.fourthwall.com`     |
 | `SUPABASE_URL`, `SUPABASE_SECRET_KEY`                              | API   | Database and admin access                                      |
 | `SUPABASE_JWT_SECRET`                                              | API   | Only for projects on the legacy HS256 secret                   |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | API   | Email (required in production)                                 |
-| `COMMERCE_PROVIDER`                                                | API   | `none` (default) or `fourthwall`                               |
-| `FOURTHWALL_STOREFRONT_TOKEN`, `FOURTHWALL_CHECKOUT_DOMAIN`        | API   | Fourthwall catalog and hosted checkout                         |
-| `FOURTHWALL_CURRENCY`, `FOURTHWALL_API_URL`                        | API   | Defaults `USD` and the public Storefront API                   |
 | `NEXT_PUBLIC_SITE_URL`                                             | Web   | Metadata, sitemap, auth redirects                              |
 | `NEXT_PUBLIC_API_URL`, `API_URL`                                   | Web   | API for the browser; optional private URL for server rendering |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Web   | Sign-in                                                        |

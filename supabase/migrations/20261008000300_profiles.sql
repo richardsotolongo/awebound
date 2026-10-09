@@ -8,7 +8,7 @@ create table public.profiles (
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
-comment on table public.profiles is 'Shopper profile. Order history joins here once a commerce provider is chosen.';
+comment on table public.profiles is 'Shopper profile. Order history from Fourthwall order webhooks can join here later.';
 
 create trigger profiles_set_updated_at
   before update on public.profiles

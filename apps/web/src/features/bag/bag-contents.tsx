@@ -1,12 +1,11 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { ApiError, formatPrice, type BagIssue, type CheckoutResult } from "@awebound/shared";
+import { ApiError, formatPrice, type BagIssue } from "@awebound/shared";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { bagSubtotal, useBag } from "./bag-store";
-import { NotifyForm } from "./notify-form";
 
 /** Re-prices the bag against the API whenever it is shown. */
 export function useBagValidation(active: boolean) {
@@ -110,11 +109,10 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** Subtotal, checkout and the "opens soon" state while no commerce provider is connected. */
+/** Subtotal and the button that hands the bag to Fourthwall's hosted checkout. */
 export function BagCheckout() {
   const lines = useBag((s) => s.lines);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
-  const [result, setResult] = useState<CheckoutResult | null>(null);
   const [error, setError] = useState("");
   const subtotal = bagSubtotal(lines);
   const available = lines.filter((l) => l.snapshot.available);
@@ -123,15 +121,10 @@ export function BagCheckout() {
     setState("loading");
     setError("");
     try {
-      const outcome = await api.startCheckout({
+      const { url } = await api.startCheckout({
         lines: available.map(({ sku, quantity }) => ({ sku, quantity })),
       });
-      if (outcome.status === "redirect") {
-        window.location.assign(outcome.url);
-        return;
-      }
-      setResult(outcome);
-      setState("idle");
+      window.location.assign(url);
     } catch (err) {
       setState("error");
       setError(
@@ -149,23 +142,14 @@ export function BagCheckout() {
         </span>
       </div>
       <p className="field-help">Shipping and tax are calculated at checkout.</p>
-      {result?.status === "unavailable" ? (
-        <div className="notice" role="status">
-          <p className="aw-small" style={{ color: "var(--ink)" }}>
-            {result.message}
-          </p>
-          <NotifyForm source="checkout" label="Your email" />
-        </div>
-      ) : (
-        <Button
-          variant="primary"
-          block
-          onClick={checkout}
-          disabled={state === "loading" || available.length === 0}
-        >
-          {state === "loading" ? "Opening checkout…" : "Check out"}
-        </Button>
-      )}
+      <Button
+        variant="primary"
+        block
+        onClick={checkout}
+        disabled={state === "loading" || available.length === 0}
+      >
+        {state === "loading" ? "Opening checkout…" : "Check out"}
+      </Button>
       {state === "error" ? (
         <p className="aw-form-error" role="alert">
           {error}

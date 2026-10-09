@@ -6,7 +6,7 @@ Context for coding agents working in this repo. Read this first, then the `AGENT
 
 Awebound is an independent Christian apparel brand (tees, oversized tees, tanks, caps) for believers aged 18–30 who wear their faith boldly. This monorepo is its website: a storefront with a scroll-driven home page, a searchable shop, About, Contact, FAQ and policy pages, and passwordless sign-in.
 
-Commerce is **Fourthwall**: it supplies live products, prices and stock (`CATALOG_SOURCE=fourthwall`) and runs checkout, payment and fulfillment (`COMMERCE_PROVIDER=fourthwall`, a redirect to its hosted checkout). With both unset the site runs on the seed catalog and checkout shows "opens soon" (`UnconfiguredCheckoutGateway`). Do not add a payment processor or another provider unless the owner asks; see `docs/TODOS.md`.
+Commerce is **Fourthwall**, always on: it supplies live products, prices, stock and photos, and runs checkout, payment and fulfillment (a redirect to its hosted checkout). The API needs `FOURTHWALL_STOREFRONT_TOKEN`. The brand story for each product (ID, collection, Scripture, copy) lives in `packages/shared/src/content/catalog.json` and is merged with Fourthwall by slug. Do not add a payment processor or another provider unless the owner asks.
 
 ## Workspace map
 
@@ -15,9 +15,9 @@ Commerce is **Fourthwall**: it supplies live products, prices and stock (`CATALO
 | `apps/web`          | Next.js App Router storefront                                | `apps/web/AGENTS.md`                        |
 | `apps/api`          | Express API, clean architecture                              | `apps/api/AGENTS.md`                        |
 | `packages/brand`    | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme | `packages/brand/AGENTS.md`                  |
-| `packages/shared`   | zod schemas, DTO types, typed API client, catalog seed data  | contract between web and API                |
+| `packages/shared`   | zod schemas, DTO types, typed API client, brand content      | contract between web and API                |
 | `packages/tsconfig` | Shared tsconfig bases                                        |                                             |
-| `supabase`          | SQL migrations, seed, auth email templates                   | `supabase/AGENTS.md`                        |
+| `supabase`          | SQL migrations, auth email templates                         | `supabase/AGENTS.md`                        |
 | `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`               | keep them current when you change structure |
 
 Internal packages are consumed as TypeScript source (no build step): Next transpiles them via `transpilePackages`, the API bundles them with tsup.
@@ -30,10 +30,9 @@ pnpm dev              # web on :3000 and API on :4000
 pnpm typecheck        # every package
 pnpm lint             # every package
 pnpm build            # every package
-pnpm db:seed          # regenerate supabase/seed.sql from packages/shared/src/seed
 ```
 
-The API runs without Supabase or Fourthwall when `CATALOG_SOURCE=seed` (the default in `apps/api/.env.example`), and logs emails to the console when `RESEND_API_KEY` is empty. The root `.env.example` lists every variable for both apps with production values.
+The API needs `FOURTHWALL_STOREFRONT_TOKEN` in `apps/api/.env` to start. It runs without Supabase (accounts answer 503, contact messages and sign-ups stay in memory) and logs emails to the console when `RESEND_API_KEY` is empty. The root `.env.example` lists every variable for both apps with production values.
 
 Deployment is two Vercel projects (Root Directory `apps/web` and `apps/api`), each configured by its `vercel.json`; see `docs/DEPLOYMENT.md`.
 
@@ -51,7 +50,7 @@ Deployment is two Vercel projects (Root Directory `apps/web` and `apps/api`), ea
    - Oxblood (`primary`) is a fill, never text on coal. One primary button and one glow per screen.
    - Copy: reverent, short sentences, sentence case, no exclamation marks, no hype words, no guilt.
 5. **Secrets** live in `.env` files that are git-ignored. Add every new variable to the matching app `.env.example`, the root `.env.example` and the zod env schema (`apps/api/src/infrastructure/config/env.ts`, `apps/web/src/lib/env.ts`).
-6. **Prices are placeholders** until the owner sets them. Don't present seed prices as final in copy.
+6. **Prices come from Fourthwall.** Never hard-code a price in copy.
 7. Keep `docs/ARCHITECTURE.md` and `docs/TODOS.md` in step with structural changes.
 
 ## Conventions

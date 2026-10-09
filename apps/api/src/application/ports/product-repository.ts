@@ -13,8 +13,8 @@ export interface ProductSearchResult {
 }
 
 /**
- * Read access to the catalog. Implemented by the Supabase adapter (Postgres search) and the
- * in-memory seed adapter; a commerce provider sync writes into the same tables later.
+ * Read access to the catalog. Implemented by the Fourthwall adapter (live shop merged with the
+ * brand content), which searches with the in-memory engine.
  */
 export interface ProductRepository {
   search(query: ProductQuery): Promise<ProductSearchResult>;

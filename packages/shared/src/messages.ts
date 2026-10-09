@@ -32,7 +32,7 @@ export const ContactRequestSchema = z.object({
 });
 export type ContactRequest = z.infer<typeof ContactRequestSchema>;
 
-export const SUBSCRIBER_SOURCES = ["footer", "checkout", "product"] as const;
+export const SUBSCRIBER_SOURCES = ["footer", "product"] as const;
 
 export const SubscribeRequestSchema = z.object({
   email: z.email("Enter an email address like you@example.com."),

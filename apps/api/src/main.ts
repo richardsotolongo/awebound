@@ -16,10 +16,7 @@ const container = buildContainer(env, logger);
 const app = createApp(container, env, logger);
 
 const server = app.listen(env.PORT, () => {
-  logger.info(
-    { port: env.PORT, catalog: env.CATALOG_SOURCE, commerce: env.COMMERCE_PROVIDER },
-    "awebound api listening",
-  );
+  logger.info({ port: env.PORT }, "awebound api listening");
 });
 
 function shutdown(signal: string) {
