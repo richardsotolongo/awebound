@@ -16,6 +16,11 @@ create trigger profiles_set_updated_at
 
 alter table public.profiles enable row level security;
 
+-- Supabase no longer grants table access by default. Users read and rename their own row (RLS
+-- below); the server upserts rows with the secret key.
+grant select, update on public.profiles to authenticated;
+grant select, insert, update on public.profiles to service_role;
+
 create policy "Read own profile" on public.profiles
   for select to authenticated using ((select auth.uid()) = id);
 

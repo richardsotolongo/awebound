@@ -18,6 +18,7 @@ Postgres schema and auth email templates for the Awebound store. Used by the Sup
 ## Rules
 
 - Every table has RLS enabled.
+- Grant table privileges explicitly in the same migration (`grant … to authenticated / service_role`). Supabase no longer grants them by default, not even to `service_role`; a missing grant shows up as `permission denied for table`.
 - Functions use `set search_path = ''` and fully qualified names.
 - Email templates use inline hex from `packages/brand/src/styles/tokens.css` (email clients can't read CSS variables) and the hosted PNG wordmark at `/email/wordmark-oxblood.png`. Keep copy in brand voice: sentence case, no exclamation marks.
 - Validate SQL changes on a real Postgres before committing (a stub `auth` schema and the `anon`/`authenticated`/`service_role` roles are enough).

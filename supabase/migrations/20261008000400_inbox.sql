@@ -1,5 +1,6 @@
--- Contact messages and drop-notes subscribers. Written only by the API with the secret key;
--- RLS is on with no policies, so the publishable key can neither read nor write them.
+-- Contact messages and drop-notes subscribers. Written only by the server with the secret key;
+-- RLS is on with no policies and nothing is granted to anon/authenticated, so the publishable key
+-- can neither read nor write them.
 
 create table public.contact_messages (
   id          uuid primary key default gen_random_uuid(),
@@ -29,3 +30,7 @@ create unique index subscribers_email_key on public.subscribers (lower(email));
 
 alter table public.contact_messages enable row level security;
 alter table public.subscribers enable row level security;
+
+-- Supabase no longer grants table access by default, not even to service_role.
+grant select, insert, update on public.contact_messages to service_role;
+grant insert on public.subscribers to service_role;
