@@ -71,9 +71,7 @@ const sections: LegalSection[] = [
     body: (
       <ul>
         <li>To answer your messages and provide customer support.</li>
-        <li>
-          To send drop notes and the notices you asked for. Every email has a way to stop them.
-        </li>
+        <li>To send drop notes and the notices you asked for. You can stop them at any time.</li>
         <li>
           To run your account and, once checkout opens, to make, ship and support your orders.
         </li>
@@ -125,10 +123,10 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          You can unsubscribe from email at any time. You can ask us to show you, correct or delete
-          the personal information we hold about you, or to delete your account, by writing to{" "}
-          {mail}. Depending on where you live, you may have further rights under local law; we’ll
-          honor them.
+          You can stop drop notes at any time by replying to any of them or writing to us. You can
+          ask us to show you, correct or delete the personal information we hold about you, or to
+          delete your account, by writing to {mail}. Depending on where you live, you may have
+          further rights under local law; we’ll honor them.
         </p>
       </>
     ),
