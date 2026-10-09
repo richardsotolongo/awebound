@@ -72,6 +72,7 @@ create table public.product_variants (
   sku                 text not null unique,
   color_name          text not null,
   color_token         text not null,      -- brand token, e.g. garment-faded-black
+  color_rank          integer not null default 0,  -- display order of colors; 0 is the base color
   size                text not null,
   size_rank           integer not null default 0,
   available           boolean not null default true,

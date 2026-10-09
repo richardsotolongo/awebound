@@ -20,8 +20,8 @@ export const ContactRequestSchema = z.object({
   email: z.email("Enter an email address like you@example.com."),
   topic: ContactTopicSchema,
   message: z.string().trim().min(10, "A few more words, please.").max(4000),
-  /** Honeypot. Real people leave it empty. */
-  website: z.string().max(0).optional().or(z.literal("")),
+  /** Honeypot, hidden from people. Bots fill it; the API then answers "ok" and sends nothing. */
+  website: z.string().max(500).optional(),
 });
 export type ContactRequest = z.infer<typeof ContactRequestSchema>;
 

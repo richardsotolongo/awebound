@@ -79,24 +79,25 @@ lines.push(
 );
 
 lines.push(
-  "insert into public.product_variants (product_id, sku, color_name, color_token, size, size_rank, available)",
-  "select p.id, v.sku, v.color_name, v.color_token, v.size, v.size_rank, v.available",
+  "insert into public.product_variants (product_id, sku, color_name, color_token, color_rank, size, size_rank, available)",
+  "select p.id, v.sku, v.color_name, v.color_token, v.color_rank, v.size, v.size_rank, v.available",
   "from (values",
 );
 lines.push(
   products
     .flatMap((p) =>
       p.variants.map((v) => {
-        const token = p.colors.find((c) => c.name === v.color)?.token ?? "";
-        return `  (${q(p.code)}, ${q(v.sku)}, ${q(v.color)}, ${q(token)}, ${q(v.size)}, ${sizeRank(v.size)}, ${b(v.available)})`;
+        const colorRank = p.colors.findIndex((c) => c.name === v.color);
+        const token = p.colors[colorRank]?.token ?? "";
+        return `  (${q(p.code)}, ${q(v.sku)}, ${q(v.color)}, ${q(token)}, ${colorRank}, ${q(v.size)}, ${sizeRank(v.size)}, ${b(v.available)})`;
       }),
     )
     .join(",\n"),
 );
 lines.push(
-  ") as v (code, sku, color_name, color_token, size, size_rank, available)",
+  ") as v (code, sku, color_name, color_token, color_rank, size, size_rank, available)",
   "join public.products p on p.code = v.code",
-  "on conflict (sku) do update set color_name = excluded.color_name, color_token = excluded.color_token, size = excluded.size,",
+  "on conflict (sku) do update set color_name = excluded.color_name, color_token = excluded.color_token, color_rank = excluded.color_rank, size = excluded.size,",
   "  size_rank = excluded.size_rank, available = excluded.available;",
   "",
 );

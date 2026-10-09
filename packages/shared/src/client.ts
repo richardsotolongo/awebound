@@ -96,16 +96,16 @@ export function createApiClient(options: ApiClientOptions) {
     listCollections: (init?: RequestInit) =>
       request(CollectionSchema.array(), "/v1/collections", { init }),
     validateBag: (body: BagValidateRequest) =>
-      request(BagSchema, "/v1/bag/validate", { method: "POST", body, init: { cache: "no-store" } }),
+      request(BagSchema, "/v1/bag/validate", { method: "POST", body }),
     startCheckout: (body: CheckoutRequest) =>
-      request(CheckoutResultSchema, "/v1/checkout", { method: "POST", body, auth: true, init: { cache: "no-store" } }),
+      request(CheckoutResultSchema, "/v1/checkout", { method: "POST", body, auth: true }),
     sendContact: (body: ContactRequest) =>
-      request(OkSchema, "/v1/contact", { method: "POST", body, auth: true, init: { cache: "no-store" } }),
+      request(OkSchema, "/v1/contact", { method: "POST", body, auth: true }),
     subscribe: (body: SubscribeRequest) =>
-      request(OkSchema, "/v1/subscribers", { method: "POST", body, init: { cache: "no-store" } }),
-    getMe: () => request(ProfileSchema, "/v1/me", { auth: true, init: { cache: "no-store" } }),
+      request(OkSchema, "/v1/subscribers", { method: "POST", body }),
+    getMe: () => request(ProfileSchema, "/v1/me", { auth: true }),
     updateMe: (body: UpdateProfileRequest) =>
-      request(ProfileSchema, "/v1/me", { method: "PATCH", body, auth: true, init: { cache: "no-store" } }),
+      request(ProfileSchema, "/v1/me", { method: "PATCH", body, auth: true }),
   };
 }
 
