@@ -7,6 +7,18 @@ import type { AppLogger } from "../../infrastructure/logger";
 import { errorHandler, notFound, requestLogger } from "./middleware";
 import { v1Routes } from "./routes";
 
+/**
+ * WEB_ORIGIN entries are exact origins, or patterns with "*" for one DNS label
+ * (https://awebound-*.vercel.app covers Vercel preview deployments).
+ */
+function allowedOrigins(origins: string[]): (string | RegExp)[] {
+  return origins.map((o) => {
+    if (!o.includes("*")) return o;
+    const escaped = o.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[a-z0-9-]+");
+    return new RegExp(`^${escaped}$`, "i");
+  });
+}
+
 /** Builds the Express app from wired use cases. No adapters are created here. */
 export function createApp(container: Container, env: Env, logger: AppLogger) {
   const app = express();
@@ -18,7 +30,7 @@ export function createApp(container: Container, env: Env, logger: AppLogger) {
   app.use(helmet());
   app.use(
     cors({
-      origin: env.WEB_ORIGIN,
+      origin: allowedOrigins(env.WEB_ORIGIN),
       methods: ["GET", "POST", "PATCH"],
       allowedHeaders: ["content-type", "authorization"],
       maxAge: 600,

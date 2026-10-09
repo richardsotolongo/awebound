@@ -1,6 +1,7 @@
 node_modules
 .next
 dist
+.vercel
 pnpm-lock.yaml
 supabase/seed.sql
 packages/brand/src/marks/paths.ts

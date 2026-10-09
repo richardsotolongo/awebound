@@ -22,7 +22,7 @@ flowchart LR
   end
   SB[(Supabase<br/>Postgres + Auth)]
   RS[Resend]
-  CP[Commerce provider<br/>not chosen yet]
+  CP[Fourthwall<br/>catalog + hosted checkout]
 
   W -- fetch /v1 with Bearer token --> H
   W -- pages --> P --> RSC -- /v1 --> H
@@ -32,13 +32,15 @@ flowchart LR
   UC -. ports .-> I
   I --> SB
   I --> RS
-  I -. CheckoutGateway .-> CP
+  I -. ProductRepository + CheckoutGateway .-> CP
+  W -- redirect to checkout --> CP
   SB -- auth emails via SMTP --> RS
 ```
 
 - The **web app** renders pages. Server Components read the catalog through the API; Client Components handle search, filters, the bag and forms.
 - The **API** owns business rules: pricing the bag, search semantics, what happens at checkout, sending email, profile access.
 - **Supabase** stores data and runs authentication. The browser talks to Supabase Auth directly to sign in; everything else goes through the API.
+- **Fourthwall** (when `CATALOG_SOURCE` / `COMMERCE_PROVIDER` are `fourthwall`) supplies live products and stock, and runs checkout, payment and fulfillment.
 - **Resend** delivers all email: auth emails (via Supabase's SMTP setting) and the API's transactional mail.
 
 ## Monorepo and dependencies
@@ -178,13 +180,27 @@ Templates use the signature lockup (oxblood wordmark on warm bone) as a hosted P
 1. The bag lives in the browser (zustand, persisted to localStorage, keyed by SKU).
 2. Whenever the bag is shown, `POST /v1/bag/validate` re-prices it. The client's prices are display copies only.
 3. **Check out** calls `POST /v1/checkout`. `StartCheckout` prices the bag again and hands the available lines to the `CheckoutGateway`.
-4. Today the gateway is `UnconfiguredCheckoutGateway`: the drawer shows "Checkout opens soon" and offers a notify sign-up.
+4. `COMMERCE_PROVIDER` picks the gateway. `none` → `UnconfiguredCheckoutGateway`: the drawer shows "Checkout opens soon" and offers a notify sign-up. `fourthwall` → `FourthwallCheckoutGateway`: the API creates a Fourthwall cart and the browser is sent to Fourthwall's hosted checkout.
+
+### Fourthwall (chosen provider)
+
+Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code and no orders table. Two adapters, both in `apps/api/src/infrastructure/`:
+
+- **Catalog** (`CATALOG_SOURCE=fourthwall`, `fourthwall/fourthwall-product-repository.ts`). Loads every product from the Storefront API (`GET /collections/all/products`) and merges it with the brand content in `packages/shared/src/seed/catalog.json` (`fourthwall/merge-catalog.ts`):
+  - Fourthwall is the truth for what can be bought: variants, prices, stock and photos.
+  - The content file is the truth for the story: product ID, collection, cut, Scripture, copy.
+  - They match by slug: the Fourthwall product's URL slug equals the content `slug`, or the content entry sets `fourthwallSlug`. A product shows on the site only when both sides exist; the API logs the ones that don't match.
+  - Site SKUs are Fourthwall variant ids. Color names that match a brand garment color (`colors` in the content file) use the brand swatch; others use Fourthwall's swatch hex (`Color.swatch`, rendered with `colorCss`).
+  - Search, filters and facets run on the merged set with the in-memory engine. The merged catalog is cached for 60 seconds; if Fourthwall is unreachable the last good copy keeps serving.
+- **Checkout** (`COMMERCE_PROVIDER=fourthwall`, `commerce/fourthwall-checkout-gateway.ts`). `POST /carts` with the bag's variant ids and quantities, then `{ status: "redirect", url: "https://<FOURTHWALL_CHECKOUT_DOMAIN>/checkout/?cartCurrency=USD&cartId=…" }`. Sold-out errors from Fourthwall come back as a 400 asking the shopper to refresh the bag.
+
+The storefront token is used only by the API. The Supabase catalog (`CATALOG_SOURCE=supabase`) can also drive Fourthwall checkout if `product_variants.provider_variant_id` holds the Fourthwall variant ids.
 
 ### Plugging in a commerce provider
 
 | Provider                       | What the adapter does                                                                                                                                                                                                                                       |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Fourthwall**                 | Create a cart with the Storefront API from the bag lines; return `{ status: "redirect", url }` to Fourthwall's hosted checkout. Fourthwall takes payment and fulfills.                                                                                      |
+| **Fourthwall** (built)         | Create a cart with the Storefront API from the bag lines; return `{ status: "redirect", url }` to Fourthwall's hosted checkout. Fourthwall takes payment and fulfills.                                                                                      |
 | **Printful, Printify, Apliiq** | These print and ship only. The adapter first sends the shopper to a payment provider's hosted checkout; a payment webhook then creates the order through a `FulfillmentGateway` adapter using `provider_variant_id`. Needs `orders` / `order_items` tables. |
 
 Steps: implement the port in `apps/api/src/infrastructure/commerce/`, add its env vars to `env.ts` and `.env.example`, select it in `createCheckoutGateway` (`container.ts`) from `COMMERCE_PROVIDER`, and sync provider ids into `products` / `product_variants`. See `docs/TODOS.md`.
@@ -211,21 +227,22 @@ Steps: implement the port in `apps/api/src/infrastructure/commerce/`, add its en
 | Variable                                                           | Where | Purpose                                                        |
 | ------------------------------------------------------------------ | ----- | -------------------------------------------------------------- |
 | `PORT`, `NODE_ENV`, `LOG_LEVEL`                                    | API   | Server basics                                                  |
-| `WEB_ORIGIN`                                                       | API   | CORS allow-list (comma-separated)                              |
+| `WEB_ORIGIN`                                                       | API   | CORS allow-list (comma-separated, `*` = one DNS label)         |
 | `PUBLIC_SITE_URL`                                                  | API   | Links and images in email                                      |
 | `TRUST_PROXY`                                                      | API   | `1` behind a load balancer                                     |
-| `CATALOG_SOURCE`                                                   | API   | `seed` (default) or `supabase`                                 |
+| `CATALOG_SOURCE`                                                   | API   | `seed` (default), `supabase` or `fourthwall`                   |
 | `SUPABASE_URL`, `SUPABASE_SECRET_KEY`                              | API   | Database and admin access                                      |
 | `SUPABASE_JWT_SECRET`                                              | API   | Only for projects on the legacy HS256 secret                   |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | API   | Email (required in production)                                 |
-| `COMMERCE_PROVIDER`                                                | API   | `none` until an adapter exists                                 |
+| `COMMERCE_PROVIDER`                                                | API   | `none` (default) or `fourthwall`                               |
+| `FOURTHWALL_STOREFRONT_TOKEN`, `FOURTHWALL_CHECKOUT_DOMAIN`        | API   | Fourthwall catalog and hosted checkout                         |
+| `FOURTHWALL_CURRENCY`, `FOURTHWALL_API_URL`                        | API   | Defaults `USD` and the public Storefront API                   |
 | `NEXT_PUBLIC_SITE_URL`                                             | Web   | Metadata, sitemap, auth redirects                              |
 | `NEXT_PUBLIC_API_URL`, `API_URL`                                   | Web   | API for the browser; optional private URL for server rendering |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Web   | Sign-in                                                        |
 
-## Deployment (suggested)
+## Deployment
 
-- **Web** on Vercel (or any Node host): root `apps/web`, install from the repo root with pnpm.
-- **API** on Render, Railway or Fly: `pnpm --filter @awebound/api build`, run `node apps/api/dist/main.js`, health check `/health`.
-- **Supabase** hosted project: `supabase link` then `supabase db push`; run `seed.sql` once for sample data, or load real products.
-- Point `awebound.store` at the web app and an `api.` subdomain at the API; set `WEB_ORIGIN`, `PUBLIC_SITE_URL` and `NEXT_PUBLIC_API_URL` accordingly.
+Two Vercel projects from this repo: Root Directory `apps/web` (Next.js) and `apps/api` (Express as a single Vercel Function via the Build Output API: `pnpm build:vercel` → `apps/api/.vercel/output`, entry `src/vercel.ts`). Each app's `vercel.json` sets a filtered pnpm install and its build. Step-by-step setup, variables and DNS: [DEPLOYMENT.md](DEPLOYMENT.md).
+
+The API also runs as a plain Node server anywhere else: `pnpm --filter @awebound/api build`, `node apps/api/dist/main.js`, health check `/health`. Supabase: `supabase link`, then `supabase db push`.

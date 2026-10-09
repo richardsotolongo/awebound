@@ -37,7 +37,7 @@ awebound/
 ├─ packages/shared   zod contract, typed API client, sample catalog
 ├─ packages/tsconfig shared compiler settings
 ├─ supabase          migrations, generated seed, auth email templates, CLI config
-└─ docs              ARCHITECTURE.md, TODOS.md
+└─ docs              ARCHITECTURE.md, DEPLOYMENT.md, TODOS.md
 ```
 
 ## Run it locally
@@ -51,6 +51,8 @@ cp apps/web/.env.example apps/web/.env.local
 pnpm dev
 ```
 
+Every variable, with production values for awebound.store, is listed in the root [`.env.example`](.env.example).
+
 Open http://localhost:3000. The API runs on http://localhost:4000 (`/health`).
 
 Out of the box the API works **offline**: it serves the sample catalog from `packages/shared/src/seed`, keeps contact messages and sign-ups in memory, and prints emails to the terminal. Accounts show "open soon" until Supabase is configured.
@@ -61,6 +63,12 @@ Out of the box the API works **offline**: it serves the sample catalog from `pac
 supabase start          # local Postgres, Auth and Inbucket (needs Docker)
 supabase db reset       # applies supabase/migrations and supabase/seed.sql
 ```
+
+### With Fourthwall
+
+Set in `apps/api/.env`: `CATALOG_SOURCE=fourthwall`, `COMMERCE_PROVIDER=fourthwall`, `FOURTHWALL_STOREFRONT_TOKEN` and `FOURTHWALL_CHECKOUT_DOMAIN`. The shop then shows the live Fourthwall products (matched to the brand content by slug) and checkout hands off to Fourthwall's hosted checkout. Setup steps are in [docs/TODOS.md](docs/TODOS.md#fourthwall).
+
+### Supabase settings
 
 Then set in `apps/api/.env`: `CATALOG_SOURCE=supabase`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`; and in `apps/web/.env.local`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Sign-in emails land in Inbucket at http://localhost:54324. Add `RESEND_API_KEY` to send real email.
 
@@ -79,14 +87,19 @@ Then set in `apps/api/.env`: `CATALOG_SOURCE=supabase`, `SUPABASE_URL`, `SUPABAS
 
 There are no automated tests in this repo, by design. Changes are verified with `typecheck`, `lint`, `build` and by running the flows in a browser.
 
+## Deploy
+
+Two Vercel projects from this repo: Root Directory `apps/web` and `apps/api`. Steps, variables and DNS: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Status
 
 Built and verified: every page, the shop and its filters, product pages, bag, contact, sign-up, sign-in screens, the API in offline and Supabase modes (migrations, search, facets and RLS were exercised on Postgres 16 behind PostgREST).
 
-Waiting on decisions or accounts: the commerce provider and payments, final prices (the seed's are placeholders), product photography, Supabase / Google / Resend setup, deployment and a legal review of the policies. The full list is in [docs/TODOS.md](docs/TODOS.md).
+Commerce: Fourthwall (live catalog and hosted checkout), switched on by environment variables. Waiting on accounts or content: the Awebound Fourthwall shop and its products, final prices (the seed's are placeholders), product photography, Supabase / Google / Resend setup, deployment and a legal review of the policies. The full list is in [docs/TODOS.md](docs/TODOS.md).
 
 ## Docs
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): layers, data flow, auth and email, schema, and how to plug in a commerce provider
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): Vercel projects, environment variables, domains
 - [docs/TODOS.md](docs/TODOS.md): decisions, setup steps and remaining work
 - [AGENTS.md](AGENTS.md) and the `AGENTS.md` in each app and package: context and rules for coding agents

@@ -31,14 +31,24 @@ src/
 cp apps/api/.env.example apps/api/.env   # defaults work offline
 pnpm --filter @awebound/api dev          # http://localhost:4000, /health
 pnpm --filter @awebound/api build        # tsup bundle → dist/main.js (bundles @awebound/* source)
+pnpm --filter @awebound/api build:vercel # Vercel Function → .vercel/output (src/vercel.ts, every dependency bundled)
 ```
 
-Offline defaults: `CATALOG_SOURCE=seed` (in-memory catalog from `packages/shared/src/seed`), console mailer, in-memory inbox, accounts return 503. Set `SUPABASE_URL` + `SUPABASE_SECRET_KEY` and `CATALOG_SOURCE=supabase` for the real database; `RESEND_API_KEY` for real email.
+`src/main.ts` (listens on PORT) and `src/vercel.ts` (default-exports a request handler) wire the same app; keep them in step.
 
-## Adding a commerce provider (when the owner decides)
+Offline defaults: `CATALOG_SOURCE=seed` (in-memory catalog from `packages/shared/src/seed`), console mailer, in-memory inbox, accounts return 503. Set `SUPABASE_URL` + `SUPABASE_SECRET_KEY` and `CATALOG_SOURCE=supabase` for the real database; `RESEND_API_KEY` for real email; `FOURTHWALL_STOREFRONT_TOKEN` with `CATALOG_SOURCE=fourthwall` and/or `COMMERCE_PROVIDER=fourthwall` (+ `FOURTHWALL_CHECKOUT_DOMAIN`) for Fourthwall.
+
+## Fourthwall
+
+- `infrastructure/fourthwall/storefront-client.ts`: the only code that talks to the Storefront API (zod-parsed responses, timeout, `FourthwallApiError`).
+- `fourthwall/merge-catalog.ts`: Fourthwall variants/prices/stock/photos + brand content from `@awebound/shared/seed`, matched by slug (`fourthwallSlug` overrides). Site SKU = Fourthwall variant id.
+- `fourthwall/fourthwall-product-repository.ts`: 60 s cache over the merge, serves stale on failure, delegates search and facets to `InMemoryProductRepository`.
+- `commerce/fourthwall-checkout-gateway.ts`: cart → hosted checkout redirect.
+- Never touch a Fourthwall shop through other tools on the owner's behalf; the API only reads products and creates carts.
+
+## Adding another commerce provider (only if the owner asks)
 
 1. Implement `CheckoutGateway` in `src/infrastructure/commerce/<provider>-checkout-gateway.ts`.
-   - Fourthwall: create a Storefront API cart from the bag lines, return `{ status: "redirect", url }` to its hosted checkout.
    - Printful / Printify / Apliiq: take payment first (a payment provider's hosted checkout), then create the order with a `FulfillmentGateway` adapter from the payment webhook. Payments are **not** in scope until the owner asks.
 2. Add its env vars to `infrastructure/config/env.ts` and `.env.example`.
 3. Select it in `createCheckoutGateway` in `container.ts` from `COMMERCE_PROVIDER`.

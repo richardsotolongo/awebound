@@ -4,9 +4,8 @@ What's left before launch, grouped by who has to act. Check items off as they la
 
 ## Decisions for the owner
 
-- [ ] **Commerce and fulfillment provider**: Printful, Printify, Fourthwall or Apliiq. Fourthwall brings its own hosted checkout and payments; the other three need a payment processor as well (see "Commerce" below).
-- [ ] **Payment processor**, only if the provider isn't Fourthwall.
-- [ ] **Prices.** Seed prices are placeholders: tee $38, oversized tee $44, tank $34, cap $32 (`packages/shared/src/seed/catalog.json`).
+- [x] **Commerce and fulfillment provider**: Fourthwall (hosted checkout, payments and fulfillment; no separate payment processor). Adapters are built; setup is under "Fourthwall" below.
+- [ ] **Prices.** Set them in Fourthwall: with `CATALOG_SOURCE=fourthwall` the site shows Fourthwall's prices. The seed prices (tee $38, oversized tee $44, tank $34, cap $32) are placeholders for offline mode only.
 - [ ] **Shipping**: destinations, rates, production and delivery times (then update the FAQ "Shipping" answers).
 - [ ] **Blank supplier and fabric**: fill `story.material` per product and replace the approximate size charts in `apps/web/src/features/product/size-guide.tsx`.
 - [ ] **Legal details**: business entity name and the state whose law governs (`LEGAL` in `apps/web/src/lib/site.ts`).
@@ -14,7 +13,7 @@ What's left before launch, grouped by who has to act. Check items off as they la
 
 ## Setup (accounts and keys)
 
-- [ ] **GitHub push access.** This session couldn't push: install the Claude GitHub App on `richardsotolongo/awebound`, or push the local `main` yourself.
+- [x] **GitHub push access.**
 - [ ] **Supabase project**
   - [ ] Create the project; `supabase link`, then `supabase db push` to apply `supabase/migrations`.
   - [ ] Load products: run `supabase/seed.sql` for the sample catalog, or insert real ones.
@@ -30,16 +29,25 @@ What's left before launch, grouped by who has to act. Check items off as they la
   - [ ] API key → `RESEND_API_KEY` in the API; set `EMAIL_FROM` (for example `Awebound <hello@awebound.store>`).
   - [ ] Supabase → Authentication → SMTP: host `smtp.resend.com`, port 465, user `resend`, password = API key, sender `no-reply@awebound.store`.
 - [ ] **A real inbox for `contact@awebound.store`.** Resend sends mail but doesn't receive it: use Google Workspace, Zoho or forwarding.
-- [ ] **Deploy**: web (Vercel or similar) and API (Render, Railway or Fly). Set `WEB_ORIGIN`, `PUBLIC_SITE_URL`, `TRUST_PROXY=1`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_API_URL`. Point DNS.
+- [ ] **Deploy on Vercel** ([DEPLOYMENT.md](DEPLOYMENT.md)): set the existing project's Root Directory to `apps/web`; create a second project with Root Directory `apps/api`; paste the variables from the root `.env.example`; add `awebound.store` to the web project and `api.awebound.store` to the API; point DNS.
 
-## Commerce (after the provider decision)
+## Fourthwall
 
-- [ ] Implement `CheckoutGateway` for the chosen provider in `apps/api/src/infrastructure/commerce/` and select it in `container.ts` from `COMMERCE_PROVIDER`.
-- [ ] Printful / Printify / Apliiq only: payment hosted checkout, payment webhook endpoint, and a `FulfillmentGateway` adapter that creates the production order.
-- [ ] Migration for `orders` and `order_items` (status, totals, shipping address, provider ids, `user_id` nullable for guests) with RLS so shoppers see only their own orders.
-- [ ] Sync provider product and variant ids into `products.provider_product_id` and `product_variants.provider_variant_id` (and availability).
-- [ ] Order confirmation and shipping emails; order history on `/account`.
-- [ ] Remove the "Checkout opens soon" copy from the FAQ once live.
+Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
+
+- [ ] Create the products in Fourthwall. Set each product's URL slug to the site slug in `packages/shared/src/seed/catalog.json` (`third-morning`, `shattered-dominion`, …), or add `"fourthwallSlug": "<fourthwall-slug>"` to that product's entry. New designs need an entry in the content file too (ID, collection, category, Scripture, copy); then run `pnpm db:seed` if you use Supabase.
+- [ ] Name colors like the brand garments (`Washed coal`, `Faded black`, `Warm bone`, …) so the site shows the brand swatches. Other names fall back to Fourthwall's swatch color.
+- [ ] Fourthwall admin → Settings → For developers: create a **Storefront token** → `FOURTHWALL_STOREFRONT_TOKEN`.
+- [ ] Note the shop's domain (`<shop>.fourthwall.com`, or a custom domain such as `shop.awebound.store` connected in Fourthwall) → `FOURTHWALL_CHECKOUT_DOMAIN`.
+- [ ] Set `CATALOG_SOURCE=fourthwall` and `COMMERCE_PROVIDER=fourthwall` on the API; redeploy. Check the API log for "products without a match are hidden" and fix any slugs it lists.
+- [ ] Shipping, taxes, order and shipping emails: configure in Fourthwall (it sends them).
+- [ ] Place a test order end to end, then refund it in Fourthwall.
+- [ ] Copy once live: remove "Checkout is opening soon" from the FAQ, state shipping times, and name Fourthwall as the commerce partner in `/privacy`.
+- [ ] Optional: order history on `/account` from Fourthwall's order webhooks (needs an `orders` table and a webhook endpoint).
+
+## Other providers (not planned)
+
+- [ ] Printful / Printify / Apliiq would need a payment processor's hosted checkout, a payment webhook and a `FulfillmentGateway` adapter, plus `orders` / `order_items` tables. Not in scope.
 
 ## Content
 
@@ -53,7 +61,7 @@ What's left before launch, grouped by who has to act. Check items off as they la
 ## Engineering follow-ups
 
 - [ ] Shared rate-limit store (for example Redis) if the API runs more than one instance.
-- [ ] `next/image` with `remotePatterns` once product images come from a provider CDN.
+- [ ] `next/image` with `remotePatterns` for Fourthwall's image CDN (product photos are plain `<img>` tags today).
 - [ ] Error monitoring (for example Sentry) for web and API.
 - [ ] Privacy-friendly analytics, and a matching update to the privacy policy.
 - [ ] Accessibility pass with real screen readers (VoiceOver, NVDA) on the journey, filters and bag.
