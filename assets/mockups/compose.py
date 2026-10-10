@@ -1,16 +1,21 @@
 """
-Places each garment cutout (cutouts/, made by cutout.py) on its own backdrop and writes the
-site's product images to apps/web/public/products/<slug>/.
+Places each garment on its own backdrop and writes the site's product images to
+apps/web/public/products/<slug>/.
+
+The garment comes from the Fourthwall shop's product render when there is one (fourthwall/,
+downloaded by fourthwall.py: the item exactly as Fourthwall will make it, already cut out), and
+otherwise from the approved mockup (cutouts/, made by cutout.py).
 
 Every piece shares the canvas, margins, garment scale and a soft cast shadow, so the shop grid
 reads as one set. Each piece gets its own surface: a color drawn from its artwork, a texture
 (plaster, cloud, linen, speckled stone, paper) and a light (from the upper left, from above, a
 spotlight, or a shaft of light). The garments, prints and colors are left exactly as they are in
-the approved mockups.
+the renders and mockups.
 
     python3 assets/mockups/compose.py
 
-These are styled mockups. Replace them with photographs once real samples exist.
+Replace the renders with photographs once real samples exist (upload them to Fourthwall and
+update fourthwall.json).
 """
 
 from pathlib import Path
@@ -20,6 +25,7 @@ from PIL import Image, ImageFilter
 
 HERE = Path(__file__).parent
 CUTOUTS = HERE / "cutouts"
+RENDERS = HERE / "fourthwall"
 OUT = HERE.parent.parent / "apps" / "web" / "public" / "products"
 
 W, H = 1000, 1250  # 4:5, the shop's image ratio
@@ -53,19 +59,30 @@ CAPS = ("lambs-mark", "signature-cap")
 
 # Views in display order. The first is the listing image and always shows the whole garment.
 # `detail` is a close crop of the main artwork: (view, center x, center y, width), as fractions
-# of the cutout.
+# of the cutout. `detail_source: "mockup"` takes that crop (and the home story scene) from the
+# approved mockup instead of the Fourthwall render: on the hoodie renders the hood hangs over the
+# top of the back print, so the close-up shows the whole design from the mockup.
 VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.5, 0.72)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.47, 0.42, 0.74)},
-    "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.4, 0.72)},
-    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64)},
+    "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.68)},
+    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64), "detail_source": "mockup"},
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.52, 0.45, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.48, 0.66)},
-    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62)},
-    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62)},
+    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "mockup"},
+    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "mockup"},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.4, 0.56)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
 }
+
+
+def load_garment(slug: str, view: str, source: str = "render") -> Image.Image:
+    """The Fourthwall render when there is one (unless `source` is "mockup"), else the mockup
+    cutout; cropped to the garment."""
+    render = RENDERS / f"{slug}-{view}.webp"
+    use_render = source == "render" and render.exists()
+    img = Image.open(render if use_render else CUTOUTS / f"{slug}-{view}.webp").convert("RGBA")
+    return img.crop(img.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox())
 
 
 def noise(rng: np.random.Generator, h: int, w: int, sigma: float, stretch: tuple[float, float] = (1, 1)) -> np.ndarray:
@@ -282,7 +299,7 @@ def story(slug: str) -> None:
     )
 
     # The garment hangs centred in the opening; its shadow falls on the back wall.
-    cutout = Image.open(CUTOUTS / f"{slug}-{STORY_VIEW[slug]}.webp").convert("RGBA")
+    cutout = load_garment(slug, STORY_VIEW[slug], VIEWS[slug].get("detail_source", "render"))
     hat = slug in CAPS
     open_w = w - 2 * 78
     box_w, box_h = open_w * (0.74 if hat else 0.74), (sill_top - 200) * (0.6 if hat else 0.88)
@@ -311,14 +328,14 @@ def main() -> None:
         folder.mkdir(parents=True, exist_ok=True)
         hat = slug in CAPS
         for view in spec["views"]:
-            cutout = Image.open(CUTOUTS / f"{slug}-{view}.webp").convert("RGBA")
+            cutout = load_garment(slug, view)
             # Same margins for every garment; caps are wide, so they get a little more width.
             img = compose(slug, cutout, W, H, 0.84 if hat else 0.76, 0.74, 0.5)
             img.save(folder / f"{view}.webp", "WEBP", quality=86, method=6)
             print(folder.name, view)
 
         view, cx, cy, frac = spec["detail"]
-        cutout = Image.open(CUTOUTS / f"{slug}-{view}.webp").convert("RGBA")
+        cutout = load_garment(slug, view, spec.get("detail_source", "render"))
         # Crop the artwork, then lay it on the same surface so any edge that shows matches.
         cw = round(cutout.width * frac)
         ch = round(cw * DETAIL_H / DETAIL_W)

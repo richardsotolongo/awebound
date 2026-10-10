@@ -1,5 +1,5 @@
 {
-  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a Fourthwall product, Fourthwall supplies its variants, prices, stock and photos. Until then the product shows as a preview: the price, sizes and images here (apps/web/public/products, styled mockups made by assets/mockups), with ordering not yet open. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest.",
+  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest.",
   "categories": [
     {
       "slug": "tees",
@@ -51,21 +51,21 @@
     "Sandstone": "cap-sandstone",
     "Washed forest": "garment-washed-forest",
     "Black": "garment-black",
-    "White": "garment-white",
-    "Cream": "garment-cream",
-    "Washed navy": "garment-washed-navy",
-    "Olive": "garment-olive",
-    "Dusty blue": "garment-dusty-blue"
+    "Ecru": "garment-ecru",
+    "French Navy": "garment-french-navy",
+    "Cypress": "garment-cypress",
+    "Carolina Blue": "garment-carolina-blue"
   },
   "products": [
     {
       "code": "A3-B03",
       "slug": "thorns-to-lilies",
+      "fourthwallSlug": "thorns-to-lillies-tee",
       "name": "Thorns to Lilies",
       "position": 1,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["White"],
+      "colors": ["Ecru"],
       "priceCents": 4000,
       "featured": true,
       "releasedAt": "2026-10-09",
@@ -79,7 +79,7 @@
         "theme": "Mercy",
         "call": "Behold His mercy",
         "art": "A crown of thorns breaks into lilies around the wordmark, under a cross.",
-        "meaning": "Through Isaiah, God invites His people to come and settle things with Him, and promises that sins red as scarlet will be made white as snow. The crown of thorns is what that mercy cost. The lilies are what grows from it. The print is deep red on a white shirt, the scarlet and the snow of the verse.",
+        "meaning": "Through Isaiah, God invites His people to come and settle things with Him, and promises that sins red as scarlet will be made white as snow. The crown of thorns is what that mercy cost. The lilies are what grows from it. The print is deep red on a pale ecru shirt, the scarlet and the snow of the verse.",
         "front": "Large Awebound wordmark across the chest in deep red",
         "back": "A crown of thorns blooming into lilies around the wordmark, with Isaiah 1:18",
         "inks": "Deep red, gray",
@@ -95,7 +95,7 @@
         {
           "view": "front",
           "url": "/products/thorns-to-lilies/front.webp",
-          "alt": "Thorns to Lilies oversized tee, front: large red wordmark on white"
+          "alt": "Thorns to Lilies oversized tee, front: large red wordmark on ecru"
         },
         {
           "view": "detail",
@@ -107,11 +107,12 @@
     {
       "code": "A3-B05",
       "slug": "to-live-is-christ",
+      "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
       "name": "To Live Is Christ, To Die Is Gain",
       "position": 2,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Washed navy"],
+      "colors": ["French Navy"],
       "priceCents": 4000,
       "featured": true,
       "releasedAt": "2026-10-09",
@@ -153,11 +154,12 @@
     {
       "code": "A3-B07",
       "slug": "by-his-hem",
+      "fourthwallSlug": "by-his-hem-tee",
       "name": "By His Hem",
       "position": 3,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Warm bone"],
+      "colors": ["Ecru"],
       "priceCents": 4000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -199,11 +201,12 @@
     {
       "code": "A3-B04",
       "slug": "stone-in-motion",
+      "fourthwallSlug": "stone-in-motion-tee",
       "name": "Stone in Motion",
       "position": 4,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Cream"],
+      "colors": ["Ecru"],
       "priceCents": 4000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -245,6 +248,7 @@
     {
       "code": "A3-B02",
       "slug": "still-the-storm",
+      "fourthwallSlug": "still-the-storm-tee",
       "name": "Still the Storm",
       "position": 5,
       "collection": "behold",
@@ -291,6 +295,7 @@
     {
       "code": "A3-B06",
       "slug": "torn-veil",
+      "fourthwallSlug": "torn-veil-hoodie",
       "name": "Torn Veil",
       "position": 6,
       "collection": "behold",
@@ -337,11 +342,12 @@
     {
       "code": "A3-B08",
       "slug": "the-passage",
+      "fourthwallSlug": "the-passage-hoodie",
       "name": "The Passage",
       "position": 7,
       "collection": "behold",
       "category": "hoodies",
-      "colors": ["Olive"],
+      "colors": ["Cypress"],
       "priceCents": 6000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -383,11 +389,12 @@
     {
       "code": "A3-B09",
       "slug": "wonderfully-made",
+      "fourthwallSlug": "wonderfully-made-hoodie",
       "name": "Wonderfully Made",
       "position": 8,
       "collection": "behold",
       "category": "hoodies",
-      "colors": ["Dusty blue"],
+      "colors": ["Carolina Blue"],
       "priceCents": 6000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -429,11 +436,12 @@
     {
       "code": "A3-H01",
       "slug": "lambs-mark",
+      "fourthwallSlug": "lambs-mark-hat",
       "name": "Lamb’s Mark",
       "position": 9,
       "collection": "behold",
       "category": "hats",
-      "colors": ["Washed charcoal twill"],
+      "colors": ["Black"],
       "priceCents": 3000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -447,9 +455,9 @@
         "theme": "Sacrifice",
         "call": "Behold the Lamb",
         "art": "The Lamb of God in white thread inside a red crown of thorns, with one mark of red on the lamb.",
-        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. Older English Bibles begin John’s words with “Behold,” and this release takes its name from them. The lamb is stitched in white inside a red crown of thorns, with a single mark of red, and John 1:29 sits on the side.",
+        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. Older English Bibles begin John’s words with “Behold,” and this release takes its name from them. The lamb is stitched in white inside a red crown of thorns, with a single mark of red. The wordmark sits on the back.",
         "front": "Embroidered lamb in white thread inside a red crown of thorns",
-        "back": "Awebound wordmark with red thorns above the strap; John 1:29 on the side",
+        "back": "Awebound wordmark in white with red thorns, above the strap",
         "inks": "White and red thread",
         "fit": "Distressed cap · curved brim, adjustable strap back",
         "material": null
@@ -463,7 +471,7 @@
         {
           "view": "side",
           "url": "/products/lambs-mark/side.webp",
-          "alt": "Lamb’s Mark distressed cap, three-quarter view: the lamb, and John 1:29 in red on the side"
+          "alt": "Lamb’s Mark distressed cap, three-quarter view: the embroidered lamb and the frayed brim"
         },
         {
           "view": "back",
@@ -480,6 +488,7 @@
     {
       "code": "A3-H02",
       "slug": "signature-cap",
+      "fourthwallSlug": "awebound-signature-cap",
       "name": "Signature Cap",
       "position": 10,
       "collection": "behold",
@@ -497,11 +506,11 @@
       "story": {
         "theme": "Redemption",
         "call": "Behold your Redeemer",
-        "art": "The Awebound wordmark in raised bone embroidery, its thorns edged in red, above a small Thorn Cross.",
+        "art": "The Awebound wordmark embroidered in white, outlined and thorned in deep red, above a small Thorn Cross.",
         "meaning": "This is the everyday Awebound cap: the wordmark and the Thorn Cross, nothing more. The red along the thorns means the same thing as the Lamb’s Mark. It stands for the sacrifice of our Lord Jesus Christ, who wore a crown of thorns and gave His life for us. Through His blood we are forgiven.",
-        "front": "Awebound wordmark in raised bone embroidery with red-edged thorns, above a small Thorn Cross",
+        "front": "Awebound wordmark in white embroidery outlined in deep red, with red thorns, above a small Thorn Cross",
         "back": "Plain, with an adjustable snap strap",
-        "inks": "Bone and red thread",
+        "inks": "White and red thread",
         "fit": "Structured cap · mid-profile crown, curved brim, adjustable snap back",
         "material": null
       },

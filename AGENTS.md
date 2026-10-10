@@ -14,14 +14,14 @@ There is no separate backend. Pages read data in Server Components; the browser 
 
 ## Workspace map
 
-| Path                | What lives there                                             | Agent notes                                               |
-| ------------------- | ------------------------------------------------------------ | --------------------------------------------------------- |
-| `apps/web`          | The Next.js app: pages, server code, schemas                 | `apps/web/AGENTS.md`                                      |
-| `packages/brand`    | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme | `packages/brand/AGENTS.md`                                |
-| `packages/tsconfig` | Shared tsconfig bases                                        |                                                           |
-| `supabase`          | SQL migrations, auth email templates                         | `supabase/AGENTS.md`                                      |
-| `assets/mockups`    | Source mockups (kept intact), cutout and styling scripts     | regenerate site images and story scenes with `compose.py` |
-| `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`, `BRAND.md`   | keep them current when you change structure               |
+| Path                | What lives there                                                                                                  | Agent notes                                                                    |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `apps/web`          | The Next.js app: pages, server code, schemas                                                                      | `apps/web/AGENTS.md`                                                           |
+| `packages/brand`    | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme                                                      | `packages/brand/AGENTS.md`                                                     |
+| `packages/tsconfig` | Shared tsconfig bases                                                                                             |                                                                                |
+| `supabase`          | SQL migrations, auth email templates                                                                              | `supabase/AGENTS.md`                                                           |
+| `assets/mockups`    | Fourthwall renders (`fourthwall.json`, `fourthwall.py`), source mockups (kept intact), cutout and styling scripts | regenerate site images and story scenes with `fourthwall.py` then `compose.py` |
+| `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`, `BRAND.md`                                                        | keep them current when you change structure                                    |
 
 `packages/brand` is consumed as TypeScript source (no build step); Next transpiles it via `transpilePackages`.
 

@@ -1,0 +1,79 @@
+{
+  "$comment": "Product renders from the Awebound Fourthwall shop (Fourthwall admin > Products > each product's images), by site slug and view. fourthwall.py downloads them into fourthwall/ and compose.py builds the site images from them; a piece without renders here falls back to the approved mockup cutouts. `hold` keeps a piece on its mockup and says why. Update a URL when the product's images change in Fourthwall, then run fourthwall.py and compose.py.",
+  "base": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
+  "products": {
+    "thorns-to-lilies": {
+      "fourthwallSlug": "thorns-to-lillies-tee",
+      "views": {
+        "front": "74dc4e07-5ce1-4145-b5a7-4b746101e351.webp",
+        "back": "576fe7bd-1c01-47bb-bd99-e26917395b18.webp"
+      }
+    },
+    "to-live-is-christ": {
+      "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
+      "views": {
+        "front": "e5f29dad-7670-456c-b023-28ab61458a8f.webp",
+        "back": "ad06feb6-208f-4117-8fb0-571923f11a9b.webp"
+      }
+    },
+    "by-his-hem": {
+      "fourthwallSlug": "by-his-hem-tee",
+      "views": {
+        "front": "8b130987-ed97-485c-8e65-64d2f24a30e6.webp",
+        "back": "caa46133-9054-48f0-8349-757d5dea9670.webp"
+      }
+    },
+    "stone-in-motion": {
+      "fourthwallSlug": "stone-in-motion-tee",
+      "views": {
+        "front": "f70b8f74-e443-46cf-a7e0-d22006829e71.webp",
+        "back": "967c4263-fcf4-47f5-b5e4-d8fd16878300.webp"
+      }
+    },
+    "still-the-storm": {
+      "fourthwallSlug": "still-the-storm-tee",
+      "views": {
+        "front": "fbfc7515-f007-4c1a-b33f-25b28b339b12.webp",
+        "back": "6902d745-d167-4da4-a4b7-1570bd481446.webp"
+      }
+    },
+    "torn-veil": {
+      "fourthwallSlug": "torn-veil-hoodie",
+      "views": {
+        "front": "7871884e-54e3-4ca6-bc6e-43309ee1c6bc.webp",
+        "back": "d89b8ebf-9f85-465a-8b19-b16cc74fdc13.webp"
+      }
+    },
+    "the-passage": {
+      "fourthwallSlug": "the-passage-hoodie",
+      "views": {
+        "front": "5bc69de6-2afa-4729-a023-9f8a11de06f6.webp",
+        "back": "5d000fa8-ce4f-4236-ad19-116d0601f3ae.webp"
+      }
+    },
+    "wonderfully-made": {
+      "fourthwallSlug": "wonderfully-made-hoodie",
+      "hold": "The back print file spells WONDERFULLY as WONDERFULY (checked again after the October 10 update). Keep the mockup until the print is fixed in Fourthwall.",
+      "views": {
+        "front": "e2fb27af-9560-4899-8299-6a88a74b9d8d.webp",
+        "back": "894d7de4-7a3b-4d37-8cb9-3bedf97c5a52.webp"
+      }
+    },
+    "lambs-mark": {
+      "fourthwallSlug": "lambs-mark-hat",
+      "views": {
+        "front": "dcffe98e-bb7f-409e-9ebf-0e21f3dcc7d3.webp",
+        "side": "dbba85c3-edcc-4c21-929c-25010b3caf3f.webp",
+        "back": "20dd1a90-f2e3-49f7-b7cb-4d9abdf3dfda.webp"
+      }
+    },
+    "signature-cap": {
+      "fourthwallSlug": "awebound-signature-cap",
+      "views": {
+        "front": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
+        "side": "f0f9883c-f69c-467c-a28c-f1eee9ce9e94.webp",
+        "back": "4e5eecc2-0d1d-44ca-b7ab-647b90ca2249.webp"
+      }
+    }
+  }
+}

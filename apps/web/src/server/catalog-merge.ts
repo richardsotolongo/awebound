@@ -70,8 +70,9 @@ function previewProduct(item: ProductContent): ProductDetail {
 }
 
 /**
- * Fourthwall is the source of truth for what can be bought (variants, prices, stock, photos);
- * the brand content is the source of truth for the story (ID, release, position, Scripture, copy).
+ * Fourthwall is the source of truth for what can be bought (variants, prices, stock); the brand
+ * content is the source of truth for the story (ID, release, position, Scripture, copy) and the
+ * site's styled product images, which are made from Fourthwall's renders.
  * Matched by slug. A content entry with no Fourthwall product yet is listed as a preview.
  * Variant SKUs on the site are the Fourthwall variant ids, so checkout can build the cart directly.
  */
@@ -125,19 +126,18 @@ export function mergeFourthwallCatalog(
       (a, b) => sizeRank(a) - sizeRank(b),
     );
 
+    // The site's own images win: they are Fourthwall's renders of this product (or approved
+    // mockups) placed on the piece's styled surface by assets/mockups. Fourthwall's photos are the
+    // fallback for a product with no images in the content file.
     const photos = fw.images.length > 0 ? fw.images : fw.variants.flatMap((v) => v.images ?? []);
     const images: ProductImage[] =
-      photos.length > 0
-        ? photos.map((img, i) => {
-            // Fourthwall photos carry no view, so assume they're listed in the site's order.
-            const view = item.images[i]?.view ?? "detail";
-            return {
-              url: img.transformedUrl || img.url,
-              alt: `${item.name} ${item.category.cut.toLowerCase()}, ${view} view`,
-              view,
-            };
-          })
-        : item.images;
+      item.images.length > 0
+        ? item.images
+        : photos.map((img, i) => ({
+            url: img.transformedUrl || img.url,
+            alt: `${item.name} ${item.category.cut.toLowerCase()}, photo ${i + 1}`,
+            view: "detail" as const,
+          }));
 
     merged.push({
       code: item.code,

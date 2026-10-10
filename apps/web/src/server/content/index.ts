@@ -50,7 +50,7 @@ const BrandContentSchema = z.object({
   ),
 });
 
-/** One design's brand story. Fourthwall supplies what can be bought: variants, prices, stock, photos. */
+/** One design's brand story and images. Fourthwall supplies what can be bought: variants, prices, stock. */
 export interface ProductContent {
   code: string;
   slug: string;
@@ -70,7 +70,7 @@ export interface ProductContent {
   /** The piece's verse in the website's translation. */
   scripture: ScriptureQuote;
   story: ProductStory;
-  /** Mockups in display order, shown for previews and when the Fourthwall product has no photos. */
+  /** The site's styled product images (Fourthwall renders or mockups), in display order. */
   images: [ProductImage, ...ProductImage[]];
 }
 

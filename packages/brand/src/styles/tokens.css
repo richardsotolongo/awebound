@@ -57,11 +57,11 @@
   --garment-washed-deep-olive: #4c5140;
   --garment-washed-forest: #24332a;
   --garment-black: #181716;
-  --garment-white: #eeedeb;
-  --garment-cream: #ede2d4;
-  --garment-washed-navy: #1b2230;
-  --garment-olive: #554d2f;
-  --garment-dusty-blue: #93b1c7;
+  /* Fourthwall garment colors, sampled from its product renders. */
+  --garment-ecru: #e7e2d6;
+  --garment-french-navy: #24283a;
+  --garment-cypress: #545541;
+  --garment-carolina-blue: #a1c2d9;
   --cap-washed-black-twill: #242322;
   --cap-oxblood-corduroy: #672c3b;
   --cap-washed-charcoal-twill: #41403c;
