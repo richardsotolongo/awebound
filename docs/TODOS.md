@@ -11,7 +11,8 @@ The separate Express API (`apps/api`) was folded into the Next.js app. Vercel an
    - delete `NEXT_PUBLIC_API_URL` and `API_URL`.
 2. [x] **Push to `main`.** Without the token every Behold piece shows as a preview (content prices and mockups, checkout opens soon), so the build no longer depends on it.
 3. [ ] **Remove the old API**: delete the `awebound-api` Vercel project (its builds fail now that `apps/api` is gone), remove the `api.awebound.store` domain, and delete its DNS record at the registrar.
-4. [ ] **Reset the Supabase database** to the current migrations (the catalog tables were removed): `supabase db reset --linked`, then `supabase migration list --linked` shows helpers, profiles and inbox only. Delete leftover test users under Authentication → Users for a clean slate.
+4. [ ] **Reset the Supabase database** to the current migrations (the catalog tables were removed; the migrations now grant table access explicitly): `supabase db reset --linked`, then `supabase migration list --linked` shows helpers, profiles, inbox and account_deletion. Delete leftover test users under Authentication → Users for a clean slate. If you'd rather not reset, at least run `supabase db push` so account deletion can remove drop-notes rows.
+5. [ ] **Update the hosted sign-in emails**: the templates in `supabase/templates/` were redesigned to match the site's emails. Run `supabase config push`, or paste `magic-link.html` and `confirmation.html` into Authentication → Emails. Check that the Site URL there is the live site, since the wordmark in these emails loads from `{{ .SiteURL }}/email/wordmark-oxblood.png`.
 
 ## Decisions for the owner
 
@@ -36,7 +37,7 @@ All variables go in `apps/web/.env.local` locally and in the Vercel project; `ap
   - [x] Create the project; `supabase link`, then `supabase db push` to apply `supabase/migrations`.
   - [ ] Env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`.
   - [ ] Authentication → URL configuration: Site URL `https://awebound.store`; redirect URLs `https://awebound.store/auth/callback` and `https://awebound.store/auth/confirm` (plus localhost for development).
-  - [ ] Authentication → Emails: paste `supabase/templates/magic-link.html` and `confirmation.html`; subjects as in `supabase/config.toml`.
+  - [ ] Authentication → Emails: paste `supabase/templates/magic-link.html` and `confirmation.html` (or `supabase config push`); subjects as in `supabase/config.toml`.
 - [ ] **Google sign-in**
   - [ ] Google Cloud: OAuth consent screen (app name Awebound, logo, privacy and terms URLs), then an OAuth client (Web).
   - [ ] Authorized redirect URI: `https://<project-ref>.supabase.co/auth/v1/callback`.

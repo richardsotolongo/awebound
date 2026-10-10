@@ -124,9 +124,10 @@ const sections: LegalSection[] = [
       <>
         <p>
           You can stop drop notes at any time by replying to any of them or writing to us. You can
-          ask us to show you, correct or delete the personal information we hold about you, or to
-          delete your account, by writing to {mail}. Depending on where you live, you may have
-          further rights under local law; we’ll honor them.
+          delete your account yourself on your account page; that removes your sign-in, your profile
+          and your drop-notes subscription. You can also ask us to show you, correct or delete the
+          personal information we hold about you by writing to {mail}. Depending on where you live,
+          you may have further rights under local law; we’ll honor them.
         </p>
       </>
     ),

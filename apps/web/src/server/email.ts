@@ -1,8 +1,14 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { Resend } from "resend";
-import type { RenderedEmail } from "./email-templates";
+import { LOGO_CID, type RenderedEmail } from "./email-templates";
 import { serverEnv } from "./env";
 
 const resend = serverEnv.RESEND_API_KEY ? new Resend(serverEnv.RESEND_API_KEY) : null;
+
+// Sent inline with every email, so the wordmark shows without fetching a hosted image (and in
+// Outlook without "download pictures"). next.config.ts traces the file into the server bundle.
+const logo = readFileSync(join(process.cwd(), "public/email/wordmark-oxblood.png"));
 
 /**
  * Sends through Resend (the awebound.store domain must be verified there). Without a key, development
@@ -21,6 +27,7 @@ export async function sendEmail(to: string, email: RenderedEmail, replyTo?: stri
     subject: email.subject,
     html: email.html,
     text: email.text,
+    attachments: [{ filename: "awebound.png", content: logo, contentId: LOGO_CID }],
   });
   if (error) throw new Error(`Resend: ${error.name}: ${error.message}`);
 }

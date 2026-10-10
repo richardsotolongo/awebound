@@ -18,6 +18,8 @@ const config: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // server/email.ts reads the wordmark to attach it inline; ship it with every server function.
+  outputFileTracingIncludes: { "/**": ["./public/email/wordmark-oxblood.png"] },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

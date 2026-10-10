@@ -55,8 +55,9 @@ Plain modules, one per job. Everything here is server-only; Client Components im
 | `fourthwall.ts`      | Storefront API client: product list (cached 60 s by Next's data cache), cart creation                                      |
 | `bag.ts`             | Re-prices a bag from the catalog; creates the Fourthwall cart and checkout URL                                             |
 | `messages.ts`        | Contact messages and drop-note sign-ups: store in Supabase, email through Resend                                           |
-| `email.ts`           | `sendEmail()`: Resend, or the terminal in development; fails in production without a key                                   |
-| `email-templates.ts` | The transactional email templates                                                                                          |
+| `account.ts`         | Account deletion: drop-notes row, sign-in and profile, then a confirmation email                                           |
+| `email.ts`           | `sendEmail()`: Resend with the wordmark attached inline, or the terminal in development; fails in production without a key |
+| `email-templates.ts` | One table layout for every email, and the transactional templates                                                          |
 | `errors.ts`          | `UserError` (a message safe to show), `Result<T>`, `run()`, `parse()`                                                      |
 | `env.ts`             | Server-only env (zod)                                                                                                      |
 | `content/`           | `catalog.json`: the brand story per product                                                                                |
@@ -73,6 +74,7 @@ Plain modules, one per job. Everything here is server-only; Client Components im
 | `sendContact`      | contact form        | Stores, emails the inbox (reply-to sender), acknowledges. Honeypot field `website`. 5 per 10 min per IP               |
 | `subscribe`        | `{ email, source }` | Never reveals whether an address was already subscribed. 10 per 10 min per IP                                         |
 | `updateProfile`    | `{ fullName }`      | Signed-in users only                                                                                                  |
+| `deleteAccount`    | –                   | Signed-in users only. Removes the sign-in, profile and drop-notes row, emails a confirmation, clears the session      |
 
 Every action returns `{ ok: true, data }` or `{ ok: false, error, fields? }`. Next hides thrown error messages in production, so messages meant for the shopper are thrown as `UserError` and come back as values; anything else is logged and becomes a generic message.
 
@@ -91,6 +93,7 @@ erDiagram
 - The catalog is not in Postgres: Fourthwall supplies it (see "Fourthwall" below).
 - **Row-level security** is on for every table. Profiles are readable and writable only by their owner (the account page reads with the user's session). `contact_messages` and `subscribers` have no policies at all, so only the server's secret key can touch them.
 - **Profiles** are created by the `on_auth_user_created` trigger (name and avatar from Google when present). `updateProfile` upserts, so a user without a row still works.
+- **Deleting an account** (`/account`) deletes the auth user, which cascades to `profiles` and sets `contact_messages.user_id` to null (messages stay as support history), and removes the `subscribers` row with the same email.
 
 ## Auth
 
@@ -128,8 +131,9 @@ sequenceDiagram
 | Contact notification to `contact@awebound.store` (reply-to sender) | Server → Resend                   | `apps/web/src/server/email-templates.ts` |
 | Contact acknowledgement                                            | Server → Resend                   | same                                     |
 | Drop-notes welcome                                                 | Server → Resend                   | same                                     |
+| Account deleted                                                    | Server → Resend                   | same                                     |
 
-Templates use the signature lockup (oxblood wordmark on warm bone) as a hosted PNG and inline hex colors, because email clients ignore CSS variables and strip SVG.
+Every email shares one table layout (`layout` in `email-templates.ts`; the two Supabase files copy its markup): the oxblood wordmark on warm bone, a paper card, inline hex colors (email clients ignore CSS variables and strip SVG), and only widely supported CSS (no styles on `<body>`, no margins, no rounded corners). The site attaches the wordmark inline (`cid:wordmark`), so it shows without loading a hosted image; Supabase emails load `{{ .SiteURL }}/email/wordmark-oxblood.png`. Check changes with Mailpit's HTML check (`supabase start`, then http://localhost:54324).
 
 ## Bag and checkout
 

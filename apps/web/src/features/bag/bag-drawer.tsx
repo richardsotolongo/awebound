@@ -22,7 +22,7 @@ export function BagDrawer() {
           Your bag <span className="aw-header-count">{count}</span>
         </>
       }
-      footer={lines.length > 0 ? <BagCheckout /> : undefined}
+      footer={lines.length > 0 ? <BagCheckout onNavigate={close} /> : undefined}
     >
       <BagIssues issues={issues} />
       {lines.length > 0 ? <BagLines onNavigate={close} /> : <BagEmpty onNavigate={close} />}

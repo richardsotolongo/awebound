@@ -20,7 +20,7 @@ src/
 │  ├─ bag/                 zustand store (persisted), drawer, bag page, checkout + notify form
 │  ├─ contact/ auth/ account/ legal/
 ├─ server/                 server-only code (never import it from a Client Component, except actions.ts)
-│  ├─ actions.ts           Server Actions: validateBag, startCheckout, loadMoreProducts, sendContact, subscribe, updateProfile
+│  ├─ actions.ts           Server Actions: validateBag, startCheckout, loadMoreProducts, sendContact, subscribe, updateProfile, deleteAccount
 │  ├─ catalog.ts           getCatalog (Fourthwall + brand content), searchProducts, getFacets, getProduct, withFallback
 │  ├─ catalog-merge.ts     merges Fourthwall products with the brand content by slug; previews for the rest
 │  ├─ catalog-search.ts    search, filters, facets and sorting over the merged catalog

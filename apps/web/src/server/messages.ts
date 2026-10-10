@@ -35,7 +35,7 @@ export async function submitContactMessage(
 
   let emailed = false;
   try {
-    await sendEmail(serverEnv.CONTACT_INBOX, contactNotification(message, siteUrl), input.email);
+    await sendEmail(serverEnv.CONTACT_INBOX, contactNotification(message), input.email);
     emailed = true;
     if (id && supabaseAdmin) {
       await supabaseAdmin
@@ -52,7 +52,7 @@ export async function submitContactMessage(
     );
   }
 
-  await sendEmail(input.email, contactAcknowledgement(message, siteUrl), serverEnv.CONTACT_INBOX).catch(
+  await sendEmail(input.email, contactAcknowledgement(message), serverEnv.CONTACT_INBOX).catch(
     (err: unknown) => console.warn("[contact] acknowledgement failed:", err),
   );
 }

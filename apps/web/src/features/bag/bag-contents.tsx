@@ -4,6 +4,8 @@ import { Button } from "@awebound/brand";
 import { formatPrice, type BagIssue } from "@/shared";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { accountsEnabled } from "@/lib/env";
+import { useSignedIn } from "@/lib/supabase/browser";
 import { startCheckout, validateBag } from "@/server/actions";
 import { NotifyForm } from "./notify-form";
 import { bagSubtotal, useBag } from "./bag-store";
@@ -110,8 +112,9 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 /** Subtotal and the button that hands the bag to Fourthwall's hosted checkout. */
-export function BagCheckout() {
+export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
   const lines = useBag((s) => s.lines);
+  const signedIn = useSignedIn();
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
   const subtotal = bagSubtotal(lines);
@@ -164,6 +167,14 @@ export function BagCheckout() {
           >
             {state === "loading" ? "Opening checkout…" : "Check out"}
           </Button>
+          {accountsEnabled && !signedIn ? (
+            <p className="field-help">
+              Checking out as a guest. Have an account?{" "}
+              <Link href="/sign-in?next=/bag" onClick={onNavigate}>
+                Sign in
+              </Link>
+            </p>
+          ) : null}
         </>
       )}
       {state === "error" ? (

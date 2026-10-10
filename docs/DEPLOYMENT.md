@@ -45,7 +45,7 @@ SCRIPTURE_TRANSLATION=NIV
 
 ## 3. Domains and DNS
 
-1. `awebound-web` → Settings → Domains: add `awebound.store` and `www.awebound.store` (redirect `www` to the apex).
+1. `awebound-web` → Settings → Domains: add `awebound.store` and `www.awebound.store` (redirect `www` to the apex). Today the live site does the reverse (`awebound.store` → `www.awebound.store`); pick one and match `NEXT_PUBLIC_SITE_URL` and the Supabase Site URL to it.
 2. At your registrar, create the records Vercel shows (an `A` record for the apex and a `CNAME` for `www`), or move the domain's nameservers to Vercel.
 
 Then update the services that know the site's address:

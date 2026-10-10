@@ -7,6 +7,7 @@ import { updateProfile } from "@/server/actions";
 export function ProfileForm({ initialName }: { initialName: string }) {
   const id = useId();
   const [name, setName] = useState(initialName);
+  const [savedName, setSavedName] = useState(initialName);
   const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [error, setError] = useState("");
 
@@ -16,6 +17,7 @@ export function ProfileForm({ initialName }: { initialName: string }) {
     const result = await updateProfile({ fullName: name }).catch(() => null);
     if (result?.ok) {
       setName(result.data.fullName);
+      setSavedName(result.data.fullName);
       setState("saved");
     } else {
       setState("error");
@@ -43,7 +45,7 @@ export function ProfileForm({ initialName }: { initialName: string }) {
         <Button
           variant="secondary"
           type="submit"
-          disabled={state === "saving" || name.trim() === "" || name === initialName}
+          disabled={state === "saving" || name.trim() === "" || name === savedName}
         >
           {state === "saving" ? "Saving…" : "Save"}
         </Button>

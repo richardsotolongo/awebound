@@ -340,4 +340,58 @@
       gap: var(--space-6);
     }
   }
+
+  /* Account page */
+  .account {
+    padding-bottom: var(--space-24);
+  }
+  .account-email {
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .account-panels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+    align-items: start;
+  }
+  .account-panel {
+    display: grid;
+    gap: var(--space-6);
+    align-content: start;
+    padding: var(--space-8);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .account-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  /* Set apart from everyday settings: it can't be undone. */
+  .account-danger {
+    margin-top: var(--space-16);
+    background: none;
+    border-left: 2px solid var(--primary);
+  }
+  .account-delete {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 62ch;
+  }
+  @media (max-width: 1023px) {
+    .account-panels {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 767px) {
+    .account-panel {
+      padding: var(--space-6);
+    }
+    .account-danger {
+      margin-top: var(--space-12);
+    }
+  }
 }

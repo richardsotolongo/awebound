@@ -20,6 +20,7 @@ import {
 } from "@/shared";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
+import * as account from "./account";
 import * as bag from "./bag";
 import { searchProducts } from "./catalog";
 import { parse, run, UserError, type Result } from "./errors";
@@ -35,7 +36,8 @@ async function limit(action: string, max: number, minutes: number) {
   const key = `${action}:${ip}`;
   const now = Date.now();
   const recent = (hits.get(key) ?? []).filter((t) => now - t < minutes * 60_000);
-  if (recent.length >= max) throw new UserError("Too many tries. Wait a few minutes and try again.");
+  if (recent.length >= max)
+    throw new UserError("Too many tries. Wait a few minutes and try again.");
   hits.set(key, [...recent, now]);
 }
 
@@ -92,5 +94,18 @@ export async function updateProfile(
       .upsert({ id: user.id, email: user.email, full_name: fullName });
     if (error) throw new Error(`profile update failed: ${error.message}`);
     return { fullName };
+  });
+}
+
+/** Deletes the signed-in shopper's account (see server/account.ts) and clears the session. */
+export async function deleteAccount(): Promise<Result<null>> {
+  return run(async () => {
+    const supabase = await getServerSupabase();
+    const user = (await supabase?.auth.getUser())?.data.user;
+    if (!supabase || !user) throw new UserError("Sign in again to delete your account.");
+    await account.deleteAccount(user);
+    // The user no longer exists, so only the local session cookies need clearing.
+    await supabase.auth.signOut({ scope: "local" });
+    return null;
   });
 }

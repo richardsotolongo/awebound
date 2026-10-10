@@ -2,6 +2,7 @@ import { Button } from "@awebound/brand";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
+import { DeleteAccount } from "@/features/account/delete-account";
 import { ProfileForm } from "@/features/account/profile-form";
 import { accountsEnabled } from "@/lib/env";
 import { getServerSupabase } from "@/lib/supabase/server";
@@ -42,56 +43,68 @@ export default async function AccountPage() {
   const meta = user.user_metadata as { full_name?: string; name?: string } | undefined;
   const name = profile?.full_name ?? meta?.full_name ?? meta?.name ?? "";
   const provider = (user.app_metadata as { provider?: string } | undefined)?.provider;
+  const email = user.email ?? "";
 
   return (
-    <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
+    <div className="aw-container account">
       <PageHeader
         eyebrow="Account"
         title={name ? `Welcome, ${name.split(" ")[0]}` : "Your account"}
-      />
-      <div className="split">
-        <div style={{ display: "grid", gap: "var(--space-12)", alignContent: "start" }}>
-          <section
-            aria-labelledby="details-title"
-            style={{ display: "grid", gap: "var(--space-6)" }}
-          >
-            <h2 id="details-title" className="aw-h2">
-              Details
-            </h2>
-            <ProfileForm initialName={name} />
-            <div className="field">
-              <span className="aw-label">Email</span>
-              <p className="aw-body" style={{ color: "var(--ink)" }}>
-                {user.email}
-              </p>
-              <p className="field-help">
-                Signed in with {provider === "google" ? "Google" : "an email link"}.
-              </p>
-            </div>
-          </section>
+        intro={
+          <>
+            Signed in as <span className="account-email">{email}</span> with{" "}
+            {provider === "google" ? "Google" : "an email link"}.
+          </>
+        }
+      >
+        <form action="/auth/sign-out" method="post">
+          <Button variant="secondary" type="submit">
+            Sign out
+          </Button>
+        </form>
+      </PageHeader>
 
-          <section
-            aria-labelledby="orders-title"
-            style={{ display: "grid", gap: "var(--space-4)" }}
-          >
-            <h2 id="orders-title" className="aw-h2">
-              Orders
-            </h2>
-            <p className="aw-body">Your orders will appear here once checkout opens.</p>
-          </section>
-        </div>
+      <div className="account-panels">
+        <section className="account-panel" aria-labelledby="details-title">
+          <h2 id="details-title" className="aw-h3">
+            Your details
+          </h2>
+          <ProfileForm initialName={name} />
+          <div className="field">
+            <span className="aw-label">Email</span>
+            <p className="aw-body account-email">{email}</p>
+            <p className="field-help">Sign-in links and codes go to this address.</p>
+          </div>
+        </section>
 
-        <aside style={{ display: "grid", gap: "var(--space-4)", alignContent: "start" }}>
-          <form action="/auth/sign-out" method="post">
-            <Button variant="secondary" type="submit">
-              Sign out
-            </Button>
-          </form>
-          <p className="field-help">
-            Want your account deleted? Email us from this address and we’ll remove it and its data.
+        <section className="account-panel" aria-labelledby="orders-title">
+          <h2 id="orders-title" className="aw-h3">
+            Orders
+          </h2>
+          <p className="aw-body">
+            Checkout runs through Fourthwall, our print and fulfillment partner. Order confirmations
+            and tracking come by email to <span className="account-email">{email}</span>.
           </p>
-        </aside>
+          <p className="field-help">
+            Questions about an order? Write to us with your order number.
+          </p>
+          <div className="account-actions">
+            <Button variant="secondary" href="/contact">
+              Contact us
+            </Button>
+            <Button variant="link" href="/shop">
+              Shop the release
+            </Button>
+          </div>
+        </section>
       </div>
+
+      <section className="account-panel account-danger" aria-labelledby="delete-title">
+        <h2 id="delete-title" className="aw-h3">
+          Delete account
+        </h2>
+        <DeleteAccount email={email} />
+      </section>
     </div>
   );
 }

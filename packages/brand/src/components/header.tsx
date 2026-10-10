@@ -13,6 +13,8 @@ export interface HeaderProps {
   links?: NavLink[];
   /** Label of the active link. */
   current?: string;
+  /** Sign-in or account link, shown beside the bag. Omit when accounts are off. */
+  account?: NavLink;
   bagCount?: number;
   /** Opens the bag drawer. When omitted the bag renders as a link to bagHref. */
   onBag?: () => void;
@@ -33,10 +35,38 @@ const DEFAULT_LINKS: NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-/** Site header: wordmark, links and the bag count, collapsing to a menu button on phones. */
+const icon = {
+  width: 18,
+  height: 18,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.5,
+  "aria-hidden": true,
+} as const;
+
+const PersonIcon = () => (
+  <svg {...icon}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+  </svg>
+);
+
+const BagIcon = () => (
+  <svg {...icon}>
+    <path d="M5 8h14l-1 13H6L5 8Z" />
+    <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+  </svg>
+);
+
+/**
+ * Site header: wordmark, links, the account link and the bag, collapsing to a menu button on
+ * phones. The bag is outlined, not filled, because each screen's one primary button is elsewhere.
+ */
 export function Header({
   links = DEFAULT_LINKS,
   current,
+  account,
   bagCount = 0,
   onBag,
   bagHref = "/bag",
@@ -48,7 +78,9 @@ export function Header({
 }: HeaderProps) {
   const bagLabel = (
     <>
-      Bag <span className="aw-header-count">{bagCount}</span>
+      <BagIcon />
+      <span className="aw-header-bag-label">Bag</span>
+      <span className="aw-header-count">{bagCount}</span>
     </>
   );
   return (
@@ -80,20 +112,36 @@ export function Header({
             </BrandLink>
           ))}
         </nav>
-        {onBag ? (
-          <button
-            type="button"
-            className="aw-header-bag"
-            onClick={onBag}
-            aria-label={`Bag, ${bagCount} items`}
-          >
-            {bagLabel}
-          </button>
-        ) : (
-          <BrandLink href={bagHref} className="aw-header-bag" aria-label={`Bag, ${bagCount} items`}>
-            {bagLabel}
-          </BrandLink>
-        )}
+        <div className="aw-header-actions">
+          {account ? (
+            <BrandLink
+              href={account.href}
+              className="aw-header-account"
+              aria-current={current === account.label ? "page" : undefined}
+            >
+              <PersonIcon />
+              <span className="aw-header-account-label">{account.label}</span>
+            </BrandLink>
+          ) : null}
+          {onBag ? (
+            <button
+              type="button"
+              className="aw-header-bag"
+              onClick={onBag}
+              aria-label={`Bag, ${bagCount} items`}
+            >
+              {bagLabel}
+            </button>
+          ) : (
+            <BrandLink
+              href={bagHref}
+              className="aw-header-bag"
+              aria-label={`Bag, ${bagCount} items`}
+            >
+              {bagLabel}
+            </BrandLink>
+          )}
+        </div>
       </div>
     </header>
   );
