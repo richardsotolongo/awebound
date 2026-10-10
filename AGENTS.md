@@ -6,7 +6,7 @@ Context for coding agents working in this repo. Read this first, then the `AGENT
 
 Awebound is an independent Christian apparel brand (tees, oversized tees, tanks, caps) for believers aged 18–30 who are not ashamed to express their faith. This repo is its website: one Next.js app with a garment-led home page, a shop with collection and category selectors, Collections, About, Contact, FAQ and policy pages, and passwordless sign-in.
 
-Releases are the unit (`collection` in code), numbered in order. The first is **Release 01, Behold**: five oversized tees, a hoodie and a cap, in `position` order (Still the Storm, By His Hem, Thorns to Lilies, the Torn Veil hoodie, Stone in Motion, To Live Is Christ, then the Lamb’s Mark cap). "Latest Drop" is computed from the catalog (the newest release with pieces), so a new release needs content, not code.
+Releases are the unit (`collection` in code), numbered in order. The first is **Release 01, Behold**: five oversized tees, three hoodies and two caps, in `position` order (Thorns to Lilies, To Live Is Christ, By His Hem, Stone in Motion, Still the Storm, then the Torn Veil, The Passage and Wonderfully Made hoodies, then the Lamb’s Mark and Signature caps). "Latest Drop" is computed from the catalog (the newest release with pieces), so a new release needs content, not code.
 
 Commerce is **Fourthwall**: it supplies live products, prices, stock and photos, and runs checkout, payment and fulfillment (a redirect to its hosted checkout). The brand story for each product (internal code, release, position, Scripture record, design story, preview price and mockups) lives in `apps/web/src/server/content/catalog.json` and is merged with Fourthwall by slug. A piece that isn’t in Fourthwall yet (or every piece, when `FOURTHWALL_STOREFRONT_TOKEN` is unset) shows as a **preview**: the release reads "Coming Soon", the product page says ordering isn’t open and offers "Save to bag", and checkout is refused. Do not add a payment processor or another provider unless the owner asks.
 
@@ -57,7 +57,7 @@ Deployment is one Vercel project (Root Directory `apps/web`); see `docs/DEPLOYME
    - Oxblood (`primary`) is a fill, never text on coal. One primary button and one glow per screen.
    - Copy: reverent, short sentences, sentence case, no exclamation marks, no hype words, no guilt.
 6. **Env variables:** add every new one to `apps/web/.env.example` (no real values) and its schema: `apps/web/src/lib/env.ts` for public `NEXT_PUBLIC_*` values, `apps/web/src/server/env.ts` for server-only ones.
-7. **Prices come from Fourthwall** for live pieces; previews use `priceCents` in the content file (the owner’s prices: oversized tees $40, the cap $30, the hoodie a $60 placeholder). Never hard-code a price in copy.
+7. **Prices come from Fourthwall** for live pieces; previews use `priceCents` in the content file (the owner’s prices: oversized tees $40, Lamb’s Mark $30, the Signature Cap $25, hoodies a $60 placeholder). Never hard-code a price in copy.
 8. **Only confirmed facts.** Delivery times live in `apps/web/src/lib/delivery.ts` and stay null until confirmed; no launch dates until confirmed; the founder story and About note use only Richard's stated words (see `docs/BRAND.md`, Voice), never an invented testimony.
 9. Keep `docs/ARCHITECTURE.md`, `docs/TODOS.md` and `docs/BRAND.md` in step with structural changes.
 

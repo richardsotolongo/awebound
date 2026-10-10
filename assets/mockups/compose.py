@@ -39,9 +39,17 @@ STYLE = {
     "stone-in-motion": {"color": (104, 125, 152), "texture": "speckle", "light": "upper-left"},
     # Navy tee, bone lettering: warm ochre plaster lit from above.
     "to-live-is-christ": {"color": (190, 154, 106), "texture": "plaster", "light": "top"},
+    # Olive hoodie, the valley at night: burnt terracotta plaster under a spotlight, the print's ember glow.
+    "the-passage": {"color": (150, 98, 70), "texture": "plaster", "light": "spot"},
+    # Dusty blue hoodie, roses: soft dusty rose paper lit from above.
+    "wonderfully-made": {"color": (190, 154, 150), "texture": "paper", "light": "top"},
     # Charcoal cap, white lamb: cool bone linen with an oxblood band at the base.
     "lambs-mark": {"color": (208, 202, 191), "texture": "linen", "light": "upper-left", "accent": (96, 37, 43)},
+    # Black cap, red-edged wordmark: warm concrete with a fine speckle, lit from above.
+    "signature-cap": {"color": (150, 146, 140), "texture": "speckle", "light": "top"},
 }
+
+CAPS = ("lambs-mark", "signature-cap")
 
 # Views in display order. The first is the listing image and always shows the whole garment.
 # `detail` is a close crop of the main artwork: (view, center x, center y, width), as fractions
@@ -50,10 +58,13 @@ VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.5, 0.72)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.47, 0.42, 0.74)},
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.4, 0.72)},
-    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.5, 0.66)},
+    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64)},
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.52, 0.45, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.48, 0.66)},
-    "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.48, 0.4, 0.56)},
+    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62)},
+    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62)},
+    "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.4, 0.56)},
+    "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
 }
 
 
@@ -272,7 +283,7 @@ def story(slug: str) -> None:
 
     # The garment hangs centred in the opening; its shadow falls on the back wall.
     cutout = Image.open(CUTOUTS / f"{slug}-{STORY_VIEW[slug]}.webp").convert("RGBA")
-    hat = slug == "lambs-mark"
+    hat = slug in CAPS
     open_w = w - 2 * 78
     box_w, box_h = open_w * (0.74 if hat else 0.74), (sill_top - 200) * (0.6 if hat else 0.88)
     scale = min(box_w / cutout.width, box_h / cutout.height)
@@ -298,7 +309,7 @@ def main() -> None:
     for slug, spec in VIEWS.items():
         folder = OUT / slug
         folder.mkdir(parents=True, exist_ok=True)
-        hat = slug == "lambs-mark"
+        hat = slug in CAPS
         for view in spec["views"]:
             cutout = Image.open(CUTOUTS / f"{slug}-{view}.webp").convert("RGBA")
             # Same margins for every garment; caps are wide, so they get a little more width.

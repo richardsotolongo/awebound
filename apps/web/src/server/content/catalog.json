@@ -31,8 +31,8 @@
       "slug": "behold",
       "name": "Behold",
       "number": "01",
-      "tagline": "Seven pieces that ask you to look at Jesus, and keep looking.",
-      "story": "“Behold” is an old word for look, and keep looking. It’s the word older English Bibles use when John the Baptist sees Jesus walking toward him and points Him out to the crowd: “Behold the Lamb of God.” Each piece in this release points at something Jesus has done. He calmed the storm. He healed the woman who touched His cloak. He makes scarlet sins white as snow. His death tore the temple veil, and three days later the stone was rolled away. He gives a life worth living, and He is the Lamb who takes away the sin of the world.",
+      "tagline": "Clothes that ask you to look at Jesus, and keep looking.",
+      "story": "“Behold” is an old word for look, and keep looking. It’s the word older English Bibles use when John the Baptist sees Jesus walking toward him and points Him out to the crowd: “Behold the Lamb of God.” Each piece in this release points to who Jesus is and what He has done. He makes scarlet sins white as snow. He gives a life worth living. He healed the woman who touched His cloak. On the third day the stone was rolled away. He calmed the storm, and His death tore the temple veil. He walks with us through the darkest valley, He made us with care, and He is the Lamb who takes away the sin of the world.",
       "scriptureRef": "John 1:29"
     }
   ],
@@ -53,106 +53,16 @@
     "Black": "garment-black",
     "White": "garment-white",
     "Cream": "garment-cream",
-    "Washed navy": "garment-washed-navy"
+    "Washed navy": "garment-washed-navy",
+    "Olive": "garment-olive",
+    "Dusty blue": "garment-dusty-blue"
   },
   "products": [
-    {
-      "code": "A3-B02",
-      "slug": "still-the-storm",
-      "name": "Still the Storm",
-      "position": 1,
-      "collection": "behold",
-      "category": "oversized-tees",
-      "colors": ["Black"],
-      "priceCents": 4000,
-      "featured": false,
-      "releasedAt": "2026-10-09",
-      "scripture": {
-        "reference": "Mark 4:41",
-        "excerpt": false,
-        "niv": "They were terrified and asked each other, “Who is this? Even the wind and the waves obey him!”",
-        "kjv": "And they feared exceedingly, and said one to another, What manner of man is this, that even the wind and the sea obey him?"
-      },
-      "story": {
-        "theme": "Power",
-        "call": "Behold His power",
-        "art": "Storm clouds break over a heavy sea, and a cross stands on the horizon in the light.",
-        "meaning": "The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was. The front shows the storm breaking around a cross on the horizon. The back carries their question in full.",
-        "front": "Awebound wordmark over the storm, the waves and the cross on the horizon",
-        "back": "Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
-        "inks": "Bone",
-        "fit": "Larger oversized · dropped shoulder, extra-boxy body",
-        "material": null
-      },
-      "images": [
-        {
-          "view": "front",
-          "url": "/products/still-the-storm/front.webp",
-          "alt": "Still the Storm oversized tee, front: the wordmark over a stormy sea with a cross on the horizon"
-        },
-        {
-          "view": "back",
-          "url": "/products/still-the-storm/back.webp",
-          "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
-        },
-        {
-          "view": "detail",
-          "url": "/products/still-the-storm/detail.webp",
-          "alt": "Still the Storm front print, close up"
-        }
-      ]
-    },
-    {
-      "code": "A3-B07",
-      "slug": "by-his-hem",
-      "name": "By His Hem",
-      "position": 2,
-      "collection": "behold",
-      "category": "oversized-tees",
-      "colors": ["Warm bone"],
-      "priceCents": 4000,
-      "featured": false,
-      "releasedAt": "2026-10-09",
-      "scripture": {
-        "reference": "Matthew 9:21",
-        "excerpt": true,
-        "niv": "If I only touch his cloak, I will be healed.",
-        "kjv": "If I may but touch his garment, I shall be whole."
-      },
-      "story": {
-        "theme": "Healing",
-        "call": "Behold the One who heals",
-        "art": "A woman’s hand reaches through a spray of rust to take hold of the edge of a cloak, beside the words she said to herself.",
-        "meaning": "She had been bleeding for twelve years, and nothing had helped. She didn’t ask Jesus for anything. She came up behind Him in the crowd and touched the edge of His cloak, sure that would be enough. Jesus turned, saw her, and told her that her faith had healed her. The back shows her hand closing on the cloak, with her words above it.",
-        "front": "Small Awebound wordmark in black, center chest",
-        "back": "“If I only touch his cloak, I will be healed.” with Matthew 9:21, beside a hand grasping the cloak in a spray of rust",
-        "inks": "Black, rust",
-        "fit": "Regular oversized · dropped shoulder, boxy body",
-        "material": null
-      },
-      "images": [
-        {
-          "view": "back",
-          "url": "/products/by-his-hem/back.webp",
-          "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
-        },
-        {
-          "view": "front",
-          "url": "/products/by-his-hem/front.webp",
-          "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
-        },
-        {
-          "view": "detail",
-          "url": "/products/by-his-hem/detail.webp",
-          "alt": "By His Hem back print, close up"
-        }
-      ]
-    },
     {
       "code": "A3-B03",
       "slug": "thorns-to-lilies",
       "name": "Thorns to Lilies",
-      "position": 3,
+      "position": 1,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["White"],
@@ -195,102 +105,10 @@
       ]
     },
     {
-      "code": "A3-B06",
-      "slug": "torn-veil",
-      "name": "Torn Veil",
-      "position": 4,
-      "collection": "behold",
-      "category": "hoodies",
-      "colors": ["Black"],
-      "priceCents": 6000,
-      "featured": false,
-      "releasedAt": "2026-10-09",
-      "scripture": {
-        "reference": "Matthew 27:51",
-        "excerpt": true,
-        "niv": "At that moment the curtain of the temple was torn in two from top to bottom.",
-        "kjv": "And, behold, the veil of the temple was rent in twain from the top to the bottom"
-      },
-      "story": {
-        "theme": "Presence",
-        "call": "Behold, the way is open",
-        "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, under the words “The veil is torn.”",
-        "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front keeps only the wordmark.",
-        "front": "Awebound wordmark in bone with red thorns, center chest",
-        "back": "“The veil is torn” in heavy gothic capitals above a red curtain torn open, light breaking through over the clouds, with Matthew 27:51 below",
-        "inks": "Bone, deep red",
-        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
-        "material": null
-      },
-      "images": [
-        {
-          "view": "back",
-          "url": "/products/torn-veil/back.webp",
-          "alt": "Torn Veil hoodie, back: “The veil is torn” above a red curtain torn open with light breaking through, Matthew 27:51"
-        },
-        {
-          "view": "front",
-          "url": "/products/torn-veil/front.webp",
-          "alt": "Torn Veil hoodie, front: the wordmark with red thorns, center chest"
-        },
-        {
-          "view": "detail",
-          "url": "/products/torn-veil/detail.webp",
-          "alt": "Torn Veil back print, close up"
-        }
-      ]
-    },
-    {
-      "code": "A3-B04",
-      "slug": "stone-in-motion",
-      "name": "Stone in Motion",
-      "position": 5,
-      "collection": "behold",
-      "category": "oversized-tees",
-      "colors": ["Cream"],
-      "priceCents": 4000,
-      "featured": false,
-      "releasedAt": "2026-10-09",
-      "scripture": {
-        "reference": "Matthew 28:6",
-        "excerpt": false,
-        "niv": "He is not here; he has risen, just as he said. Come and see the place where he lay.",
-        "kjv": "He is not here: for he is risen, as he said. Come, see the place where the Lord lay."
-      },
-      "story": {
-        "theme": "Resurrection",
-        "call": "Behold, He is risen",
-        "art": "The stone rolls away in a sweep of blue under the angel’s words.",
-        "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, just as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
-        "front": "Small Awebound wordmark, center chest",
-        "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
-        "inks": "Black, cobalt blue",
-        "fit": "Regular oversized · dropped shoulder, boxy body",
-        "material": null
-      },
-      "images": [
-        {
-          "view": "back",
-          "url": "/products/stone-in-motion/back.webp",
-          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
-        },
-        {
-          "view": "front",
-          "url": "/products/stone-in-motion/front.webp",
-          "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
-        },
-        {
-          "view": "detail",
-          "url": "/products/stone-in-motion/detail.webp",
-          "alt": "Stone in Motion back print, close up"
-        }
-      ]
-    },
-    {
       "code": "A3-B05",
       "slug": "to-live-is-christ",
       "name": "To Live Is Christ, To Die Is Gain",
-      "position": 6,
+      "position": 2,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Washed navy"],
@@ -333,10 +151,286 @@
       ]
     },
     {
+      "code": "A3-B07",
+      "slug": "by-his-hem",
+      "name": "By His Hem",
+      "position": 3,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": ["Warm bone"],
+      "priceCents": 4000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 9:21",
+        "excerpt": true,
+        "niv": "If I only touch his cloak, I will be healed.",
+        "kjv": "If I may but touch his garment, I shall be whole."
+      },
+      "story": {
+        "theme": "Healing",
+        "call": "Behold the One who heals",
+        "art": "A woman’s hand reaches through a spray of rust to take hold of the edge of a cloak, beside the words she said to herself.",
+        "meaning": "She had been bleeding for twelve years, and nothing had helped. She didn’t ask Jesus for anything. She came up behind Him in the crowd and touched the edge of His cloak, sure that would be enough. Jesus turned, saw her, and told her that her faith had healed her. The back shows her hand closing on the cloak, with her words above it.",
+        "front": "Small Awebound wordmark in black, center chest",
+        "back": "“If I only touch his cloak, I will be healed.” with Matthew 9:21, beside a hand grasping the cloak in a spray of rust",
+        "inks": "Black, rust",
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/by-his-hem/back.webp",
+          "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
+        },
+        {
+          "view": "front",
+          "url": "/products/by-his-hem/front.webp",
+          "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
+        },
+        {
+          "view": "detail",
+          "url": "/products/by-his-hem/detail.webp",
+          "alt": "By His Hem back print, close up"
+        }
+      ]
+    },
+    {
+      "code": "A3-B04",
+      "slug": "stone-in-motion",
+      "name": "Stone in Motion",
+      "position": 4,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": ["Cream"],
+      "priceCents": 4000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 28:6",
+        "excerpt": false,
+        "niv": "He is not here; he has risen, just as he said. Come and see the place where he lay.",
+        "kjv": "He is not here: for he is risen, as he said. Come, see the place where the Lord lay."
+      },
+      "story": {
+        "theme": "Resurrection",
+        "call": "Behold, He is risen",
+        "art": "The stone rolls away in a sweep of blue under the angel’s words.",
+        "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, just as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
+        "front": "Small Awebound wordmark, center chest",
+        "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
+        "inks": "Black, cobalt blue",
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/stone-in-motion/back.webp",
+          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
+        },
+        {
+          "view": "front",
+          "url": "/products/stone-in-motion/front.webp",
+          "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
+        },
+        {
+          "view": "detail",
+          "url": "/products/stone-in-motion/detail.webp",
+          "alt": "Stone in Motion back print, close up"
+        }
+      ]
+    },
+    {
+      "code": "A3-B02",
+      "slug": "still-the-storm",
+      "name": "Still the Storm",
+      "position": 5,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": ["Black"],
+      "priceCents": 4000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Mark 4:41",
+        "excerpt": false,
+        "niv": "They were terrified and asked each other, “Who is this? Even the wind and the waves obey him!”",
+        "kjv": "And they feared exceedingly, and said one to another, What manner of man is this, that even the wind and the sea obey him?"
+      },
+      "story": {
+        "theme": "Power",
+        "call": "Behold His power",
+        "art": "Storm clouds break over a heavy sea, and a cross stands on the horizon in the light.",
+        "meaning": "The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was. The front shows the storm breaking around a cross on the horizon. The back carries their question in full.",
+        "front": "Awebound wordmark over the storm, the waves and the cross on the horizon",
+        "back": "Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
+        "inks": "Bone",
+        "fit": "Larger oversized · dropped shoulder, extra-boxy body",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "front",
+          "url": "/products/still-the-storm/front.webp",
+          "alt": "Still the Storm oversized tee, front: the wordmark over a stormy sea with a cross on the horizon"
+        },
+        {
+          "view": "back",
+          "url": "/products/still-the-storm/back.webp",
+          "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
+        },
+        {
+          "view": "detail",
+          "url": "/products/still-the-storm/detail.webp",
+          "alt": "Still the Storm front print, close up"
+        }
+      ]
+    },
+    {
+      "code": "A3-B06",
+      "slug": "torn-veil",
+      "name": "Torn Veil",
+      "position": 6,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": ["Black"],
+      "priceCents": 6000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 27:51",
+        "excerpt": true,
+        "niv": "At that moment the curtain of the temple was torn in two from top to bottom.",
+        "kjv": "And, behold, the veil of the temple was rent in twain from the top to the bottom"
+      },
+      "story": {
+        "theme": "Presence",
+        "call": "Behold, the way is open",
+        "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, under the words “The veil is torn.”",
+        "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front carries the wordmark and the Thorn Cross.",
+        "front": "Awebound wordmark in bone with red thorns, with the Thorn Cross below, center chest",
+        "back": "“The veil is torn” in heavy gothic capitals above a red curtain torn open, light breaking through over the clouds, with Matthew 27:51 below",
+        "inks": "Bone, deep red",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/torn-veil/back.webp",
+          "alt": "Torn Veil hoodie, back: “The veil is torn” above a red curtain torn open with light breaking through, Matthew 27:51"
+        },
+        {
+          "view": "front",
+          "url": "/products/torn-veil/front.webp",
+          "alt": "Torn Veil hoodie, front: the wordmark with red thorns and the Thorn Cross, center chest"
+        },
+        {
+          "view": "detail",
+          "url": "/products/torn-veil/detail.webp",
+          "alt": "Torn Veil back print, close up"
+        }
+      ]
+    },
+    {
+      "code": "A3-B08",
+      "slug": "the-passage",
+      "name": "The Passage",
+      "position": 7,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": ["Olive"],
+      "priceCents": 6000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Psalm 23:4",
+        "excerpt": true,
+        "niv": "Even though I walk through the darkest valley, I will fear no evil, for you are with me",
+        "kjv": "Yea, though I walk through the valley of the shadow of death, I will fear no evil: for thou art with me"
+      },
+      "story": {
+        "theme": "Protection",
+        "call": "Behold the Shepherd",
+        "art": "One traveler walks a narrow, lit path through a dark valley toward a cross on the hill, under a full moon and the words “I will fear no evil.”",
+        "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even in the darkest valley he won’t be afraid, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back shows one traveler on the path through the valley, walking toward the cross.",
+        "front": "Awebound wordmark and the Thorn Cross in bone, center chest",
+        "back": "“I will fear no evil” in tall capitals above a dark valley, a lit path leading to a cross on the hill and a full moon, with Psalm 23:4 below",
+        "inks": "Bone, ember orange, charcoal, red",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/the-passage/back.webp",
+          "alt": "The Passage hoodie in olive, back: “I will fear no evil” above a traveler on a path through a dark valley toward a cross, Psalm 23:4"
+        },
+        {
+          "view": "front",
+          "url": "/products/the-passage/front.webp",
+          "alt": "The Passage hoodie in olive, front: the wordmark and the Thorn Cross, center chest"
+        },
+        {
+          "view": "detail",
+          "url": "/products/the-passage/detail.webp",
+          "alt": "The Passage back print, close up"
+        }
+      ]
+    },
+    {
+      "code": "A3-B09",
+      "slug": "wonderfully-made",
+      "name": "Wonderfully Made",
+      "position": 8,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": ["Dusty blue"],
+      "priceCents": 6000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Psalm 139:14",
+        "excerpt": false,
+        "niv": "I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.",
+        "kjv": "I will praise thee; for I am fearfully and wonderfully made: marvellous are thy works; and that my soul knoweth right well."
+      },
+      "story": {
+        "theme": "Creation",
+        "call": "Behold the One who made you",
+        "art": "Roses, blossoms and branches grow around a wooden cross and the words “Fearfully & wonderfully made.”",
+        "meaning": "In Psalm 139, David is amazed at how completely God knows him: every thought, every word, every day of his life, written down before one of them came to be. God formed him in his mother’s womb, and David answers with praise, because he is fearfully and wonderfully made. The back sets those words among roses in bloom around a wooden cross. The front carries the wordmark and the Thorn Cross in deep red.",
+        "front": "Awebound wordmark and the Thorn Cross in deep red, center chest",
+        "back": "“Fearfully & wonderfully made” in ornate lettering among roses, blossoms and a wooden cross, with Psalm 139:14 below",
+        "inks": "Deep red, rose, cream",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/wonderfully-made/back.webp",
+          "alt": "Wonderfully Made hoodie in dusty blue, back: “Fearfully & wonderfully made” among roses around a wooden cross, Psalm 139:14"
+        },
+        {
+          "view": "front",
+          "url": "/products/wonderfully-made/front.webp",
+          "alt": "Wonderfully Made hoodie in dusty blue, front: the wordmark and the Thorn Cross in deep red"
+        },
+        {
+          "view": "detail",
+          "url": "/products/wonderfully-made/detail.webp",
+          "alt": "Wonderfully Made back print, close up"
+        }
+      ]
+    },
+    {
       "code": "A3-H01",
       "slug": "lambs-mark",
       "name": "Lamb’s Mark",
-      "position": 7,
+      "position": 9,
       "collection": "behold",
       "category": "hats",
       "colors": ["Washed charcoal twill"],
@@ -352,9 +446,9 @@
       "story": {
         "theme": "Sacrifice",
         "call": "Behold the Lamb",
-        "art": "The Lamb of God, embroidered in white thread across the front, with one mark of red.",
-        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. Older English Bibles begin John’s words with “Behold,” and this release takes its name from them. The lamb is stitched in white with a single mark of red, and John 1:29 sits on the side.",
-        "front": "Embroidered lamb in white thread, with a mark of red",
+        "art": "The Lamb of God in white thread inside a red crown of thorns, with one mark of red on the lamb.",
+        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. Older English Bibles begin John’s words with “Behold,” and this release takes its name from them. The lamb is stitched in white inside a red crown of thorns, with a single mark of red, and John 1:29 sits on the side.",
+        "front": "Embroidered lamb in white thread inside a red crown of thorns",
         "back": "Awebound wordmark with red thorns above the strap; John 1:29 on the side",
         "inks": "White and red thread",
         "fit": "Distressed cap · curved brim, adjustable strap back",
@@ -364,12 +458,12 @@
         {
           "view": "front",
           "url": "/products/lambs-mark/front.webp",
-          "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb"
+          "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb inside a red crown of thorns"
         },
         {
           "view": "side",
           "url": "/products/lambs-mark/side.webp",
-          "alt": "Lamb’s Mark distressed cap, side: John 1:29 in red"
+          "alt": "Lamb’s Mark distressed cap, three-quarter view: the lamb, and John 1:29 in red on the side"
         },
         {
           "view": "back",
@@ -380,6 +474,57 @@
           "view": "detail",
           "url": "/products/lambs-mark/detail.webp",
           "alt": "Lamb’s Mark embroidery, close up"
+        }
+      ]
+    },
+    {
+      "code": "A3-H02",
+      "slug": "signature-cap",
+      "name": "Signature Cap",
+      "position": 10,
+      "collection": "behold",
+      "category": "hats",
+      "colors": ["Black"],
+      "priceCents": 2500,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Ephesians 1:7",
+        "excerpt": true,
+        "niv": "In him we have redemption through his blood, the forgiveness of sins",
+        "kjv": "In whom we have redemption through his blood, the forgiveness of sins"
+      },
+      "story": {
+        "theme": "Redemption",
+        "call": "Behold your Redeemer",
+        "art": "The Awebound wordmark in raised bone embroidery, its thorns edged in red, above a small Thorn Cross.",
+        "meaning": "This is the everyday Awebound cap: the wordmark and the Thorn Cross, nothing more. The red along the thorns means the same thing as the Lamb’s Mark. It stands for the sacrifice of our Lord Jesus Christ, who wore a crown of thorns and gave His life for us. Through His blood we are forgiven.",
+        "front": "Awebound wordmark in raised bone embroidery with red-edged thorns, above a small Thorn Cross",
+        "back": "Plain, with an adjustable snap strap",
+        "inks": "Bone and red thread",
+        "fit": "Structured cap · mid-profile crown, curved brim, adjustable snap back",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "front",
+          "url": "/products/signature-cap/front.webp",
+          "alt": "Signature Cap in black, front: the Awebound wordmark with red-edged thorns above the Thorn Cross"
+        },
+        {
+          "view": "side",
+          "url": "/products/signature-cap/side.webp",
+          "alt": "Signature Cap in black, three-quarter view: the embroidered wordmark and the curved brim"
+        },
+        {
+          "view": "back",
+          "url": "/products/signature-cap/back.webp",
+          "alt": "Signature Cap in black, back: plain, with an adjustable snap strap"
+        },
+        {
+          "view": "detail",
+          "url": "/products/signature-cap/detail.webp",
+          "alt": "Signature Cap embroidery, close up"
         }
       ]
     }

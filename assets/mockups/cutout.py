@@ -30,11 +30,12 @@ CUTOUTS = HERE / "cutouts"
 # Each source sheet holds two or three views side by side. Boxes are (left, top, right, bottom)
 # around one garment inside its panel, below the sheet title and above the FRONT/BACK labels.
 # `mode` says how a garment differs from the grey backdrop: "dark" garments by lightness,
-# "light" ones (bone, sand) by warmth, "white" ones by being brighter than the backdrop.
+# "light" ones (bone, sand) by warmth, "white" ones by being brighter than the backdrop,
+# "color" ones (light blue) by hue.
 # `touching` sheets have views that touch, so they are split along the narrowest point between
 # them (see split_garments). `gaps` reopens backdrop showing between a sleeve and the body;
 # `trim_shadow` removes a contact shadow under a dark hem; `fill_neck` fills a white tee's
-# inner collar (see the functions of the same names). `mirror_sleeve` rebuilds the sleeve that
+# inner collar (see the functions of the same names); `smooth` rounds a ragged outline. `mirror_sleeve` rebuilds the sleeve that
 # touched the neighbouring garment from a mirror image of the far one (see mirror_sleeve).
 SHEETS: dict[str, dict] = {
     "still-the-storm": {
@@ -60,7 +61,20 @@ SHEETS: dict[str, dict] = {
         "mode": "dark",
         "touching": True,
         "gaps": True,
-        "views": [("front", (15, 70, 768, 945)), ("back", (768, 70, 1520, 945))],
+        "views": [("front", (55, 85, 768, 948)), ("back", (768, 85, 1490, 948))],
+    },
+    "the-passage": {
+        "mode": "dark",
+        "touching": True,
+        "gaps": True,
+        "views": [("front", (40, 95, 767, 925)), ("back", (767, 95, 1495, 925))],
+    },
+    "wonderfully-made": {
+        "mode": "color",
+        "touching": True,
+        "gaps": True,
+        "trim_shadow": True,
+        "views": [("front", (20, 100, 766, 925)), ("back", (766, 100, 1520, 925))],
     },
     "stone-in-motion": {
         "mirror_sleeve": {"front": "right", "back": "left"},
@@ -80,9 +94,21 @@ SHEETS: dict[str, dict] = {
         "mode": "dark",
         "touching": True,
         "views": [
-            ("front", (20, 140, 604, 700)),
-            ("side", (604, 140, 1305, 700)),
-            ("back", (1305, 140, 1975, 700)),
+            ("front", (5, 105, 604, 712)),
+            ("side", (604, 105, 1324, 712)),
+            ("back", (1324, 140, 1938, 680)),
+        ],
+    },
+    "signature-cap": {
+        "mode": "dark",
+        "touching": True,
+        "gaps": 160,  # reach: the opening above the strap sits deep inside the outline
+        "trim_shadow": True,
+        "smooth": 3,
+        "views": [
+            ("front", (40, 150, 632, 672)),
+            ("side", (632, 150, 1340, 672)),
+            ("back", (1340, 165, 1932, 650)),
         ],
     },
 }
@@ -127,6 +153,10 @@ def garment_mask(rgb8: np.ndarray, mode: str, everything: bool = False, fill: bo
         # White fabric is brighter than the backdrop; prints and folds differ in color or lightness.
         dist = np.maximum(d[..., 0], 0) * 1.4 + np.sqrt(d[..., 1] ** 2 + d[..., 2] ** 2) * 0.8
         threshold = 4.5
+    elif mode == "color":
+        # Colored garments (a light blue hoodie) differ from a neutral backdrop mostly in hue.
+        dist = np.sqrt((0.25 * d[..., 0]) ** 2 + d[..., 1] ** 2 + d[..., 2] ** 2)
+        threshold = 9
     else:
         # Dark garments are darker than the backdrop; a brighter patch of backdrop never counts.
         dist = np.sqrt((0.45 * np.minimum(d[..., 0], 0)) ** 2 + d[..., 1] ** 2 + d[..., 2] ** 2)
@@ -152,7 +182,7 @@ def lab_and_delta(rgb8: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return lab, lab - backdrop(lab)
 
 
-def gaps(rgb8: np.ndarray, mask: np.ndarray) -> np.ndarray:
+def gaps(rgb8: np.ndarray, mask: np.ndarray, reach: int = 90, mode: str = "dark") -> np.ndarray:
     """Backdrop showing through a narrow gap between a sleeve and the body, which the mask's
     closing and hole filling take in. Pixels that look like the backdrop (neutral, and no darker
     than it) and connect to the backdrop outside the garment are backdrop. Prints are enclosed by
@@ -168,6 +198,25 @@ def gaps(rgb8: np.ndarray, mask: np.ndarray) -> np.ndarray:
     near = ndimage.binary_dilation(out, iterations=40)
     touching = np.unique(pockets[near & (pockets > 0)])
     out |= np.isin(pockets, touching[touching > 0])
+    # Enclosed pockets of backdrop near the outline: a gap closed at both ends (sleeve against
+    # body), or the opening above a cap's strap, often partly in shade. Each region the rough
+    # (unfilled) mask leaves open there is judged as a whole: mostly neutral and not much darker
+    # than the backdrop means backdrop. Prints sit well inside the outline.
+    rough = garment_mask(rgb8, mode, everything=True, fill=False)
+    edge = ndimage.distance_transform_edt(mask) < reach
+    pockets, count = ndimage.label(mask & ~rough & ~out & edge)
+    for i in range(1, count + 1):
+        comp = pockets == i
+        if comp.sum() < 25:
+            continue
+        da, db, dl = (np.abs(d[..., 1][comp]).mean(), np.abs(d[..., 2][comp]).mean(), d[..., 0][comp].mean())
+        if da < 4 and db < 4 and dl > -32:
+            out |= comp
+    if mode == "dark":
+        # Grow those regions into the shaded backdrop around them (an opening darkens toward its
+        # edges), stopping at the garment, which is far darker.
+        shade = (np.abs(d[..., 1]) < 5) & (np.abs(d[..., 2]) < 5) & (d[..., 0] > -48) & mask & edge
+        out |= ndimage.binary_propagation(out & shade, mask=shade)
     return ndimage.binary_dilation(out, iterations=2) & mask
 
 
@@ -180,6 +229,9 @@ def bottom_shadow(rgb8: np.ndarray, mask: np.ndarray, mode: str = "dark") -> np.
     if mode == "dark":
         ref = np.percentile(L[mask], 30)
         garment = L <= ref + 12
+    elif mode == "color":
+        _, d = lab_and_delta(rgb8)
+        garment = np.hypot(d[..., 1], d[..., 2]) > 9
     else:
         ref = np.percentile(L[mask], 50)
         garment = L >= ref - 18
@@ -324,18 +376,26 @@ def cut(
     mode: str,
     exclude: np.ndarray | None = None,
     fill_neck: tuple[str, ...] = (),
-    find_gaps: bool = False,
+    find_gaps: bool | int = False,
     trim_shadow: bool = False,
+    smooth: int = 0,
 ) -> Image.Image:
     sheet = Image.open(SOURCE / f"{slug}.png").convert("RGB")
     rgb8 = np.ascontiguousarray(np.asarray(sheet.crop(box)))
     mask = garment_mask(rgb8, mode, everything=exclude is not None)
     background = np.zeros_like(mask)
     if find_gaps:
-        background |= gaps(rgb8, mask)
+        background |= gaps(rgb8, mask, 90 if find_gaps is True else find_gaps, mode)
     if trim_shadow:
         background |= bottom_shadow(rgb8, mask, mode)
     alpha = np.clip(refine(rgb8, mask, exclude, background), 0, 1)
+    if trim_shadow:
+        # GrabCut can pull the shadow back in below the hem; trim the final outline too.
+        hard = alpha > 0.5
+        extra = bottom_shadow(rgb8, hard, mode)
+        if extra.any():
+            near = ndimage.binary_dilation(extra, iterations=4)
+            alpha = np.where(near, ndimage.gaussian_filter((hard & ~extra).astype(np.float64), 0.8), alpha)
     if view in fill_neck:
         neck = neck_opening(alpha > 0.5)
         alpha = np.maximum(alpha, ndimage.gaussian_filter(neck.astype(np.float64), 0.7))
@@ -346,6 +406,13 @@ def cut(
         near = ndimage.binary_dilation(notch, iterations=6)
         solid = ndimage.binary_fill_holes(ndimage.binary_closing(hard | notch, iterations=3))
         alpha = np.where(near, ndimage.gaussian_filter(solid.astype(np.float64), 0.7), alpha)
+    if smooth:
+        # Soften a ragged outline (a cap brim's shaded underside): drop thin specks, then round
+        # the edge, redrawing only where the outline moved.
+        hard = alpha > 0.5
+        even = ndimage.gaussian_filter(ndimage.binary_opening(hard, iterations=smooth).astype(np.float64), 2.5) > 0.5
+        moved = ndimage.binary_dilation(hard ^ even, iterations=3)
+        alpha = np.where(moved, ndimage.gaussian_filter(even.astype(np.float64), 0.8), alpha)
     fg = estimate_foreground_ml(rgb8 / 255.0, alpha)
     if exclude is not None:
         alpha, fg = heal(alpha, fg, exclude)
@@ -443,6 +510,7 @@ def main() -> None:
                 sheet.get("fill_neck", ()),
                 sheet.get("gaps", False),
                 sheet.get("trim_shadow", False),
+                sheet.get("smooth", 0),
             )
             if view in sheet.get("mirror_sleeve", {}):
                 img = mirror_sleeve(img, sheet["mirror_sleeve"][view])

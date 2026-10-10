@@ -43,8 +43,7 @@ export function SizeGuide({ category, cut }: { category: CategorySlug; cut: stri
     return (
       <div className="prose">
         <p>
-          One size fits most. The strap at the back adjusts to fit heads from about 21 to 23.5
-          inches around.
+          One size fits most. The back adjusts to fit heads from about 21 to 23.5 inches around.
         </p>
       </div>
     );
@@ -83,7 +82,7 @@ export function SizeGuide({ category, cut }: { category: CategorySlug; cut: stri
         {category === "oversized-tees"
           ? " Oversized tees run wide on purpose; size down for a closer fit."
           : category === "hoodies"
-            ? " The hoodie has a relaxed fit with room to layer; size down for a closer fit."
+            ? " Our hoodies have a relaxed fit with room to layer; size down for a closer fit."
             : ""}
       </p>
     </div>

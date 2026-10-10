@@ -77,13 +77,13 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How do your pieces fit?",
-        text: "Each product page names its cut and has a size guide. Our oversized tees come in two cuts: regular oversized, which is wide with a dropped shoulder, and larger oversized, which is wider and boxier. The hoodie is relaxed with a dropped shoulder. The cap adjusts with a strap at the back.",
+        text: "Each product page names its cut and has a size guide. Our oversized tees come in two cuts: regular oversized, which is wide with a dropped shoulder, and larger oversized, which is wider and boxier. Our hoodies are relaxed with a dropped shoulder, and both caps adjust at the back.",
         a: (
           <p>
             Each product page names its cut and has a size guide. Our oversized tees come in two
             cuts: regular oversized, which is wide with a dropped shoulder, and larger oversized,
-            which is wider and boxier. The hoodie is relaxed with a dropped shoulder. The cap
-            adjusts with a strap at the back.
+            which is wider and boxier. Our hoodies are relaxed with a dropped shoulder, and both
+            caps adjust at the back.
           </p>
         ),
       },
