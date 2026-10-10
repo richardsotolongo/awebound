@@ -9,7 +9,7 @@ import verses from "./content/verses.json";
  * and site sections keep one record each, so every place a verse appears shows the same words.
  */
 export const ScriptureRecordSchema = z.object({
-  /** Full book name, chapter and verse: "Exodus 3:5". */
+  /** Full book name, chapter and verse: "Matthew 9:21". */
   reference: z.string(),
   /** True when the website quotes only part of the verse. */
   excerpt: z.boolean(),

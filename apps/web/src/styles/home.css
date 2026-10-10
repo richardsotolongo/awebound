@@ -8,13 +8,12 @@
     padding-block: var(--space-12) var(--space-16);
     overflow: hidden;
   }
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(ellipse 46% 80% at 22% 0%, var(--light-shaft), transparent 70%);
-    pointer-events: none;
+  /* The soft glow sits behind the headline and fades out before the hero's edges. */
+  .hero::after {
+    top: -35%;
+    left: -12%;
+    width: 72%;
+    height: 120%;
   }
   .hero-in {
     display: grid;
@@ -278,11 +277,12 @@
   .story-art {
     display: grid;
     place-items: center;
-    padding: 9%;
+    padding-inline: 4%;
   }
+  /* The niche and the garment are two layers of the same 4:5 frame. */
   .story-plate {
     position: relative;
-    width: min(100%, 440px);
+    width: min(100%, 460px);
     aspect-ratio: 4 / 5;
   }
   .story-plate img {
@@ -315,83 +315,11 @@
       order: 0;
     }
     .story-art {
-      padding: 12% 14%;
+      padding-inline: 8%;
     }
     .story-plate {
-      width: min(100%, 360px);
+      width: min(100%, 380px);
     }
-  }
-
-  /* The line art around a featured image. The motif box is the image box grown by 18%. */
-  .motif {
-    position: absolute;
-    inset: -18%;
-    width: 136%;
-    height: 136%;
-    overflow: visible;
-    pointer-events: none;
-  }
-  .motif-sea,
-  .motif-ground,
-  .motif-stone {
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent,
-      var(--ink) 16%,
-      var(--ink) 84%,
-      transparent
-    );
-    mask-image: linear-gradient(90deg, transparent, var(--ink) 16%, var(--ink) 84%, transparent);
-  }
-  /* motif line art */
-  .mo-line {
-    fill: none;
-    stroke: var(--line-strong);
-    stroke-width: 1.3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.7;
-  }
-  .mo-strong {
-    stroke: var(--ink-subtle);
-    stroke-width: 1.6;
-    opacity: 0.9;
-  }
-  .mo-ray {
-    fill: none;
-    stroke: var(--scripture);
-    stroke-width: 1;
-    stroke-linecap: round;
-    opacity: 0.4;
-  }
-  .mo-stream {
-    stroke-dasharray: 2 7;
-    animation: mo-fall 0.9s linear infinite;
-  }
-  @keyframes mo-fall {
-    to {
-      stroke-dashoffset: -18;
-    }
-  }
-  .mo-sand {
-    fill: var(--scripture);
-    opacity: 0.12;
-  }
-  .mo-stone {
-    fill: var(--surface-raised);
-    stroke: var(--ink-subtle);
-    stroke-width: 1.6;
-  }
-  .mo-mark path {
-    fill: var(--ink-subtle);
-  }
-  .mo-stop-light {
-    stop-color: var(--ink);
-    stop-opacity: 0.14;
-  }
-  .mo-stop-none {
-    stop-color: var(--ink);
-    stop-opacity: 0;
   }
 
   /* 5. Why Awebound: on bone paper, to break the dark page. */
@@ -454,9 +382,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mo-stream {
-      animation: none;
-    }
     .hero-piece img {
       transition: none;
     }

@@ -5,7 +5,7 @@ export interface ScriptureRefProps {
   reference: string;
   /** The translation, only when its words are quoted beside the reference. */
   translation?: string;
-  /** The quote is part of the verse: "Exodus 3:5 — NIV, excerpt". */
+  /** The quote is part of the verse: "Matthew 9:21 — NIV, excerpt". */
   excerpt?: boolean;
   align?: "center" | "start";
   className?: string;

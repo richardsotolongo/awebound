@@ -11,11 +11,13 @@ import { VERSES } from "@/server/scripture";
 
 export const revalidate = 60;
 
-/** The close-up of a piece's artwork shipped with the site, else its listing photo. */
-function artImage(p: ProductSummary) {
-  return p.image.url.startsWith("/products/")
-    ? { url: `/products/${p.slug}/detail.webp`, alt: `${p.name}, artwork close up` }
-    : { url: p.image.url, alt: p.image.alt };
+/** A piece in its stone niche, rendered for each piece by assets/mockups/compose.py. */
+function scene(p: ProductSummary, art: string) {
+  return {
+    niche: `/products/${p.slug}/story-niche.webp`,
+    piece: `/products/${p.slug}/story-piece.webp`,
+    alt: `${p.name}: ${art}`,
+  };
 }
 
 /** Unique pieces by slug, in order. */
@@ -82,8 +84,8 @@ export default async function Home() {
           </ul>
           {preview ? (
             <p className="behold-note aw-small">
-              {release.name} is in preview. Ordering isn’t open yet; you can save pieces to your bag
-              and <a href="#updates">get an email when it opens</a>.
+              {release.name} is in preview, so ordering isn’t open yet. You can add pieces to your
+              bag now and <a href="#updates">get an email when it opens</a>.
             </p>
           ) : null}
         </section>
@@ -103,7 +105,7 @@ export default async function Home() {
                 key={summary.slug}
                 product={summary}
                 story={story}
-                image={artImage(summary)}
+                scene={scene(summary, story.art)}
                 flip={i % 2 === 1}
               />
             ))}
@@ -121,19 +123,19 @@ export default async function Home() {
           </Reveal>
           <div className="founder-text">
             <p className="aw-body">
-              Richard started Awebound for people who are not ashamed to express their faith and
-              want to wear it boldly. He built it with faith at the forefront: every design begins
-              in Scripture and tells a story about our Lord and Savior, Jesus Christ.
+              Richard started Awebound for believers who aren’t ashamed of the gospel and want to
+              wear their faith openly. Every design starts with a passage of Scripture and tells
+              part of the story of Jesus Christ, our Lord and Savior.
             </p>
             <p className="aw-body">
-              To be bound in awe is to be held by who He is: holy, powerful, merciful, risen. That
-              reverence shapes the work. Scripture is quoted exactly, with its full reference. God
-              is shown through symbols, never drawn as a person. The artwork and lettering are made
-              with the same care as the meaning they carry.
+              Being bound in awe means being held by who He is, and we try to work that way.
+              Scripture is quoted word for word, with the full reference. God is shown through
+              symbols and never drawn as a person. The art and lettering get the same care as the
+              verses they carry.
             </p>
             <p className="aw-body">
-              Clothing goes where you go. When someone asks about what you’re wearing, you get to
-              tell them who it points to. We plant the seed; God makes it grow.
+              Clothes go wherever you go. When someone asks about your shirt, you get to tell them
+              who it points to. We plant the seed, and God makes it grow.
             </p>
             <ScriptureQuote
               text={VERSES.planted.text}

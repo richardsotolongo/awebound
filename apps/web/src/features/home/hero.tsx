@@ -16,7 +16,7 @@ interface HeroProps {
 export function Hero({ release, pieces }: HeroProps) {
   const preview = release?.status !== "open";
   return (
-    <section className="hero aw-grain" aria-labelledby="hero-title">
+    <section className="hero soft-glow" aria-labelledby="hero-title">
       <div className="hero-in aw-container">
         <div className="hero-text">
           <p className="aw-label">Christian apparel</p>
@@ -24,9 +24,9 @@ export function Hero({ release, pieces }: HeroProps) {
             <span>Bound in awe.</span> <span>Worn without shame.</span>
           </h1>
           <p className="hero-body">
-            Awebound creates clothing rooted in Scripture and reverence for Jesus Christ. Bold
-            artwork and expressive lettering carry the stories of His holiness, mercy, and
-            resurrection into the everyday.
+            Awebound makes clothing rooted in Scripture and reverence for Jesus Christ. Every piece
+            tells part of His story in bold art and lettering, from the storm He calmed to the tomb
+            He left empty.
           </p>
           {release && preview ? (
             <p className="release-status">

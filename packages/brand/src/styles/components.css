@@ -909,6 +909,16 @@
     font-size: 12.5px;
     line-height: 19px;
   }
+  /* The wordmark spans the footer's width as its last line. */
+  .aw-footer-mark {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: var(--space-4) var(--gutter-desktop) var(--space-12);
+    color: color-mix(in srgb, var(--ink) 80%, var(--surface));
+  }
+  .aw-footer-mark .aw-logo {
+    display: block;
+  }
   .aw-form-error {
     margin: 0;
     font-size: 14px;
@@ -922,6 +932,9 @@
     }
     .aw-footer-legal {
       padding-inline: var(--gutter-mobile);
+    }
+    .aw-footer-mark {
+      padding: var(--space-2) var(--gutter-mobile) var(--space-8);
     }
   }
 

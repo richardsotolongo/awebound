@@ -416,13 +416,12 @@
     padding-block: var(--space-12) var(--space-8);
     isolation: isolate;
   }
-  .shop-head::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: radial-gradient(ellipse 40% 100% at 12% 0%, var(--light-shaft), transparent 72%);
-    pointer-events: none;
+  /* The soft glow reaches past the title block on every side (see .soft-glow in site.css). */
+  .shop-head::after {
+    top: -160px;
+    bottom: -180px;
+    left: -34vw;
+    width: min(1240px, 124vw);
   }
   .shop-head .aw-body {
     max-width: 52ch;

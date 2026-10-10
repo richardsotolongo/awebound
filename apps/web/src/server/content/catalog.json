@@ -31,8 +31,8 @@
       "slug": "behold",
       "name": "Behold",
       "number": "01",
-      "tagline": "A call to see Christ’s power, holiness, sacrifice, and resurrection.",
-      "story": "Behold means look, and keep looking. When John the Baptist saw Jesus coming toward him, he called everyone near him to see the Lamb of God, and older English Bibles begin his words with “Behold.” These seven pieces carry the same call: see His holiness, His power over the storm, His mercy, the veil torn open by His death, His resurrection, the life He gives, and the Lamb who takes away the sin of the world.",
+      "tagline": "Seven pieces that ask you to look at Jesus, and keep looking.",
+      "story": "“Behold” is an old word for look, and keep looking. It’s the word older English Bibles use when John the Baptist sees Jesus walking toward him and points Him out to the crowd: “Behold the Lamb of God.” Each piece in this release points at something Jesus has done. He calmed the storm. He healed the woman who touched His cloak. He makes scarlet sins white as snow. His death tore the temple veil, and three days later the stone was rolled away. He gives a life worth living, and He is the Lamb who takes away the sin of the world.",
       "scriptureRef": "John 1:29"
     }
   ],
@@ -50,64 +50,20 @@
     "Oxblood corduroy": "cap-oxblood-corduroy",
     "Sandstone": "cap-sandstone",
     "Washed forest": "garment-washed-forest",
-    "Black": "garment-black"
+    "Black": "garment-black",
+    "White": "garment-white",
+    "Cream": "garment-cream",
+    "Washed navy": "garment-washed-navy"
   },
   "products": [
-    {
-      "code": "A3-B01",
-      "slug": "holy-ground",
-      "name": "Holy Ground",
-      "position": 1,
-      "collection": "behold",
-      "category": "tees",
-      "colors": ["Faded black"],
-      "priceCents": 3500,
-      "featured": false,
-      "releasedAt": "2026-10-09",
-      "scripture": {
-        "reference": "Exodus 3:5",
-        "excerpt": true,
-        "niv": "Take off your sandals, for the place where you are standing is holy ground.",
-        "kjv": "Put off thy shoes from off thy feet, for the place whereon thou standest is holy ground."
-      },
-      "story": {
-        "theme": "Holiness",
-        "call": "Behold His holiness",
-        "motif": "ground",
-        "art": "The bush that burned and was not consumed, its roots spread wide over the desert floor beneath the wordmark.",
-        "meaning": "Moses turned aside to look at a bush that was on fire but did not burn up, and God called to him from the flames. Before anything else, God told him where he was standing: holy ground. The design keeps that order. The fire rises over everything, the roots hold the ground beneath it, and the reference sits at the hem.",
-        "front": "Small Awebound wordmark with a single flame, left chest; flame mark on the left sleeve",
-        "back": "Awebound wordmark over the burning bush, its roots and the desert hills",
-        "inks": "Bone",
-        "fit": "Regular tee · classic fit, set-in sleeves",
-        "material": null
-      },
-      "images": [
-        {
-          "view": "back",
-          "url": "/products/holy-ground/back.webp",
-          "alt": "Holy Ground tee, back: the burning bush beneath the Awebound wordmark, Exodus 3:5"
-        },
-        {
-          "view": "front",
-          "url": "/products/holy-ground/front.webp",
-          "alt": "Holy Ground tee, front: small wordmark and flame on the left chest"
-        },
-        {
-          "view": "detail",
-          "url": "/products/holy-ground/detail.webp",
-          "alt": "Holy Ground back print, close up"
-        }
-      ]
-    },
     {
       "code": "A3-B02",
       "slug": "still-the-storm",
       "name": "Still the Storm",
-      "position": 2,
+      "position": 1,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Faded black"],
+      "colors": ["Black"],
       "priceCents": 4000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -120,11 +76,10 @@
       "story": {
         "theme": "Power",
         "call": "Behold His power",
-        "motif": "sea",
-        "art": "Storm clouds break over a raging sea, and on the horizon a cross stands in the light.",
-        "meaning": "The disciples were fishermen who knew that sea, and the storm still frightened them. Jesus spoke to the wind and the waves, and everything went still. What stayed with them was the question that followed: who is this? The front shows the storm breaking around a cross on the horizon. The back carries the disciples’ question in full.",
+        "art": "Storm clouds break over a heavy sea, and a cross stands on the horizon in the light.",
+        "meaning": "The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was. The front shows the storm breaking around a cross on the horizon. The back carries their question in full.",
         "front": "Awebound wordmark over the storm, the waves and the cross on the horizon",
-        "back": "The words of Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
+        "back": "Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
         "inks": "Bone",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
         "material": null
@@ -148,13 +103,59 @@
       ]
     },
     {
+      "code": "A3-B07",
+      "slug": "by-his-hem",
+      "name": "By His Hem",
+      "position": 2,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": ["Warm bone"],
+      "priceCents": 4000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 9:21",
+        "excerpt": true,
+        "niv": "If I only touch his cloak, I will be healed.",
+        "kjv": "If I may but touch his garment, I shall be whole."
+      },
+      "story": {
+        "theme": "Healing",
+        "call": "Behold the One who heals",
+        "art": "A woman’s hand reaches through a spray of rust to take hold of the edge of a cloak, beside the words she said to herself.",
+        "meaning": "She had been bleeding for twelve years, and nothing had helped. She didn’t ask Jesus for anything. She came up behind Him in the crowd and touched the edge of His cloak, sure that would be enough. Jesus turned, saw her, and told her that her faith had healed her. The back shows her hand closing on the cloak, with her words above it.",
+        "front": "Small Awebound wordmark in black, center chest",
+        "back": "“If I only touch his cloak, I will be healed.” with Matthew 9:21, beside a hand grasping the cloak in a spray of rust",
+        "inks": "Black, rust",
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": null
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/by-his-hem/back.webp",
+          "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
+        },
+        {
+          "view": "front",
+          "url": "/products/by-his-hem/front.webp",
+          "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
+        },
+        {
+          "view": "detail",
+          "url": "/products/by-his-hem/detail.webp",
+          "alt": "By His Hem back print, close up"
+        }
+      ]
+    },
+    {
       "code": "A3-B03",
       "slug": "thorns-to-lilies",
       "name": "Thorns to Lilies",
       "position": 3,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Warm bone"],
+      "colors": ["White"],
       "priceCents": 4000,
       "featured": true,
       "releasedAt": "2026-10-09",
@@ -167,12 +168,11 @@
       "story": {
         "theme": "Mercy",
         "call": "Behold His mercy",
-        "motif": "bloom",
-        "art": "A crown of thorns breaks into lilies, framing the wordmark beneath a cross.",
-        "meaning": "Through Isaiah, God calls His people to come and settle the matter, and promises that sins as deep as scarlet will be made white as snow. The crown of thorns is the cost of that mercy, and the lilies are what grows from it. Deep red on a bone shirt: scarlet and snow, worn together.",
+        "art": "A crown of thorns breaks into lilies around the wordmark, under a cross.",
+        "meaning": "Through Isaiah, God invites His people to come and settle things with Him, and promises that sins red as scarlet will be made white as snow. The crown of thorns is what that mercy cost. The lilies are what grows from it. The print is deep red on a white shirt, the scarlet and the snow of the verse.",
         "front": "Large Awebound wordmark across the chest in deep red",
-        "back": "Crown of thorns blooming into lilies around the wordmark and Isaiah 1:18",
-        "inks": "Deep red, bone",
+        "back": "A crown of thorns blooming into lilies around the wordmark, with Isaiah 1:18",
+        "inks": "Deep red, gray",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
         "material": null
       },
@@ -185,7 +185,7 @@
         {
           "view": "front",
           "url": "/products/thorns-to-lilies/front.webp",
-          "alt": "Thorns to Lilies oversized tee, front: large red wordmark"
+          "alt": "Thorns to Lilies oversized tee, front: large red wordmark on white"
         },
         {
           "view": "detail",
@@ -214,9 +214,8 @@
       "story": {
         "theme": "Presence",
         "call": "Behold, the way is open",
-        "motif": "rays",
-        "art": "A red temple curtain torn from top to bottom, light pouring through the tear above the clouds, beneath the words “The veil is torn.”",
-        "meaning": "When Jesus gave up His spirit on the cross, the curtain in the temple, the veil that closed off the Most Holy Place, was torn in two from top to bottom. Torn from the top down, it was opened from God’s side: through Christ’s death, the way into His presence stands open. The back shows the curtain torn wide with light breaking through; the front keeps only the wordmark.",
+        "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, under the words “The veil is torn.”",
+        "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front keeps only the wordmark.",
         "front": "Awebound wordmark in bone with red thorns, center chest",
         "back": "“The veil is torn” in heavy gothic capitals above a red curtain torn open, light breaking through over the clouds, with Matthew 27:51 below",
         "inks": "Bone, deep red",
@@ -248,7 +247,7 @@
       "position": 5,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Washed sand"],
+      "colors": ["Cream"],
       "priceCents": 4000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -261,9 +260,8 @@
       "story": {
         "theme": "Resurrection",
         "call": "Behold, He is risen",
-        "motif": "stone",
-        "art": "The stone rolls away in a sweep of blue beneath the angel’s announcement.",
-        "meaning": "Early on the first day of the week, the women came to the tomb and found the stone rolled away. The angel told them Jesus was not there: He had risen, just as He said. The back sets the angel’s announcement in heavy capitals, as plain as news, with the stone still rolling in a sweep of blue below it. The front keeps only the wordmark.",
+        "art": "The stone rolls away in a sweep of blue under the angel’s words.",
+        "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, just as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
         "front": "Small Awebound wordmark, center chest",
         "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
         "inks": "Black, cobalt blue",
@@ -295,7 +293,7 @@
       "position": 6,
       "collection": "behold",
       "category": "oversized-tees",
-      "colors": ["Washed forest"],
+      "colors": ["Washed navy"],
       "priceCents": 4000,
       "featured": true,
       "releasedAt": "2026-10-09",
@@ -308,25 +306,24 @@
       "story": {
         "theme": "Life",
         "call": "Behold what we live for",
-        "motif": "hourglass",
         "art": "An hourglass holds a cross above and a sprouting seed below, between the words of Philippians 1:21.",
-        "meaning": "Paul wrote these words in chains, not knowing whether he would live or die, and found that either way he could not lose. The hourglass holds a cross above and a sprouting seed below: time running out, and a life that goes on. To live is to live for Christ; to die is to be with Him.",
-        "front": "To live is Christ, to die is gain, set around the hourglass",
-        "back": "Small Awebound wordmark below the collar",
+        "meaning": "Paul wrote this from prison, not knowing whether he would be released or executed, and decided he couldn’t lose either way. If he lived, he would keep serving Christ. If he died, he would be with Him. The hourglass holds a cross above and a sprouting seed below, time running out and a life that keeps going.",
+        "front": "“To live is Christ, to die is gain” around an hourglass, with Philippians 1:21",
+        "back": "Large Awebound wordmark with thorn branches across the upper back",
         "inks": "Bone",
-        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "fit": "Larger oversized · dropped shoulder, extra-boxy body",
         "material": null
       },
       "images": [
         {
           "view": "front",
           "url": "/products/to-live-is-christ/front.webp",
-          "alt": "To Live Is Christ oversized tee, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
+          "alt": "To Live Is Christ oversized tee in navy, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
         },
         {
           "view": "back",
           "url": "/products/to-live-is-christ/back.webp",
-          "alt": "To Live Is Christ oversized tee, back: small wordmark below the collar"
+          "alt": "To Live Is Christ oversized tee in navy, back: large Awebound wordmark across the upper back"
         },
         {
           "view": "detail",
@@ -342,7 +339,7 @@
       "position": 7,
       "collection": "behold",
       "category": "hats",
-      "colors": ["Washed black twill"],
+      "colors": ["Washed charcoal twill"],
       "priceCents": 3000,
       "featured": false,
       "releasedAt": "2026-10-09",
@@ -355,30 +352,29 @@
       "story": {
         "theme": "Sacrifice",
         "call": "Behold the Lamb",
-        "motif": "rays",
-        "art": "The Lamb of God, embroidered in raised bone thread across the front panel.",
-        "meaning": "When John the Baptist saw Jesus coming toward him, he named Him: the Lamb of God, who takes away the sin of the world. It is the call this whole release is named for. The lamb is embroidered in raised bone thread with a single mark of red, and the reference sits on the side of the cap.",
-        "front": "Raised embroidered lamb in bone thread",
-        "back": "Awebound wordmark with red thorns above the snap; John 1:29 on the side",
-        "inks": "Bone and red thread",
-        "fit": "Otto mid-profile snapback · structured crown, adjustable snap",
+        "art": "The Lamb of God, embroidered in white thread across the front, with one mark of red.",
+        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. Older English Bibles begin John’s words with “Behold,” and this release takes its name from them. The lamb is stitched in white with a single mark of red, and John 1:29 sits on the side.",
+        "front": "Embroidered lamb in white thread, with a mark of red",
+        "back": "Awebound wordmark with red thorns above the strap; John 1:29 on the side",
+        "inks": "White and red thread",
+        "fit": "Distressed cap · curved brim, adjustable strap back",
         "material": null
       },
       "images": [
         {
           "view": "front",
           "url": "/products/lambs-mark/front.webp",
-          "alt": "Lamb’s Mark snapback, front: the embroidered lamb"
-        },
-        {
-          "view": "back",
-          "url": "/products/lambs-mark/rear.webp",
-          "alt": "Lamb’s Mark snapback, rear: the Awebound wordmark with red thorns"
+          "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb"
         },
         {
           "view": "side",
           "url": "/products/lambs-mark/side.webp",
-          "alt": "Lamb’s Mark snapback, side: John 1:29"
+          "alt": "Lamb’s Mark distressed cap, side: John 1:29 in red"
+        },
+        {
+          "view": "back",
+          "url": "/products/lambs-mark/back.webp",
+          "alt": "Lamb’s Mark distressed cap, back: the Awebound wordmark with red thorns above the strap"
         },
         {
           "view": "detail",

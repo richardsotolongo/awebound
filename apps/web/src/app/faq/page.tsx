@@ -76,13 +76,13 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How do your pieces fit?",
-        text: "Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts: regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier still. The hoodie is a relaxed fit with a dropped shoulder. The cap is a mid-profile snapback that adjusts at the back. Each product page has a size guide.",
+        text: "Each product page names its cut and has a size guide. Our oversized tees come in two cuts: regular oversized, which is wide with a dropped shoulder, and larger oversized, which is wider and boxier. The hoodie is relaxed with a dropped shoulder. The cap adjusts with a strap at the back.",
         a: (
           <p>
-            Every product names its cut. Tees are a regular fit. Oversized tees come in two cuts:
-            regular oversized, wide with a dropped shoulder, and larger oversized, wider and boxier
-            still. The hoodie is a relaxed fit with a dropped shoulder. The cap is a mid-profile
-            snapback that adjusts at the back. Each product page has a size guide.
+            Each product page names its cut and has a size guide. Our oversized tees come in two
+            cuts: regular oversized, which is wide with a dropped shoulder, and larger oversized,
+            which is wider and boxier. The hoodie is relaxed with a dropped shoulder. The cap
+            adjusts with a strap at the back.
           </p>
         ),
       },
@@ -150,17 +150,17 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "Why don’t your designs show Jesus?",
-        text: "Out of reverence, we use symbols only: the cross, thorns, the empty tomb, the Lamb, lilies. The story is His; the art points to it.",
+        text: "Out of reverence, we use symbols instead: a cross, a crown of thorns, the rolled-away stone, the Lamb, lilies. The story is His, and the art points to Him.",
         a: (
           <p>
-            Out of reverence, we use symbols only: the cross, thorns, the empty tomb, the Lamb,
-            lilies. The story is His; the art points to it.
+            Out of reverence, we use symbols instead: a cross, a crown of thorns, the rolled-away
+            stone, the Lamb, lilies. The story is His, and the art points to Him.
           </p>
         ),
       },
       {
         q: "Which Bible translation do you use?",
-        text: `Scripture quoted on this website is from the ${TRANSLATION_NAME}. Every piece carries its full Scripture reference. Lettering printed on some designs uses the wording of the King James Version, and each approved design is kept exactly as it was drawn. ${TRANSLATION_NOTICE}`,
+        text: `Scripture quoted on this website is from the ${TRANSLATION_NAME}. Every piece carries its full Scripture reference. The words printed on each design keep the wording it was drawn with, which is the King James Version on some pieces. ${TRANSLATION_NOTICE}`,
         a: (
           <>
             <p>
@@ -168,7 +168,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
               its full Scripture reference.
               {TRANSLATION === "KJV"
                 ? " The lettering printed on some designs uses the same King James wording."
-                : " Lettering printed on some designs uses the wording of the King James Version, and each approved design is kept exactly as it was drawn."}
+                : " The words printed on each design keep the wording it was drawn with, which is the King James Version on some pieces."}
             </p>
             <p className="aw-small">{TRANSLATION_NOTICE}</p>
           </>

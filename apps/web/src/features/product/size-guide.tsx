@@ -43,8 +43,8 @@ export function SizeGuide({ category, cut }: { category: CategorySlug; cut: stri
     return (
       <div className="prose">
         <p>
-          One size fits most. The snap closure adjusts to fit heads from about 21 to 23.5 inches
-          around.
+          One size fits most. The strap at the back adjusts to fit heads from about 21 to 23.5
+          inches around.
         </p>
       </div>
     );

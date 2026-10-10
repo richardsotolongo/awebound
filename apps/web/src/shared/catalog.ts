@@ -145,17 +145,12 @@ export const ProductSummarySchema = z.object({
 });
 export type ProductSummary = z.infer<typeof ProductSummarySchema>;
 
-export const MOTIF_NAMES = ["ground", "sea", "rays", "bloom", "stone", "hourglass"] as const;
-export type MotifName = (typeof MOTIF_NAMES)[number];
-
 /** Product copy, following the voice template in the brand skill. */
 export const ProductStorySchema = z.object({
-  /** What the piece calls people to see, in one word: "Holiness". */
+  /** What the piece calls people to see, in one word: "Healing". */
   theme: z.string(),
-  /** The design story's headline: "Behold His holiness". */
+  /** The design story's headline: "Behold the One who heals". */
   call: z.string(),
-  /** Line art drawn behind the piece when it is featured on the home page. */
-  motif: z.enum(MOTIF_NAMES),
   /** One sentence on the main art and what it shows. */
   art: z.string(),
   /** The full explanation: the moment in Scripture and how the artwork carries it. */

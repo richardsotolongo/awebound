@@ -2,41 +2,43 @@
 
 import { Button, ScriptureQuote } from "@awebound/brand";
 import type { ProductSummary, ProductStory } from "@/shared";
-import { useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { MOTIFS } from "./motifs";
 
 interface DesignStoryProps {
   product: ProductSummary;
-  story: Pick<ProductStory, "theme" | "call" | "motif" | "art" | "meaning">;
-  /** The artwork, cropped close. */
-  image: { url: string; alt: string };
+  story: Pick<ProductStory, "theme" | "call" | "art" | "meaning">;
+  /** The piece in its stone niche: the niche, and the garment with its shadow, as two layers. */
+  scene: { niche: string; piece: string; alt: string };
   flip?: boolean;
 }
 
 /**
- * One featured piece: its artwork, the moment in Scripture behind it and what the design does
- * with it. Only the line art around the image moves, drawn as the section scrolls into view;
- * the words, verse and button are readable the whole time.
+ * One featured piece: the garment hanging in a pointed stone niche in its own color, the moment
+ * in Scripture behind it, and what the design does with it. Only the garment moves, drifting a
+ * little against the niche as the section scrolls by; the words, verse and button are readable
+ * the whole time.
  */
-export function DesignStory({ product, story, image, flip }: DesignStoryProps) {
+export function DesignStory({ product, story, scene, flip }: DesignStoryProps) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
-  const done = useMotionValue(1);
-  const progress = useTransform(reduce ? done : scrollYProgress, [0.1, 1], [0, 1], {
-    clamp: true,
-  });
-  const Motif = MOTIFS[story.motif];
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["2.5%", "-2.5%"]);
   const id = `story-${product.slug}`;
 
   return (
     <article ref={ref} className="story" data-flip={flip} aria-labelledby={id}>
       <div className="story-art">
         <div className="story-plate">
-          <Motif progress={progress} />
-          {/* eslint-disable-next-line @next/next/no-img-element -- catalog images may come from a provider CDN */}
-          <img src={image.url} alt={image.alt} loading="lazy" decoding="async" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- layered scene, sized by CSS */}
+          <img src={scene.niche} alt="" loading="lazy" decoding="async" />
+          <motion.img
+            src={scene.piece}
+            alt={scene.alt}
+            loading="lazy"
+            decoding="async"
+            style={{ y }}
+          />
         </div>
       </div>
       <div className="story-text">

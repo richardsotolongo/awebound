@@ -9,7 +9,7 @@ export function ShopHeader({ view }: { view: CollectionView }) {
   const { release, latest } = view;
   if (!release) {
     return (
-      <header className="shop-head">
+      <header className="shop-head soft-glow">
         <p className="aw-label">All collections</p>
         <h1 className="aw-h1">The shop</h1>
         <p className="aw-body">Every Awebound piece, across every release.</p>
@@ -18,7 +18,7 @@ export function ShopHeader({ view }: { view: CollectionView }) {
   }
   const isLatest = latest?.slug === release.slug;
   return (
-    <header className="shop-head">
+    <header className="shop-head soft-glow">
       <p className="aw-label">
         {isLatest ? "Latest drop · " : ""}Release {release.number}
       </p>

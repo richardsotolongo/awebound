@@ -4,7 +4,7 @@ import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { BrandLink } from "../link";
 import { Button } from "./button";
 import type { NavLink } from "./header";
-import { ThornCross } from "./marks";
+import { ThornCross, Wordmark } from "./marks";
 
 export interface FooterProps {
   links?: NavLink[];
@@ -20,7 +20,10 @@ export interface FooterProps {
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** The site footer: small Thorn Cross and tagline, a release-updates sign-up and policy links. */
+/**
+ * The site footer: small Thorn Cross and tagline, a release-updates sign-up and policy links,
+ * the legal line, and the wordmark across the full width at the very bottom.
+ */
 export function Footer({
   links = [],
   tagline = "Bound in awe. Worn without shame.",
@@ -110,6 +113,9 @@ export function Footer({
       <div className="aw-footer-legal aw-small">
         <p>© {year ?? new Date().getFullYear()} Awebound</p>
         {notice ? <p className="aw-footer-notice">{notice}</p> : null}
+      </div>
+      <div className="aw-footer-mark">
+        <Wordmark title="Awebound" style={{ width: "100%", height: "auto" }} />
       </div>
     </footer>
   );

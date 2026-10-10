@@ -10,6 +10,25 @@
     backdrop-filter: saturate(1.1) blur(10px);
   }
 
+  /* Light from above behind a page's title. The glow is an ellipse that fades to nothing inside
+     its own box (closest-side, eased stops), and the box is larger than the block it lights, so
+     no edge, container or section boundary ever shows as a line. Put it on a positioned
+     element with isolation; size and place it with top/left/width/height per use. */
+  .soft-glow::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      closest-side,
+      var(--light-shaft),
+      color-mix(in srgb, var(--light-shaft) 62%, transparent) 30%,
+      color-mix(in srgb, var(--light-shaft) 30%, transparent) 55%,
+      color-mix(in srgb, var(--light-shaft) 10%, transparent) 78%,
+      transparent
+    );
+  }
+
   .page-header {
     padding-block: var(--space-16) var(--space-12);
     display: grid;
@@ -304,6 +323,36 @@
   .about-split-body {
     display: grid;
     gap: var(--space-6);
+  }
+  /* The founder's portrait under the heading, and his note set apart above the rest. */
+  .founder-photo {
+    margin: var(--space-6) 0 0;
+    display: grid;
+    gap: var(--space-3);
+    max-width: 420px;
+  }
+  .founder-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 1px var(--line-strong);
+  }
+  .founder-photo figcaption {
+    color: var(--ink-subtle);
+  }
+  .founder-note {
+    display: grid;
+    gap: var(--space-4);
+    padding-left: var(--space-6);
+    border-left: 2px solid var(--primary);
+  }
+  .founder-note .aw-body {
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink);
   }
   .about-together-head {
     display: grid;
