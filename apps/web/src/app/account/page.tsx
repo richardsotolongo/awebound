@@ -2,28 +2,28 @@ import { Button } from "@awebound/brand";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
+import { AccountsClosedActions, accountsClosedCopy } from "@/features/account/accounts-closed";
 import { DeleteAccount } from "@/features/account/delete-account";
 import { ProfileForm } from "@/features/account/profile-form";
 import { accountsEnabled } from "@/lib/env";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { getLatestRelease, withFallback } from "@/server/catalog";
 
 export const metadata: Metadata = {
   title: "Account",
   robots: { index: false },
 };
 
+export const revalidate = 60;
+
 export default async function AccountPage() {
   if (!accountsEnabled) {
+    const release = await withFallback(getLatestRelease, null);
+    const copy = accountsClosedCopy(release);
     return (
       <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
-        <PageHeader
-          eyebrow="Account"
-          title="Accounts open soon"
-          intro="You can still shop and check out as a guest."
-        />
-        <Button variant="secondary" href="/shop">
-          Shop the release
-        </Button>
+        <PageHeader eyebrow="Account" title={copy.title} intro={copy.intro} />
+        <AccountsClosedActions release={release} />
       </div>
     );
   }
@@ -93,7 +93,7 @@ export default async function AccountPage() {
               Contact us
             </Button>
             <Button variant="link" href="/shop">
-              Shop the release
+              Visit the shop
             </Button>
           </div>
         </section>

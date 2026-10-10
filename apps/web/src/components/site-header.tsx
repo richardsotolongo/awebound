@@ -67,7 +67,7 @@ export function SiteHeader() {
             <Link href={account.href} className="aw-btn aw-btn-secondary aw-btn-block">
               {account.label}
             </Link>
-            {signedIn ? null : <p className="aw-small">Optional. Guest checkout is always open.</p>}
+            {signedIn ? null : <p className="aw-small">Optional. You never need an account to order.</p>}
           </div>
         ) : null}
         <nav aria-label="Main" className="mobile-nav">

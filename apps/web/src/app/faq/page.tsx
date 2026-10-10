@@ -40,11 +40,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Do I need an account to order?",
-        text: "No. You can check out as a guest. An account lets you keep your details and, soon, see your orders. Sign in with Google or a one-time email link; there are no passwords.",
+        text: "No. Once ordering opens, you can check out as a guest. Accounts are optional: they keep your details in one place, and you sign in with Google or a one-time email link, with no password.",
         a: (
           <p>
-            No. You can check out as a guest. An account lets you keep your details and, soon, see
-            your orders. Sign in with Google or a one-time email link; there are no passwords.
+            No. Once ordering opens, you can check out as a guest. Accounts are optional: they keep
+            your details in one place, and you sign in with Google or a one-time email link, with no
+            password.
           </p>
         ),
       },

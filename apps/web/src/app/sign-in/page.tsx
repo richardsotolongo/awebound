@@ -1,8 +1,10 @@
-import { Button, ThornCross } from "@awebound/brand";
+import { ThornCross } from "@awebound/brand";
 import type { Metadata } from "next";
+import { AccountsClosedActions, accountsClosedCopy } from "@/features/account/accounts-closed";
 import { SignInForm } from "@/features/auth/sign-in-form";
 import { accountsEnabled } from "@/lib/env";
 import { safeNext } from "@/lib/supabase/server";
+import { getLatestRelease, withFallback } from "@/server/catalog";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -23,6 +25,9 @@ export default async function SignInPage({
   const params = await searchParams;
   const next = safeNext(params.next);
   const error = params.error ? (ERRORS[params.error] ?? ERRORS.link) : null;
+  const release = await withFallback(getLatestRelease, null);
+  const open = release?.status === "open";
+  const closed = accountsClosedCopy(release);
 
   return (
     <div className="aw-container section" style={{ display: "grid", justifyItems: "center" }}>
@@ -40,7 +45,9 @@ export default async function SignInPage({
           </span>
           <h1 className="aw-h1">Sign in</h1>
           <p className="aw-body">
-            Keep your details and, soon, see your orders. You can always check out as a guest.
+            {open
+              ? "An account keeps your details in one place. You can always check out as a guest instead."
+              : "An account keeps your details in one place. You won’t need one to order once ordering opens."}
           </p>
         </div>
         {error ? (
@@ -52,13 +59,9 @@ export default async function SignInPage({
           <SignInForm next={next} />
         ) : (
           <div className="notice" role="status">
-            <p className="aw-h3">Accounts open soon</p>
-            <p className="aw-small">You can still shop and check out as a guest.</p>
-            <div>
-              <Button variant="secondary" href="/shop">
-                Shop the release
-              </Button>
-            </div>
+            <p className="aw-h3">{closed.title}</p>
+            <p className="aw-small">{closed.intro}</p>
+            <AccountsClosedActions release={release} />
           </div>
         )}
       </div>

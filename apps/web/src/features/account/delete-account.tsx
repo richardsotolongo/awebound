@@ -55,7 +55,9 @@ export function DeleteAccount({ email }: { email: string }) {
           <p id="delete-confirm-title" className="aw-h3">
             Delete your account?
           </p>
-          <p className="aw-small">You can’t undo this. You can still shop as a guest afterwards.</p>
+          <p className="aw-small">
+            You can’t undo this. You can still order as a guest whenever ordering is open.
+          </p>
           <div className="account-actions">
             <Button variant="primary" onClick={confirm} disabled={state === "deleting"}>
               {state === "deleting" ? "Deleting…" : "Delete my account"}

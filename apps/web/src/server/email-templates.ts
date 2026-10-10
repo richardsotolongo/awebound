@@ -169,11 +169,11 @@ export function subscriberWelcome(siteUrl: string): RenderedEmail {
       eyebrow("Drop notes"),
       lead("You’re on the list."),
       row("You’ll hear from us when a new release is ready. Nothing else."),
-      button("Shop the release", `${siteUrl}/shop`),
+      button("See the pieces", `${siteUrl}/shop`),
       small("Don’t want these? Reply with “stop” and we’ll take you off the list."),
     ],
   });
-  const text = `You’re on the list.\n\nYou’ll hear from us when a new release is ready. Nothing else.\n\nShop the release: ${siteUrl}/shop\n\nDon’t want these? Reply with “stop” and we’ll take you off the list.`;
+  const text = `You’re on the list.\n\nYou’ll hear from us when a new release is ready. Nothing else.\n\nSee the pieces: ${siteUrl}/shop\n\nDon’t want these? Reply with “stop” and we’ll take you off the list.`;
   return { subject, html, text };
 }
 
