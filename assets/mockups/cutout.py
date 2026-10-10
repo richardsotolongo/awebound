@@ -34,19 +34,23 @@ CUTOUTS = HERE / "cutouts"
 # `touching` sheets have views that touch, so they are split along the narrowest point between
 # them (see split_garments). `gaps` reopens backdrop showing between a sleeve and the body;
 # `trim_shadow` removes a contact shadow under a dark hem; `fill_neck` fills a white tee's
-# inner collar (see the functions of the same names).
+# inner collar (see the functions of the same names). `mirror_sleeve` rebuilds the sleeve that
+# touched the neighbouring garment from a mirror image of the far one (see mirror_sleeve).
 SHEETS: dict[str, dict] = {
     "still-the-storm": {
+        "mirror_sleeve": {"front": "right", "back": "left"},
         "mode": "dark",
         "touching": True,
         "views": [("front", (20, 95, 768, 945)), ("back", (768, 95, 1520, 945))],
     },
     "by-his-hem": {
+        "mirror_sleeve": {"front": "right", "back": "left"},
         "mode": "light",
         "touching": True,
         "views": [("front", (15, 75, 768, 945)), ("back", (768, 75, 1515, 945))],
     },
     "thorns-to-lilies": {
+        "mirror_sleeve": {"front": "right", "back": "left"},
         "mode": "white",
         "touching": True,
         "fill_neck": ("front",),
@@ -59,11 +63,14 @@ SHEETS: dict[str, dict] = {
         "views": [("front", (15, 70, 768, 945)), ("back", (768, 70, 1520, 945))],
     },
     "stone-in-motion": {
+        "mirror_sleeve": {"front": "right", "back": "left"},
+        "trim_shadow": True,
         "mode": "light",
         "touching": True,
         "views": [("front", (30, 95, 768, 935)), ("back", (768, 95, 1510, 935))],
     },
     "to-live-is-christ": {
+        "mirror_sleeve": {"front": "right", "back": "left"},
         "mode": "dark",
         "touching": True,
         "trim_shadow": True,
@@ -164,18 +171,23 @@ def gaps(rgb8: np.ndarray, mask: np.ndarray) -> np.ndarray:
     return ndimage.binary_dilation(out, iterations=2) & mask
 
 
-def bottom_shadow(rgb8: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """The soft contact shadow under a dark hem is dark enough to pass as garment. Walk up each
-    column from the bottom and drop pixels clearly lighter than the garment."""
+def bottom_shadow(rgb8: np.ndarray, mask: np.ndarray, mode: str = "dark") -> np.ndarray:
+    """The contact shadow under a hem can pass as garment: lighter than a dark garment but still
+    dark, or a grey band under a light one. Walk up each column from the bottom and drop pixels
+    that don't match the garment's lightness."""
     lab, _ = lab_and_delta(rgb8)
     L = lab[..., 0]
-    ref = np.percentile(L[mask], 30)
+    if mode == "dark":
+        ref = np.percentile(L[mask], 30)
+        garment = L <= ref + 12
+    else:
+        ref = np.percentile(L[mask], 50)
+        garment = L >= ref - 18
     out = np.zeros_like(mask)
-    h, w = mask.shape
     for x in np.flatnonzero(mask.any(0)):
         ys = np.flatnonzero(mask[:, x])
         for y in ys[::-1]:
-            if L[y, x] <= ref + 12:
+            if garment[y, x]:
                 break
             out[y, x] = True
     return ndimage.binary_opening(out, iterations=1)
@@ -322,7 +334,7 @@ def cut(
     if find_gaps:
         background |= gaps(rgb8, mask)
     if trim_shadow:
-        background |= bottom_shadow(rgb8, mask)
+        background |= bottom_shadow(rgb8, mask, mode)
     alpha = np.clip(refine(rgb8, mask, exclude, background), 0, 1)
     if view in fill_neck:
         neck = neck_opening(alpha > 0.5)
@@ -342,6 +354,81 @@ def cut(
     return img.crop(img.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox())
 
 
+def mirror_sleeve(img: Image.Image, side: str, band: int = 28) -> Image.Image:
+    """Rebuilds the sleeve on `side` ("left" or "right") from a mirror image of the other one.
+    Where two garments touched on the sheet, the sleeves between them overlap or meet at the
+    cuff, so the cut leaves that sleeve folded, notched or short; the far sleeve is whole. The
+    body's side lines (measured below the sleeves) give the garment's centre line, the far
+    sleeve is mirrored across it, and only the region beyond that side line is replaced, with a
+    short blend so the shoulder runs on without a seam. The body and its print stay untouched."""
+    pad = 80
+    rgba = np.asarray(img.convert("RGBA")).astype(np.float64) / 255
+    rgba = np.pad(rgba, ((0, 0), (pad, pad), (0, 0)))
+    alpha = rgba[..., 3]
+    hard = alpha > 0.5
+    h, w = hard.shape
+    rows = np.flatnonzero(hard.any(1))
+    top, bottom = rows.min(), rows.max()
+    height = bottom - top
+    below = range(top + int(0.66 * height), top + int(0.9 * height))
+    lefts = [np.flatnonzero(hard[y])[0] for y in below if hard[y].any()]
+    rights = [np.flatnonzero(hard[y])[-1] for y in below if hard[y].any()]
+    body_l, body_r = float(np.median(lefts)), float(np.median(rights))
+    cx = (body_l + body_r) / 2
+
+    # The far sleeve's lowest point sets how far down the rebuilt region reaches.
+    far = hard[:, : int(body_l) - 6] if side == "right" else hard[:, int(body_r) + 6 :]
+    sleeve_bottom = np.flatnonzero(far.any(1)).max() + 12
+
+    xs = np.arange(w, dtype=np.float64)
+    src = np.clip(np.round(2 * cx - xs).astype(int), 0, w - 1)
+    mirror = rgba[:, src]
+    # The blend is wide across the shoulder, where sleeve and body are one piece of cloth, and
+    # narrow lower down, where the sleeve's underside meets the body at a clean edge.
+    ys = np.arange(h, dtype=np.float64)[:, None]
+    shoulder = np.clip((top + 0.3 * height - ys) / (0.1 * height), 0, 1)
+    width = 8 + (band - 8) * shoulder
+    if side == "right":
+        weight = np.clip((xs[None, :] - (body_r - 4)) / width, 0, 1)
+        outside = np.clip((xs - (body_r + 4)) / 8, 0, 1)
+    else:
+        weight = np.clip(((body_l + 4) - xs[None, :]) / width, 0, 1)
+        outside = np.clip(((body_l - 4) - xs) / 8, 0, 1)
+    # Below the sleeve only what lies outside the body's side line is taken from the mirror,
+    # which clears any scrap of the neighbouring garment left beside the body.
+    weight[sleeve_bottom:] = outside
+
+    a0, a1 = alpha.copy(), mirror[..., 3].copy()
+    p0 = rgba[..., :3] * alpha[..., None]
+    p1 = mirror[..., :3] * mirror[..., 3:4]
+    # The two shoulder lines rarely sit at the same height where they meet, and averaging them
+    # would leave a see-through ghost or a step. In each column of the shoulder blend, slide both
+    # columns up or down so their top edges meet at the blended height, then mix.
+    yy = np.arange(sleeve_bottom, dtype=np.float64)
+    for x in range(w):
+        wt = weight[top + 2, x]
+        if not 0 < wt < 1:
+            continue
+        on0 = np.flatnonzero(a0[:sleeve_bottom, x] > 0.5)
+        on1 = np.flatnonzero(a1[:sleeve_bottom, x] > 0.5)
+        if not len(on0) or not len(on1):
+            continue
+        target = (1 - wt) * on0[0] + wt * on1[0]
+        for arr_a, arr_p, edge in ((a0, p0, on0[0]), (a1, p1, on1[0])):
+            shift = target - edge
+            src_y = yy - shift
+            arr_a[:sleeve_bottom, x] = np.interp(src_y, yy, arr_a[:sleeve_bottom, x], left=0, right=0)
+            for c in range(3):
+                arr_p[:sleeve_bottom, x, c] = np.interp(src_y, yy, arr_p[:sleeve_bottom, x, c], left=0, right=0)
+
+    wgt = weight[..., None]
+    premult = p0 * (1 - wgt) + p1 * wgt
+    a = a0 * (1 - weight) + a1 * weight
+    rgb = np.where(a[..., None] > 1e-4, premult / np.maximum(a, 1e-4)[..., None], 0)
+    out = Image.fromarray((np.dstack([np.clip(rgb, 0, 1), a]) * 255).round().astype(np.uint8), "RGBA")
+    return out.crop(out.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox())
+
+
 def main() -> None:
     CUTOUTS.mkdir(exist_ok=True)
     for slug, sheet in SHEETS.items():
@@ -357,6 +444,8 @@ def main() -> None:
                 sheet.get("gaps", False),
                 sheet.get("trim_shadow", False),
             )
+            if view in sheet.get("mirror_sleeve", {}):
+                img = mirror_sleeve(img, sheet["mirror_sleeve"][view])
             path = CUTOUTS / f"{slug}-{view}.webp"
             img.save(path, "WEBP", lossless=True, method=6)
             print(path.relative_to(HERE), img.size, flush=True)
