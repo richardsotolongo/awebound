@@ -372,12 +372,12 @@
         {
           "view": "back",
           "url": "/products/the-passage/back.webp",
-          "alt": "The Passage hoodie in olive, back: “I will fear no evil” above a traveler on a path through a dark valley toward a cross, Psalm 23:4"
+          "alt": "The Passage hoodie in cypress, back: “I will fear no evil” above a traveler on a path through a dark valley toward a cross, Psalm 23:4"
         },
         {
           "view": "front",
           "url": "/products/the-passage/front.webp",
-          "alt": "The Passage hoodie in olive, front: the wordmark and the Thorn Cross, center chest"
+          "alt": "The Passage hoodie in cypress, front: the wordmark and the Thorn Cross, center chest"
         },
         {
           "view": "detail",
@@ -407,11 +407,11 @@
       "story": {
         "theme": "Creation",
         "call": "Behold the One who made you",
-        "art": "Roses, blossoms and branches grow around a wooden cross and the words “Fearfully & wonderfully made.”",
-        "meaning": "In Psalm 139, David is amazed at how completely God knows him: every thought, every word, every day of his life, written down before one of them came to be. God formed him in his mother’s womb, and David answers with praise, because he is fearfully and wonderfully made. The back sets those words among roses in bloom around a wooden cross. The front carries the wordmark and the Thorn Cross in deep red.",
+        "art": "Roses and red leaves wind around the words “Fearfully & wonderfully made” and a wooden cross.",
+        "meaning": "In Psalm 139, David is amazed at how completely God knows him: every thought, every word, every day of his life, written down before one of them came to be. God formed him in his mother’s womb, and David answers with praise, because he is fearfully and wonderfully made. The back sets those words among roses in bloom beside a wooden cross. The front carries the wordmark and the Thorn Cross in deep red.",
         "front": "Awebound wordmark and the Thorn Cross in deep red, center chest",
-        "back": "“Fearfully & wonderfully made” in ornate lettering among roses, blossoms and a wooden cross, with Psalm 139:14 below",
-        "inks": "Deep red, rose, cream",
+        "back": "“Fearfully & wonderfully made” in ornate red lettering among roses and leaves, beside a wooden cross, with Psalm 139:14 below",
+        "inks": "Deep red, rose, cream, wood brown",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
         "material": null
       },
@@ -419,12 +419,12 @@
         {
           "view": "back",
           "url": "/products/wonderfully-made/back.webp",
-          "alt": "Wonderfully Made hoodie in dusty blue, back: “Fearfully & wonderfully made” among roses around a wooden cross, Psalm 139:14"
+          "alt": "Wonderfully Made hoodie in Carolina blue, back: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
         },
         {
           "view": "front",
           "url": "/products/wonderfully-made/front.webp",
-          "alt": "Wonderfully Made hoodie in dusty blue, front: the wordmark and the Thorn Cross in deep red"
+          "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark and the Thorn Cross in deep red"
         },
         {
           "view": "detail",

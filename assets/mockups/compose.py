@@ -59,9 +59,10 @@ CAPS = ("lambs-mark", "signature-cap")
 
 # Views in display order. The first is the listing image and always shows the whole garment.
 # `detail` is a close crop of the main artwork: (view, center x, center y, width), as fractions
-# of the cutout. `detail_source: "mockup"` takes that crop (and the home story scene) from the
-# approved mockup instead of the Fourthwall render: on the hoodie renders the hood hangs over the
-# top of the back print, so the close-up shows the whole design from the mockup.
+# of the cutout. On the hoodie renders the hood hangs over the top of the back print, so hoodie
+# close-ups show the whole design another way: `detail_source: "mockup"` crops the approved mockup
+# (also used for the home story scene), and `"print"` lays the back print file itself on the
+# hoodie's fabric (for a design that changed after its mockup was made).
 VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.5, 0.72)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.47, 0.42, 0.74)},
@@ -70,7 +71,7 @@ VIEWS = {
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.52, 0.45, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.48, 0.66)},
     "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "mockup"},
-    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "mockup"},
+    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "print"},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.4, 0.56)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
 }
@@ -299,7 +300,8 @@ def story(slug: str) -> None:
     )
 
     # The garment hangs centred in the opening; its shadow falls on the back wall.
-    cutout = load_garment(slug, STORY_VIEW[slug], VIEWS[slug].get("detail_source", "render"))
+    source = VIEWS[slug].get("detail_source", "render")
+    cutout = load_garment(slug, STORY_VIEW[slug], "render" if source == "print" else source)
     hat = slug in CAPS
     open_w = w - 2 * 78
     box_w, box_h = open_w * (0.74 if hat else 0.74), (sill_top - 200) * (0.6 if hat else 0.88)
@@ -322,6 +324,40 @@ def story(slug: str) -> None:
     print(slug, "story")
 
 
+def print_closeup(slug: str, view: str) -> Image.Image:
+    """The back print file on a patch of the garment's own fabric, taken from the render below the
+    print, so the close-up shows the whole design in its real colors with the knit showing through."""
+    garment = load_garment(slug, view)
+    g = np.asarray(garment.convert("RGB"), np.float32) / 255
+    gh, gw = g.shape[:2]
+    patch = g[int(gh * 0.72) : int(gh * 0.84), int(gw * 0.34) : int(gw * 0.66)]
+    # Mirror-tile the patch to fill the frame, then soften the repeat with a little blur.
+    reps = (DETAIL_H // patch.shape[0] + 2, DETAIL_W // patch.shape[1] + 2)
+    tile = np.concatenate([patch, patch[::-1]], 0)
+    tile = np.concatenate([tile, tile[:, ::-1]], 1)
+    fabric = np.tile(tile, (reps[0] // 2 + 1, reps[1] // 2 + 1, 1))[:DETAIL_H, :DETAIL_W]
+    fabric_img = Image.fromarray((fabric * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6))
+    fabric = np.asarray(fabric_img, np.float32) / 255
+    yy, xx = np.mgrid[0:DETAIL_H, 0:DETAIL_W].astype(np.float32)
+    v = np.hypot(xx / DETAIL_W - 0.5, yy / DETAIL_H - 0.45)
+    fabric *= (1.04 - 0.16 * np.clip(v / 0.7, 0, 1) ** 2)[..., None]
+
+    art = Image.open(RENDERS / f"{slug}-print.webp").convert("RGBA")
+    scale = min(DETAIL_W * 0.86 / art.width, DETAIL_H * 0.88 / art.height)
+    art = art.resize((round(art.width * scale), round(art.height * scale)), Image.LANCZOS)
+    x, y = (DETAIL_W - art.width) // 2, (DETAIL_H - art.height) // 2
+    a = np.zeros((DETAIL_H, DETAIL_W), np.float32)
+    rgb = np.zeros((DETAIL_H, DETAIL_W, 3), np.float32)
+    arr = np.asarray(art, np.float32) / 255
+    a[y : y + art.height, x : x + art.width] = arr[..., 3]
+    rgb[y : y + art.height, x : x + art.width] = arr[..., :3]
+    # Ink takes on the knit: modulate it by the fabric's local light and shade.
+    luma = fabric.mean(-1, keepdims=True)
+    ink = np.clip(rgb * (luma / max(float(luma.mean()), 1e-3)) ** 0.7, 0, 1)
+    out = fabric * (1 - a[..., None]) + ink * a[..., None]
+    return Image.fromarray((np.clip(out, 0, 1) * 255).round().astype(np.uint8), "RGB")
+
+
 def main() -> None:
     for slug, spec in VIEWS.items():
         folder = OUT / slug
@@ -335,6 +371,11 @@ def main() -> None:
             print(folder.name, view)
 
         view, cx, cy, frac = spec["detail"]
+        if spec.get("detail_source") == "print":
+            print_closeup(slug, view).save(folder / "detail.webp", "WEBP", quality=88, method=6)
+            print(folder.name, "detail (print)")
+            story(slug)
+            continue
         cutout = load_garment(slug, view, spec.get("detail_source", "render"))
         # Crop the artwork, then lay it on the same surface so any edge that shows matches.
         cw = round(cutout.width * frac)

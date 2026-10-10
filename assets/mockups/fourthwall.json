@@ -1,5 +1,5 @@
 {
-  "$comment": "Product renders from the Awebound Fourthwall shop (Fourthwall admin > Products > each product's images), by site slug and view. fourthwall.py downloads them into fourthwall/ and compose.py builds the site images from them; a piece without renders here falls back to the approved mockup cutouts. `hold` keeps a piece on its mockup and says why. Update a URL when the product's images change in Fourthwall, then run fourthwall.py and compose.py.",
+  "$comment": "Product renders from the Awebound Fourthwall shop (Fourthwall admin > Products > each product's images), by site slug and view. fourthwall.py downloads them into fourthwall/ and compose.py builds the site images from them; a piece without renders here falls back to the approved mockup cutouts. `hold` keeps a piece on its mockup and says why. `print` is the back print file, used for the close-up when the render hides part of the print and the mockup no longer matches the design. Update a URL when the product's images change in Fourthwall, then run fourthwall.py and compose.py.",
   "base": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "products": {
     "thorns-to-lilies": {
@@ -53,11 +53,11 @@
     },
     "wonderfully-made": {
       "fourthwallSlug": "wonderfully-made-hoodie",
-      "hold": "The back print file spells WONDERFULLY as WONDERFULY (checked again after the October 10 update). Keep the mockup until the print is fixed in Fourthwall.",
       "views": {
-        "front": "e2fb27af-9560-4899-8299-6a88a74b9d8d.webp",
-        "back": "894d7de4-7a3b-4d37-8cb9-3bedf97c5a52.webp"
-      }
+        "front": "574f09dc-18a9-47b3-8876-4add087854b7.webp",
+        "back": "87c0d7b7-80d1-4e7b-ae49-e3736a7aae51.webp"
+      },
+      "print": "ce949cf0-b965-46a8-bf96-cb1f80c3720d.png"
     },
     "lambs-mark": {
       "fourthwallSlug": "lambs-mark-hat",
