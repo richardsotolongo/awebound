@@ -40,16 +40,18 @@
     "torn-veil": {
       "fourthwallSlug": "torn-veil-hoodie",
       "views": {
-        "front": "7871884e-54e3-4ca6-bc6e-43309ee1c6bc.webp",
-        "back": "d89b8ebf-9f85-465a-8b19-b16cc74fdc13.webp"
-      }
+        "front": "82d625b2-c6df-439c-9db1-798ccc39b5ca.webp",
+        "back": "d4ca206b-a509-4a25-a348-e45397592c17.webp"
+      },
+      "print": "d999c1fb-7ecc-4df3-b5b0-c74f0b11afb1.png"
     },
     "the-passage": {
       "fourthwallSlug": "the-passage-hoodie",
       "views": {
-        "front": "5bc69de6-2afa-4729-a023-9f8a11de06f6.webp",
-        "back": "5d000fa8-ce4f-4236-ad19-116d0601f3ae.webp"
-      }
+        "front": "9171322d-0621-4efe-9828-0a603eb42c36.webp",
+        "back": "83d675a8-c278-4f84-a3c7-25361480f766.webp"
+      },
+      "print": "3e492c44-cf79-4ce1-b110-edebb06d3e51.png"
     },
     "wonderfully-made": {
       "fourthwallSlug": "wonderfully-made-hoodie",

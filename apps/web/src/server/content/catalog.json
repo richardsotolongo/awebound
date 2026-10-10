@@ -313,10 +313,10 @@
       "story": {
         "theme": "Presence",
         "call": "Behold, the way is open",
-        "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, under the words “The veil is torn.”",
+        "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, over the words “The veil is torn.”",
         "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front carries the wordmark and the Thorn Cross.",
         "front": "Awebound wordmark in bone with red thorns, with the Thorn Cross below, center chest",
-        "back": "“The veil is torn” in heavy gothic capitals above a red curtain torn open, light breaking through over the clouds, with Matthew 27:51 below",
+        "back": "A red curtain torn open, light breaking through over the clouds, above “The veil is torn” in heavy gothic capitals, with Matthew 27:51 below",
         "inks": "Bone, deep red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
         "material": null
@@ -325,7 +325,7 @@
         {
           "view": "back",
           "url": "/products/torn-veil/back.webp",
-          "alt": "Torn Veil hoodie, back: “The veil is torn” above a red curtain torn open with light breaking through, Matthew 27:51"
+          "alt": "Torn Veil hoodie, back: a red curtain torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
         },
         {
           "view": "front",
@@ -360,10 +360,10 @@
       "story": {
         "theme": "Protection",
         "call": "Behold the Shepherd",
-        "art": "One traveler walks a narrow, lit path through a dark valley toward a cross on the hill, under a full moon and the words “I will fear no evil.”",
+        "art": "One traveler walks a narrow, lit path through a dark valley toward a cross on the hill under a full moon, above the words “I will fear no evil.”",
         "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even in the darkest valley he won’t be afraid, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back shows one traveler on the path through the valley, walking toward the cross.",
         "front": "Awebound wordmark and the Thorn Cross in bone, center chest",
-        "back": "“I will fear no evil” in tall capitals above a dark valley, a lit path leading to a cross on the hill and a full moon, with Psalm 23:4 below",
+        "back": "A dark valley under a full moon, a lit path leading to a cross on the hill, above “I will fear no evil” in tall capitals, with Psalm 23:4 below",
         "inks": "Bone, ember orange, charcoal, red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
         "material": null
@@ -372,7 +372,7 @@
         {
           "view": "back",
           "url": "/products/the-passage/back.webp",
-          "alt": "The Passage hoodie in cypress, back: “I will fear no evil” above a traveler on a path through a dark valley toward a cross, Psalm 23:4"
+          "alt": "The Passage hoodie in cypress, back: a traveler on a path through a dark valley toward a cross, above “I will fear no evil,” Psalm 23:4"
         },
         {
           "view": "front",

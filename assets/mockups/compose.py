@@ -62,15 +62,15 @@ CAPS = ("lambs-mark", "signature-cap")
 # of the cutout. On the hoodie renders the hood hangs over the top of the back print, so hoodie
 # close-ups show the whole design another way: `detail_source: "mockup"` crops the approved mockup
 # (also used for the home story scene), and `"print"` lays the back print file itself on the
-# hoodie's fabric (for a design that changed after its mockup was made).
+# hoodie's fabric (used once a design has changed since its mockup was made).
 VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.5, 0.72)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.47, 0.42, 0.74)},
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.68)},
-    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64), "detail_source": "mockup"},
+    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64), "detail_source": "print"},
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.52, 0.45, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.48, 0.66)},
-    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "mockup"},
+    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "print"},
     "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62), "detail_source": "print"},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.4, 0.56)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
