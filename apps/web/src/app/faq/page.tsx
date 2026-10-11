@@ -88,9 +88,16 @@ const GROUPS: { title: string; items: Faq[] }[] = [
         ),
       },
       {
-        q: "Should I size down in the oversized tee?",
-        text: "Only if you want a closer fit. The oversized cut is meant to sit wide and boxy.",
-        a: <p>Only if you want a closer fit. The oversized cut is meant to sit wide and boxy.</p>,
+        q: "Should I size up or down in the oversized tees?",
+        text: "It depends on the cut. The regular oversized tees are cut wide on purpose, so size down only if you want a closer fit. The larger oversized tees (To Live Is Christ and Still the Storm) use EU sizing, so order one size up. Each size guide has the garment measurements to compare with a tee you already own.",
+        a: (
+          <p>
+            It depends on the cut. The regular oversized tees are cut wide on purpose, so size down
+            only if you want a closer fit. The larger oversized tees (To Live Is Christ and Still
+            the Storm) use EU sizing, so order one size up. Each size guide has the garment
+            measurements to compare with a tee you already own.
+          </p>
+        ),
       },
     ],
   },

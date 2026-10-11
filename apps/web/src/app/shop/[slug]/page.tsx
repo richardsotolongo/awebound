@@ -146,12 +146,10 @@ export default async function ProductPage({ params }: { params: Params }) {
               <dd>{story.front}</dd>
               <dt>Back</dt>
               <dd>{story.back}</dd>
-              <dt>{product.category.slug === "hats" ? "Thread" : "Inks"}</dt>
+              <dt>{story.process === "embroidered" ? "Thread" : "Inks"}</dt>
               <dd>{story.inks}</dd>
               <dt>Fabric</dt>
-              <dd>
-                {story.material ?? "Fabric details will be posted with the first production run."}
-              </dd>
+              <dd>{story.material ?? "Fabric details are posted before ordering opens."}</dd>
             </dl>
             <p className="field-help">
               Questions about fit? <Link href="/contact">Ask us</Link>.

@@ -160,13 +160,36 @@ export const ProductStorySchema = z.object({
   inks: z.string(),
   /** Cut details, e.g. "Oversized tee · dropped shoulder, boxy body". */
   fit: z.string(),
-  /** Fabric, once the blank supplier is confirmed. */
+  /** Fabric of the blank, from Fourthwall's product details. */
   material: z.string().nullable(),
+  /** How the art goes on: printed (tees, hoodies, the Signature Cap) or embroidered. */
+  process: z.enum(["printed", "embroidered"]),
 });
 export type ProductStory = z.infer<typeof ProductStorySchema>;
 
+/**
+ * A blank's garment measurements in inches, as the owner's size guide image shows them. `measures`
+ * name the columns after Size, in order; each row has one value per measure. Garments have the
+ * size guide image; caps have only the table.
+ */
+export const SizeGuideSchema = z.object({
+  /** The blank's style name as the guide prints it: "Middleweight Oversized T-shirt". */
+  name: z.string(),
+  /** One line on the fit, shown first. */
+  fit: z.string().nullable(),
+  /** Advice that changes which size to pick, e.g. EU sizing. Shown beside the size buttons too. */
+  note: z.string().nullable(),
+  tolerance: z.string().nullable(),
+  image: z.object({ url: z.string(), width: z.number(), height: z.number() }).nullable(),
+  measures: z.array(z.object({ label: z.string(), how: z.string() })).min(1),
+  rows: z.array(z.object({ size: z.string(), values: z.array(z.string()) })).min(1),
+});
+export type SizeGuide = z.infer<typeof SizeGuideSchema>;
+
 export const ProductDetailSchema = ProductSummarySchema.extend({
   story: ProductStorySchema,
+  /** Measurements for the product's blank; null shows a note that they're coming. */
+  sizeGuide: SizeGuideSchema.nullable(),
   images: z.array(ProductImageSchema),
   variants: z.array(VariantSchema),
   collection: CollectionSchema,

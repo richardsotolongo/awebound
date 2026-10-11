@@ -4,7 +4,7 @@ import { DELIVERY } from "@/lib/delivery";
 interface DeliverySummaryProps {
   /** Ordering isn't open yet: delivery details are confirmed before it opens. */
   preview: boolean;
-  /** "embroidered" for caps, "printed" for everything else. */
+  /** How the piece's art goes on (the product story's `process`). */
   process: "printed" | "embroidered";
   onSizeGuide?: () => void;
 }

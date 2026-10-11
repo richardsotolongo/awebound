@@ -9,6 +9,8 @@ interface SheetProps {
   /** Visible title, also the dialog's accessible name. */
   title: ReactNode;
   side?: "left" | "right";
+  /** "wide" for content that needs the room, like the size guide image. */
+  size?: "wide";
   footer?: ReactNode;
   children: ReactNode;
   id?: string;
@@ -18,7 +20,16 @@ interface SheetProps {
  * A slide-in panel on the native <dialog> element: showModal() traps focus, makes the page inert
  * and closes on Escape. Clicking the backdrop closes it too.
  */
-export function Sheet({ open, onClose, title, side = "right", footer, children, id }: SheetProps) {
+export function Sheet({
+  open,
+  onClose,
+  title,
+  side = "right",
+  size,
+  footer,
+  children,
+  id,
+}: SheetProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = `${id ?? "sheet"}-title`;
 
@@ -35,6 +46,7 @@ export function Sheet({ open, onClose, title, side = "right", footer, children, 
       id={id}
       className="aw-sheet"
       data-side={side}
+      data-size={size}
       aria-labelledby={titleId}
       onClose={onClose}
       onCancel={(e) => {
