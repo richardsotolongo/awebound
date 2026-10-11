@@ -16,6 +16,8 @@ export interface FooterProps {
   signup?: boolean;
   /** Resolve to confirm in place; reject (or throw) to show an error. */
   onSubscribe?: (email: string) => Promise<void> | void;
+  /** Extra content under the tagline, e.g. the site's "Ask AI" links. */
+  children?: ReactNode;
 }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -31,6 +33,7 @@ export function Footer({
   notice,
   signup = true,
   onSubscribe,
+  children,
 }: FooterProps) {
   const inputId = useId();
   const errorId = useId();
@@ -61,6 +64,7 @@ export function Footer({
         <div className="aw-footer-brand">
           <ThornCross size="small" height={40} title="" />
           <p className="aw-small">{tagline}</p>
+          {children}
         </div>
         {signup ? (
           <form className="aw-footer-form" onSubmit={submit} noValidate>
