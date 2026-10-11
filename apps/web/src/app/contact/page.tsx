@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { ContactForm } from "@/features/contact/contact-form";
-import { SITE } from "@/lib/site";
+import { SITE, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/contact",
   title: "Contact",
   description: `Questions about an order, sizing or wholesale for your church. Write to us at ${SITE.contactEmail}.`,
-  alternates: { canonical: "/contact" },
-};
+});
 
 export default function ContactPage() {
   return (

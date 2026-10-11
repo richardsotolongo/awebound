@@ -1,14 +1,14 @@
 import { AltarPanel, Button, ScriptureQuote, ThornRule } from "@awebound/brand";
-import type { Metadata } from "next";
 import { Reveal } from "@/components/reveal";
+import { pageMeta } from "@/lib/site";
 import { TRANSLATION, TRANSLATION_NAME, VERSES } from "@/server/scripture";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/about",
   title: "About",
   description:
     "Who started Awebound and why: Christian apparel rooted in Scripture and reverence for Jesus Christ, for people who aren’t ashamed of their faith.",
-  alternates: { canonical: "/about" },
-};
+});
 
 /** Why each part of a design is there. */
 const TOGETHER = [

@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/features/legal/legal-page";
 import { TRANSLATION_NOTICE } from "@/server/scripture";
-import { LEGAL, SITE } from "@/lib/site";
+import { LEGAL, SITE, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/terms",
   title: "Terms of service",
   description: "The terms for using the Awebound website and buying from the store.",
-  alternates: { canonical: "/terms" },
-};
+});
 
 const mail = <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>;
 

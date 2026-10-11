@@ -6,7 +6,7 @@ The whole site: Next.js 16 App Router. Server Components read the catalog direct
 
 ```
 src/
-├─ app/                    routes (pages, route handlers, sitemap, robots, icons)
+├─ app/                    routes (pages, route handlers, sitemap, robots, llms.txt, icons)
 │  ├─ page.tsx             home: hero (clothes + release status), latest release intro + grid, two design stories, founder story, release sign-up
 │  ├─ shop/                listing (collection selector + category tabs) and product pages
 │  ├─ collections/         every release by name; /collections/<slug> opens the shop filtered to it
@@ -33,9 +33,10 @@ src/
 │  ├─ scripture.ts         resolves Scripture records to the site's translation (SCRIPTURE_TRANSLATION), site verses, the notice
 │  └─ content/             catalog.json (per product: code, release, position, Scripture record, design story, preview price, images), verses.json
 ├─ shared/                 zod schemas, types and helpers used by both server and browser
-├─ components/             site chrome: header, footer, Sheet (native <dialog>), PageHeader, Reveal, icons
-├─ lib/                    public env (zod), Supabase clients (browser, server, admin), site config,
-│                          delivery.ts (confirmed fulfillment facts; null until confirmed)
+├─ components/             site chrome: header, footer, Sheet (native <dialog>), PageHeader, Reveal, icons,
+│                          JsonLd (structured data), AskAi (the footer's assistant links)
+├─ lib/                    public env (zod), Supabase clients (browser, server, admin), site config and
+│                          pageMeta, usePath, delivery.ts (confirmed fulfillment facts; null until confirmed)
 ├─ styles/                 site.css, sheet.css, shop.css, product.css, home.css, prose.css (all @layer components)
 └─ proxy.ts                Next 16 proxy (formerly middleware): refreshes Supabase session, guards /account
 ```
@@ -48,7 +49,9 @@ src/
 - **Shop state lives in the URL** (`collection`, `category`, `q`, `color`, `size`, `minPrice`, `maxPrice`, `sort`). Collection and category are links (`shopHref`), so they push history: no `collection` means Latest Drop (the newest release, from `CatalogIndex.releases()`), `all` means every collection. The sheet's filters use `useCatalogState()`, which updates optimistically and replaces the URL in a transition.
 - **Scripture**: never hard-code a verse in a component. Products carry `scripture` (a `ScriptureQuote` resolved on the server); site verses come from `VERSES` in `server/scripture.ts`. Render with the brand `ScriptureQuote` / `ScriptureRef`, which add the quotation marks and the "— NIV, excerpt" label.
 - **Release status**: `Release.status` is `preview` until every piece in it is in Fourthwall. Hero buttons, the shop header, product pages and the bag switch their labels and preview messages from it and from `product.preview`.
-- **Internal codes**: `code` stays in data (SKUs, records) but is never rendered, searched or put in metadata.
+- **Internal codes**: `code` stays in data (SKUs, records) but is never rendered, searched or put in metadata. Structured data and `llms.txt` carry no SKU for the same reason.
+- **Metadata**: an indexable page exports `pageMeta({ path, title, description })` from `lib/site.ts`, which sets the canonical address and the whole share card (a page's `openGraph` replaces the layout's). Shop views build their address with `shopCanonical`, which the sitemap shares. Structured data goes through `<JsonLd>`. Only confirmed facts: no offer for a preview, no shipping or return details until they are confirmed, Scripture by reference only in `llms.txt`.
+- **Current path**: use `usePath()` (`lib/pathname.ts`), never `usePathname()` directly, for anything rendered on the server. Vercel renders the prerendered home page as `/index`; the raw value once made the footer and header differ from the browser's render (a hydration error in production only).
 - **Bag**: `useBag` (zustand, persisted to localStorage, rehydrated after mount). The `validateBag` action re-prices it whenever it's shown; never trust client prices. `startCheckout` answers `{ url }` and the browser goes to Fourthwall's hosted checkout.
 - **Auth**: Supabase via `@supabase/ssr`. Passwordless only (Google OAuth, email link or 6-digit code). Everything degrades to "Accounts open soon" when `NEXT_PUBLIC_SUPABASE_*` is unset.
 - **Styling**: brand classes (`.aw-*`) for type and components, Tailwind utilities for layout, tokens for every color. No raw hex. Garment swatches go through `colorCss(color)` from `@/shared`: the brand token when the color is known, otherwise Fourthwall's swatch hex (product data, not styling). Fonts are self-hosted from `@fontsource-variable/*` via `next/font/local` (no Google Fonts requests).

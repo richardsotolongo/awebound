@@ -73,6 +73,25 @@
     border-color: var(--line);
   }
 
+  /* "Ask AI about Awebound" in the footer: a label over a row of assistant marks. The row is
+     pulled left so the first mark's ink, not its tap area, lines up with the label. */
+  .ask-ai {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-6);
+  }
+  .ask-ai p {
+    margin: 0;
+  }
+  .ask-ai ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin: 0 0 0 -12px;
+    padding: 0;
+    list-style: none;
+  }
+
   .field {
     display: grid;
     gap: var(--space-2);

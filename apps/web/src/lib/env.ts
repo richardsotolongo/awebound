@@ -18,6 +18,14 @@ export const publicEnv = PublicEnvSchema.parse({
 
 export const siteUrl = publicEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
 
+// Canonicals, the sitemap, share images and email links are built from siteUrl, so a production
+// build without the live address would publish localhost everywhere.
+if (process.env.VERCEL_ENV === "production" && new URL(siteUrl).hostname === "localhost") {
+  throw new Error(
+    "Set NEXT_PUBLIC_SITE_URL to the live address (https://www.awebound.store) in Vercel.",
+  );
+}
+
 /** Accounts (Google and email sign-in) only work once Supabase is configured. */
 export const accountsEnabled = Boolean(
   publicEnv.NEXT_PUBLIC_SUPABASE_URL && publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,

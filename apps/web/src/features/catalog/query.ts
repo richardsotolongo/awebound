@@ -108,3 +108,11 @@ export function shopHref(
   const qs = params.toString();
   return qs ? `${basePath}?${qs}` : basePath;
 }
+
+/**
+ * The one address search engines index for a shop view: a release (or "all") and a category, in
+ * that order. The page's canonical, the sitemap and structured data all build it here.
+ */
+export function shopCanonical(collection?: string | null, category?: string | null): string {
+  return shopHref("/shop", {}, { collection: collection ?? null, category: category ?? null });
+}

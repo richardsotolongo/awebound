@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
-import { SITE } from "@/lib/site";
+import { SITE, pageMeta } from "@/lib/site";
 import { TRANSLATION, TRANSLATION_NAME, TRANSLATION_NOTICE } from "@/server/scripture";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/faq",
   title: "FAQ",
   description:
     "Answers about ordering, sizing, shipping, refunds and the meaning behind Awebound designs.",
-  alternates: { canonical: "/faq" },
-};
+});
 
 interface Faq {
   q: string;
@@ -228,10 +228,7 @@ export default function FaqPage() {
           </section>
         ))}
       </div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
-      />
+      <JsonLd data={jsonLd} />
     </div>
   );
 }

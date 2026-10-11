@@ -2,12 +2,13 @@ import { BRAND_HEX } from "@awebound/brand";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
+import { AskAi } from "@/components/ask-ai";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { BagDrawer } from "@/features/bag/bag-drawer";
 import { siteUrl } from "@/lib/env";
-import { SITE } from "@/lib/site";
+import { SHARE_IMAGE, SITE } from "@/lib/site";
 import { TRANSLATION_NOTICE } from "@/server/scripture";
 import "./globals.css";
 
@@ -41,22 +42,20 @@ const cormorant = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: "Awebound — Christian apparel, worn without shame",
-    template: "%s · Awebound",
-  },
-  description: SITE.description,
+  title: { default: SITE.title, template: `%s · ${SITE.name}` },
   applicationName: SITE.name,
+  description: SITE.description,
+  // The share card for pages that set none (bag, sign-in, not found). Indexable pages set their
+  // own, with a canonical address, through pageMeta.
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    title: "Awebound — Christian apparel, worn without shame",
+    title: SITE.title,
     description: SITE.description,
-    images: [
-      { url: "/og.png", width: 1200, height: 630, alt: "The Awebound Thorn Cross and wordmark" },
-    ],
+    images: [SHARE_IMAGE],
   },
-  twitter: { card: "summary_large_image", images: ["/og.png"] },
+  // Twitter's title, description and image follow each page's Open Graph values.
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
@@ -78,7 +77,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers>
           <SiteHeader />
           <main id="main">{children}</main>
-          <SiteFooter notice={TRANSLATION_NOTICE} />
+          <SiteFooter notice={TRANSLATION_NOTICE}>
+            <AskAi />
+          </SiteFooter>
           <BagDrawer />
         </Providers>
       </body>

@@ -2,12 +2,15 @@ import { ScriptureQuote, ThornRule, quoted } from "@awebound/brand";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
+import { shopCanonical } from "@/features/catalog/query";
 import { ProductGallery } from "@/features/product/product-gallery";
 import { ProductPurchase } from "@/features/product/product-purchase";
 import { ReleaseCard } from "@/features/release/release-card";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
+import { SITE, pageMeta } from "@/lib/site";
 
 type Params = Promise<{ slug: string }>;
 
@@ -15,17 +18,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const product = await getProduct((await params).slug).catch(() => null);
   if (!product) return { title: "Not found" };
   const { scripture } = product;
-  const description = `${product.name}, ${product.category.cut.toLowerCase()} from ${product.collection.name}. ${quoted(scripture.text)} ${scripture.reference} (${scripture.translation}). ${product.story.art}`;
-  return {
-    title: `${product.name} · ${product.collection.name}`,
-    description,
-    alternates: { canonical: `/shop/${product.slug}` },
-    openGraph: {
-      title: product.name,
-      description,
-      images: [{ url: product.image.url, alt: product.image.alt }],
-    },
-  };
+  const cut = product.category.cut.toLowerCase();
+  return pageMeta({
+    path: `/shop/${product.slug}`,
+    title: `${product.name} ${cut} · ${product.collection.name}`,
+    description: `${product.name}, ${cut} from ${product.collection.name}. ${quoted(scripture.text)} ${scripture.reference} (${scripture.translation}). ${product.story.art}`,
+    image: { url: product.image.url, alt: product.image.alt },
+  });
 }
 
 export default async function ProductPage({ params }: { params: Params }) {
@@ -44,14 +43,50 @@ export default async function ProductPage({ params }: { params: Params }) {
   const others = pieces.filter((p) => p.slug !== product.slug).slice(0, 3);
   const { scripture, story } = product;
 
+  const url = `${siteUrl}/shop/${product.slug}`;
+  const prices = product.variants.map((v) => v.priceCents);
+  const [low, high] = [Math.min(...prices), Math.max(...prices)].map((c) => (c / 100).toFixed(2));
+  // No sku: preview SKUs carry the internal design code. No offer for a preview either: it can't
+  // be ordered yet and its price isn't final. The offer appears once the piece is in Fourthwall.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: `${story.art} ${story.meaning}`,
     image: product.images.map((i) => new URL(i.url, siteUrl).toString()),
-    brand: { "@type": "Brand", name: "Awebound" },
+    url,
+    brand: { "@type": "Brand", name: SITE.name },
     category: product.category.name,
+    color: product.colors.map((c) => c.name).join(", "),
+    ...(story.material ? { material: story.material } : {}),
+    ...(product.preview || prices.length === 0
+      ? {}
+      : {
+          offers: {
+            "@type": low === high ? "Offer" : "AggregateOffer",
+            url,
+            priceCurrency: product.currency,
+            ...(low === high
+              ? { price: low }
+              : { lowPrice: low, highPrice: high, offerCount: prices.length }),
+            availability: product.variants.some((v) => v.available)
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+            itemCondition: "https://schema.org/NewCondition",
+          },
+        }),
+  };
+  const crumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { name: "Shop", item: `${siteUrl}/shop` },
+      {
+        name: product.collection.name,
+        item: `${siteUrl}${shopCanonical(product.collection.slug)}`,
+      },
+      { name: product.name, item: url },
+    ].map((c, i) => ({ "@type": "ListItem", position: i + 1, ...c })),
   };
 
   return (
@@ -177,10 +212,8 @@ export default async function ProductPage({ params }: { params: Params }) {
         </section>
       ) : null}
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
-      />
+      <JsonLd data={jsonLd} />
+      <JsonLd data={crumbs} />
     </div>
   );
 }

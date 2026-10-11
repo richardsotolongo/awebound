@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/features/legal/legal-page";
-import { SITE } from "@/lib/site";
+import { SITE, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/refunds",
   title: "Refund policy",
   description:
     "Every Awebound piece is made to order. We refund or replace misprints, damage and wrong items reported within 30 days.",
-  alternates: { canonical: "/refunds" },
-};
+});
 
 const mail = <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>;
 

@@ -1,15 +1,43 @@
 import { Button, ScriptureQuote, ScriptureRef } from "@awebound/brand";
 import type { ProductSummary } from "@/shared";
+import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { NotifyForm } from "@/features/bag/notify-form";
 import { EMPTY_LIST } from "@/features/catalog/query";
 import { DesignStory } from "@/features/home/design-story";
 import { Hero } from "@/features/home/hero";
 import { ReleaseCard } from "@/features/release/release-card";
+import { siteUrl } from "@/lib/env";
+import { SITE, pageMeta } from "@/lib/site";
 import { getLatestRelease, getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { VERSES } from "@/server/scripture";
 
+export const metadata = pageMeta({ path: "/" });
+
 export const revalidate = 60;
+
+/** Who Awebound is, for search engines and AI assistants. Add `sameAs` once social links exist. */
+const STORE = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "OnlineStore",
+      "@id": `${siteUrl}/#store`,
+      name: SITE.name,
+      url: siteUrl,
+      logo: `${siteUrl}/apple-icon.png`,
+      description: SITE.description,
+      slogan: SITE.tagline,
+      email: SITE.contactEmail,
+    },
+    {
+      "@type": "WebSite",
+      name: SITE.name,
+      url: siteUrl,
+      publisher: { "@id": `${siteUrl}/#store` },
+    },
+  ],
+};
 
 /** A piece in its stone niche, rendered for each piece by assets/mockups/compose.py. */
 function scene(p: ProductSummary, art: string) {
@@ -171,6 +199,8 @@ export default async function Home() {
           <NotifyForm source="footer" label="Your email" />
         </div>
       </section>
+
+      <JsonLd data={STORE} />
     </>
   );
 }

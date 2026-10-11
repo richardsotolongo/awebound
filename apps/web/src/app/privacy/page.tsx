@@ -1,13 +1,12 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/features/legal/legal-page";
-import { LEGAL, SITE } from "@/lib/site";
+import { LEGAL, SITE, pageMeta } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/privacy",
   title: "Privacy policy",
   description: "What Awebound collects, why, who helps us run the store, and the choices you have.",
-  alternates: { canonical: "/privacy" },
-};
+});
 
 const mail = <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>;
 

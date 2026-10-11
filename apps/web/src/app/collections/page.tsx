@@ -1,15 +1,15 @@
 import { Button, ScriptureRef } from "@awebound/brand";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { EMPTY_LIST } from "@/features/catalog/query";
+import { pageMeta } from "@/lib/site";
 import { getReleases, searchProducts, withFallback } from "@/server/catalog";
 
-export const metadata: Metadata = {
+export const metadata = pageMeta({
+  path: "/collections",
   title: "Collections",
   description:
     "Every Awebound release by name. Each collection is a set of pieces drawn from one call in Scripture.",
-  alternates: { canonical: "/collections" },
-};
+});
 
 export const revalidate = 60;
 

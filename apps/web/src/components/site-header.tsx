@@ -2,10 +2,10 @@
 
 import { Header, ThornCross, type NavLink } from "@awebound/brand";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { bagCount, useBag } from "@/features/bag/bag-store";
 import { accountsEnabled } from "@/lib/env";
+import { usePath } from "@/lib/pathname";
 import { MAIN_NAV } from "@/lib/site";
 import { useSignedIn } from "@/lib/supabase/browser";
 import { Sheet } from "./sheet";
@@ -28,7 +28,7 @@ function accountLink(signedIn: boolean, pathname: string): NavLink | undefined {
 }
 
 export function SiteHeader() {
-  const pathname = usePathname();
+  const pathname = usePath();
   const [menuOpen, setMenuOpen] = useState(false);
   const count = useBag((s) => bagCount(s.lines));
   const openBag = useBag((s) => s.open);

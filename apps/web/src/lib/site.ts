@@ -1,13 +1,53 @@
 import type { NavLink } from "@awebound/brand";
+import type { Metadata } from "next";
 import { CONTACT_EMAIL } from "@/shared";
 
 export const SITE = {
   name: "Awebound",
+  title: "Awebound — Christian apparel, worn without shame",
   tagline: "Bound in awe. Worn without shame.",
   description:
     "Christian apparel rooted in Scripture and reverence for Jesus Christ. Release 01, Behold, is five oversized tees, three hoodies and two caps, each telling part of His story.",
   contactEmail: CONTACT_EMAIL,
 } as const;
+
+export const SHARE_IMAGE = {
+  url: "/og.png",
+  width: 1200,
+  height: 630,
+  alt: "The Awebound Thorn Cross and wordmark",
+};
+
+/**
+ * Metadata for an indexable page: its canonical address and a complete share card. A page's
+ * openGraph replaces the layout's whole object, so every field is set here. Without a title the
+ * page keeps the site's default one.
+ */
+export function pageMeta({
+  path,
+  title,
+  description = SITE.description,
+  image = SHARE_IMAGE,
+}: {
+  path: string;
+  title?: string;
+  description?: string;
+  image?: { url: string; alt: string; width?: number; height?: number };
+}): Metadata {
+  return {
+    ...(title ? { title } : {}),
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website",
+      siteName: SITE.name,
+      title: title ? `${title} · ${SITE.name}` : SITE.title,
+      description,
+      url: path,
+      images: [image],
+    },
+  };
+}
 
 export const MAIN_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
