@@ -88,7 +88,7 @@ export function SiteHeader() {
         </nav>
         <nav aria-label="More" className="mobile-nav-secondary">
           <Link href="/faq">FAQ</Link>
-          <Link href="/refunds">Refunds</Link>
+          <Link href="/refunds">Returns</Link>
         </nav>
         <div style={{ marginTop: "var(--space-12)", color: "var(--line-strong)" }}>
           <ThornCross size="small" height={40} title="" />

@@ -53,7 +53,7 @@ const sections: LegalSection[] = [
     body: (
       <p>
         Delivery estimates are shown at checkout and in the <Link href="/faq">FAQ</Link>.
-        Replacements and refunds follow our <Link href="/refunds">refund policy</Link>.
+        Replacements and refunds follow our <Link href="/refunds">returns and refunds policy</Link>.
       </p>
     ),
   },

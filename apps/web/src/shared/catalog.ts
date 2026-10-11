@@ -168,16 +168,16 @@ export const ProductStorySchema = z.object({
 export type ProductStory = z.infer<typeof ProductStorySchema>;
 
 /**
- * A blank's garment measurements in inches, as the owner's size guide image shows them. `measures`
- * name the columns after Size, in order; each row has one value per measure. Garments have the
- * size guide image; caps have only the table.
+ * A blank's measurements in inches, as the owner's size guide image shows them. `measures` name
+ * the columns after Size, in order; each row has one value per measure. Without an image, the
+ * table is shown instead.
  */
 export const SizeGuideSchema = z.object({
   /** The blank's style name as the guide prints it: "Middleweight Oversized T-shirt". */
   name: z.string(),
   /** One line on the fit, shown first. */
   fit: z.string().nullable(),
-  /** Advice that changes which size to pick, e.g. EU sizing. Shown beside the size buttons too. */
+  /** Advice that changes which size to pick. Shown beside the size buttons too. None today. */
   note: z.string().nullable(),
   tolerance: z.string().nullable(),
   image: z.object({ url: z.string(), width: z.number(), height: z.number() }).nullable(),

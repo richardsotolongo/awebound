@@ -2,9 +2,9 @@ import type { SizeGuide as Guide } from "@/shared";
 import Link from "next/link";
 
 /**
- * The size guide sheet's body. Garments show the owner's size guide image for their blank (with
- * the same measurements as a table for screen readers); caps show the table itself. Advice that
- * changes which size to pick (EU sizing) leads, because the image puts it at the bottom.
+ * The size guide sheet's body: the owner's size guide image for the piece's blank, with the same
+ * measurements as a table for screen readers. A guide without an image shows the table itself.
+ * A sizing note, when a guide has one, leads because an image would put it at the bottom.
  */
 export function SizeGuide({ guide, cut }: { guide: Guide | null; cut: string }) {
   if (!guide) {
@@ -81,7 +81,7 @@ export function SizeGuide({ guide, cut }: { guide: Guide | null; cut: string }) 
             Select the guide to open it full size.
           </p>
           <div className="visually-hidden">
-            <p>How to measure, with the garment laid flat:</p>
+            <p>How to measure:</p>
             {howTo}
             {table}
             {guide.tolerance ? <p>{guide.tolerance}</p> : null}

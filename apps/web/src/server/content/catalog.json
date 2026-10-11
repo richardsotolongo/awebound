@@ -1,5 +1,5 @@
 {
-  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest. `sizeGuides` holds each blank's garment measurements, copied exactly from the owner's size guide images (apps/web/public/size-guides, sources in assets/size-guides) and Fourthwall's product details; `blank` names the supplier product for our records and is never shown. A product's `sizeGuide` picks its guide, and the guide's sizes are the sizes a preview offers. `sizePriceCents` holds Fourthwall's per-size prices (2XL and up cost more) for previews.",
+  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest. `sizeGuides` holds each blank's garment measurements, copied exactly from the owner's size guide images (every garment and both caps) (apps/web/public/size-guides, sources in assets/size-guides) and Fourthwall's product details; `blank` names the supplier product for our records and is never shown. A product's `sizeGuide` picks its guide, and the guide's sizes are the sizes a preview offers. `sizePriceCents` holds Fourthwall's per-size prices (2XL and up cost more) for previews.",
   "categories": [
     {
       "slug": "tees",
@@ -109,12 +109,12 @@
       "name": "Organic Oversized T-shirt",
       "blank": "Stanley/Stella SATU020 Unisex Organic Oversized T-Shirt (Fourthwall pro_nbzZuIKIRnGSoOHdUmRN9w)",
       "fit": "Oversized fit with dropped shoulders and a wide neckline.",
-      "note": "Order one size up: this style uses EU sizing. Compare the garment measurements before choosing.",
+      "note": null,
       "tolerance": "Actual garment measurements may vary by up to 2 inches (5 cm).",
       "image": {
         "url": "/size-guides/organic-oversized-tee.webp",
         "width": 1600,
-        "height": 2693
+        "height": 2463
       },
       "measures": [
         {
@@ -205,17 +205,21 @@
         }
       ]
     },
-    "distressed-dad-hat": {
-      "name": "Distressed cap",
+    "low-profile-adjustable-cap": {
+      "name": "Low-Profile Adjustable Cap",
       "blank": "Otto Cap 104-1018 Distressed Dad Hat (Fourthwall pro_bd2e2b0d02e04dd8b4)",
-      "fit": "One size fits most. Low profile, with a hook-and-loop strap that adjusts the fit.",
+      "fit": "One size fits most. Low-profile cap with a hook-and-loop strap to adjust the fit.",
       "note": null,
       "tolerance": null,
-      "image": null,
+      "image": {
+        "url": "/size-guides/low-profile-adjustable-cap.webp",
+        "width": 1600,
+        "height": 1840
+      },
       "measures": [
         {
           "label": "Head circumference",
-          "how": "Around your head, just above the ears."
+          "how": "Around your head, just above your ears. Keep the tape level and snug, not tight."
         }
       ],
       "rows": [
@@ -225,17 +229,21 @@
         }
       ]
     },
-    "mid-profile-cap": {
-      "name": "Structured cap",
+    "mid-profile-snapback-cap": {
+      "name": "Mid-Profile Snapback Cap",
       "blank": "Otto Cap 31-069 Mid-Profile Baseball Cap (Fourthwall pro_yik3Xfh7RlmBN1yymFa6JA)",
-      "fit": "One size fits most. Mid-profile, with a snap strap that adjusts the fit.",
+      "fit": "One size fits most. Mid-profile cap with a snap strap to adjust the fit.",
       "note": null,
       "tolerance": null,
-      "image": null,
+      "image": {
+        "url": "/size-guides/mid-profile-snapback-cap.webp",
+        "width": 1600,
+        "height": 1840
+      },
       "measures": [
         {
           "label": "Head circumference",
-          "how": "Around your head, just above the ears."
+          "how": "Around your head, just above your ears. Keep the tape level and snug, not tight."
         }
       ],
       "rows": [
@@ -713,7 +721,7 @@
       "code": "A3-H01",
       "slug": "lambs-mark",
       "fourthwallSlug": "lambs-mark-hat",
-      "sizeGuide": "distressed-dad-hat",
+      "sizeGuide": "low-profile-adjustable-cap",
       "name": "Lamb’s Mark",
       "position": 9,
       "collection": "behold",
@@ -777,7 +785,7 @@
       "code": "A3-H02",
       "slug": "signature-cap",
       "fourthwallSlug": "awebound-signature-cap",
-      "sizeGuide": "mid-profile-cap",
+      "sizeGuide": "mid-profile-snapback-cap",
       "name": "Signature Cap",
       "position": 10,
       "collection": "behold",

@@ -61,7 +61,7 @@ export const FOOTER_NAV: NavLink[] = [
   { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "FAQ", href: "/faq" },
-  { label: "Refunds", href: "/refunds" },
+  { label: "Returns", href: "/refunds" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
   { label: "Account", href: "/account" },
@@ -73,5 +73,5 @@ export const LEGAL = {
   businessName: "Awebound",
   /** e.g. "the State of Florida". Null until the owner confirms where the business is organized. */
   governingLaw: null as string | null,
-  lastUpdated: "October 9, 2026",
+  lastUpdated: "October 11, 2026",
 };

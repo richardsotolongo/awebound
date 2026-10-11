@@ -10,7 +10,7 @@ export interface LegalSection {
 }
 
 const POLICIES = [
-  { href: "/refunds", label: "Refunds" },
+  { href: "/refunds", label: "Returns" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
 ];
