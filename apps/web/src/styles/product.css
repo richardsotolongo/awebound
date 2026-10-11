@@ -53,13 +53,42 @@
     background: var(--surface);
     overflow: hidden;
   }
-  .gallery-stage img {
+  /* Each image sits in a frame that clips it, so the hover / press-and-hold zoom stays inside. */
+  .gallery-frame {
     position: absolute;
     inset: 0;
+    overflow: hidden;
+    transition: opacity var(--duration-base) ease;
+  }
+  .gallery-frame img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: opacity var(--duration-base) ease;
+    transition: transform var(--duration-fast) ease-out;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .gallery-stage {
+      cursor: zoom-in;
+    }
+  }
+  .gallery-hint {
+    margin: var(--space-3) 0 0;
+    color: var(--ink-subtle);
+    text-align: center;
+  }
+  .gallery-hint-hover {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .gallery-hint-hover {
+      display: inline;
+    }
+    .gallery-hint-touch {
+      display: none;
+    }
   }
   @media (max-width: 1023px) {
     .gallery {
@@ -77,8 +106,9 @@
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
     }
-    .gallery-stage img {
-      position: static;
+    .gallery-frame {
+      position: relative;
+      inset: auto;
       flex: 0 0 100%;
       aspect-ratio: 4 / 5;
       scroll-snap-align: start;
@@ -102,6 +132,12 @@
   @media (min-width: 1024px) {
     .gallery-dots {
       display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-frame,
+    .gallery-frame img {
+      transition: none;
     }
   }
 
