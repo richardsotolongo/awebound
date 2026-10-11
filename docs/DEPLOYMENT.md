@@ -2,9 +2,9 @@
 
 The site is one Next.js app, deployed as **one Vercel project**:
 
-| Vercel project | Root Directory | Framework preset | Domain           |
-| -------------- | -------------- | ---------------- | ---------------- |
-| `awebound-web` | `apps/web`     | Next.js          | `awebound.store` |
+| Vercel project | Root Directory | Framework preset | Domain               |
+| -------------- | -------------- | ---------------- | -------------------- |
+| `awebound-web` | `apps/web`     | Next.js          | `www.awebound.store` |
 
 `apps/web/vercel.json` holds the install and build commands, so the only setting you must change by hand is the **Root Directory** (Vercel reads `vercel.json` from there and cannot set the Root Directory itself).
 
@@ -25,7 +25,7 @@ That error means the project was imported at the repo root. The root `package.js
 Settings → Environment Variables. [`apps/web/.env.example`](../apps/web/.env.example) lists every variable with a comment. Apply them to Production and Preview.
 
 ```
-NEXT_PUBLIC_SITE_URL=https://awebound.store
+NEXT_PUBLIC_SITE_URL=https://www.awebound.store
 FOURTHWALL_STOREFRONT_TOKEN=<Fourthwall admin → Settings → For developers>
 NEXT_PUBLIC_SUPABASE_URL=<Supabase → Project settings → API>
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<same page>
@@ -36,6 +36,7 @@ CONTACT_INBOX=contact@awebound.store
 SCRIPTURE_TRANSLATION=NIV
 ```
 
+- `NEXT_PUBLIC_SITE_URL` is the one address search engines and AI assistants are told about: every canonical link, the sitemap, `llms.txt`, share images and the links in emails are built from it. It must be the live host exactly (`https://www.awebound.store`, with `www`). A production build fails while it is unset or localhost, so a deploy can't publish `localhost` addresses.
 - `FOURTHWALL_STOREFRONT_TOKEN` connects the shop to Fourthwall. Without it (or for pieces not yet created in Fourthwall) the Behold pieces show as previews: the site's prices and mockups, add to bag works, and checkout says it opens soon. After adding it or new Fourthwall products, the home page picks them up within a minute; redeploy if you want it immediately.
 - The shop lists only products that are public in Fourthwall and match the brand content by slug (see `docs/TODOS.md` → Fourthwall).
 - `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox.
@@ -45,18 +46,20 @@ SCRIPTURE_TRANSLATION=NIV
 
 ## 3. Domains and DNS
 
-1. `awebound-web` → Settings → Domains: add `awebound.store` and `www.awebound.store` (redirect `www` to the apex). Today the live site does the reverse (`awebound.store` → `www.awebound.store`); pick one and match `NEXT_PUBLIC_SITE_URL` and the Supabase Site URL to it.
+1. `awebound-web` → Settings → Domains: add `www.awebound.store` (primary) and `awebound.store` (redirects to `www`). `NEXT_PUBLIC_SITE_URL` and the Supabase Site URL use the same host; if the primary ever changes, change all three together.
 2. At your registrar, create the records Vercel shows (an `A` record for the apex and a `CNAME` for `www`), or move the domain's nameservers to Vercel.
 
 Then update the services that know the site's address:
 
-- Supabase → Authentication → URL configuration: Site URL `https://awebound.store`; redirect URLs `https://awebound.store/auth/callback` and `https://awebound.store/auth/confirm`.
+- Supabase → Authentication → URL configuration: Site URL `https://www.awebound.store`; redirect URLs `https://www.awebound.store` and `https://www.awebound.store/**` (sign-in returns to `/auth/callback` and `/auth/confirm` on the host the visitor is on).
 - Resend: verify `awebound.store` (SPF, DKIM, DMARC) so `noreply@awebound.store` can send.
-- Google OAuth consent screen: privacy and terms URLs on `awebound.store`.
+- Google OAuth consent screen: privacy and terms URLs on `www.awebound.store`.
 
 ## 4. Check a deploy
 
 Walk through shop → product → bag → checkout (it should land on Fourthwall's checkout) and send a test contact message.
+
+Then check what search engines and AI assistants read: `/robots.txt`, `/sitemap.xml` and `/llms.txt` should show `https://www.awebound.store` addresses and never `localhost`, and the home page should load with no errors in the browser console.
 
 ## Notes
 

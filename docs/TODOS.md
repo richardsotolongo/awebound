@@ -36,7 +36,7 @@ All variables go in `apps/web/.env.local` locally and in the Vercel project; `ap
 - [ ] **Supabase project**
   - [x] Create the project; `supabase link`, then `supabase db push` to apply `supabase/migrations`.
   - [ ] Env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`.
-  - [ ] Authentication → URL configuration: Site URL `https://awebound.store`; redirect URLs `https://awebound.store/auth/callback` and `https://awebound.store/auth/confirm` (plus localhost for development).
+  - [x] Authentication → URL configuration: Site URL `https://www.awebound.store`; redirect URLs `https://www.awebound.store` and `https://www.awebound.store/**` (plus localhost for development).
   - [ ] Authentication → Emails: paste `supabase/templates/magic-link.html` and `confirmation.html` (or `supabase config push`); subjects as in `supabase/config.toml`.
 - [ ] **Google sign-in**
   - [ ] Google Cloud: OAuth consent screen (app name Awebound, logo, privacy and terms URLs), then an OAuth client (Web).
@@ -47,7 +47,20 @@ All variables go in `apps/web/.env.local` locally and in the Vercel project; `ap
   - [ ] API key → `RESEND_API_KEY`; `EMAIL_FROM` defaults to `Awebound <noreply@awebound.store>`.
   - [ ] Supabase → Authentication → SMTP: host `smtp.resend.com`, port 465, user `resend`, password = API key, sender `no-reply@awebound.store`.
 - [ ] **A real inbox for `contact@awebound.store`.** Resend sends mail but doesn't receive it: use Google Workspace, Zoho or forwarding.
-- [ ] **Vercel** ([DEPLOYMENT.md](DEPLOYMENT.md)): one project, Root Directory `apps/web`, domain `awebound.store`.
+- [ ] **Vercel** ([DEPLOYMENT.md](DEPLOYMENT.md)): one project, Root Directory `apps/web`, domain `www.awebound.store` (`awebound.store` redirects to it).
+
+## Search and AI discovery
+
+The site publishes `robots.txt`, `sitemap.xml`, `llms.txt`, canonical links and structured data, all built from `NEXT_PUBLIC_SITE_URL`.
+
+- [ ] **Set `NEXT_PUBLIC_SITE_URL=https://www.awebound.store` in Vercel** (Production and Preview) before the next deploy. It was unset, so the live sitemap, canonical links and share images pointed to `localhost`. A production build now fails without it.
+- [ ] **Vercel → Firewall → Bot Management**: confirm the AI bots ruleset isn't blocking crawlers. `robots.txt` allows every search and AI crawler.
+- [ ] **Google Search Console**: add `awebound.store` as a domain property (a DNS TXT record, no code) and submit `https://www.awebound.store/sitemap.xml`.
+- [ ] **Bing Webmaster Tools**: import the site from Search Console and submit the sitemap. Bing's index feeds ChatGPT search and Copilot.
+- [ ] **Ask AI links** (footer): click each one now and then. The `?q=` links are not documented by the assistants; remove one from `apps/web/src/components/ask-ai.tsx` if it stops opening with the question written.
+- [ ] **Social profiles**: once Instagram and TikTok exist, add them to the footer and as `sameAs` in the home page's store data (`apps/web/src/app/page.tsx`).
+- [ ] **Shipping and returns in product data**: after delivery times and the refund policy are confirmed, add them to the product structured data (`apps/web/src/app/shop/[slug]/page.tsx`).
+- [ ] **After the products are published in Fourthwall**: check a product page in Google's Rich Results Test, and consider Google Merchant Center free listings. Until then Search Console reports "missing offers" on product pages, which is expected: a preview carries no offer.
 
 ## Fourthwall
 
@@ -76,6 +89,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 
 ## Engineering follow-ups
 
+- [ ] **Internal design codes in page source.** Nothing visible shows them, and titles, descriptions, structured data, the sitemap and `llms.txt` are clean, but the data Next sends with the home page, the shop and product pages still carries `code` (and preview SKUs built from it) inside client-component props. Strip `code` before a product reaches a Client Component (`DesignStory`, `ProductGrid`, `ProductPurchase`) and give previews SKUs that don't contain it.
 - [ ] Vercel Firewall rate-limit rule on Server Action POSTs (contact, subscribe, checkout). The in-app limits are per server instance.
 - [ ] `next/image` with `remotePatterns` for Fourthwall's image CDN (product photos are plain `<img>` tags today).
 - [ ] Error monitoring (for example Sentry).

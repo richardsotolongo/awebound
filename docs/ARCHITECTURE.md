@@ -164,7 +164,8 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 - **Releases**: everything about a release lives in the content file (collection + products with their story). Products sort by release (newest first), then `position`.
 - **Product images**: `assets/mockups/cutout.py` cuts each garment out of the approved mockups (kept intact in `assets/mockups/source`), `compose.py` places the cutouts on per-piece matte stone with one lighting and framing system and writes `apps/web/public/products`.
 - **Overlays** use the native `<dialog>` element (`components/sheet.tsx`): focus trapping, Escape and an inert page come from the browser.
-- **SEO**: per-page metadata and canonicals, Open Graph image, `sitemap.xml`, `robots.txt`, JSON-LD for products and the FAQ.
+- **Search and AI discovery**: every indexable page builds its metadata with `pageMeta` (`lib/site.ts`): a canonical address and a complete share card. The shop gives each release and each category its own listing (`shopCanonical` in `features/catalog/query.ts`); search, color, size, price and sort point back to the view they filter, and a view with no pieces is `noindex`. Structured data (`components/json-ld.tsx`): the store and website on the home page, product and breadcrumbs on product pages (an offer only once a piece can be ordered; never a SKU, which would expose the internal code), and the FAQ. `sitemap.xml` lists pages, releases, categories and pieces with their images; `robots.txt` allows every crawler; `/llms.txt` is a plain summary for AI assistants, generated from the catalog. The footer's "Ask AI about Awebound" links open an assistant with a question that names `/llms.txt`.
+- **The current path** comes from `usePath` (`lib/pathname.ts`), not `usePathname`: Vercel renders the prerendered home page as `/index`, which made the server's header and footer differ from the browser's.
 
 ## Security
 
@@ -181,7 +182,7 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 
 | Variable                                                           | Purpose                                                               |
 | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`                                             | Metadata, sitemap, auth redirects, links and images in email          |
+| `NEXT_PUBLIC_SITE_URL`                                             | Canonicals, sitemap, llms.txt, share images, links in email           |
 | `FOURTHWALL_STOREFRONT_TOKEN`                                      | Fourthwall catalog and checkout (required)                            |
 | `FOURTHWALL_CHECKOUT_DOMAIN`                                       | Optional; defaults to `awebound-store-shop.fourthwall.com`            |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Sign-in (public)                                                      |
