@@ -1,81 +1,233 @@
 {
-  "$comment": "Product renders from the Awebound Fourthwall shop (Fourthwall admin > Products > each product's images), by site slug and view. fourthwall.py downloads them into fourthwall/ and compose.py builds the site images from them; a piece without renders here falls back to the approved mockup cutouts. `hold` keeps a piece on its mockup and says why. `print` is the back print file, used for the close-up when the render hides part of the print and the mockup no longer matches the design. Update a URL when the product's images change in Fourthwall, then run fourthwall.py and compose.py.",
-  "base": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
+  "$comment": "Each product's images in the Awebound Fourthwall shop (Fourthwall admin > Products > the product's images), in the shop's order: the site shows them in the same order, the first as the listing image. `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame; `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. fourthwall.py downloads them into fourthwall/ and compose.py builds apps/web/public/products/<slug>/<n>.webp; a piece missing here falls back to its approved mockup. Update the list whenever a product's images change in Fourthwall, then run fourthwall.py and compose.py.",
+  "photos": "https://cdn.fourthwall.com/offer/sh_28e479fe-42d7-4905-9cb7-411493973448/",
+  "renders": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "products": {
     "thorns-to-lilies": {
       "fourthwallSlug": "thorns-to-lillies-tee",
-      "views": {
-        "front": "74dc4e07-5ce1-4145-b5a7-4b746101e351.webp",
-        "back": "576fe7bd-1c01-47bb-bd99-e26917395b18.webp"
-      }
+      "gallery": [
+        {
+          "photo": "c2906517-1e25-4ef1-9578-eef50bad4f68.png",
+          "view": "back"
+        },
+        {
+          "photo": "32deffd2-17b8-4b84-99e5-3582917384eb.png",
+          "view": "front"
+        },
+        {
+          "render": "576fe7bd-1c01-47bb-bd99-e26917395b18.webp",
+          "view": "back"
+        },
+        {
+          "render": "74dc4e07-5ce1-4145-b5a7-4b746101e351.webp",
+          "view": "front"
+        }
+      ]
     },
     "to-live-is-christ": {
       "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
-      "views": {
-        "front": "e5f29dad-7670-456c-b023-28ab61458a8f.webp",
-        "back": "ad06feb6-208f-4117-8fb0-571923f11a9b.webp"
-      }
+      "gallery": [
+        {
+          "photo": "a49014e8-81eb-4eae-9918-05d10d63b38d.png",
+          "view": "front"
+        },
+        {
+          "photo": "5cb0ca9b-0cb7-4211-b5e5-199fa9e4171c.png",
+          "view": "back"
+        },
+        {
+          "render": "e5f29dad-7670-456c-b023-28ab61458a8f.webp",
+          "view": "front"
+        },
+        {
+          "render": "ad06feb6-208f-4117-8fb0-571923f11a9b.webp",
+          "view": "back"
+        }
+      ]
     },
     "by-his-hem": {
       "fourthwallSlug": "by-his-hem-tee",
-      "views": {
-        "front": "8b130987-ed97-485c-8e65-64d2f24a30e6.webp",
-        "back": "caa46133-9054-48f0-8349-757d5dea9670.webp"
-      }
+      "gallery": [
+        {
+          "photo": "95b332e0-8390-4c1a-b7ad-c8f43edcc875.png",
+          "view": "back"
+        },
+        {
+          "photo": "ab12e322-3a10-437d-b70a-72dd2ba5a7e6.png",
+          "view": "front"
+        },
+        {
+          "render": "caa46133-9054-48f0-8349-757d5dea9670.webp",
+          "view": "back"
+        },
+        {
+          "render": "8b130987-ed97-485c-8e65-64d2f24a30e6.webp",
+          "view": "front"
+        }
+      ]
     },
     "stone-in-motion": {
       "fourthwallSlug": "stone-in-motion-tee",
-      "views": {
-        "front": "f70b8f74-e443-46cf-a7e0-d22006829e71.webp",
-        "back": "967c4263-fcf4-47f5-b5e4-d8fd16878300.webp"
-      }
+      "gallery": [
+        {
+          "photo": "e4150d55-8a27-4bf8-addb-e03d5d1bdd08.png",
+          "view": "back"
+        },
+        {
+          "photo": "b81dd7cc-3c61-45e5-a7b2-1cac6c715a76.png",
+          "view": "front"
+        },
+        {
+          "render": "967c4263-fcf4-47f5-b5e4-d8fd16878300.webp",
+          "view": "back"
+        },
+        {
+          "render": "f70b8f74-e443-46cf-a7e0-d22006829e71.webp",
+          "view": "front"
+        }
+      ]
     },
     "still-the-storm": {
       "fourthwallSlug": "still-the-storm-tee",
-      "views": {
-        "front": "fbfc7515-f007-4c1a-b33f-25b28b339b12.webp",
-        "back": "6902d745-d167-4da4-a4b7-1570bd481446.webp"
-      }
+      "gallery": [
+        {
+          "photo": "30ca7043-3765-4027-a8dd-fd04e5307fed.png",
+          "view": "back"
+        },
+        {
+          "photo": "fa740b65-13f1-4962-a961-452ee3c40d15.png",
+          "view": "front"
+        },
+        {
+          "render": "6902d745-d167-4da4-a4b7-1570bd481446.webp",
+          "view": "back"
+        },
+        {
+          "render": "fbfc7515-f007-4c1a-b33f-25b28b339b12.webp",
+          "view": "front"
+        }
+      ]
     },
     "torn-veil": {
       "fourthwallSlug": "torn-veil-hoodie",
-      "views": {
-        "front": "82d625b2-c6df-439c-9db1-798ccc39b5ca.webp",
-        "back": "d4ca206b-a509-4a25-a348-e45397592c17.webp"
-      },
-      "print": "d999c1fb-7ecc-4df3-b5b0-c74f0b11afb1.png"
+      "gallery": [
+        {
+          "photo": "9c3859ce-64e5-4043-8dbd-0cd05fcb11bb.png",
+          "view": "back"
+        },
+        {
+          "photo": "d01d699f-b614-4008-82da-30aa5d9bc842.png",
+          "view": "front"
+        },
+        {
+          "render": "d4ca206b-a509-4a25-a348-e45397592c17.webp",
+          "view": "back"
+        },
+        {
+          "render": "82d625b2-c6df-439c-9db1-798ccc39b5ca.webp",
+          "view": "front"
+        }
+      ]
     },
     "the-passage": {
       "fourthwallSlug": "the-passage-hoodie",
-      "views": {
-        "front": "9171322d-0621-4efe-9828-0a603eb42c36.webp",
-        "back": "83d675a8-c278-4f84-a3c7-25361480f766.webp"
-      },
-      "print": "3e492c44-cf79-4ce1-b110-edebb06d3e51.png"
+      "gallery": [
+        {
+          "photo": "3f4b6cf1-b7f5-4222-917a-d2be84e61463.png",
+          "view": "back"
+        },
+        {
+          "photo": "b7e340db-9e6f-4a09-8ee1-6c4c689ecabd.png",
+          "view": "front"
+        },
+        {
+          "render": "83d675a8-c278-4f84-a3c7-25361480f766.webp",
+          "view": "back"
+        },
+        {
+          "render": "9171322d-0621-4efe-9828-0a603eb42c36.webp",
+          "view": "front"
+        }
+      ]
     },
     "wonderfully-made": {
       "fourthwallSlug": "wonderfully-made-hoodie",
-      "views": {
-        "front": "574f09dc-18a9-47b3-8876-4add087854b7.webp",
-        "back": "87c0d7b7-80d1-4e7b-ae49-e3736a7aae51.webp"
-      },
-      "print": "ce949cf0-b965-46a8-bf96-cb1f80c3720d.png"
+      "gallery": [
+        {
+          "photo": "45a94259-faf6-4c3b-970d-3a64ce66226a.png",
+          "view": "back"
+        },
+        {
+          "photo": "1f721a40-1f6a-42b0-babf-556b2d30d7f8.png",
+          "view": "front"
+        },
+        {
+          "render": "873bb575-1273-463e-b413-6159588a81e9.webp",
+          "view": "back"
+        },
+        {
+          "render": "4014158e-7a6d-442a-be68-62cfcf069110.webp",
+          "view": "front"
+        }
+      ]
     },
     "lambs-mark": {
       "fourthwallSlug": "lambs-mark-hat",
-      "views": {
-        "front": "dcffe98e-bb7f-409e-9ebf-0e21f3dcc7d3.webp",
-        "side": "dbba85c3-edcc-4c21-929c-25010b3caf3f.webp",
-        "back": "20dd1a90-f2e3-49f7-b7cb-4d9abdf3dfda.webp"
-      }
+      "gallery": [
+        {
+          "photo": "9aebb263-0a63-40ec-b6f4-7aa08c74734d.png",
+          "view": "front"
+        },
+        {
+          "photo": "653db654-372e-4c7c-a210-346fbbd18f82.png",
+          "view": "side"
+        },
+        {
+          "photo": "e959c497-ab29-4aa8-bf85-9470789a4e71.png",
+          "view": "back"
+        },
+        {
+          "render": "dcffe98e-bb7f-409e-9ebf-0e21f3dcc7d3.webp",
+          "view": "front"
+        },
+        {
+          "render": "dbba85c3-edcc-4c21-929c-25010b3caf3f.webp",
+          "view": "side"
+        },
+        {
+          "render": "4ae317e2-bd34-412c-ac92-b2a9ab74c617.webp",
+          "view": "back"
+        }
+      ]
     },
     "signature-cap": {
       "fourthwallSlug": "awebound-signature-cap",
-      "views": {
-        "front": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
-        "side": "f0f9883c-f69c-467c-a28c-f1eee9ce9e94.webp",
-        "back": "4e5eecc2-0d1d-44ca-b7ab-647b90ca2249.webp"
-      }
+      "gallery": [
+        {
+          "photo": "17a93c33-9861-4094-ae9b-9d2158db8c75.png",
+          "view": "front"
+        },
+        {
+          "photo": "b5b8eb9b-1e4c-4412-a1c8-b87943cf0582.png",
+          "view": "side"
+        },
+        {
+          "photo": "8bb04215-b81f-4ebc-89b6-c1b1bf07bf3f.png",
+          "view": "back"
+        },
+        {
+          "render": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
+          "view": "front"
+        },
+        {
+          "render": "f0f9883c-f69c-467c-a28c-f1eee9ce9e94.webp",
+          "view": "side"
+        },
+        {
+          "render": "d201fb9b-cec1-4b2d-8c64-d59ae4cec9a9.webp",
+          "view": "back"
+        }
+      ]
     }
   }
 }

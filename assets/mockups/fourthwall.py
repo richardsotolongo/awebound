@@ -1,9 +1,7 @@
 """
-Downloads the product renders from the Fourthwall shop listed in fourthwall.json into
-fourthwall/<slug>-<view>.webp. They are already cut out (transparent background), so compose.py
-places them on each piece's surface directly; these are the item-accurate images the site shows.
-Pieces marked `hold` are skipped and keep their mockup cutouts. A piece's `print` (its back print
-file) is saved as fourthwall/<slug>-print.webp for compose.py's close-up.
+Downloads each product's images from the Fourthwall shop, as listed (in the shop's order) in
+fourthwall.json, into fourthwall/<slug>-<n>.webp. Photos are finished images with a background;
+renders are already cut out. compose.py turns them into the site's product images.
 
     python3 assets/mockups/fourthwall.py
 """
@@ -27,22 +25,19 @@ def fetch(url: str) -> bytes:
 def main() -> None:
     manifest = json.loads((HERE / "fourthwall.json").read_text())
     OUT.mkdir(exist_ok=True)
+    for old in OUT.glob("*.webp"):
+        old.unlink()
     for slug, spec in manifest["products"].items():
-        if spec.get("hold"):
-            for view in spec["views"]:
-                (OUT / f"{slug}-{view}.webp").unlink(missing_ok=True)
-            print(f"{slug}: held ({spec['hold']})")
-            continue
-        for view, name in spec["views"].items():
-            data = fetch(manifest["base"] + name)
-            (OUT / f"{slug}-{view}.webp").write_bytes(data)
-            print(f"{slug}-{view}: {len(data) // 1024} KB")
-        if "print" in spec:
-            # Print files are large PNGs; a 1400px-tall copy is plenty for an 800x1000 close-up.
-            art = Image.open(io.BytesIO(fetch(manifest["base"] + spec["print"]))).convert("RGBA")
-            art.thumbnail((1400, 1400), Image.LANCZOS)
-            art.save(OUT / f"{slug}-print.webp", "WEBP", quality=92, method=6)
-            print(f"{slug}-print: {art.size}")
+        for n, item in enumerate(spec["gallery"], start=1):
+            path = OUT / f"{slug}-{n}.webp"
+            if "photo" in item:
+                # Photos arrive as large PNGs; a lossless-looking WebP at full size is a tenth of it.
+                Image.open(io.BytesIO(fetch(manifest["photos"] + item["photo"]))).convert("RGB").save(
+                    path, "WEBP", quality=92, method=6
+                )
+            else:
+                path.write_bytes(fetch(manifest["renders"] + item["render"]))
+            print(f"{slug}-{n}: {'photo' if 'photo' in item else 'render'}, {item['view']}")
 
 
 if __name__ == "__main__":

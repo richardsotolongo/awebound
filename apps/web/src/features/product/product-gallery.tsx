@@ -3,7 +3,7 @@
 import type { ProductImage } from "@/shared";
 import { useRef, useState } from "react";
 
-/** Back print first, then front and details. Thumbnails on desktop; swipe with dots on phones. */
+/** The product's images in order (the first is the listing image). Thumbnails on desktop; swipe with dots on phones. */
 export function ProductGallery({ images, name }: { images: ProductImage[]; name: string }) {
   const [current, setCurrent] = useState(0);
   const stage = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
               type="button"
               aria-current={i === current}
               onClick={() => setCurrent(i)}
-              aria-label={`Show ${img.view} view`}
+              aria-label={`Show image ${i + 1} of ${images.length}, ${img.view} view`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element -- catalog images may come from a provider CDN */}
               <img src={img.url} alt="" loading="lazy" />

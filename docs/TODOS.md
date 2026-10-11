@@ -67,7 +67,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 
 ## Content
 
-- [ ] **Product photography** of real samples, uploaded to each Fourthwall product (the whole garment first, then the other side and artwork close-ups), then list them in `assets/mockups/fourthwall.json` and run `fourthwall.py` and `compose.py` to place them on each piece's surface (photos need a transparent background, or a cutout step first). Until then the site uses Fourthwall's product renders.
+- [ ] **Product photography** of real samples, uploaded to each Fourthwall product. Whenever a product's images change in Fourthwall, update its list in `assets/mockups/fourthwall.json` (same order as Fourthwall) and run `fourthwall.py` and `compose.py`; the site follows that order, the first as the listing image.
 - [ ] **Legal review** of `/privacy`, `/terms` and `/refunds`. They are drafts written for this setup, not legal advice. Update `LEGAL.lastUpdated` when they change.
 - [ ] **Save the updated `awebound-brand` guide** (proposed in chat; the same text is in `docs/BRAND.md`). Its `references/` files still describe the old pillars, NLT and Cinzel/Archivo; the new SKILL.md says it overrides them, but refresh them when convenient.
 - [ ] **Wordmark cleanup** by a designer before large back prints; physical test of the proposed minimum print (1.75 in) and embroidery (2.25 in) sizes.

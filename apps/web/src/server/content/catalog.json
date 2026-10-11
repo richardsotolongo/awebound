@@ -89,18 +89,23 @@
       "images": [
         {
           "view": "back",
-          "url": "/products/thorns-to-lilies/back.webp",
+          "url": "/products/thorns-to-lilies/1.webp",
           "alt": "Thorns to Lilies oversized tee, back: a crown of thorns blooming into lilies around the wordmark, Isaiah 1:18"
         },
         {
           "view": "front",
-          "url": "/products/thorns-to-lilies/front.webp",
+          "url": "/products/thorns-to-lilies/2.webp",
           "alt": "Thorns to Lilies oversized tee, front: large red wordmark on ecru"
         },
         {
-          "view": "detail",
-          "url": "/products/thorns-to-lilies/detail.webp",
-          "alt": "Thorns to Lilies back print, close up"
+          "view": "back",
+          "url": "/products/thorns-to-lilies/3.webp",
+          "alt": "Thorns to Lilies oversized tee, back: a crown of thorns blooming into lilies around the wordmark, Isaiah 1:18"
+        },
+        {
+          "view": "front",
+          "url": "/products/thorns-to-lilies/4.webp",
+          "alt": "Thorns to Lilies oversized tee, front: large red wordmark on ecru"
         }
       ]
     },
@@ -136,18 +141,23 @@
       "images": [
         {
           "view": "front",
-          "url": "/products/to-live-is-christ/front.webp",
+          "url": "/products/to-live-is-christ/1.webp",
           "alt": "To Live Is Christ oversized tee in navy, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
         },
         {
           "view": "back",
-          "url": "/products/to-live-is-christ/back.webp",
+          "url": "/products/to-live-is-christ/2.webp",
           "alt": "To Live Is Christ oversized tee in navy, back: large Awebound wordmark across the upper back"
         },
         {
-          "view": "detail",
-          "url": "/products/to-live-is-christ/detail.webp",
-          "alt": "To Live Is Christ front print, close up"
+          "view": "front",
+          "url": "/products/to-live-is-christ/3.webp",
+          "alt": "To Live Is Christ oversized tee in navy, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
+        },
+        {
+          "view": "back",
+          "url": "/products/to-live-is-christ/4.webp",
+          "alt": "To Live Is Christ oversized tee in navy, back: large Awebound wordmark across the upper back"
         }
       ]
     },
@@ -183,18 +193,23 @@
       "images": [
         {
           "view": "back",
-          "url": "/products/by-his-hem/back.webp",
+          "url": "/products/by-his-hem/1.webp",
           "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
         },
         {
           "view": "front",
-          "url": "/products/by-his-hem/front.webp",
+          "url": "/products/by-his-hem/2.webp",
           "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
         },
         {
-          "view": "detail",
-          "url": "/products/by-his-hem/detail.webp",
-          "alt": "By His Hem back print, close up"
+          "view": "back",
+          "url": "/products/by-his-hem/3.webp",
+          "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
+        },
+        {
+          "view": "front",
+          "url": "/products/by-his-hem/4.webp",
+          "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
         }
       ]
     },
@@ -230,18 +245,23 @@
       "images": [
         {
           "view": "back",
-          "url": "/products/stone-in-motion/back.webp",
+          "url": "/products/stone-in-motion/1.webp",
           "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
         },
         {
           "view": "front",
-          "url": "/products/stone-in-motion/front.webp",
+          "url": "/products/stone-in-motion/2.webp",
           "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
         },
         {
-          "view": "detail",
-          "url": "/products/stone-in-motion/detail.webp",
-          "alt": "Stone in Motion back print, close up"
+          "view": "back",
+          "url": "/products/stone-in-motion/3.webp",
+          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
+        },
+        {
+          "view": "front",
+          "url": "/products/stone-in-motion/4.webp",
+          "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
         }
       ]
     },
@@ -276,19 +296,24 @@
       },
       "images": [
         {
+          "view": "back",
+          "url": "/products/still-the-storm/1.webp",
+          "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
+        },
+        {
           "view": "front",
-          "url": "/products/still-the-storm/front.webp",
+          "url": "/products/still-the-storm/2.webp",
           "alt": "Still the Storm oversized tee, front: the wordmark over a stormy sea with a cross on the horizon"
         },
         {
           "view": "back",
-          "url": "/products/still-the-storm/back.webp",
+          "url": "/products/still-the-storm/3.webp",
           "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
         },
         {
-          "view": "detail",
-          "url": "/products/still-the-storm/detail.webp",
-          "alt": "Still the Storm front print, close up"
+          "view": "front",
+          "url": "/products/still-the-storm/4.webp",
+          "alt": "Still the Storm oversized tee, front: the wordmark over a stormy sea with a cross on the horizon"
         }
       ]
     },
@@ -324,18 +349,23 @@
       "images": [
         {
           "view": "back",
-          "url": "/products/torn-veil/back.webp",
+          "url": "/products/torn-veil/1.webp",
           "alt": "Torn Veil hoodie, back: a red curtain torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
         },
         {
           "view": "front",
-          "url": "/products/torn-veil/front.webp",
+          "url": "/products/torn-veil/2.webp",
           "alt": "Torn Veil hoodie, front: the wordmark with red thorns and the Thorn Cross, center chest"
         },
         {
-          "view": "detail",
-          "url": "/products/torn-veil/detail.webp",
-          "alt": "Torn Veil back print, close up"
+          "view": "back",
+          "url": "/products/torn-veil/3.webp",
+          "alt": "Torn Veil hoodie, back: a red curtain torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
+        },
+        {
+          "view": "front",
+          "url": "/products/torn-veil/4.webp",
+          "alt": "Torn Veil hoodie, front: the wordmark with red thorns and the Thorn Cross, center chest"
         }
       ]
     },
@@ -371,18 +401,23 @@
       "images": [
         {
           "view": "back",
-          "url": "/products/the-passage/back.webp",
+          "url": "/products/the-passage/1.webp",
           "alt": "The Passage hoodie in cypress, back: a traveler on a path through a dark valley toward a cross, above “I will fear no evil,” Psalm 23:4"
         },
         {
           "view": "front",
-          "url": "/products/the-passage/front.webp",
+          "url": "/products/the-passage/2.webp",
           "alt": "The Passage hoodie in cypress, front: the wordmark and the Thorn Cross, center chest"
         },
         {
-          "view": "detail",
-          "url": "/products/the-passage/detail.webp",
-          "alt": "The Passage back print, close up"
+          "view": "back",
+          "url": "/products/the-passage/3.webp",
+          "alt": "The Passage hoodie in cypress, back: a traveler on a path through a dark valley toward a cross, above “I will fear no evil,” Psalm 23:4"
+        },
+        {
+          "view": "front",
+          "url": "/products/the-passage/4.webp",
+          "alt": "The Passage hoodie in cypress, front: the wordmark and the Thorn Cross, center chest"
         }
       ]
     },
@@ -418,18 +453,23 @@
       "images": [
         {
           "view": "back",
-          "url": "/products/wonderfully-made/back.webp",
+          "url": "/products/wonderfully-made/1.webp",
           "alt": "Wonderfully Made hoodie in Carolina blue, back: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
         },
         {
           "view": "front",
-          "url": "/products/wonderfully-made/front.webp",
+          "url": "/products/wonderfully-made/2.webp",
           "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark and the Thorn Cross in deep red"
         },
         {
-          "view": "detail",
-          "url": "/products/wonderfully-made/detail.webp",
-          "alt": "Wonderfully Made back print, close up"
+          "view": "back",
+          "url": "/products/wonderfully-made/3.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, back: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
+        },
+        {
+          "view": "front",
+          "url": "/products/wonderfully-made/4.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark and the Thorn Cross in deep red"
         }
       ]
     },
@@ -465,23 +505,33 @@
       "images": [
         {
           "view": "front",
-          "url": "/products/lambs-mark/front.webp",
+          "url": "/products/lambs-mark/1.webp",
           "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb inside a red crown of thorns"
         },
         {
           "view": "side",
-          "url": "/products/lambs-mark/side.webp",
+          "url": "/products/lambs-mark/2.webp",
           "alt": "Lamb’s Mark distressed cap, three-quarter view: the embroidered lamb and the frayed brim"
         },
         {
           "view": "back",
-          "url": "/products/lambs-mark/back.webp",
+          "url": "/products/lambs-mark/3.webp",
           "alt": "Lamb’s Mark distressed cap, back: the Awebound wordmark with red thorns above the strap"
         },
         {
-          "view": "detail",
-          "url": "/products/lambs-mark/detail.webp",
-          "alt": "Lamb’s Mark embroidery, close up"
+          "view": "front",
+          "url": "/products/lambs-mark/4.webp",
+          "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb inside a red crown of thorns"
+        },
+        {
+          "view": "side",
+          "url": "/products/lambs-mark/5.webp",
+          "alt": "Lamb’s Mark distressed cap, three-quarter view: the embroidered lamb and the frayed brim"
+        },
+        {
+          "view": "back",
+          "url": "/products/lambs-mark/6.webp",
+          "alt": "Lamb’s Mark distressed cap, from behind at an angle: the Awebound wordmark with red thorns above the strap"
         }
       ]
     },
@@ -517,23 +567,33 @@
       "images": [
         {
           "view": "front",
-          "url": "/products/signature-cap/front.webp",
+          "url": "/products/signature-cap/1.webp",
           "alt": "Signature Cap in black, front: the Awebound wordmark with red-edged thorns above the Thorn Cross"
         },
         {
           "view": "side",
-          "url": "/products/signature-cap/side.webp",
+          "url": "/products/signature-cap/2.webp",
           "alt": "Signature Cap in black, three-quarter view: the embroidered wordmark and the curved brim"
         },
         {
           "view": "back",
-          "url": "/products/signature-cap/back.webp",
+          "url": "/products/signature-cap/3.webp",
           "alt": "Signature Cap in black, back: plain, with an adjustable snap strap"
         },
         {
-          "view": "detail",
-          "url": "/products/signature-cap/detail.webp",
-          "alt": "Signature Cap embroidery, close up"
+          "view": "front",
+          "url": "/products/signature-cap/4.webp",
+          "alt": "Signature Cap in black, front: the Awebound wordmark with red-edged thorns above the Thorn Cross"
+        },
+        {
+          "view": "side",
+          "url": "/products/signature-cap/5.webp",
+          "alt": "Signature Cap in black, three-quarter view: the embroidered wordmark and the curved brim"
+        },
+        {
+          "view": "back",
+          "url": "/products/signature-cap/6.webp",
+          "alt": "Signature Cap in black, from behind at an angle: plain, with the adjustable snap strap"
         }
       ]
     }
