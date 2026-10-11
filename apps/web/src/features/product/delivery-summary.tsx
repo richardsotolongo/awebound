@@ -4,7 +4,7 @@ import { DELIVERY } from "@/lib/delivery";
 interface DeliverySummaryProps {
   /** Ordering isn't open yet: delivery details are confirmed before it opens. */
   preview: boolean;
-  /** "embroidered" for caps, "printed" for everything else. */
+  /** How the piece's art goes on (the product story's `process`). */
   process: "printed" | "embroidered";
   onSizeGuide?: () => void;
 }
@@ -48,15 +48,16 @@ export function DeliverySummary({ preview, process, onSizeGuide }: DeliverySumma
         <div>
           <dt>A problem with your order</dt>
           <dd>
-            Misprinted, damaged or the wrong item? Tell us within {DELIVERY.problemWindowDays} days
-            of delivery, with a photo, and we’ll replace it or refund you.
+            Damaged, misprinted or defective, or not what you ordered (the wrong item or size)? Tell
+            us within {DELIVERY.problemWindowDays} days of delivery, with a photo, and we’ll send a
+            replacement at no cost to you, or refund you if a replacement isn’t possible.
           </dd>
         </div>
         <div>
           <dt>A size that doesn’t fit</dt>
           <dd>
-            Because each piece is made for you, we can’t take returns or exchanges for size. Check
-            the size guide first, or ask us before you order.
+            Because each piece is made for you, we can’t take returns or exchanges for a size you
+            chose. Check the size guide first, or ask us before you order.
           </dd>
         </div>
       </dl>
@@ -67,7 +68,7 @@ export function DeliverySummary({ preview, process, onSizeGuide }: DeliverySumma
           </button>
         ) : null}
         <Link href="/refunds" className="aw-btn aw-btn-link">
-          Return policy
+          Returns and refunds
         </Link>
       </p>
     </section>

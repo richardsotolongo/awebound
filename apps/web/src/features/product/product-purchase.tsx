@@ -97,6 +97,9 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
             }}
           />
         </div>
+        {product.sizeGuide?.note ? (
+          <p className="buy-size-note aw-small">{product.sizeGuide.note}</p>
+        ) : null}
         {error ? (
           <p className="buy-error" role="alert">
             {error}
@@ -135,17 +138,18 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
 
       <DeliverySummary
         preview={product.preview}
-        process={product.category.slug === "hats" ? "embroidered" : "printed"}
+        process={product.story.process}
         onSizeGuide={() => setGuideOpen(true)}
       />
 
       <Sheet
         id="size-guide"
+        size={product.sizeGuide?.image ? "wide" : undefined}
         open={guideOpen}
         onClose={() => setGuideOpen(false)}
         title={`${product.category.cut} size guide`}
       >
-        <SizeGuide category={product.category.slug} cut={product.category.cut} />
+        <SizeGuide guide={product.sizeGuide} cut={product.category.cut} />
       </Sheet>
     </>
   );

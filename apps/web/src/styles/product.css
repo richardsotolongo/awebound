@@ -235,6 +235,55 @@
     text-transform: uppercase;
     color: var(--ink-muted);
   }
+  .size-table tbody th {
+    font-size: 15px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* Size guide sheet: the owner's guide image for the blank, or the cap table. */
+  .size-guide {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .size-guide > p {
+    margin: 0;
+  }
+  .size-guide-note,
+  .buy-size-note {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    border-left: 2px solid var(--accent-text);
+    background: var(--surface-raised);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .buy-size-note {
+    margin-top: var(--space-3);
+  }
+  .size-guide-image {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+  .size-guide-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .size-guide-how {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-1);
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--ink-muted);
+  }
 }
 
 @layer components {

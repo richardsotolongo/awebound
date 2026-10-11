@@ -60,8 +60,10 @@ Avoid gothic type for paragraphs, sizing, numbers and roman numerals (they turn 
 
 - **Card** (home grid, shop, related): the whole garment showing its main artwork; garment type and price; the name; the NIV quote and its label. The card links to the product page. No color subtitle ("Tee · Faded black") and no code.
 - **Product page**, top to bottom: release and garment type; the name; the quote and its label beside the name (not repeated lower down); price; color (name beside the swatch) and size with a size guide; Save to bag or Add to bag; **delivery and returns** in brief; the design story (theme, the call such as "Behold His mercy", what the art shows and what it means); **Product details** (garment, fit, color, front, back, inks or thread, fabric).
-- **Delivery and returns summary** beside the buy button: made to order; production time and shipping time stated separately; how shipping is charged (calculated at checkout for the address, shown before paying); links to the size guide and the return policy; the difference between a problem with an order (misprint, damage or wrong item reported within 30 days with a photo: replaced or refunded) and a size that doesn't fit (made to order, so no returns or exchanges for size). Only confirmed details: until production and shipping times are confirmed, say they will be confirmed before ordering opens.
+- **Delivery and returns summary** beside the buy button: made to order; production time and shipping time stated separately; how shipping is charged (calculated at checkout for the address, shown before paying); links to the size guide and the returns and refunds policy; the difference between a problem with an order (damage, a misprint or defect, or the wrong item or size sent, reported within 30 days of delivery with a photo: replaced at no cost, or refunded if a replacement isn't possible) and a size the customer chose that doesn't fit (made to order, so no returns or exchanges for it). Only confirmed details: until production and shipping times are confirmed, say they will be confirmed before ordering opens.
 - Selected size and color always show in the bag and order summary; cut, fit and fabric in Product details; measurements and sizing advice in the size guide.
+- **Size guide**: every piece shows Awebound's own size guide image for its blank, with a one-line fit summary above it: the Middleweight Oversized T-shirt (Thorns to Lilies, By His Hem, Stone in Motion), the Organic Oversized T-shirt (To Live Is Christ, Still the Storm), the Premium Relaxed Hoodie (all three hoodies), the Low-Profile Adjustable Cap (Lamb's Mark) and the Mid-Profile Snapback Cap (Signature Cap). No “size up” advice: the owner wore the Organic Oversized in his usual size. Never name the blank's brand to customers.
+- **Returns** follow Fourthwall's policy everywhere (refunds page, FAQ, product page, terms, llms.txt): damage, misprints, defects, and the wrong item or size sent, reported within 30 days of delivery with a photo, are replaced at no cost or refunded if a replacement isn't possible; no returns or exchanges for a size the customer chose or a change of mind; expected muting of colors printed on dark garments isn't a defect; lost packages after 2 weeks without tracking (3 international); changes and cancellations only before production; EU, UK and EEA customers keep their 14-day right of withdrawal.
 
 ## Home page order
 
@@ -104,7 +106,7 @@ Art: [one sentence on the main artwork and what it shows]
 Meaning: [two to four sentences: the moment in Scripture and how the design carries it]
 Front: [placement and mark] · Back: [composition in one line; name printed wording accurately]
 Color: [garment color] · Inks or thread: [colors]
-Fit: [cut and silhouette] · Fabric: [once confirmed]
+Fit: [cut and silhouette] · Fabric: [the blank's fabric, from Fourthwall]
 ```
 
 ### Calls to action
@@ -157,7 +159,6 @@ Site-wide verses: Romans 1:16 (excerpt, "worn without shame") and 1 Corinthians 
 
 - Biblica's written permission for NIV on the website, and separately for By His Hem, whose back prints NIV wording, before launch. The Passage (“I will fear no evil”) and Wonderfully Made (“Fearfully & wonderfully made”) print wording that the King James Version shares.
 - Confirmed production and shipping times and shipping rates (Fourthwall), then fill them on the product pages and FAQ.
-- The blank supplier and fabric for each piece, and final size charts.
 - Prices set in Fourthwall to match the table above.
 - Photographs of real samples to replace the Fourthwall renders.
 - A designer's cleanup of the traced wordmark before large back prints; physical tests of the proposed minimum print (1.75in) and embroidery (2.25in) sizes.

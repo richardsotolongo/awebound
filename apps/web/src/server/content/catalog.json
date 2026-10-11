@@ -1,5 +1,5 @@
 {
-  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest.",
+  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest. `sizeGuides` holds each blank's garment measurements, copied exactly from the owner's size guide images (every garment and both caps) (apps/web/public/size-guides, sources in assets/size-guides) and Fourthwall's product details; `blank` names the supplier product for our records and is never shown. A product's `sizeGuide` picks its guide, and the guide's sizes are the sizes a preview offers. `sizePriceCents` holds Fourthwall's per-size prices (2XL and up cost more) for previews.",
   "categories": [
     {
       "slug": "tees",
@@ -56,17 +56,220 @@
     "Cypress": "garment-cypress",
     "Carolina Blue": "garment-carolina-blue"
   },
+  "sizeGuides": {
+    "middleweight-oversized-tee": {
+      "name": "Middleweight Oversized T-shirt",
+      "blank": "AS Colour 5052 Middleweight Oversized T-shirt (Fourthwall pro_sxGQGvBmRWSpOQOf7imPEg)",
+      "fit": "Oversized fit. Size down one size for a closer fit.",
+      "note": null,
+      "tolerance": "Actual garment measurements may vary by up to 2 inches.",
+      "image": {
+        "url": "/size-guides/middleweight-oversized-tee.webp",
+        "width": 1600,
+        "height": 2577
+      },
+      "measures": [
+        {
+          "label": "Width",
+          "how": "Underarm seam to underarm seam."
+        },
+        {
+          "label": "Length",
+          "how": "High point of shoulder to bottom hem."
+        }
+      ],
+      "rows": [
+        {
+          "size": "S",
+          "values": ["22¾", "28¼"]
+        },
+        {
+          "size": "M",
+          "values": ["23¾", "29"]
+        },
+        {
+          "size": "L",
+          "values": ["24¾", "30"]
+        },
+        {
+          "size": "XL",
+          "values": ["25¾", "30¾"]
+        },
+        {
+          "size": "2XL",
+          "values": ["26¾", "31½"]
+        },
+        {
+          "size": "3XL",
+          "values": ["27¾", "32¼"]
+        }
+      ]
+    },
+    "organic-oversized-tee": {
+      "name": "Organic Oversized T-shirt",
+      "blank": "Stanley/Stella SATU020 Unisex Organic Oversized T-Shirt (Fourthwall pro_nbzZuIKIRnGSoOHdUmRN9w)",
+      "fit": "Oversized fit with dropped shoulders and a wide neckline.",
+      "note": null,
+      "tolerance": "Actual garment measurements may vary by up to 2 inches (5 cm).",
+      "image": {
+        "url": "/size-guides/organic-oversized-tee.webp",
+        "width": 1600,
+        "height": 2463
+      },
+      "measures": [
+        {
+          "label": "Length",
+          "how": "High point of shoulder to bottom hem."
+        },
+        {
+          "label": "Width",
+          "how": "Underarm seam to underarm seam."
+        },
+        {
+          "label": "Sleeve",
+          "how": "Shoulder seam to sleeve edge."
+        }
+      ],
+      "rows": [
+        {
+          "size": "S",
+          "values": ["28¾", "24¾", "9½"]
+        },
+        {
+          "size": "M",
+          "values": ["29½", "26⅜", "9⅝"]
+        },
+        {
+          "size": "L",
+          "values": ["30¼", "28", "9⅞"]
+        },
+        {
+          "size": "XL",
+          "values": ["31½", "29⅞", "10"]
+        },
+        {
+          "size": "2XL",
+          "values": ["32½", "31⅞", "10¼"]
+        }
+      ]
+    },
+    "premium-relaxed-hoodie": {
+      "name": "Premium Relaxed Hoodie",
+      "blank": "AS Colour 5161 Unisex Premium Relaxed Hoodie (Fourthwall pro_oEH9q7C-T2uYRwekI8XCSg)",
+      "fit": "Relaxed fit, roomier than standard.",
+      "note": null,
+      "tolerance": null,
+      "image": {
+        "url": "/size-guides/premium-relaxed-hoodie.webp",
+        "width": 1600,
+        "height": 2427
+      },
+      "measures": [
+        {
+          "label": "Length",
+          "how": "High point of shoulder to bottom hem."
+        },
+        {
+          "label": "Width",
+          "how": "Underarm seam to underarm seam."
+        },
+        {
+          "label": "Sleeve",
+          "how": "Top of sleeve seam to cuff edge."
+        }
+      ],
+      "rows": [
+        {
+          "size": "S",
+          "values": ["27¾", "22½", "22½"]
+        },
+        {
+          "size": "M",
+          "values": ["28¾", "23½", "22½"]
+        },
+        {
+          "size": "L",
+          "values": ["29¾", "24¾", "24¼"]
+        },
+        {
+          "size": "XL",
+          "values": ["30¾", "26", "24¼"]
+        },
+        {
+          "size": "2XL",
+          "values": ["31¾", "27¼", "25½"]
+        },
+        {
+          "size": "3XL",
+          "values": ["32¾", "28¼", "27"]
+        }
+      ]
+    },
+    "low-profile-adjustable-cap": {
+      "name": "Low-Profile Adjustable Cap",
+      "blank": "Otto Cap 104-1018 Distressed Dad Hat (Fourthwall pro_bd2e2b0d02e04dd8b4)",
+      "fit": "One size fits most. Low-profile cap with a hook-and-loop strap to adjust the fit.",
+      "note": null,
+      "tolerance": null,
+      "image": {
+        "url": "/size-guides/low-profile-adjustable-cap.webp",
+        "width": 1600,
+        "height": 1840
+      },
+      "measures": [
+        {
+          "label": "Head circumference",
+          "how": "Around your head, just above your ears. Keep the tape level and snug, not tight."
+        }
+      ],
+      "rows": [
+        {
+          "size": "One size",
+          "values": ["19–22"]
+        }
+      ]
+    },
+    "mid-profile-snapback-cap": {
+      "name": "Mid-Profile Snapback Cap",
+      "blank": "Otto Cap 31-069 Mid-Profile Baseball Cap (Fourthwall pro_yik3Xfh7RlmBN1yymFa6JA)",
+      "fit": "One size fits most. Mid-profile cap with a snap strap to adjust the fit.",
+      "note": null,
+      "tolerance": null,
+      "image": {
+        "url": "/size-guides/mid-profile-snapback-cap.webp",
+        "width": 1600,
+        "height": 1840
+      },
+      "measures": [
+        {
+          "label": "Head circumference",
+          "how": "Around your head, just above your ears. Keep the tape level and snug, not tight."
+        }
+      ],
+      "rows": [
+        {
+          "size": "One size",
+          "values": ["23¼–25¼"]
+        }
+      ]
+    }
+  },
   "products": [
     {
       "code": "A3-B03",
       "slug": "thorns-to-lilies",
       "fourthwallSlug": "thorns-to-lillies-tee",
+      "sizeGuide": "middleweight-oversized-tee",
       "name": "Thorns to Lilies",
       "position": 1,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Ecru"],
       "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200,
+        "3XL": 4400
+      },
       "featured": true,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -83,8 +286,9 @@
         "front": "Large Awebound wordmark across the chest in deep red",
         "back": "A crown of thorns blooming into lilies around the wordmark, with Isaiah 1:18",
         "inks": "Deep red, gray",
-        "fit": "Larger oversized · dropped shoulder, extra-boxy body",
-        "material": null
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
+        "process": "printed"
       },
       "images": [
         {
@@ -113,12 +317,16 @@
       "code": "A3-B05",
       "slug": "to-live-is-christ",
       "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
+      "sizeGuide": "organic-oversized-tee",
       "name": "To Live Is Christ, To Die Is Gain",
       "position": 2,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["French Navy"],
       "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200
+      },
       "featured": true,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -136,7 +344,8 @@
         "back": "Large Awebound wordmark with thorn branches across the upper back",
         "inks": "Bone",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
-        "material": null
+        "material": "100% organic combed ring-spun cotton (5.9 oz) · GOTS-certified organic",
+        "process": "printed"
       },
       "images": [
         {
@@ -165,12 +374,17 @@
       "code": "A3-B07",
       "slug": "by-his-hem",
       "fourthwallSlug": "by-his-hem-tee",
+      "sizeGuide": "middleweight-oversized-tee",
       "name": "By His Hem",
       "position": 3,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Ecru"],
       "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200,
+        "3XL": 4400
+      },
       "featured": false,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -188,7 +402,8 @@
         "back": "“If I only touch his cloak, I will be healed.” with Matthew 9:21, beside a hand grasping the cloak in a spray of rust",
         "inks": "Black, rust",
         "fit": "Regular oversized · dropped shoulder, boxy body",
-        "material": null
+        "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
+        "process": "printed"
       },
       "images": [
         {
@@ -217,12 +432,17 @@
       "code": "A3-B04",
       "slug": "stone-in-motion",
       "fourthwallSlug": "stone-in-motion-tee",
+      "sizeGuide": "middleweight-oversized-tee",
       "name": "Stone in Motion",
       "position": 4,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Ecru"],
       "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200,
+        "3XL": 4400
+      },
       "featured": false,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -240,7 +460,8 @@
         "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
         "inks": "Black, cobalt blue",
         "fit": "Regular oversized · dropped shoulder, boxy body",
-        "material": null
+        "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
+        "process": "printed"
       },
       "images": [
         {
@@ -269,12 +490,16 @@
       "code": "A3-B02",
       "slug": "still-the-storm",
       "fourthwallSlug": "still-the-storm-tee",
+      "sizeGuide": "organic-oversized-tee",
       "name": "Still the Storm",
       "position": 5,
       "collection": "behold",
       "category": "oversized-tees",
       "colors": ["Black"],
       "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200
+      },
       "featured": false,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -292,7 +517,8 @@
         "back": "Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
         "inks": "Bone",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
-        "material": null
+        "material": "100% organic combed ring-spun cotton (5.9 oz) · GOTS-certified organic",
+        "process": "printed"
       },
       "images": [
         {
@@ -321,12 +547,17 @@
       "code": "A3-B06",
       "slug": "torn-veil",
       "fourthwallSlug": "torn-veil-hoodie",
+      "sizeGuide": "premium-relaxed-hoodie",
       "name": "Torn Veil",
       "position": 6,
       "collection": "behold",
       "category": "hoodies",
       "colors": ["Black"],
       "priceCents": 6000,
+      "sizePriceCents": {
+        "2XL": 6200,
+        "3XL": 6400
+      },
       "featured": false,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -344,7 +575,8 @@
         "back": "A red curtain torn open, light breaking through over the clouds, above “The veil is torn” in heavy gothic capitals, with Matthew 27:51 below",
         "inks": "Bone, deep red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
-        "material": null
+        "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
+        "process": "printed"
       },
       "images": [
         {
@@ -373,12 +605,17 @@
       "code": "A3-B08",
       "slug": "the-passage",
       "fourthwallSlug": "the-passage-hoodie",
+      "sizeGuide": "premium-relaxed-hoodie",
       "name": "The Passage",
       "position": 7,
       "collection": "behold",
       "category": "hoodies",
       "colors": ["Cypress"],
       "priceCents": 6000,
+      "sizePriceCents": {
+        "2XL": 6200,
+        "3XL": 6400
+      },
       "featured": false,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -396,7 +633,8 @@
         "back": "A dark valley under a full moon, a lit path leading to a cross on the hill, above “I will fear no evil” in tall capitals, with Psalm 23:4 below",
         "inks": "Bone, ember orange, charcoal, red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
-        "material": null
+        "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
+        "process": "printed"
       },
       "images": [
         {
@@ -425,12 +663,17 @@
       "code": "A3-B09",
       "slug": "wonderfully-made",
       "fourthwallSlug": "wonderfully-made-hoodie",
+      "sizeGuide": "premium-relaxed-hoodie",
       "name": "Wonderfully Made",
       "position": 8,
       "collection": "behold",
       "category": "hoodies",
       "colors": ["Carolina Blue"],
       "priceCents": 6000,
+      "sizePriceCents": {
+        "2XL": 6200,
+        "3XL": 6400
+      },
       "featured": false,
       "releasedAt": "2026-10-09",
       "scripture": {
@@ -448,7 +691,8 @@
         "back": "“Fearfully & wonderfully made” in ornate red lettering among roses and leaves, beside a wooden cross, with Psalm 139:14 below",
         "inks": "Deep red, rose, cream, wood brown",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
-        "material": null
+        "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
+        "process": "printed"
       },
       "images": [
         {
@@ -477,6 +721,7 @@
       "code": "A3-H01",
       "slug": "lambs-mark",
       "fourthwallSlug": "lambs-mark-hat",
+      "sizeGuide": "low-profile-adjustable-cap",
       "name": "Lamb’s Mark",
       "position": 9,
       "collection": "behold",
@@ -500,7 +745,8 @@
         "back": "Awebound wordmark in white with red thorns, above the strap",
         "inks": "White and red thread",
         "fit": "Distressed cap · curved brim, adjustable strap back",
-        "material": null
+        "material": "100% pre-shrunk cotton twill, distressed",
+        "process": "embroidered"
       },
       "images": [
         {
@@ -539,6 +785,7 @@
       "code": "A3-H02",
       "slug": "signature-cap",
       "fourthwallSlug": "awebound-signature-cap",
+      "sizeGuide": "mid-profile-snapback-cap",
       "name": "Signature Cap",
       "position": 10,
       "collection": "behold",
@@ -556,13 +803,14 @@
       "story": {
         "theme": "Redemption",
         "call": "Behold your Redeemer",
-        "art": "The Awebound wordmark embroidered in white, outlined and thorned in deep red, above a small Thorn Cross.",
+        "art": "The Awebound wordmark printed in white, outlined and thorned in deep red, above a small Thorn Cross.",
         "meaning": "This is the everyday Awebound cap: the wordmark and the Thorn Cross, nothing more. The red along the thorns means the same thing as the Lamb’s Mark. It stands for the sacrifice of our Lord Jesus Christ, who wore a crown of thorns and gave His life for us. Through His blood we are forgiven.",
-        "front": "Awebound wordmark in white embroidery outlined in deep red, with red thorns, above a small Thorn Cross",
+        "front": "Awebound wordmark printed in white, outlined in deep red with red thorns, above a small Thorn Cross",
         "back": "Plain, with an adjustable snap strap",
-        "inks": "White and red thread",
+        "inks": "White, deep red",
         "fit": "Structured cap · mid-profile crown, curved brim, adjustable snap back",
-        "material": null
+        "material": "65% polyester, 35% cotton",
+        "process": "printed"
       },
       "images": [
         {
@@ -573,7 +821,7 @@
         {
           "view": "side",
           "url": "/products/signature-cap/2.webp",
-          "alt": "Signature Cap in black, three-quarter view: the embroidered wordmark and the curved brim"
+          "alt": "Signature Cap in black, three-quarter view: the printed wordmark and the curved brim"
         },
         {
           "view": "back",
@@ -588,7 +836,7 @@
         {
           "view": "side",
           "url": "/products/signature-cap/5.webp",
-          "alt": "Signature Cap in black, three-quarter view: the embroidered wordmark and the curved brim"
+          "alt": "Signature Cap in black, three-quarter view: the printed wordmark and the curved brim"
         },
         {
           "view": "back",

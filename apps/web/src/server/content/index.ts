@@ -4,12 +4,14 @@ import {
   CollectionSchema,
   ImageViewSchema,
   ProductStorySchema,
+  SizeGuideSchema,
   type Category,
   type Collection,
   type Color,
   type ProductImage,
   type ProductStory,
   type ScriptureQuote,
+  type SizeGuide,
 } from "@/shared";
 import { quote, ScriptureRecordSchema } from "../scripture";
 import raw from "./catalog.json";
@@ -25,6 +27,14 @@ const BrandContentSchema = z.object({
   ),
   collections: z.array(CollectionSchema),
   colors: z.record(z.string(), z.string()),
+  /** Garment measurements per blank, keyed by an id products refer to. */
+  sizeGuides: z.record(
+    z.string(),
+    SizeGuideSchema.extend({
+      /** The supplier product (brand, model, Fourthwall id), for our records; never shown. */
+      blank: z.string(),
+    }),
+  ),
   products: z.array(
     z.object({
       code: z.string(),
@@ -37,12 +47,16 @@ const BrandContentSchema = z.object({
       colors: z.array(z.string()).min(1),
       /** The site's price while the product is a preview; Fourthwall's price wins once it's live. */
       priceCents: z.number().int().nonnegative(),
+      /** Preview prices for sizes that cost more (2XL and up), matching Fourthwall. */
+      sizePriceCents: z.record(z.string(), z.number().int().nonnegative()).optional(),
       featured: z.boolean(),
       releasedAt: z.string(),
       /** The piece's shared Scripture record (every translation the site can quote). */
       scripture: ScriptureRecordSchema,
       /** Product slug in the Fourthwall shop when it differs from `slug`. */
       fourthwallSlug: z.string().optional(),
+      /** Key in `sizeGuides` for the product's blank. Its sizes are the sizes a preview offers. */
+      sizeGuide: z.string().optional(),
       story: ProductStorySchema,
       /** Display order: listing image, hover image, then the rest. */
       images: z.array(ContentImage).min(1),
@@ -64,7 +78,11 @@ export interface ProductContent {
   colors: Color[];
   /** Preview price and sizes, used until the product is in Fourthwall. */
   priceCents: number;
+  /** Preview price per size where it differs from `priceCents`. */
+  sizePriceCents: Record<string, number>;
   sizes: string[];
+  /** Measurements for the product's blank, or null when there isn't a guide yet. */
+  sizeGuide: SizeGuide | null;
   featured: boolean;
   releasedAt: string;
   /** The piece's verse in the website's translation. */
@@ -100,6 +118,23 @@ function loadBrandContent(): BrandContent {
     const [first, ...rest] = p.images;
     if (!first) throw new Error(`${p.code}: needs at least one image`);
 
+    let sizeGuide: SizeGuide | null = null;
+    if (p.sizeGuide) {
+      const found = content.sizeGuides[p.sizeGuide];
+      if (!found) throw new Error(`${p.code}: unknown size guide ${p.sizeGuide}`);
+      // `blank` stays on the server: the site never names the supplier.
+      const guide: SizeGuide = SizeGuideSchema.parse(found);
+      for (const row of guide.rows) {
+        if (row.values.length !== guide.measures.length)
+          throw new Error(`${p.sizeGuide}: ${row.size} needs ${guide.measures.length} values`);
+      }
+      sizeGuide = guide;
+    }
+    const sizes = sizeGuide ? sizeGuide.rows.map((r) => r.size) : category.sizes;
+    for (const size of Object.keys(p.sizePriceCents ?? {})) {
+      if (!sizes.includes(size)) throw new Error(`${p.code}: price for unknown size ${size}`);
+    }
+
     return {
       code: p.code,
       slug: p.slug,
@@ -110,7 +145,9 @@ function loadBrandContent(): BrandContent {
       category: { slug: category.slug, name: category.name, cut: category.cut },
       colors,
       priceCents: p.priceCents,
-      sizes: category.sizes,
+      sizePriceCents: p.sizePriceCents ?? {},
+      sizes,
+      sizeGuide,
       featured: p.featured,
       releasedAt: p.releasedAt,
       scripture: quote(p.scripture),

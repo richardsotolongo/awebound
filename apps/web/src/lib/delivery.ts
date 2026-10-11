@@ -10,6 +10,6 @@ export const DELIVERY = {
   productionTime: null as string | null,
   /** Estimated shipping time once it ships, e.g. "3–7 business days in the US". Null until confirmed. */
   shippingTime: null as string | null,
-  /** Days after delivery to report a misprint, damage or wrong item (see /refunds). */
+  /** Days after delivery to report damage, a misprint, a defect or a wrong item or size (see /refunds). */
   problemWindowDays: 30,
 } as const;

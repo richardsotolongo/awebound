@@ -36,13 +36,13 @@ export default function ContactPage() {
           <div className="field">
             <p className="aw-label">Before you write</p>
             <p className="aw-small">
-              Most answers about sizing, shipping and refunds are in the{" "}
+              Most answers about sizing, shipping and returns are in the{" "}
               <Link href="/faq" style={{ color: "var(--accent-text)" }}>
                 FAQ
               </Link>{" "}
               and our{" "}
               <Link href="/refunds" style={{ color: "var(--accent-text)" }}>
-                refund policy
+                returns and refunds policy
               </Link>
               .
             </p>

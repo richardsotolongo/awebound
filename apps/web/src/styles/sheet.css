@@ -22,6 +22,9 @@
       overlay var(--duration-base) allow-discrete,
       display var(--duration-base) allow-discrete;
   }
+  .aw-sheet[data-size="wide"] {
+    width: min(560px, 100vw);
+  }
   .aw-sheet[data-side="left"] {
     inset: 0 auto 0 0;
     border-left: 0;

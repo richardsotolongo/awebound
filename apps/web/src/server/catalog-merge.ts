@@ -41,7 +41,7 @@ function previewProduct(item: ProductContent): ProductDetail {
       color: color.name,
       size,
       available: true,
-      priceCents: item.priceCents,
+      priceCents: item.sizePriceCents[size] ?? item.priceCents,
     })),
   );
   const [image, hoverImage = null] = item.images;
@@ -64,6 +64,7 @@ function previewProduct(item: ProductContent): ProductDetail {
     featured: item.featured,
     releasedAt: item.releasedAt,
     story: item.story,
+    sizeGuide: item.sizeGuide,
     images: item.images,
     variants,
   };
@@ -158,6 +159,7 @@ export function mergeFourthwallCatalog(
       featured: item.featured,
       releasedAt: item.releasedAt,
       story: item.story,
+      sizeGuide: item.sizeGuide,
       images,
       variants,
     });

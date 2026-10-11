@@ -9,7 +9,7 @@ export const metadata = pageMeta({
   path: "/faq",
   title: "FAQ",
   description:
-    "Answers about ordering, sizing, shipping, refunds and the meaning behind Awebound designs.",
+    "Answers about ordering, sizing, shipping, returns and the meaning behind Awebound designs.",
 });
 
 interface Faq {
@@ -51,11 +51,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Can I change or cancel my order?",
-        text: "Each piece is made to order, usually starting within a day. Email us right away and we’ll change or cancel it if it hasn’t gone to print.",
+        text: "Each piece is made to order, and production can start soon after you order. Email us right away: an order can be changed or canceled only until production starts or a shipping label is created.",
         a: (
           <p>
-            Each piece is made to order, usually starting within a day. Email {mail} right away and
-            we’ll change or cancel it if it hasn’t gone to print.
+            Each piece is made to order, and production can start soon after you order. Email {mail}{" "}
+            right away: an order can be changed or canceled only until production starts or a
+            shipping label is created.
           </p>
         ),
       },
@@ -88,9 +89,15 @@ const GROUPS: { title: string; items: Faq[] }[] = [
         ),
       },
       {
-        q: "Should I size down in the oversized tee?",
-        text: "Only if you want a closer fit. The oversized cut is meant to sit wide and boxy.",
-        a: <p>Only if you want a closer fit. The oversized cut is meant to sit wide and boxy.</p>,
+        q: "Should I size up or down in the oversized tees?",
+        text: "Order your usual size for the intended fit: both cuts are made to sit wide. Size down only if you want a closer fit. Each size guide has the garment measurements to compare with a tee you already own.",
+        a: (
+          <p>
+            Order your usual size for the intended fit: both cuts are made to sit wide. Size down
+            only if you want a closer fit. Each size guide has the garment measurements to compare
+            with a tee you already own.
+          </p>
+        ),
       },
     ],
   },
@@ -121,26 +128,30 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     ],
   },
   {
-    title: "Refunds",
+    title: "Returns and refunds",
     items: [
       {
         q: "What if my order arrives damaged, misprinted or wrong?",
-        text: "Tell us within 30 days of delivery with a photo and we’ll send a replacement or refund you. You usually don’t need to send anything back.",
+        text: "Tell us within 30 days of delivery, with a photo, and we’ll send a replacement at no cost to you, or refund you if a replacement isn’t possible. If we sent the wrong size, include a photo of the size label.",
         a: (
           <p>
-            Tell us within 30 days of delivery with a photo and we’ll send a replacement or refund
-            you. You usually don’t need to send anything back. The details are in our{" "}
-            <Link href="/refunds">refund policy</Link>.
+            Tell us within 30 days of delivery, with a photo, and we’ll send a replacement at no
+            cost to you, or refund you if a replacement isn’t possible. If we sent the wrong size,
+            include a photo of the size label. The details are in our{" "}
+            <Link href="/refunds">returns and refunds policy</Link>.
           </p>
         ),
       },
       {
-        q: "Can I return something that doesn’t fit?",
-        text: "Because every piece is made for you, we can’t take returns for size or a change of mind. Check the size guide before you order, and write to us if you’re unsure.",
+        q: "Can I return or exchange something that doesn’t fit?",
+        text: "Because every piece is made for you, we can’t take returns or exchanges for a size you chose or a change of mind. If we sent a different size from the one you ordered, that’s covered: tell us within 30 days of delivery. Check the size guide before you order, and write to us if you’re unsure. Customers in the EU, UK and EEA keep their legal 14-day right of withdrawal.",
         a: (
           <p>
-            Because every piece is made for you, we can’t take returns for size or a change of mind.
-            Check the size guide before you order, and write to us if you’re unsure.
+            Because every piece is made for you, we can’t take returns or exchanges for a size you
+            chose or a change of mind. If we sent a different size from the one you ordered, that’s
+            covered: tell us within 30 days of delivery. Check the size guide before you order, and
+            write to us if you’re unsure. Customers in the EU, UK and EEA keep their legal 14-day
+            right of withdrawal.
           </p>
         ),
       },
