@@ -2,7 +2,7 @@
 
 Usage:
   python scripts/render.py assets/templates/social-post.html out.png --width 1080 --height 1350 \
-      --data '{"name": "Third Morning", "scripture": "Luke 24:1-6", "image": "/abs/path/shot.jpg"}'
+      --data '{"name": "Stone in Motion", "line": "The stone rolls away in a sweep of blue.", "quote": "", "scripture": "Matthew 28:6", "image": "/abs/path/stone-in-motion-1.webp"}'
 
 --data overrides fields of the template's POST object. Relative image paths resolve from the template's folder.
 Needs: pip install playwright && python -m playwright install chromium. Fonts load from Google Fonts, so run online

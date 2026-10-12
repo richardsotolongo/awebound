@@ -1,6 +1,6 @@
 "use client";
-/* Awebound brand components (ESM, React 18+), bundled from packages/brand/src (the live site). Do not edit by hand:
-   rebuild from the repo. Pair with tokens.css and awebound.css. Props: index.d.ts and references/web.md. */
+/* Awebound brand components (ESM, React 18+), bundled from packages/brand/src (the live site) by
+   scripts/sync-from-site.mjs. Do not edit by hand. Pair with tokens.css and awebound.css. Props: index.d.ts, references/web.md. */
 
 // packages/brand/src/cx.ts
 function cx(...parts) {

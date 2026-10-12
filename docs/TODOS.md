@@ -84,7 +84,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 
 - [ ] **Product photography** of real samples, uploaded to each Fourthwall product. Whenever a product's images change in Fourthwall, update its list in `assets/mockups/fourthwall.json` (same order as Fourthwall) and run `fourthwall.py` and `compose.py`; the site follows that order, the first as the listing image.
 - [ ] **Legal review** of `/privacy`, `/terms` and `/refunds`. They are drafts written for this setup, not legal advice. Update `LEGAL.lastUpdated` when they change.
-- [ ] **Save the updated `awebound-brand` guide** (proposed in chat; the same text is in `docs/BRAND.md`). Its `references/` files still describe the old pillars, NLT and Cinzel/Archivo; the new SKILL.md says it overrides them, but refresh them when convenient.
+- [x] **Save the updated `awebound-brand` guide**: the skill lives in `.claude/skills/awebound-brand` (SKILL.md is the same text as `docs/BRAND.md`), with its references, tokens, components and post template matched to the site. After brand code changes, run its `scripts/sync-from-site.mjs`.
 - [ ] **Wordmark cleanup** by a designer before large back prints; physical test of the proposed minimum print (1.75 in) and embroidery (2.25 in) sizes.
 - [ ] **Lookbook page**, if wanted (the brand's default header link; left out until there's content).
 - [ ] **Unsubscribe link** in drop-note emails before the first marketing send (today people unsubscribe by replying).

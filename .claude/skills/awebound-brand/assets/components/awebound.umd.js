@@ -1,5 +1,5 @@
-/* Awebound brand components (UMD-style global, React 18 UMD on window.React), bundled from packages/brand/src (the live site). Do not edit by hand:
-   rebuild from the repo. Pair with tokens.css and awebound.css. Props: index.d.ts and references/web.md. */
+/* Awebound brand components (global window.Awebound, needs React 18 UMD on window.React), bundled from packages/brand/src (the live site) by
+   scripts/sync-from-site.mjs. Do not edit by hand. Pair with tokens.css and awebound.css. Props: index.d.ts, references/web.md. */
 "use strict";
 var Awebound = (() => {
   var __create = Object.create;

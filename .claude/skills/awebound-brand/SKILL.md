@@ -1,70 +1,174 @@
 ---
 name: awebound-brand
-description: The Awebound brand system - the A3 Thornbound wordmark, the Thorn Cross, coal/bone/oxblood color tokens, Cinzel + Archivo type, voice, Scripture and depiction rules, website components and marketing formats for the Christian apparel brand Awebound. Use it whenever you build or edit the Awebound website (pages, components, Next.js/React code, CSS, Tailwind), make any Awebound marketing content (Instagram or TikTok posts, stories, drop announcements, emails, banners, ads, lookbook pages), write Awebound copy (product descriptions, captions, taglines, About text) or brief new apparel art - even when the request only says "the site", "a post for the new drop", "our brand" or names a product like Freed in Awe or A3-B01.
+description: The Awebound brand system as the live site uses it - the A3 Thornbound wordmark, the Thorn Cross, coal/bone/oxblood color tokens, Grenze Gotisch + Manrope + Cormorant Garamond Italic type, voice, NIV Scripture and depiction rules, website components, the Behold release and marketing formats for the Christian apparel brand Awebound. Use it whenever you build or edit the Awebound website (pages, components, Next.js/React code, CSS, Tailwind), make any Awebound marketing content (Instagram or TikTok posts, stories, drop announcements, emails, banners, ads, lookbook pages), write Awebound copy (product descriptions, captions, taglines, About or FAQ text) or brief new apparel art - even when the request only says "the site", "a post for the new drop", "our brand" or names a piece or release like Still the Storm, Lamb's Mark or Behold.
 ---
 
 # Awebound brand
 
-Awebound is an independent Christian apparel brand for believers aged 18 to 30 who want to express their faith boldly. The range covers tees, oversized tees, tank tops and hats, with shorts, bags and more to come. Every piece shares engraved art, Scripture references and the A3 identity. The pillars are **Royal heritage. Freedom. Resurrection.**
+Awebound is an independent Christian apparel brand, founded by Richard, for believers aged 18 to 30 who are not ashamed to express their faith and want to wear it boldly. Awebound makes clothing rooted in Scripture and reverence for Jesus Christ: every piece tells part of His story in bold art and lettering. The range covers tees, oversized tees, hoodies, tank tops and hats, with more to come.
 
-The look is a dark coal Christian merch shop with a hint of dark metal: layered near-blacks, sharp edges, thorn rules and engraved type, broken by warm-bone panels that carry the oxblood wordmark. The test for every piece of work is that a pastor and a metalhead should both find it beautiful.
+Tagline: **Bound in awe. Worn without shame.** (Romans 1:16 is behind the second half.)
+
+The look is a dark coal shop with a hint of dark metal: layered near-blacks, sharp edges, thorn rules and gothic display type, broken by warm-bone panels that carry the oxblood wordmark. The test for every piece of work is that a pastor and a metalhead should both find it beautiful.
+
+**This guide matches the live site (October 2026).** The implementation is `packages/brand` (tokens, components, marks) and `apps/web` (pages, content) in the `richardsotolongo/awebound` repo, and `docs/BRAND.md` there is a copy of this file. Paths starting `assets/`, `references/` or `scripts/` are relative to the skill folder (`.claude/skills/awebound-brand`), not the repo root. The tokens, component files, Tailwind files, logos and marks under `assets/` are copied or built from `packages/brand`; when the site's brand code changes, refresh them (see "Keeping this skill in sync").
 
 ## Non-negotiables
 
-These protect the brand's identity and its faith commitments; break one and the work is off-brand no matter how good it looks.
+Break one and the work is off-brand no matter how good it looks.
 
-1. **The wordmark is artwork, never type.** Use `assets/logos/awebound-wordmark.svg` (single path, `currentColor`) or the `Wordmark` component. Never set AWEBOUND in a font, and never split the lettering from its thorn branches. Minimum 120px wide on screen; smaller than that, use the small Thorn Cross.
-2. **Signature lockup = oxblood `#782B35` on warm bone `#E8DDC9`.** Use it for brand moments (hang tags, labels, packaging, About page, email headers, avatar). On the dark site the header uses bone on coal.
-3. **The Thorn Cross is the only cross.** A two-plank wooden cross with a thorn wreath orbiting it at 45°. It stays upright and whole, never tilted, broken or underfoot. No budded crosses, no four-point stars.
-4. **Symbols only.** Empty crosses, thorns, broken chains, the empty tomb and rolled stone, lilies, olive branches, arches. Never depict Jesus (face, silhouette, hands, crucifix figure), God the Father or the Spirit as a person, and no gore, skulls or occult symbols.
-5. **Scripture by reference.** Full book name, chapter, colon, verse ("Galatians 5:1", ranges with an en dash). If a full verse is quoted, use the NLT and credit "(NLT)".
-6. **Oxblood is a fill, not text on dark.** It measures 1.9:1 on coal. Accent text on dark is Copper 300 `#C47A55`; Scripture is gold `#B89651`.
-7. **Tokens, not hex.** In code, style through the CSS variables in `assets/tokens.css`. Hex values appear only in the token files.
+1. **The wordmark is artwork, never type.** Use the wordmark SVG (`assets/logos/awebound-wordmark.svg`, single path, `currentColor`) or the `Wordmark` component. Never set AWEBOUND in a font, never split the lettering from its thorn branches, and never claim a website font is its typeface. Minimum 120px wide on screen; smaller than that, use the small Thorn Cross.
+2. **Signature lockup = oxblood `#782B35` on warm bone `#E8DDC9`** for brand moments (hang tags, labels, packaging, About page, email headers, avatar). On the dark site the header uses bone on coal.
+3. **Crosses stay upright and whole.** The Thorn Cross (a two-plank wooden cross with a thorn wreath orbiting at 45°) is the brand mark. Release artwork may carry its own simple cross (the cross on the horizon in Still the Storm, inside the wreath in Thorns to Lilies, in the hourglass in To Live Is Christ). Never tilted, broken or underfoot; no budded crosses, no four-point stars, no crucifix figure.
+4. **Symbols only.** A stilled sea, the edge of His cloak, thorns and lilies, the torn veil, the empty tomb and rolled stone, the hourglass, a path through a dark valley, roses around a cross, the Lamb, broken chains, arches. The Lamb is a biblical symbol, not a portrait. The hand in By His Hem is the woman's, reaching for His cloak, and the traveler in The Passage is the one walking through the valley; never draw Christ. Never depict Jesus (face, silhouette, hands), God the Father or the Spirit as a person; no gore, skulls or occult symbols.
+5. **Scripture is quoted exactly.** See "Scripture" below: full references, NIV wording on the website, labels that say when a quote is an excerpt, and printed garment lettering left as approved.
+6. **Internal design codes stay internal.** IDs such as A3-B01 or A3-H01 live in records, SKUs, assets and orders. Never show them to customers: not on cards, product headings, badges, related pieces, search results, bag lines or metadata. Customers know a piece by its name, artwork and Scripture.
+7. **Say "Christian apparel", never "streetwear".** Use Christian apparel, clothing, pieces or Awebound, in headings, descriptions, About, FAQ and page metadata. Fit words such as "oversized" belong in product details and sizing.
+8. **Oxblood is a fill, not text on dark** (1.9:1 on coal). Accent text on dark is Copper 300 `#C47A55`; Scripture references are gold `#B89651`.
+9. **Tokens, not hex.** In code, style through the CSS variables (`packages/brand/src/styles/tokens.css` in the repo, `assets/tokens.css` elsewhere). Hex values appear only in token files (and in HTML email, where clients ignore CSS variables).
+
+## Scripture
+
+- **References**: full book name, chapter, colon, verse: "Matthew 9:21", "1 Corinthians 3:6", ranges with an en dash.
+- **Website quotations use the NIV**, word for word with its punctuation, from an authorized NIV source. Never paraphrase and present it as a quote; never invent or "tidy" wording. An excerpt ends where the quoted part ends, without added punctuation.
+- **Label** every quotation with the reference, then the translation: `Mark 4:41 — NIV`; when only part of the verse is quoted, `Matthew 9:21 — NIV, excerpt`.
+- **Presentation**: the words in Cormorant Garamond Italic inside curly double quotes; quotation marks inside the verse become single quotes (“They asked each other, ‘Who is this?’”). The reference sits beneath in upright type. Quotes wrap in full on every screen: never truncate with an ellipsis or shrink them to equalize card heights.
+- **One shared Scripture record per piece** (reference, excerpt flag, exact NIV and KJV text) feeds the home page, shop cards and product page, so they always agree. In the site this is `scripture` in `apps/web/src/server/content/catalog.json`; site-wide verses live in `verses.json`. `SCRIPTURE_TRANSLATION` (NIV by default, or KJV) switches every quotation and translation statement at once.
+- **Garment artwork keeps its approved lettering.** Some prints use King James wording (Still the Storm's back, Stone in Motion's back); By His Hem's back prints NIV wording, which needs Biblica's merchandise permission. Never translate, regenerate or relabel printed art as NIV; describe printed text accurately ("Mark 4:41 in the King James wording"), and keep image descriptions true to what the image shows.
+- **Permission and notice**: website use of the NIV needs Biblica's written permission (biblica.com/permissions) before launch, and every page that quotes it carries the notice (the site puts it in the footer): "Scripture quotations taken from The Holy Bible, New International Version® NIV®. Copyright © 1973, 1978, 1984, 2011 by Biblica, Inc.™ Used by permission. All rights reserved worldwide." Use the exact wording Biblica supplies. Merchandise that prints NIV text needs its own permission.
+- About and FAQ state the website translation plainly: "Scripture quoted on this website is from the New International Version (NIV)."
+- In brand prose, pronouns for God are capitalized (His mercy, He is risen). Quotations keep their translation's own casing.
+
+## Typography
+
+Three families, each with one job. Load only the files used, self-hosted, with fallbacks.
+
+| Role               | Family                                                    | Use                                                                                                                                                                                                                                   |
+| ------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Display            | **Grenze Gotisch** (variable, ~600)                       | The hero headline, collection names ("Behold"), selected major headings. Mixed case for headings; the hero headline alone is set in caps (BOUND IN AWE. / WORN WITHOUT SHAME.). Prominent and restrained so it supports the wordmark. |
+| Scripture          | **Cormorant Garamond Italic 500** (a genuine italic file) | Quotations only. About 23px beside a product name, 19px in cards, up to 30px for a featured verse; no added letter spacing; line height about 1.4.                                                                                    |
+| Body and interface | **Manrope** (variable)                                    | Paragraphs (16–18px, generous line height), navigation, labels, buttons, prices, filters, forms, sizing, shipping, Scripture references, and product names (800 weight, caps, slight tracking).                                       |
+
+Avoid gothic type for paragraphs, sizing, numbers and roman numerals (they turn to blackletter shapes; set numerals in Manrope); stretching or compressing any font to imitate the wordmark; distressed effects; heavy letter spacing in Scripture; a fourth decorative face.
+
+## Releases and the shop
+
+- A **release** (a collection in code) is a small set of pieces drawn from one call in Scripture, numbered in order: Release 01 is **Behold** (five oversized tees, three hoodies and two caps): "Clothes that ask you to look at Jesus, and keep looking." The name comes from John 1:29 (older English Bibles begin John's words with "Behold"; the NIV says "Look").
+- **Latest Drop** always means the newest release with pieces on the site, worked out from the catalog, never hard-coded. Say "Latest Drop", not "New Collection".
+- The shop has two selectors that combine: **Collection** (Latest Drop, All Collections, then each release by name) and **Category** (All Products, Tees, Oversized Tees, Hoodies, Hats). Show accurate counts and a clear active state, an empty state that says what is missing with a reset, and shareable URLs (`/shop?collection=behold&category=hats`; `/collections/<slug>` opens the shop filtered to it).
+- The main navigation is Shop, Collections, About, Contact, with the account link (Sign in or Account) and the bag beside it. **Collections** lists only releases that exist: never fictional or empty "coming soon" collections.
+- **Release status**. While a release is in preview (its pieces aren't orderable yet): show "Release 01 — Behold — Coming Soon" by the opening buttons; buttons read **Explore Behold** and **Get Release Updates** (to the email sign-up); product pages say "Ordering isn’t open yet", the button reads **Save to bag**, and the bag explains that it saves selections on this device and doesn't place an order or charge anyone. Never announce a launch date until it is confirmed. Once ordering opens, labels switch (Shop Behold, Add to bag, Check out) and preview messages go.
+
+## Presenting a piece
+
+- **Card** (home grid, shop, related): the whole garment showing its main artwork; garment type and price; the name; the NIV quote and its label. The card links to the product page. No color subtitle ("Tee · Faded black") and no code.
+- **Product page**, top to bottom: release and garment type; the name; the quote and its label beside the name (not repeated lower down); price; color (name beside the swatch) and size with a size guide; Save to bag or Add to bag; **delivery and returns** in brief; the design story (theme, the call such as "Behold His mercy", what the art shows and what it means); **Product details** (garment, fit, color, front, back, inks or thread, fabric); then the previous and next pieces and the rest of the release.
+- **Delivery and returns summary** beside the buy button: made to order; production time and shipping time stated separately; how shipping is charged (calculated at checkout for the address, shown before paying); links to the size guide and the returns and refunds policy; the difference between a problem with an order (damage, a misprint or defect, or the wrong item or size sent, reported within 30 days of delivery with a photo: replaced at no cost, or refunded if a replacement isn't possible) and a size the customer chose that doesn't fit (made to order, so no returns or exchanges for it). Only confirmed details: until production and shipping times are confirmed, say they will be confirmed before ordering opens.
+- Selected size and color always show in the bag and order summary; cut, fit and fabric in Product details; measurements and sizing advice in the size guide.
+- **Size guide**: every piece shows Awebound's own size guide image for its blank, with a one-line fit summary above it: the Middleweight Oversized T-shirt (Thorns to Lilies, By His Hem, Stone in Motion), the Organic Oversized T-shirt (To Live Is Christ, Still the Storm), the Premium Relaxed Hoodie (all three hoodies), the Low-Profile Adjustable Cap (Lamb's Mark) and the Mid-Profile Snapback Cap (Signature Cap). No “size up” advice: the owner wore the Organic Oversized in his usual size. Never name the blank's brand to customers.
+- **Returns** follow Fourthwall's policy everywhere (refunds page, FAQ, product page, terms, llms.txt): damage, misprints, defects, and the wrong item or size sent, reported within 30 days of delivery with a photo, are replaced at no cost or refunded if a replacement isn't possible; no returns or exchanges for a size the customer chose or a change of mind; expected muting of colors printed on dark garments isn't a defect; lost packages after 2 weeks without tracking (3 international); changes and cancellations only before production; EU, UK and EEA customers keep their 14-day right of withdrawal.
+
+## Home page order
+
+1. Garment-led hero: the clothes beside the label CHRISTIAN APPAREL, the headline, the brand paragraph ("Awebound makes clothing rooted in Scripture and reverence for Jesus Christ. Every piece tells part of His story in bold art and lettering, from the storm He calmed to the tomb He left empty."), the release status and its two buttons.
+2. A short introduction to the latest release: its theme and its connection to Scripture.
+3. Every piece in the release, in its order.
+4. Two featured design stories: the piece hanging in a pointed stone niche in its own color (the garment drifts slightly against the niche on scroll; still under reduced motion), the moment in Scripture and how the artwork carries it.
+5. A concise founder story.
+6. The release sign-up: a clear reason to leave an email (hear when the release can be ordered).
+
+Motion is short and never hides words: decoration may draw or move, but artwork, Scripture and buttons stay readable throughout (no long fades, nothing starting near invisible), anchors land below the sticky header, and reduced-motion settings get still, complete pages. Test on phones as well as desktop.
+
+## Imagery and product photos
+
+- Product images show **the item exactly as Fourthwall will make it**, and follow each product's image list in Fourthwall, in the same order: the first is the listing image. Tees and hoodies have four images, caps six. Finished photos are shown as they are (cropped to 4:5); Fourthwall's cut-out renders are placed on the piece's own surface. A piece not yet in Fourthwall uses a clean cutout of the approved mockup. Each garment sits on its own surface, with a soft realistic shadow and enough contrast to set the garment apart. The set shares the 4:5 canvas, margins and garment scale (tees about three quarters of the width) so the grid reads as one family; each piece gets its own surface, a color drawn from its artwork with its own texture and light, so every piece looks distinct.
+- Behold surfaces: Still the Storm, deep storm slate with cloud-soft texture lit from above; By His Hem, muted sage plaster (the rust print's complement); Thorns to Lilies, deep oxblood plaster under a spotlight; Torn Veil, warm parchment crossed by a shaft of light; Stone in Motion, dusty cornflower stone with a fine speckle; To Live Is Christ, warm ochre plaster lit from above; The Passage, burnt terracotta plaster under a spotlight; Wonderfully Made, dusty rose paper lit from above; Lamb's Mark, cool bone linen with a narrow oxblood band at the base; Signature Cap, warm concrete with a fine speckle lit from above.
+- Home design stories use a rendered scene per piece: the garment hanging in a pointed stone niche in its surface color (`story-niche.webp` and `story-piece.webp` beside each piece's images). No line art behind the pieces.
+- The product stays the focal point: preserve the artwork and garment colors exactly; the listing image always shows the whole garment; artwork crops are secondary images; no props or textures over the print; no fog, dramatic effects, glows or white outlines; clean garment edges. Changing the page color doesn't fix an embedded white background: cut the garment out and composite it.
+- Keep the source images intact. In the repo, `assets/mockups/fourthwall.json` lists each product's Fourthwall images in order and `fourthwall.py` downloads them; `assets/mockups/source` holds the approved mockups and `cutout.py` cuts them out; `compose.py` builds the site images (`1.webp`, `2.webp`, …) and the story scenes.
+- New apparel art: symbols only (above), engraved line work, bone, black, deep red and the occasional single accent ink (Stone in Motion's cobalt).
+
+## Voice
+
+Reverent, weighty, sure of itself: short sentences, concrete images from Scripture, no sermons, no exclamation marks, no hype words ("insane", "fire", "drip"), no fear or guilt ("Don't be lukewarm"). Sentence case in copy (buttons display caps through styling; button and selector labels may be title case, as in Explore Behold, Latest Drop). Emoji only in social captions, at most one.
+
+- **Design and meaning get equal attention.** Talk about the art, lettering and garment plainly, and let the Scripture and its meaning carry the faith.
+- **Conversations about Christ are a natural outcome**, not the sales pitch: when someone asks what a piece means, the wearer gets to answer. "We plant the seed; God makes it grow" (1 Corinthians 3:6).
+- **Bound in awe**: held by who He is, letting reverence for Jesus Christ shape what we make and wear. **Worn without shame**: not ashamed of the gospel.
+- **Founder story**: use only Richard's own stated words. He started Awebound for people who are not ashamed to express their faith and want to wear it boldly; he built it with faith at the forefront of every design; every design tells a story about our Lord and Savior, Jesus Christ; the hope is that each piece starts a conversation about Him. About himself (the first-person note and portrait on About): a Florida native and a Christian; his faith in God comes first; living for Christ is his sole purpose and priority in life; creating Awebound is one branch of hopefully being used by God to start conversations wherever the apparel is bought. Never invent a testimony, background or experience beyond that. Ask Richard for anything more personal.
+- **Sound like a person.** Active voice, plain words, contractions where they're natural, short sentences, concrete detail from the passage. Cut filler, stacked hedges, "not X, but Y" turns, colon-led one-liners, lists of three used for rhythm, and summing-up lines at the end of a paragraph. Write for Christians who are curious about Awebound, not for search engines. US English.
+- Say the actual cut of each product (tee, oversized tee, hoodie, tank, cap); never describe the whole brand as one fit.
+
+### Product copy fields
+
+```
+[Product name] · [Release name] · [Garment type] · [Price]
+Scripture: [NIV quote] — [Reference] — NIV[, excerpt]
+Theme and call: [Mercy] · [Behold His mercy]
+Art: [one sentence on the main artwork and what it shows]
+Meaning: [two to four sentences: the moment in Scripture and how the design carries it]
+Front: [placement and mark] · Back: [composition in one line; name printed wording accurately]
+Color: [garment color] · Inks or thread: [colors]
+Fit: [cut and silhouette] · Fabric: [the blank's fabric, from Fourthwall]
+```
+
+### Calls to action
+
+Explore [release] · Get Release Updates · Shop [release] (once ordering opens) · View [piece] · Save to bag (preview) or Add to bag · Notify me · Read our story. Avoid "Buy now" and countdown pressure.
+
+## Behold (Release 01)
+
+| Piece                             | Garment, color                              | Price | Scripture on the site (NIV)                                                                                                     | Theme        |
+| --------------------------------- | ------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Thorns to Lilies                  | Oversized tee (regular), Ecru               | $40   | “Though your sins are like scarlet, they shall be as white as snow” Isaiah 1:18 — NIV, excerpt                                  | Mercy        |
+| To Live Is Christ, To Die Is Gain | Oversized tee (larger), French Navy         | $40   | “For to me, to live is Christ and to die is gain.” Philippians 1:21 — NIV                                                       | Life         |
+| By His Hem                        | Oversized tee (regular), Ecru               | $40   | “If I only touch his cloak, I will be healed.” Matthew 9:21 — NIV, excerpt                                                      | Healing      |
+| Stone in Motion                   | Oversized tee (regular), Ecru               | $40   | “He is not here; he has risen, just as he said. Come and see the place where he lay.” Matthew 28:6 — NIV                        | Resurrection |
+| Still the Storm                   | Oversized tee (larger), Black               | $40   | “They were terrified and asked each other, ‘Who is this? Even the wind and the waves obey him!’” Mark 4:41 — NIV                | Power        |
+| Torn Veil                         | Relaxed hoodie, Black                       | $60   | “At that moment the curtain of the temple was torn in two from top to bottom.” Matthew 27:51 — NIV, excerpt                     | Presence     |
+| The Passage                       | Relaxed hoodie, Cypress                     | $60   | “Even though I walk through the darkest valley, I will fear no evil, for you are with me” Psalm 23:4 — NIV, excerpt             | Protection   |
+| Wonderfully Made                  | Relaxed hoodie, Carolina Blue               | $60   | “I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.” Psalm 139:14 — NIV | Creation     |
+| Lamb's Mark                       | Distressed cap with adjustable strap, Black | $30   | “Look, the Lamb of God, who takes away the sin of the world!” John 1:29 — NIV, excerpt                                          | Sacrifice    |
+| Signature Cap                     | Structured cap with snap back, Black        | $25   | “In him we have redemption through his blood, the forgiveness of sins” Ephesians 1:7 — NIV, excerpt                             | Redemption   |
+
+Larger sizes cost more: tees $42 in 2XL and $44 in 3XL (the larger-cut organic tee stops at 2XL), hoodies $62 and $64. Caps are one size. Live prices come from Fourthwall; the content file mirrors them for previews.
+
+The Signature Cap prints no reference; the website pairs it with Ephesians 1:7 because its red thorns stand for Christ's sacrifice, the meaning Richard gave it.
+
+Site-wide verses: Romans 1:16 (excerpt, "worn without shame") and 1 Corinthians 3:6 ("I planted the seed, Apollos watered it, but God has been making it grow.").
 
 ## How to work
 
-Identify the task type, then read only the references it needs:
+| Task                                             | Start from                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Website page, section or component               | In the repo: `packages/brand` (tokens, components, type classes) and `apps/web`, with this file for rules. Outside it: `assets/tokens.css`, `assets/components/` (bundles built from `packages/brand`) and `assets/tailwind-theme.css`. `references/web.md` has setup, page recipes and every component's props; `references/visual-identity.md` has color, type styles and layout. Tokens default to the dark (coal) theme; `[data-theme="light"]` (bone paper) is for editorial sections only, such as the founder story and About. |
+| Social post, story, banner, email, ad            | `assets/templates/social-post.html` (1080×1350, already on the site's fonts), rendered with `python scripts/render.py <html> <out.png> --width 1080 --height 1350`; sizes, safe areas, email layout and captions in `references/marketing.md`. One piece or symbol, one line of copy and one Scripture reference per post.                                                                                                                                                                                                            |
+| Copy                                             | The Voice and Scripture sections here; `references/voice.md` for the product copy example, naming and preview wording.                                                                                                                                                                                                                                                                                                                                                                                                                |
+| New apparel art brief or image prompt            | Non-negotiables 3 and 4, Imagery here, `references/imagery.md` and `references/faith-content.md`.                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Anything touching Scripture or religious imagery | The Scripture section, non-negotiables 3–5 and `references/faith-content.md`.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-| Task | Read | Use |
-| --- | --- | --- |
-| Website page, section or component | `references/visual-identity.md`, `references/web.md` | `assets/tokens.css`, `assets/components/`, `assets/tailwind-preset.js` |
-| Social post, story, banner, email, ad | `references/visual-identity.md`, `references/marketing.md` | `assets/templates/social-post.html`, `scripts/render.py` |
-| Copy: product text, captions, About, CTAs | `references/voice.md`, `references/faith-content.md` | the product description template in `voice.md` |
-| New apparel art brief or image prompt | `references/imagery.md`, `references/faith-content.md` | marks in `assets/marks/` |
-| Anything touching Scripture or religious imagery | `references/faith-content.md` | - |
-
-`references/tokens.json` is the full token set with a usage note on every value. Open it when you need a value the visual-identity summary doesn't list (garment swatch colors, spacing steps, shadows).
-
-### Building for the website
-
-The site is custom code. Load `assets/tokens.css` once at the root. It defines every token as a CSS variable, uses dark (coal) as the default, and switches to the light theme under `[data-theme="light"]`. Then either:
-
-- use the React components in `assets/components/awebound-components.jsx` (ESM, `"use client"`, React 18+), with `assets/components/awebound.css`; or
-- build your own markup with the same tokens and patterns.
-
-`references/web.md` has each component's props, page recipes (home, collection, product, About) and the accessibility rules. Keep the dark theme for the shop; use the light (bone paper) theme only for editorial pages.
-
-### Making marketing content
-
-Start from `assets/templates/social-post.html`, a 1080×1350 drop-post layout already wired to the tokens and fonts. Fill its slots, then render it to PNG with `python scripts/render.py <html> <out.png> --width 1080 --height 1350` (Playwright). Sizes, safe areas and the three-post drop rhythm are in `references/marketing.md`. Each post carries one product or symbol, one line of copy and one Scripture reference.
-
-### Writing copy
-
-Reverent, weighty, sure of itself: short sentences, concrete images from Scripture, no sermons, no exclamation marks, no hype words, no fear or guilt. The clothes come first, so lead with the design and quality and let the reference carry the faith. Product descriptions follow the template in `references/voice.md`. Say the actual cut of each product (tee, oversized tee, tank, cap) and never describe the whole brand as one fit.
+`references/tokens.json` holds the full token set with a usage note on every value (garment swatches, type styles, spacing, shadows, motion).
 
 ## Before you hand work back
 
-Check it against this list:
+- Wordmark from the file or component, intact, at least 120px wide, with clear space of a quarter of its height; no font imitating it.
+- Only brand tokens. Text contrast at least 4.5:1; oxblood never used as text on coal. One primary (oxblood) action and one oxblood glow per screen at most. Corners 0–2px, no pills.
+- Grenze Gotisch only for display; Cormorant Garamond Italic only for quotations; Manrope for everything else; body 16–18px.
+- No internal codes visible; no "streetwear"; no garment/color subtitles where the Scripture belongs.
+- Every quotation is exact NIV with a matching label (and "excerpt" when partial), wraps in full, and agrees across home, shop and product page. Printed art isn't labeled NIV unless it uses NIV wording. The Biblica notice is present wherever NIV is quoted.
+- Release status is honest: preview messages while ordering is closed, no unconfirmed dates or delivery times.
+- Symbols-only imagery; styled product images with no white backgrounds, whole garment first.
+- Copy has no exclamation marks, hype, fear or guilt, and no invented founder details.
 
-- Wordmark from the file or component, intact, at least 120px wide, with clear space of a quarter of its height.
-- Only brand tokens. Text contrast is at least 4.5:1 (see the usage notes), and oxblood is never used as text on coal.
-- One primary (oxblood) action and one oxblood glow per screen at most. Corners 0–2px, no pills.
-- Cinzel only for headlines, product names and Scripture (caps, about twelve words max); Archivo for everything else.
-- Scripture is a full reference, symbols-only imagery, NLT credited if a verse is quoted.
-- Copy has no exclamation marks, hype or guilt, and uses sentence case.
+## Open items
 
-## Open items to respect
+- Biblica's written permission for NIV on the website, and separately for By His Hem, whose back prints NIV wording, before launch. The Passage (“I will fear no evil”) and Wonderfully Made (“Fearfully & wonderfully made”) print wording that the King James Version shares.
+- Publishing the ten Behold products in Fourthwall, which turns on live prices, sizes and checkout and moves the release out of preview.
+- Confirmed production and shipping times and shipping rates (Fourthwall), then fill them on the product pages and FAQ.
+- Photographs of real samples to replace the Fourthwall renders.
+- Social links (Instagram, TikTok) for the footer.
+- A designer's cleanup of the traced wordmark before large back prints; physical tests of the proposed minimum print (1.75in) and embroidery (2.25in) sizes.
 
-- Pricing, the blank supplier and final garment colors aren't set yet. Leave prices out or use a clearly marked placeholder, and treat `garment-*` colors as sampled from the lookbook.
-- Minimum print and embroidery sizes (1.75in and 2.25in) are proposed and still need a physical test.
-- Large back prints need a designer's cleanup of the traced wordmark before production.
+## Keeping this skill in sync
+
+`docs/BRAND.md` in the repo is a copy of this file: change both together. `assets/tokens.css`, `assets/components/` (CSS, ESM and UMD bundles, `index.d.ts`), `assets/tailwind-theme.css`, `assets/tailwind-preset.js`, `assets/logos/` and `assets/marks/` come from `packages/brand`. After the site's brand code changes, run `node .claude/skills/awebound-brand/scripts/sync-from-site.mjs` from the repo; it rebuilds them and reports any token missing from `references/tokens.json`. The Markdown references and the token usage notes are written by hand: update them when a rule, page or piece changes.

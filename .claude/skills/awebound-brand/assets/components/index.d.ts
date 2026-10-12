@@ -1,4 +1,4 @@
-/* Types for awebound-components.jsx and awebound.umd.js, generated from packages/brand/src (the live site). */
+/* Types for awebound-components.jsx and awebound.umd.js, generated from packages/brand/src by scripts/sync-from-site.mjs. */
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, CSSProperties, ComponentType, KeyboardEvent, ReactNode, JSX } from "react";
 
 /** Joins truthy class names. */
