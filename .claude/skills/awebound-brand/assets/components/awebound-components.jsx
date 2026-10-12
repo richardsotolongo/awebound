@@ -333,6 +333,7 @@ function ProductCard({
   hoverImage,
   href,
   price,
+  status,
   priority,
   as: Heading = "h3",
   className
@@ -361,11 +362,12 @@ function ProductCard({
       ) : null
     ] }),
     /* @__PURE__ */ jsxs6("div", { className: "aw-card-meta", children: [
-      /* @__PURE__ */ jsxs6("p", { className: "aw-card-top", children: [
+      /* @__PURE__ */ jsx9(Heading, { className: "aw-card-name", children: name }),
+      type || price ? /* @__PURE__ */ jsxs6("p", { className: "aw-card-facts", children: [
         type ? /* @__PURE__ */ jsx9("span", { children: type }) : null,
         price ? /* @__PURE__ */ jsx9("span", { className: "aw-card-price", children: price }) : null
-      ] }),
-      /* @__PURE__ */ jsx9(Heading, { className: "aw-card-name", children: name }),
+      ] }) : null,
+      status ? /* @__PURE__ */ jsx9("p", { className: "aw-card-status", children: status }) : null,
       quote ? /* @__PURE__ */ jsx9(
         ScriptureQuote,
         {
@@ -525,6 +527,7 @@ function AltarPanel({
   mark = "wordmark",
   eyebrow,
   title,
+  as: Heading = "h2",
   body,
   scripture,
   action,
@@ -536,7 +539,7 @@ function AltarPanel({
     mark === "cross" ? /* @__PURE__ */ jsx13(ThornCross, { height: 120, className: "aw-altar-mark" }) : null,
     mark === "wordmark" ? /* @__PURE__ */ jsx13(Wordmark, { height: 88, className: "aw-altar-mark" }) : null,
     eyebrow ? /* @__PURE__ */ jsx13("p", { className: "aw-label", children: eyebrow }) : null,
-    title ? /* @__PURE__ */ jsx13("h2", { className: "aw-h2", children: title }) : null,
+    title ? /* @__PURE__ */ jsx13(Heading, { className: "aw-h2", children: title }) : null,
     body ? /* @__PURE__ */ jsx13("p", { className: "aw-altar-body", children: body }) : null,
     scripture ? /* @__PURE__ */ jsx13(ScriptureRef, { reference: scripture }) : null,
     children,

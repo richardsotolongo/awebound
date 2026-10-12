@@ -17,6 +17,8 @@ export interface ProductCardProps {
   hoverImage?: string;
   href: string;
   price?: string;
+  /** Said plainly under the price when it applies: "Sold out", "Not open for ordering yet". */
+  status?: string;
   /** Load the image eagerly (above the fold). */
   priority?: boolean;
   /** Heading level for the name; h3 under a section heading. */
@@ -25,8 +27,9 @@ export interface ProductCardProps {
 }
 
 /**
- * A product tile: the whole garment, its type and price, the name, then its Scripture in italic
- * with the reference. The whole card links to the product page.
+ * A product tile: the whole garment, the name, its type and price, then its Scripture in italic
+ * with the reference. The name comes first: nothing sits above it as a label. The whole card
+ * links to the product page.
  */
 export function ProductCard({
   name,
@@ -37,6 +40,7 @@ export function ProductCard({
   hoverImage,
   href,
   price,
+  status,
   priority,
   as: Heading = "h3",
   className,
@@ -63,11 +67,14 @@ export function ProductCard({
           ) : null}
         </div>
         <div className="aw-card-meta">
-          <p className="aw-card-top">
-            {type ? <span>{type}</span> : null}
-            {price ? <span className="aw-card-price">{price}</span> : null}
-          </p>
           <Heading className="aw-card-name">{name}</Heading>
+          {type || price ? (
+            <p className="aw-card-facts">
+              {type ? <span>{type}</span> : null}
+              {price ? <span className="aw-card-price">{price}</span> : null}
+            </p>
+          ) : null}
+          {status ? <p className="aw-card-status">{status}</p> : null}
           {quote ? (
             <ScriptureQuote
               text={quote.text}

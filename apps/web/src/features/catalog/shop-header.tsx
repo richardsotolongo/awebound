@@ -1,4 +1,5 @@
 import { ScriptureRef } from "@awebound/brand";
+import { releaseStatusText } from "@/features/release/release-status";
 import type { CollectionView } from "./catalog-view";
 
 /**
@@ -17,6 +18,7 @@ export function ShopHeader({ view }: { view: CollectionView }) {
     );
   }
   const isLatest = latest?.slug === release.slug;
+  const status = releaseStatusText(release);
   return (
     <header className="shop-head soft-glow">
       <p className="aw-label">
@@ -26,12 +28,7 @@ export function ShopHeader({ view }: { view: CollectionView }) {
       <p className="aw-body">{release.tagline}</p>
       <div className="shop-head-meta">
         <ScriptureRef reference={release.scriptureRef} align="start" />
-        {release.status === "preview" ? (
-          <p className="release-status">
-            <span className="release-status-dot" aria-hidden="true" />
-            Coming soon: ordering isn’t open yet
-          </p>
-        ) : null}
+        {status ? <p className="aw-small">{status}</p> : null}
       </div>
     </header>
   );

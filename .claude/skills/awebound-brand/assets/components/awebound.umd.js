@@ -421,6 +421,7 @@ var Awebound = (() => {
     hoverImage,
     href,
     price,
+    status,
     priority,
     as: Heading = "h3",
     className
@@ -449,11 +450,12 @@ var Awebound = (() => {
         ) : null
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "aw-card-meta", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("p", { className: "aw-card-top", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Heading, { className: "aw-card-name", children: name }),
+        type || price ? /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("p", { className: "aw-card-facts", children: [
           type ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { children: type }) : null,
           price ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { className: "aw-card-price", children: price }) : null
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Heading, { className: "aw-card-name", children: name }),
+        ] }) : null,
+        status ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", { className: "aw-card-status", children: status }) : null,
         quote ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
           ScriptureQuote,
           {
@@ -614,6 +616,7 @@ var Awebound = (() => {
     mark = "wordmark",
     eyebrow,
     title,
+    as: Heading = "h2",
     body,
     scripture,
     action,
@@ -625,7 +628,7 @@ var Awebound = (() => {
       mark === "cross" ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(ThornCross, { height: 120, className: "aw-altar-mark" }) : null,
       mark === "wordmark" ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Wordmark, { height: 88, className: "aw-altar-mark" }) : null,
       eyebrow ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("p", { className: "aw-label", children: eyebrow }) : null,
-      title ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("h2", { className: "aw-h2", children: title }) : null,
+      title ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Heading, { className: "aw-h2", children: title }) : null,
       body ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("p", { className: "aw-altar-body", children: body }) : null,
       scripture ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(ScriptureRef, { reference: scripture }) : null,
       children,

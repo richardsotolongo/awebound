@@ -73,13 +73,18 @@ export const LATEST_DROP = "latest";
 export const ALL_COLLECTIONS = "all";
 
 /**
- * A release as the site lists it. `status` is "preview" until every piece can be ordered, which
- * switches the release-status labels and preview messages across the site.
+ * Whether a release can be ordered: "preview" while none of its pieces can, "partial" once some
+ * can and others are still previews, "open" when every piece is in Fourthwall. Release-level
+ * wording across the site follows it; a single piece follows its own `availability`.
  */
+export const ReleaseStatusSchema = z.enum(["preview", "partial", "open"]);
+export type ReleaseStatus = z.infer<typeof ReleaseStatusSchema>;
+
+/** A release as the site lists it. */
 export const ReleaseSchema = CollectionSchema.extend({
   pieces: z.number().int(),
   releasedAt: z.string(),
-  status: z.enum(["preview", "open"]),
+  status: ReleaseStatusSchema,
 });
 export type Release = z.infer<typeof ReleaseSchema>;
 
@@ -128,12 +133,19 @@ export const ProductSummarySchema = z.object({
   position: z.number().int().positive(),
   /**
    * True while the piece is on the site but not yet in Fourthwall: it shows with the site's price
-   * and mockups, and checkout says it opens soon.
+   * and images, can be saved to the bag, and is left out of checkout.
    */
   preview: z.boolean(),
+  /** What a shopper can do with the piece now. "partial": some sizes or colors are sold out. */
+  availability: z.enum(["preview", "available", "partial", "sold_out"]),
+  /** The status of the release the piece belongs to. */
+  releaseStatus: ReleaseStatusSchema,
   category: CategorySchema,
   baseColor: z.string(),
+  /** The lowest price among the sizes that can be ordered. */
   priceCents: z.number().int().nonnegative(),
+  /** Sizes differ in price, so `priceCents` is shown as "From $40". */
+  priceVaries: z.boolean(),
   currency: z.string().length(3),
   colors: z.array(ColorSchema),
   sizes: z.array(z.string()),

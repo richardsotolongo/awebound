@@ -13,7 +13,7 @@ Every post uses one piece or symbol, one line of copy and one Scripture referenc
 
 ## Drop posts
 
-A three-post rhythm per release: a detail teaser (print texture, no name), the reveal (back print, name, release), then the "out now" post (front and back, Shop CTA) once ordering is open. While a release is in preview, say "Coming Soon" and point to release updates; never post a launch date until it's confirmed. Captions lead with the product name, then one line of story, then the reference.
+A three-post rhythm per release: a detail teaser (print texture, no name), the reveal (back print, name, release), then the "out now" post (front and back, Shop CTA) once ordering is open. While a release is in preview, say plainly that ordering isn’t open yet and point to release updates; never post a launch date until it's confirmed. Captions lead with the product name, then one line of story, then the reference.
 
 ## The drop-post template
 

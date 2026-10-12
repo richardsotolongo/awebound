@@ -7,8 +7,20 @@ export const metadata = pageMeta({
   path: "/about",
   title: "About",
   description:
-    "Who started Awebound and why: Christian apparel rooted in Scripture and reverence for Jesus Christ, for people who aren’t ashamed of their faith.",
+    "Who started Awebound and why: Christian apparel rooted in Scripture and reverence for Jesus Christ.",
 });
+
+/** Richard's story in his own words (supplied October 2026). Change the wording only with him. */
+const STORY = [
+  "I’m Richard, the founder of Awebound. My faith in God comes first, and my desire to serve Jesus Christ and others is at the heart of why I’m building this brand.",
+  "Outside of Awebound, I serve my community in law enforcement and lead a men’s Bible study. Service, fellowship, and time in Scripture matter deeply to me. I want my faith to shape how I treat people, how I work, and what I create.",
+  "I believe we are saved by grace through faith in Jesus Christ. My desire to serve Him comes from gratitude for that grace. Awebound is one way I’m putting that desire into practice.",
+  "I’m drawn to expressive lettering, oversized fits, and artwork that tells a story. With Awebound, I want to bring that creativity together with biblical meaning—to make clothing people enjoy wearing and give them a reason to look deeper into the Scripture behind each piece.",
+  "The stories of Christ’s holiness, mercy, sacrifice, and resurrection deserve thoughtful attention. My aim is to approach them with reverence and create designs that can open the door to honest conversations about Jesus.",
+  "Our introductory collection, Behold, is the beginning of that work. I’m building Awebound carefully, with a commitment to meaningful design and respect for the Word that inspires it.",
+  "Whether you’re here for the artwork, the meaning behind it, or simply to learn more, you’re welcome here. Thank you for taking the time to be part of this beginning.",
+  "Bound in awe. Worn without shame.",
+];
 
 /** Why each part of a design is there. */
 const TOGETHER = [
@@ -26,7 +38,7 @@ const TOGETHER = [
   },
   {
     title: "Clothing",
-    body: "Clothes go where you go, to class, to work, to the grocery store. That’s where people see the story and ask you about it.",
+    body: "Clothes go where you go, to class, to work, to the grocery store. That’s where the artwork gets seen, and where a conversation can start.",
   },
 ];
 
@@ -64,17 +76,16 @@ export default function AboutPage() {
   return (
     <>
       <AltarPanel
-        eyebrow="Our story"
+        as="h1"
         title="Bound in awe. Worn without shame."
-        body="Awebound makes clothing rooted in Scripture and reverence for Jesus Christ, for people who aren’t ashamed of their faith."
+        body="Awebound makes clothing rooted in Scripture and reverence for Jesus Christ."
       />
 
-      <section data-theme="light" className="section about-founder" aria-labelledby="founder-title">
+      <section data-theme="light" className="section about-founder" aria-labelledby="story-title">
         <div className="aw-container about-split">
-          <Reveal className="about-split-head">
-            <p className="aw-label">Why Awebound exists</p>
-            <h2 id="founder-title" className="aw-h1">
-              Faith at the forefront
+          <div className="about-split-head">
+            <h2 id="story-title" className="aw-h1">
+              My story
             </h2>
             <figure className="founder-photo">
               {/* eslint-disable-next-line @next/next/no-img-element -- static portrait with srcset */}
@@ -84,39 +95,19 @@ export default function AboutPage() {
                 sizes="(max-width: 1023px) min(100vw - 32px, 420px), 420px"
                 width={960}
                 height={1200}
-                alt="Richard, founder of Awebound, smiling, in the Lamb’s Mark cap and an Awebound tee"
+                alt="Portrait of Richard"
                 loading="lazy"
                 decoding="async"
               />
-              <figcaption className="aw-small">Richard · Founder</figcaption>
+              <figcaption className="aw-small">Richard, founder of Awebound</figcaption>
             </figure>
-          </Reveal>
+          </div>
           <div className="about-split-body">
-            <div className="founder-note">
-              <p className="aw-body">
-                I’m Richard, a Florida native and a Christian. My faith in God comes first. Living
-                for Christ is my sole purpose and priority in life.
+            {STORY.map((paragraph) => (
+              <p key={paragraph} className="aw-body">
+                {paragraph}
               </p>
-              <p className="aw-body">
-                Creating Awebound is just one branch of that. My hope is that God uses it to start
-                conversations about Him wherever these clothes are bought and worn.
-              </p>
-            </div>
-            <p className="aw-body">
-              Awebound is for believers who aren’t ashamed of the gospel and want to wear their
-              faith openly. Every piece begins in Scripture and tells part of the story of Jesus
-              Christ, our Lord and Savior.
-            </p>
-            <p className="aw-body">
-              When someone asks what a design means, the person wearing it gets to answer. That’s
-              the conversation we hope every piece starts. We plant the seed, and God makes it grow.
-            </p>
-            <ScriptureQuote
-              text={VERSES.planted.text}
-              reference={VERSES.planted.reference}
-              translation={VERSES.planted.translation}
-              excerpt={VERSES.planted.excerpt}
-            />
+            ))}
           </div>
         </div>
       </section>
@@ -137,7 +128,7 @@ export default function AboutPage() {
             </p>
             <p className="aw-body">
               Worn without shame is the other half. Paul wrote that he wasn’t ashamed of the gospel,
-              because it is the power of God. Awebound is made for people who feel the same way.
+              because it is the power of God.
             </p>
             <ScriptureQuote
               text={VERSES.notAshamed.text}

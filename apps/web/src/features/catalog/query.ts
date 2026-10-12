@@ -62,9 +62,27 @@ export const EMPTY_FACETS: CatalogFacets = {
   price: { min: 0, max: 0 },
 };
 
+/** A piece's price as listed: "From $40" when its sizes differ in price. */
+export function priceLabel(p: Pick<ProductSummary, "priceCents" | "priceVaries" | "currency">) {
+  const price = formatPrice(p.priceCents, p.currency);
+  return p.priceVaries ? `From ${price}` : price;
+}
+
 /**
- * Maps a listing product to the brand ProductCard: name, garment type, price and the piece's
- * Scripture. The internal design code is never shown.
+ * What to say about ordering a piece, when there is something to say. A preview is only called
+ * out in a release where other pieces can already be ordered; otherwise the release says it.
+ */
+export function pieceStatus(p: Pick<ProductSummary, "availability" | "releaseStatus">) {
+  if (p.availability === "sold_out") return "Sold out";
+  if (p.availability === "partial") return "Some sizes sold out";
+  if (p.availability === "preview" && p.releaseStatus === "partial")
+    return "Not open for ordering yet";
+  return undefined;
+}
+
+/**
+ * Maps a listing product to the brand ProductCard: name, garment type, price, ordering status
+ * and the piece's Scripture. The internal design code is never shown.
  */
 export function toCardProps(p: ProductSummary, priority = false): ProductCardProps {
   return {
@@ -75,7 +93,8 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
     imageAlt: p.image.alt,
     hoverImage: p.hoverImage?.url,
     href: `/shop/${p.slug}`,
-    price: formatPrice(p.priceCents, p.currency),
+    price: priceLabel(p),
+    status: pieceStatus(p),
     priority,
   };
 }

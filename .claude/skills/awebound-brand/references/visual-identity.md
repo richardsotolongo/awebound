@@ -20,7 +20,7 @@ The A3 wordmark, the Thorn Cross, color, type and layout, as the live site uses 
 
 - Website: four coal surfaces (`surface-page` → `surface-overlay`) give depth like stacked stone. Text is `ink`, `ink-muted`, `ink-subtle`.
 - Oxblood (`primary`) is a fill, never text on coal: the primary button, the active nav underline, text selection, and at most one `glow-primary` per screen.
-- Light from above: the home hero and the shop header light their titles with `.soft-glow`, a bone `light-shaft` glow that fades to nothing with no visible edge. The oxblood glow belongs to the brand `Hero` component and to posts.
+- Light from above: the shop header lights its title with `.soft-glow`, a bone `light-shaft` glow that fades to nothing with no visible edge. The home page uses no glow. The oxblood glow belongs to the brand `Hero` component and to posts.
 - Accent text on dark is `accent-text` (Copper 300) for links, hover states, the bag count and form errors. Scripture references are `scripture` (gold).
 - `panel-feature` (washed oxblood) carries drop banners, with `on-feature` text. `bb-copper` is for illustration and rules; `bb-faded-burgundy` for text on bone.
 - Garment swatches: Behold's colors come from Fourthwall and map to `garment-black`, `garment-ecru`, `garment-french-navy`, `garment-cypress` and `garment-carolina-blue`. The other `garment-*`, `cap-*` and `bucket-*` swatches and the `rh-*` / `ra-*` palettes are legacy values from the pre-Behold lookbook; keep them out of new work unless a new piece uses that color.
@@ -29,14 +29,14 @@ The A3 wordmark, the Thorn Cross, color, type and layout, as the live site uses 
 
 Three families, each with one job. The site self-hosts them (OFL) and exposes `--font-grenze`, `--font-manrope` and `--font-cormorant`; `--font-display`, `--font-sans` and `--font-scripture` point at them with fallbacks.
 
-- **Grenze Gotisch** (`--font-display`, weight 600): the hero headline, release names ("Behold") and selected major headings. Mixed case; only the home hero headline is set in caps (BOUND IN AWE. / WORN WITHOUT SHAME.). Never paragraphs, sizing, prices or numerals, which turn into blackletter shapes.
+- **Grenze Gotisch** (`--font-display`, weight 600): the home headline, release names ("Behold") and selected major headings. Always mixed case, the home headline included: blackletter capitals are hard to read. Never paragraphs, sizing, prices or numerals, which turn into blackletter shapes.
 - **Cormorant Garamond Italic 500** (`--font-scripture`): Scripture quotations only, in curly double quotes. No added letter spacing; line height about 1.4.
 - **Manrope** (`--font-sans`): everything else: body (16–18px), navigation, labels, buttons, prices, filters, forms, sizing, Scripture references, and product names (800, caps, 0.04em tracking).
 - No `font-stretch`, no faux bold or italic, no outlined or distressed type, no type stretched to imitate the wordmark, no fourth decorative face. Body lines about 62 characters at most.
 
 ## Layout and the metal hint
 
-- Container `container-max` (1200px); gutters `gutter-mobile` (16px) / `gutter-desktop` (48px); sections `space-16` (mobile) / `space-24` (desktop) apart. Header `header-height` (80px, 64px on phones), sticky, with anchors landing below it.
+- Container `container-max` (1200px); gutters `gutter-mobile` (16px) / `gutter-desktop` (48px); sections `space-16` (mobile) / `space-24` (desktop) apart. Header `header-height` (80px, 64px on phones), sticky and solid, with anchors landing below it; it uses its menu layout below 900px.
 - Corners `radius-0`; buttons and inputs `radius-sm` (2px) at most. No pills.
 - Faint film grain (`.aw-grain`) on backgrounds (the brand Hero, banners, posts), never over text or product photos.
 - Divide sections with `ThornRule`. Quote Scripture with `ScriptureQuote`; a bare reference uses `ScriptureRef` (upright Manrope caps in gold between short rules).
@@ -76,7 +76,7 @@ Three families, each with one job. The site self-hosts them (OFL) and exposes `-
 | `brand-coal` / `brand-bone` / `brand-oxblood` / `brand-warm-bone` | #151413 / #F0E6D2 / #782B35 / #E8DDC9 | same    | The four brand colors, for lockups, packaging and print.                                                                                     |
 | `bb-copper`                                                       | #A65D3D                               | same    | Oxidized copper: illustration, rules, badges. As text only at 24px+ (3.7:1 on coal).                                                         |
 | `scrim`                                                           | #0D0C0B at 80%                        | same    | Backdrop behind drawers and sheets.                                                                                                          |
-| `light-shaft`                                                     | #F0E6D2 at 12%                        | same    | Light from above (`.soft-glow`) behind the home hero and shop titles; bone, not a new color.                                                 |
+| `light-shaft`                                                     | #F0E6D2 at 12%                        | same    | Light from above (`.soft-glow`) behind the shop title; bone, not a new color.                                                                |
 
 Garment swatches, legacy palettes, spacing, shadows and motion are in `tokens.json`.
 

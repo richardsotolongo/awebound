@@ -1,5 +1,6 @@
 import {
   SIZE_ORDER,
+  type BagLineInput,
   type CatalogFacets,
   type Category,
   type Collection,
@@ -37,9 +38,12 @@ export function toSummary(p: ProductDetail): ProductSummary {
     },
     position: p.position,
     preview: p.preview,
+    availability: p.availability,
+    releaseStatus: p.releaseStatus,
     category: p.category,
     baseColor: p.baseColor,
     priceCents: p.priceCents,
+    priceVaries: p.priceVaries,
     currency: p.currency,
     colors: p.colors,
     sizes: p.sizes,
@@ -221,7 +225,7 @@ export class CatalogIndex {
           ...c,
           pieces: pieces.length,
           releasedAt: pieces.reduce((max, p) => (p.releasedAt > max ? p.releasedAt : max), ""),
-          status: pieces.some((p) => p.preview) ? ("preview" as const) : ("open" as const),
+          status: pieces[0]?.releaseStatus ?? ("preview" as const),
         };
       })
       .filter((r) => r.pieces > 0)
@@ -237,13 +241,24 @@ export class CatalogIndex {
     return this.products.find((p) => p.slug === slug) ?? null;
   }
 
-  findVariants(skus: string[]): Map<string, VariantWithProduct> {
-    const wanted = new Set(skus);
+  /**
+   * The variant behind each bag line, keyed by the line's SKU. A line whose SKU no longer exists
+   * (its piece went from preview to on sale, which replaces the SKUs) is found again by the
+   * piece, color and size the shopper chose, so a saved selection survives publishing.
+   */
+  findVariants(lines: BagLineInput[]): Map<string, VariantWithProduct> {
+    const same = (a: string, b: string | undefined) =>
+      b !== undefined && a.trim().toLowerCase() === b.trim().toLowerCase();
     const found = new Map<string, VariantWithProduct>();
-    for (const p of this.products) {
-      for (const v of p.variants) {
-        if (wanted.has(v.sku)) found.set(v.sku, { variant: v, product: toSummary(p) });
-      }
+    for (const line of lines) {
+      // An exact SKU wins; what was chosen is only the fallback.
+      const p =
+        this.products.find((q) => q.variants.some((v) => v.sku === line.sku)) ??
+        this.products.find((q) => q.slug === line.productSlug);
+      const variant =
+        p?.variants.find((v) => v.sku === line.sku) ??
+        p?.variants.find((v) => same(v.color, line.color) && same(v.size, line.size));
+      if (p && variant) found.set(line.sku, { variant, product: toSummary(p) });
     }
     return found;
   }

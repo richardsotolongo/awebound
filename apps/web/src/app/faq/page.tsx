@@ -27,12 +27,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "When can I order?",
-        text: "Each release opens for ordering after a short preview. While a release is in preview you can save pieces to your bag, which keeps your size and color but doesn’t place an order or charge you. Leave your email on the home page or in the footer and we’ll tell you when ordering opens. We announce a date only once it’s confirmed.",
+        text: "Each release opens for ordering after a short preview. While a piece is in preview you can save it to your bag, which keeps your size and color but doesn’t place an order or charge you. Leave your email on the home page or in the footer and we’ll tell you when ordering opens. We announce a date only once it’s confirmed.",
         a: (
           <p>
-            Each release opens for ordering after a short preview. While a release is in preview you
-            can save pieces to your bag, which keeps your size and color but doesn’t place an order
-            or charge you. Leave your email on the <Link href="/#updates">home page</Link> or in the
+            Each release opens for ordering after a short preview. While a piece is in preview you
+            can save it to your bag, which keeps your size and color but doesn’t place an order or
+            charge you. Leave your email on the <Link href="/#updates">home page</Link> or in the
             footer and we’ll tell you when ordering opens. We announce a date only once it’s
             confirmed.
           </p>
@@ -40,12 +40,11 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Do I need an account to order?",
-        text: "No. Once ordering opens, you can check out as a guest. Accounts are optional: they keep your details in one place, and you sign in with Google or a one-time email link, with no password.",
+        text: "No. You can check out as a guest. Accounts are optional: they keep your details in one place, and you sign in with Google or a one-time email link, with no password.",
         a: (
           <p>
-            No. Once ordering opens, you can check out as a guest. Accounts are optional: they keep
-            your details in one place, and you sign in with Google or a one-time email link, with no
-            password.
+            No. You can check out as a guest. Accounts are optional: they keep your details in one
+            place, and you sign in with Google or a one-time email link, with no password.
           </p>
         ),
       },
@@ -61,7 +60,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
         ),
       },
       {
-        q: "Can my church or ministry order in bulk?",
+        q: "Can a church or ministry order in bulk?",
         text: "Yes. Choose “Wholesale or church orders” on the contact form and tell us how many pieces you need and by when.",
         a: (
           <p>
@@ -106,12 +105,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How long does delivery take?",
-        text: "Every piece is made to order, then shipped. Production time and shipping time are confirmed before ordering opens and shown beside the buy button on every product page. You’ll get tracking by email when your order ships.",
+        text: "Every piece is made to order, then shipped. Production time and shipping time are shown beside the buy button on every product page once they are confirmed. You’ll get tracking by email when your order ships.",
         a: (
           <p>
-            Every piece is made to order, then shipped. Production time and shipping time are
-            confirmed before ordering opens and shown beside the buy button on every product page.
-            You’ll get tracking by email when your order ships.
+            Every piece is made to order, then shipped. Production time and shipping time are shown
+            beside the buy button on every product page once they are confirmed. You’ll get tracking
+            by email when your order ships.
           </p>
         ),
       },

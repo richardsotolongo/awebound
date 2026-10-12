@@ -6,6 +6,13 @@ export const MAX_LINE_QUANTITY = 10;
 export const BagLineInputSchema = z.object({
   sku: z.string().min(1).max(64),
   quantity: z.number().int().min(1).max(MAX_LINE_QUANTITY),
+  /**
+   * What the shopper chose. A piece's SKUs change when it goes from preview to on sale (they
+   * become Fourthwall's variant ids), so a line saved before that is found again by these.
+   */
+  productSlug: z.string().max(64).optional(),
+  color: z.string().max(64).optional(),
+  size: z.string().max(32).optional(),
 });
 export type BagLineInput = z.infer<typeof BagLineInputSchema>;
 
@@ -26,7 +33,7 @@ export const BagLineSchema = z.object({
   unitPriceCents: z.number().int(),
   quantity: z.number().int(),
   available: z.boolean(),
-  /** The piece isn't in Fourthwall yet, so it can't be checked out (checkout opens soon). */
+  /** The piece isn't in Fourthwall yet: the line stays saved in the bag and is left out of checkout. */
   preview: z.boolean().default(false),
 });
 export type BagLine = z.infer<typeof BagLineSchema>;
