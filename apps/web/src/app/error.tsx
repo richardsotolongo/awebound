@@ -15,11 +15,7 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div
-      className="aw-container section"
-      style={{ display: "grid", gap: "var(--space-6)", justifyItems: "start" }}
-    >
-      <p className="aw-label">Something went wrong</p>
+    <div className="aw-container section stopped">
       <h1 className="aw-h1">We couldn’t load this page</h1>
       <p className="aw-body">
         Try again in a moment. If it keeps happening, write to contact@awebound.store.

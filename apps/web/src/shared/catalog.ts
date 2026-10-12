@@ -103,6 +103,21 @@ export function colorCss(color: Pick<Color, "token" | "swatch">): string {
   return color.swatch && /^#[0-9a-fA-F]{3,8}$/.test(color.swatch) ? color.swatch : "transparent";
 }
 
+/**
+ * A piece's plate: its own surface as a full-bleed field. `token` names its `--plate-*` color
+ * and `ink` is what lettering and buttons take on it (chosen from the rendered plate images).
+ */
+export const PlateSchema = z.object({
+  token: z.string().regex(/^plate-[a-z-]+$/),
+  ink: z.enum(["bone", "coal"]),
+});
+export type Plate = z.infer<typeof PlateSchema>;
+
+/** CSS value for a plate's color; coal for a piece without one. */
+export function plateCss(plate: Plate | null): string {
+  return plate ? `var(--${plate.token})` : "var(--surface)";
+}
+
 export const ImageViewSchema = z.enum(["back", "front", "side", "detail"]);
 export const ProductImageSchema = z.object({
   url: z.string(),
@@ -152,6 +167,8 @@ export const ProductSummarySchema = z.object({
   scripture: ScriptureQuoteSchema,
   image: ProductImageSchema,
   hoverImage: ProductImageSchema.nullable(),
+  /** Null for a piece with no plate images: it shows on coal. */
+  plate: PlateSchema.nullable(),
   featured: z.boolean(),
   releasedAt: z.string(),
 });

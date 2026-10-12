@@ -126,7 +126,7 @@ execFileSync(process.execPath, [tsc, "-p", join(brand, "tsconfig.json"), "--noEm
   "--emitDeclarationOnly", "--rootDir", join(brand, "src"), "--outDir", dts], { stdio: "inherit" });
 const order = ["cx", "hex", "link", "marks/paths", "components/marks", "components/radio-group", "components/button",
   "components/scripture-ref", "components/scripture-quote", "components/thorn-rule", "components/header",
-  "components/hero", "components/product-card", "components/swatches", "components/size-selector",
+  "components/hero", "components/product-card", "components/plate", "components/swatches", "components/size-selector",
   "components/collection-banner", "components/altar-panel", "components/footer"];
 const runtime = new Set(read(join(out, "awebound-components.jsx")).match(/export \{([^}]*)\}/)[1]
   .split(",").map((s) => s.trim()).filter(Boolean));

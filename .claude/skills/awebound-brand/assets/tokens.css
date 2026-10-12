@@ -76,8 +76,6 @@
   --bucket-washed-olive-twill: #5e604b;
   --shadow-raised: 0 16px 40px -16px #000000cc;
   --glow-primary: 0 0 160px 48px #782b3559;
-  /* Light from above: the soft glow behind the shop's title. Derived from bone, not a new color. */
-  --light-shaft: #f0e6d21f;
   --scrim: #0d0c0bcc;
 }
 
@@ -109,11 +107,26 @@
   --space-12: 48px;
   --space-16: 64px;
   --space-24: 96px;
+  /* Plates: each piece's own surface as a full-bleed field, the colors of STYLE in
+     assets/mockups/compose.py. Photography, not interface: never on links, borders, text or
+     controls. Content names one per piece (`plate` in catalog.json). */
+  --plate-oxblood: #60252b;
+  --plate-ochre: #be9a6a;
+  --plate-sage: #7a836d;
+  --plate-cornflower: #687d98;
+  --plate-slate: #46545c;
+  --plate-parchment: #c9ba9a;
+  --plate-terracotta: #966246;
+  --plate-rose: #be9a96;
+  --plate-linen: #d0cabf;
+  --plate-concrete: #96928c;
   --radius-0: 0px;
   --radius-sm: 2px;
-  --container-max: 1200px;
+  --container-max: 1440px;
   --gutter-mobile: 16px;
   --gutter-desktop: 48px;
+  /* The page's side margin at the current width. */
+  --gutter: var(--gutter-desktop);
   --tap-min: 44px;
   --header-height: 80px;
   --font-display: var(--font-grenze, "Grenze Gotisch"), Georgia, serif;
@@ -127,5 +140,6 @@
 @media (max-width: 767px) {
   :root {
     --header-height: 64px;
+    --gutter: var(--gutter-mobile);
   }
 }

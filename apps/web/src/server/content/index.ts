@@ -3,11 +3,13 @@ import {
   CategorySchema,
   CollectionSchema,
   ImageViewSchema,
+  PlateSchema,
   ProductStorySchema,
   SizeGuideSchema,
   type Category,
   type Collection,
   type Color,
+  type Plate,
   type ProductImage,
   type ProductStory,
   type ScriptureQuote,
@@ -60,6 +62,8 @@ const BrandContentSchema = z.object({
       story: ProductStorySchema,
       /** Display order: listing image, hover image, then the rest. */
       images: z.array(ContentImage).min(1),
+      /** The piece's surface (plate-wide, plate-tall and piece.webp beside its images). */
+      plate: PlateSchema.optional(),
     }),
   ),
 });
@@ -90,6 +94,7 @@ export interface ProductContent {
   story: ProductStory;
   /** The site's styled product images (Fourthwall renders or mockups), in display order. */
   images: [ProductImage, ...ProductImage[]];
+  plate: Plate | null;
 }
 
 export interface BrandContent {
@@ -153,6 +158,7 @@ function loadBrandContent(): BrandContent {
       scripture: quote(p.scripture),
       story: p.story,
       images: [first, ...rest],
+      plate: p.plate ?? null,
     };
   });
 

@@ -1,22 +1,20 @@
-import { ScriptureRef } from "@awebound/brand";
 import type { ReactNode } from "react";
 
 interface PageHeaderProps {
-  eyebrow?: string;
   title: string;
+  /** A plain line under the title, such as when a policy was last updated. */
+  note?: string;
   intro?: ReactNode;
-  scripture?: string;
   children?: ReactNode;
 }
 
-/** Title block for inner pages: eyebrow, display H1, one short paragraph. */
-export function PageHeader({ eyebrow, title, intro, scripture, children }: PageHeaderProps) {
+/** Title block for inner pages: the H1, then one short paragraph. Nothing sits above the title. */
+export function PageHeader({ title, note, intro, children }: PageHeaderProps) {
   return (
     <header className="page-header">
-      {eyebrow ? <p className="aw-label">{eyebrow}</p> : null}
       <h1 className="aw-h1">{title}</h1>
+      {note ? <p className="aw-small">{note}</p> : null}
       {intro ? <div className="aw-body">{intro}</div> : null}
-      {scripture ? <ScriptureRef reference={scripture} align="start" /> : null}
       {children}
     </header>
   );

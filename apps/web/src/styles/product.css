@@ -1,57 +1,31 @@
-/* Product page: gallery and purchase column. */
+/* Product page: the stage and the buy column, the design story on the piece's plate, the product
+   details, the neighbouring pieces and the rest of the release. */
 @layer components {
+  /* The stage fills the left of the page from the header to the bottom of the window and stays
+     while the buy column scrolls, with the thumbnails in a strip beneath it. It is never wider
+     than 1.05 times its height: a 4:5 image that covers it then loses at most 12% top and bottom,
+     which is background in every listing image (the closest, the Lamb's Mark photo, keeps 14%
+     clear above and below the cap). */
   .pdp {
+    --thumbs: 94px;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: var(--space-16);
+    grid-template-columns:
+      min(58vw, calc((100svh - var(--header-height) - var(--thumbs)) * 1.05))
+      minmax(0, 1fr);
     align-items: start;
-    padding-block: var(--space-8) var(--space-24);
   }
-  @media (max-width: 1023px) {
-    .pdp {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-8);
-      padding-top: 0;
-    }
-  }
-
   .gallery {
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
-    gap: var(--space-4);
     position: sticky;
-    top: calc(var(--header-height) + var(--space-6));
-  }
-  .gallery-thumbs {
+    top: var(--header-height);
+    height: calc(100svh - var(--header-height));
+    min-height: 480px;
     display: grid;
-    gap: var(--space-2);
-    align-content: start;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .gallery-thumbs button {
-    display: block;
-    padding: 0;
-    border: 1px solid transparent;
-    background: var(--surface);
-    cursor: pointer;
-    width: 72px;
-  }
-  .gallery-thumbs button[aria-current="true"] {
-    border-color: var(--ink);
-  }
-  .gallery-thumbs img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
+    grid-template-rows: minmax(0, 1fr) auto;
   }
   .gallery-stage {
     position: relative;
-    aspect-ratio: 4 / 5;
-    background: var(--surface);
     overflow: hidden;
+    background: var(--plate, var(--surface));
   }
   /* Each image sits in a frame that clips it, so the hover / press-and-hold zoom stays inside. */
   .gallery-frame {
@@ -74,33 +48,50 @@
       cursor: zoom-in;
     }
   }
-  .gallery-hint {
-    margin: var(--space-3) 0 0;
-    color: var(--ink-subtle);
-    text-align: center;
+  /* Thumbnails sit in a coal strip under the stage, so they never cover the garment. */
+  .gallery-thumbs {
+    box-sizing: border-box;
+    height: var(--thumbs);
+    display: flex;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-3) var(--space-6);
+    list-style: none;
+    background: var(--surface);
   }
-  .gallery-hint-hover {
+  .gallery-thumbs button {
+    display: block;
+    width: 56px;
+    padding: 0;
+    border: 0;
+    background: var(--surface);
+    cursor: pointer;
+  }
+  .gallery-thumbs button[aria-current="true"] {
+    box-shadow: 0 0 0 2px var(--ink);
+  }
+  .gallery-thumbs img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .gallery-dots,
+  .gallery-hint {
     display: none;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .gallery-hint-hover {
-      display: inline;
+  /* One column: the stage is a row of 4:5 images to swipe through, with dots beneath. */
+  @media (max-width: 899px) {
+    .pdp {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .gallery-hint-touch {
-      display: none;
-    }
-  }
-  @media (max-width: 1023px) {
     .gallery {
       position: static;
-      grid-template-columns: minmax(0, 1fr);
-      margin-inline: calc(var(--gutter-mobile) * -1);
-    }
-    .gallery-thumbs {
-      display: none;
+      display: block;
+      height: auto;
+      min-height: 0;
     }
     .gallery-stage {
-      aspect-ratio: auto;
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
@@ -113,6 +104,9 @@
       aspect-ratio: 4 / 5;
       scroll-snap-align: start;
       opacity: 1 !important;
+    }
+    .gallery-thumbs {
+      display: none;
     }
     .gallery-dots {
       display: flex;
@@ -129,9 +123,12 @@
       background: var(--ink);
     }
   }
-  @media (min-width: 1024px) {
-    .gallery-dots {
-      display: none;
+  @media (max-width: 899px) and (hover: none) {
+    .gallery-hint {
+      display: block;
+      margin: var(--space-2) 0 0;
+      color: var(--ink-subtle);
+      text-align: center;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -142,42 +139,49 @@
   }
 
   .buy {
+    box-sizing: border-box;
+    max-width: 660px;
+    padding: var(--space-8) var(--gutter) var(--space-24) var(--space-12);
     display: grid;
     gap: var(--space-6);
   }
-  .buy-head {
-    display: grid;
-    gap: var(--space-3);
+  @media (max-width: 899px) {
+    .buy {
+      max-width: none;
+      padding: var(--space-6) var(--gutter) var(--space-16);
+    }
   }
-  .buy-head .aw-label a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .buy-head .aw-label a:hover {
-    color: var(--ink);
+  .crumbs a {
+    color: var(--ink-muted);
   }
   .buy-name {
     margin: 0;
     font-family: var(--font-sans);
     font-weight: 800;
-    font-size: clamp(28px, 3vw, 36px);
-    line-height: 1.12;
-    letter-spacing: 0.03em;
+    font-size: clamp(32px, 4.4vw, 60px);
+    line-height: 1.02;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
     text-wrap: balance;
     color: var(--ink);
   }
-  .buy-head .aw-verse {
-    margin-top: var(--space-2);
+  /* Garment type and price, on one row under the name. */
+  .buy-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin: calc(var(--space-2) * -1) 0 0;
+    color: var(--ink-muted);
   }
   .buy-price {
-    margin: 0;
     font-family: var(--font-sans);
     font-weight: 700;
     font-size: 22px;
     letter-spacing: 0.02em;
     color: var(--ink);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .buy-option {
     display: grid;
@@ -287,13 +291,6 @@
 }
 
 @layer components {
-  .crumbs {
-    padding-block: var(--space-6);
-  }
-  .crumbs a {
-    color: var(--ink-muted);
-  }
-
   /* Preview: ordering isn't open yet. */
   .buy-preview {
     display: grid;
@@ -362,66 +359,213 @@
     }
   }
 
-  /* The design story and product details, below the buying controls. */
-  .buy-story {
+  /* The phone bar: the price and the bag button, once the button itself has scrolled away. */
+  .buy-bar {
+    display: none;
+  }
+  @media (max-width: 899px) {
+    .buy-bar {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom));
+      background: var(--surface-raised);
+      border-top: 1px solid var(--line);
+      visibility: hidden;
+    }
+    .buy-bar[data-on="true"] {
+      visibility: visible;
+    }
+    .buy-bar-words {
+      min-width: 0;
+      margin: 0;
+      display: grid;
+    }
+    .buy-bar-name {
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 18px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+    .buy-bar .buy-price {
+      font-size: 16px;
+    }
+  }
+
+  /* The design story: the call as lettering on the piece's plate beside the close-up, then what
+     the art shows and means, on coal. */
+  .story-in {
+    box-sizing: border-box;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding: var(--space-24) var(--gutter);
     display: grid;
-    gap: var(--space-4);
-    padding-top: var(--space-8);
-    border-top: 1px solid var(--line);
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-12);
+    align-items: center;
   }
-  .buy-story .aw-label {
-    color: var(--scripture);
+  /* The lettering is sized from its column. */
+  .story-letter {
+    container-type: inline-size;
   }
-  .buy-story-art {
+  .story-call {
+    font-size: clamp(44px, 15cqi, 132px);
+  }
+  .story-detail {
+    display: block;
+    justify-self: end;
+    width: min(100%, 460px);
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .story-words {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8) var(--space-12);
+    padding-block: var(--space-16);
+  }
+  .story-art {
+    margin: 0;
+    max-width: 30ch;
+    font-size: clamp(20px, 1.8vw, 26px);
+    line-height: 1.4;
     color: var(--ink);
+    text-wrap: pretty;
   }
-  .buy-details {
+  .story-words .aw-body {
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  @media (max-width: 899px) {
+    .story-in {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--space-16);
+      gap: var(--space-8);
+    }
+    .story-call {
+      font-size: clamp(44px, 17cqi, 120px);
+    }
+    .story-detail {
+      justify-self: start;
+    }
+    .story-words {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--space-12);
+    }
+    .story-words .aw-body {
+      font-size: 16px;
+      line-height: 26px;
+    }
+  }
+
+  /* Product details, set like a label: the heading beside the list. */
+  .details {
     display: grid;
-    gap: var(--space-4);
-    padding-top: var(--space-8);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8) var(--space-12);
+    padding-block: var(--space-16) var(--space-24);
     border-top: 1px solid var(--line);
   }
-  .buy-details .spec {
+  .details .spec {
     padding-top: 0;
     border-top: 0;
+    margin-bottom: var(--space-6);
   }
-  .buy-details .field-help a {
+  .details .field-help a {
     color: var(--accent-text);
   }
+  @media (max-width: 899px) {
+    .details {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: var(--space-12) var(--space-16);
+    }
+  }
+
+  /* The pieces before and after: each shown whole in a small 4:5 picture beside its name, the
+     two halves meeting edge to edge. */
   .piece-nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
-    padding-block: var(--space-12);
-    border-top: 1px solid var(--line);
-    margin-top: var(--space-12);
+    gap: 1px;
+    background: var(--line);
   }
   .piece-nav-link {
-    display: grid;
-    gap: var(--space-2);
-    padding: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6) var(--gutter);
     background: var(--surface);
-    text-decoration: none;
     color: var(--ink);
-    transition: background-color var(--duration-fast) var(--ease-reverent);
+    text-decoration: none;
   }
-  .piece-nav-link:hover,
-  .piece-nav-link:focus-visible {
-    background: var(--surface-raised);
+  .piece-nav > span {
+    background: var(--surface);
   }
-  .piece-nav-link .aw-label {
-    color: var(--ink-subtle);
+  .piece-nav-link img {
+    flex: none;
+    display: block;
+    width: clamp(72px, 9vw, 128px);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: var(--plate, var(--surface));
   }
-  .piece-nav-link[data-next="true"] {
+  .piece-nav-words {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  .piece-nav-link[data-direction="next"] {
+    flex-direction: row-reverse;
+  }
+  .piece-nav-link[data-direction="next"] .piece-nav-words {
+    flex-direction: row-reverse;
     text-align: right;
-    grid-column: 2;
   }
-  @media (max-width: 640px) {
-    .piece-nav {
-      grid-template-columns: minmax(0, 1fr);
+  .piece-nav-link[data-direction="prev"] svg {
+    rotate: 180deg;
+  }
+  .piece-nav-words svg {
+    flex: none;
+  }
+  .piece-nav-link:hover .aw-product-name,
+  .piece-nav-link:focus-visible .aw-product-name {
+    color: var(--accent-text);
+  }
+  @media (max-width: 599px) {
+    .piece-nav-link {
+      gap: var(--space-3);
+      padding: var(--space-4) var(--space-3);
     }
-    .piece-nav-link[data-next="true"] {
-      grid-column: auto;
+    .piece-nav-link img {
+      width: 56px;
+    }
+    .piece-nav-words {
+      gap: var(--space-2);
+    }
+    .piece-nav-words .aw-product-name {
+      font-size: 13px;
+      line-height: 18px;
+    }
+  }
+
+  /* The rest of the release. */
+  .more {
+    padding-top: var(--space-24);
+  }
+  .more > h2 {
+    margin-bottom: var(--space-8);
+  }
+  @media (max-width: 899px) {
+    .more {
+      padding-top: var(--space-16);
     }
   }
 }

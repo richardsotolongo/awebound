@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function BagPage() {
   return (
     <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
-      <PageHeader eyebrow="Bag" title="Your bag" />
+      <PageHeader title="Your bag" />
       <BagPageContents />
     </div>
   );

@@ -22,7 +22,7 @@ export default async function AccountPage() {
     const copy = accountsClosedCopy(release);
     return (
       <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
-        <PageHeader eyebrow="Account" title={copy.title} intro={copy.intro} />
+        <PageHeader title={copy.title} intro={copy.intro} />
         <AccountsClosedActions release={release} />
       </div>
     );
@@ -48,7 +48,6 @@ export default async function AccountPage() {
   return (
     <div className="aw-container account">
       <PageHeader
-        eyebrow="Account"
         title={name ? `Welcome, ${name.split(" ")[0]}` : "Your account"}
         intro={
           <>

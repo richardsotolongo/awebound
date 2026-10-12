@@ -258,6 +258,7 @@
     {
       "code": "A3-B03",
       "slug": "thorns-to-lilies",
+      "plate": { "token": "plate-oxblood", "ink": "bone" },
       "fourthwallSlug": "thorns-to-lillies-tee",
       "sizeGuide": "middleweight-oversized-tee",
       "name": "Thorns to Lilies",
@@ -316,6 +317,7 @@
     {
       "code": "A3-B05",
       "slug": "to-live-is-christ",
+      "plate": { "token": "plate-ochre", "ink": "coal" },
       "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
       "sizeGuide": "organic-oversized-tee",
       "name": "To Live Is Christ, To Die Is Gain",
@@ -373,6 +375,7 @@
     {
       "code": "A3-B07",
       "slug": "by-his-hem",
+      "plate": { "token": "plate-sage", "ink": "bone" },
       "fourthwallSlug": "by-his-hem-tee",
       "sizeGuide": "middleweight-oversized-tee",
       "name": "By His Hem",
@@ -431,6 +434,7 @@
     {
       "code": "A3-B04",
       "slug": "stone-in-motion",
+      "plate": { "token": "plate-cornflower", "ink": "bone" },
       "fourthwallSlug": "stone-in-motion-tee",
       "sizeGuide": "middleweight-oversized-tee",
       "name": "Stone in Motion",
@@ -489,6 +493,7 @@
     {
       "code": "A3-B02",
       "slug": "still-the-storm",
+      "plate": { "token": "plate-slate", "ink": "bone" },
       "fourthwallSlug": "still-the-storm-tee",
       "sizeGuide": "organic-oversized-tee",
       "name": "Still the Storm",
@@ -546,6 +551,7 @@
     {
       "code": "A3-B06",
       "slug": "torn-veil",
+      "plate": { "token": "plate-parchment", "ink": "coal" },
       "fourthwallSlug": "torn-veil-hoodie",
       "sizeGuide": "premium-relaxed-hoodie",
       "name": "Torn Veil",
@@ -604,6 +610,7 @@
     {
       "code": "A3-B08",
       "slug": "the-passage",
+      "plate": { "token": "plate-terracotta", "ink": "bone" },
       "fourthwallSlug": "the-passage-hoodie",
       "sizeGuide": "premium-relaxed-hoodie",
       "name": "The Passage",
@@ -662,6 +669,7 @@
     {
       "code": "A3-B09",
       "slug": "wonderfully-made",
+      "plate": { "token": "plate-rose", "ink": "coal" },
       "fourthwallSlug": "wonderfully-made-hoodie",
       "sizeGuide": "premium-relaxed-hoodie",
       "name": "Wonderfully Made",
@@ -720,6 +728,7 @@
     {
       "code": "A3-H01",
       "slug": "lambs-mark",
+      "plate": { "token": "plate-linen", "ink": "coal" },
       "fourthwallSlug": "lambs-mark-hat",
       "sizeGuide": "low-profile-adjustable-cap",
       "name": "Lamb’s Mark",
@@ -784,6 +793,7 @@
     {
       "code": "A3-H02",
       "slug": "signature-cap",
+      "plate": { "token": "plate-concrete", "ink": "coal" },
       "fourthwallSlug": "awebound-signature-cap",
       "sizeGuide": "mid-profile-snapback-cap",
       "name": "Signature Cap",

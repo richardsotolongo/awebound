@@ -32,7 +32,7 @@ export function LegalPage({
 }) {
   return (
     <div className="aw-container">
-      <PageHeader eyebrow={`Last updated ${LEGAL.lastUpdated}`} title={title} intro={intro}>
+      <PageHeader title={title} note={`Last updated ${LEGAL.lastUpdated}`} intro={intro}>
         <nav aria-label="Policies" className="aw-btn-row" style={{ gap: "var(--space-6)" }}>
           {POLICIES.map((p) => (
             <Link

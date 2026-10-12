@@ -4,7 +4,7 @@ Context for coding agents working in this repo. Read this first, then the `AGENT
 
 ## What this is
 
-Awebound is an independent Christian apparel brand (tees, oversized tees, hoodies, caps), founded by Richard out of his faith and reverence for Jesus Christ. The store welcomes everyone: someone who doesn’t share that faith should still find the clothes beautiful, understand where they come from and buy comfortably. This repo is its website: one Next.js app with a home page that opens on one piece up close, then the founder’s note and the whole release, a shop with collection and category selectors, Collections, About, Contact, FAQ and policy pages, and passwordless sign-in.
+Awebound is an independent Christian apparel brand (tees, oversized tees, hoodies, caps), founded by Richard out of his faith and reverence for Jesus Christ. The store welcomes everyone: someone who doesn’t share that faith should still find the clothes beautiful, understand where they come from and buy comfortably. This repo is its website: one Next.js app with a home page that opens on the lead piece’s own color plate, then that piece up close, the founder’s note and the release as a wall of its pieces, a shop with collection and category selectors, Collections, About, Contact, FAQ and policy pages, and passwordless sign-in.
 
 Releases are the unit (`collection` in code), numbered in order. The first is **Release 01, Behold**: five oversized tees, three hoodies and two caps, in `position` order (Thorns to Lilies, To Live Is Christ, By His Hem, Stone in Motion, Still the Storm, then the Torn Veil, The Passage and Wonderfully Made hoodies, then the Lamb’s Mark and Signature caps). "Latest Drop" is computed from the catalog (the newest release with pieces), so a new release needs content, not code.
 
@@ -14,14 +14,14 @@ There is no separate backend. Pages read data in Server Components; the browser 
 
 ## Workspace map
 
-| Path                | What lives there                                                                                                         | Agent notes                                                                    |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| `apps/web`          | The Next.js app: pages, server code, schemas                                                                             | `apps/web/AGENTS.md`                                                           |
-| `packages/brand`    | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme                                                             | `packages/brand/AGENTS.md`                                                     |
-| `packages/tsconfig` | Shared tsconfig bases                                                                                                    |                                                                                |
-| `supabase`          | SQL migrations, auth email templates                                                                                     | `supabase/AGENTS.md`                                                           |
-| `assets/mockups`    | Fourthwall product images (`fourthwall.json`, `fourthwall.py`), source mockups (kept intact), cutout and styling scripts | regenerate site images and story scenes with `fourthwall.py` then `compose.py` |
-| `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`, `BRAND.md`                                                               | keep them current when you change structure                                    |
+| Path                | What lives there                                                                                                         | Agent notes                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `apps/web`          | The Next.js app: pages, server code, schemas                                                                             | `apps/web/AGENTS.md`                                                                |
+| `packages/brand`    | Brand tokens, CSS, TSX components, SVG marks, Tailwind theme                                                             | `packages/brand/AGENTS.md`                                                          |
+| `packages/tsconfig` | Shared tsconfig bases                                                                                                    |                                                                                     |
+| `supabase`          | SQL migrations, auth email templates                                                                                     | `supabase/AGENTS.md`                                                                |
+| `assets/mockups`    | Fourthwall product images (`fourthwall.json`, `fourthwall.py`), source mockups (kept intact), cutout and styling scripts | regenerate site images, close-ups and plates with `fourthwall.py` then `compose.py` |
+| `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`, `BRAND.md`                                                               | keep them current when you change structure                                         |
 
 `packages/brand` is consumed as TypeScript source (no build step); Next transpiles it via `transpilePackages`.
 
@@ -53,9 +53,11 @@ Deployment is one Vercel project (Root Directory `apps/web`); see `docs/DEPLOYME
    - Internal design codes (A3-B01…) never appear in customer-facing UI, search or metadata.
    - Say "Christian apparel", "clothing" or "pieces", never "streetwear".
    - Type: Grenze Gotisch for display (mixed case, never all caps), Cormorant Garamond Italic for Scripture quotations only, Manrope for everything else.
-   - On the home page and on product cards: no small label above a heading (no eyebrows, no status chips), no entrance or scroll animation, no decorative numbering. Say it in the heading or a plain sentence. Other pages still carry labels (the shop's “Latest drop · Release 01”, About, product pages); whether they follow is an open item in `docs/TODOS.md`, so don't add new ones.
+   - No small label above a heading anywhere (no eyebrows, no status chips) and no decorative numbering: say it in the heading or a plain sentence. Form labels stay.
+   - Motion is one idea: the garment image travels between a tile and its product page (view transitions), and pages cross-fade. Nothing animates on load or on scroll. Artwork, Scripture and buttons are whole and readable in every frame: never cropped, wiped or faded in. Reduced motion gets instant navigation.
    - Style through CSS variables / Tailwind theme tokens. Raw hex lives only in `packages/brand` (`tokens.css`, and `hex.ts` for meta tags and images). HTML email templates are the one exception, because email clients ignore CSS variables.
-   - Oxblood (`primary`) is a fill, never text on coal. One primary button and one glow per screen.
+   - Oxblood (`primary`) is a fill, never text on coal. One primary button per screen, and no glows, gradients or blur.
+   - Colour comes from the pieces. Each piece owns a **plate**: its own surface as a full-bleed field (`--plate-*` tokens, named by `plate` in the content file). A plate carries only large lettering (24px and up), filled buttons and images; prices, status, captions, references and body copy stay on coal or bone. Plate colours never colour links, borders, text or controls.
    - Copy: reverent, short sentences, sentence case, no exclamation marks, no hype words, no guilt. Never tell visitors who the clothes are “for” or assume they believe: Awebound says what it makes and why, and Richard speaks for himself in the first person.
 6. **Env variables:** add every new one to `apps/web/.env.example` (no real values) and its schema: `apps/web/src/lib/env.ts` for public `NEXT_PUBLIC_*` values, `apps/web/src/server/env.ts` for server-only ones.
 7. **Prices come from Fourthwall** for live pieces; previews use `priceCents` in the content file (the owner’s prices: oversized tees $40, Lamb’s Mark $30, the Signature Cap $25, hoodies $60; 2XL and 3XL cost $2 and $4 more, so those pieces list as “From $40”). Never hard-code a price in copy.

@@ -7,7 +7,7 @@ import {
   type ProductQuery,
   type ProductSummary,
 } from "@/shared";
-import { formatPrice } from "@/shared";
+import { formatPrice, plateCss } from "@/shared";
 import type { ProductCardProps } from "@awebound/brand";
 
 export type RawSearchParams = Record<string, string | string[] | undefined>;
@@ -92,6 +92,9 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
     image: p.image.url,
     imageAlt: p.image.alt,
     hoverImage: p.hoverImage?.url,
+    plate: plateCss(p.plate),
+    // The product page gives its first image the same name, so the picture travels between them.
+    transitionName: `piece-${p.slug}`,
     href: `/shop/${p.slug}`,
     price: priceLabel(p),
     status: pieceStatus(p),

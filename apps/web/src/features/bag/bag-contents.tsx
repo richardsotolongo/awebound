@@ -92,8 +92,8 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
               </Link>
             </p>
             <p className="aw-small">
-              {snapshot.cut} · {snapshot.color} ·{" "}
-              {snapshot.size === "One size" ? "One size" : `Size ${snapshot.size}`}
+              {snapshot.cut}, {snapshot.color},{" "}
+              {snapshot.size === "One size" ? "one size" : `size ${snapshot.size}`}
             </p>
             {mixed && snapshot.preview ? (
               <p className="aw-small">Not open for ordering yet. Saved for later.</p>

@@ -50,6 +50,7 @@ export function toSummary(p: ProductDetail): ProductSummary {
     scripture: p.scripture,
     image: p.image,
     hoverImage: p.hoverImage,
+    plate: p.plate,
     featured: p.featured,
     releasedAt: p.releasedAt,
   };

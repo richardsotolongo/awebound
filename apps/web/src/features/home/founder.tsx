@@ -13,7 +13,7 @@ export function Founder() {
           className="founder-portrait"
           src="/about/richard-960.webp"
           srcSet="/about/richard-480.webp 480w, /about/richard-960.webp 960w"
-          sizes="(max-width: 599px) 112px, (max-width: 899px) 220px, 300px"
+          sizes="(max-width: 599px) 128px, (max-width: 899px) 240px, 380px"
           width={960}
           height={1200}
           alt="Portrait of Richard"

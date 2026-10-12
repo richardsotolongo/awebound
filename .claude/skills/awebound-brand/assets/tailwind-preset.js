@@ -72,7 +72,17 @@ module.exports = {
         "cap-charcoal-mesh": "var(--cap-charcoal-mesh)",
         "cap-dusty-indigo-nylon": "var(--cap-dusty-indigo-nylon)",
         "bucket-washed-olive-twill": "var(--bucket-washed-olive-twill)",
-        "scrim": "var(--scrim)"
+        "scrim": "var(--scrim)",
+        "plate-oxblood": "var(--plate-oxblood)",
+        "plate-ochre": "var(--plate-ochre)",
+        "plate-sage": "var(--plate-sage)",
+        "plate-cornflower": "var(--plate-cornflower)",
+        "plate-slate": "var(--plate-slate)",
+        "plate-parchment": "var(--plate-parchment)",
+        "plate-terracotta": "var(--plate-terracotta)",
+        "plate-rose": "var(--plate-rose)",
+        "plate-linen": "var(--plate-linen)",
+        "plate-concrete": "var(--plate-concrete)"
       },
       fontFamily: {
         display: ["var(--font-display)"],

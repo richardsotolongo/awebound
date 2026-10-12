@@ -22,7 +22,10 @@ export interface AltarPanelProps {
   className?: string;
 }
 
-/** A warm-bone panel that breaks the dark page and carries the signature lockup. One or two per page. */
+/**
+ * A warm-bone panel that breaks the dark page and carries the signature lockup. One or two per
+ * page. As the page's opening (`as="h1"`) the wordmark and the title take their full size.
+ */
 export function AltarPanel({
   mark = "wordmark",
   eyebrow,
@@ -36,12 +39,16 @@ export function AltarPanel({
   className,
 }: AltarPanelProps) {
   return (
-    <section id={id} className={cx("aw-altar", className)}>
+    <section
+      id={id}
+      className={cx("aw-altar", className)}
+      data-opening={Heading === "h1" ? true : undefined}
+    >
       <div className="aw-altar-in">
         {mark === "cross" ? <ThornCross height={120} className="aw-altar-mark" /> : null}
         {mark === "wordmark" ? <Wordmark height={88} className="aw-altar-mark" /> : null}
         {eyebrow ? <p className="aw-label">{eyebrow}</p> : null}
-        {title ? <Heading className="aw-h2">{title}</Heading> : null}
+        {title ? <Heading className={Heading === "h1" ? "aw-h1" : "aw-h2"}>{title}</Heading> : null}
         {body ? <p className="aw-altar-body">{body}</p> : null}
         {scripture ? <ScriptureRef reference={scripture} /> : null}
         {children}
