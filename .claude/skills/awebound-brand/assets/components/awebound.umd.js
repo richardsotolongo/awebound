@@ -75,6 +75,7 @@ var Awebound = (() => {
     Hero: () => Hero,
     LILY: () => LILY,
     Mark: () => Mark,
+    Plate: () => Plate,
     ProductCard: () => ProductCard,
     ScriptureQuote: () => ScriptureQuote,
     ScriptureRef: () => ScriptureRef,
@@ -411,7 +412,10 @@ var Awebound = (() => {
   }
 
   // packages/brand/src/components/product-card.tsx
+  var React = __toESM(require_react(), 1);
+  var import_react3 = __toESM(require_react(), 1);
   var import_jsx_runtime9 = __toESM(require_jsx_runtime(), 1);
+  var Morph = React.ViewTransition;
   function ProductCard({
     name,
     type,
@@ -422,33 +426,46 @@ var Awebound = (() => {
     href,
     price,
     status,
+    plate,
+    transitionName,
+    transitionWhen = "always",
     priority,
     as: Heading = "h3",
     className
   }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("article", { className: cx("aw-card", className), children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(BrandLink, { href, className: "aw-card-link", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "aw-card-media", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
-          "img",
-          {
-            src: image,
-            alt: imageAlt != null ? imageAlt : name,
-            loading: priority ? "eager" : "lazy",
-            decoding: "async"
-          }
-        ),
-        hoverImage ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
-          "img",
-          {
-            className: "aw-card-alt",
-            src: hoverImage,
-            alt: "",
-            "aria-hidden": "true",
-            loading: "lazy",
-            decoding: "async"
-          }
-        ) : null
-      ] }),
+    const [leaving, setLeaving] = (0, import_react3.useState)(false);
+    const named = transitionWhen === "always" || leaving;
+    const listing = /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+      "img",
+      {
+        src: image,
+        alt: imageAlt != null ? imageAlt : name,
+        loading: priority ? "eager" : "lazy",
+        decoding: "async"
+      }
+    );
+    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("article", { className: cx("aw-card", className), children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(BrandLink, { href, className: "aw-card-link", onClick: () => setLeaving(true), children: [
+      /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(
+        "div",
+        {
+          className: "aw-card-media",
+          style: plate ? { "--plate": plate } : void 0,
+          children: [
+            Morph ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Morph, { name: named ? transitionName : void 0, share: "piece", default: "none", children: listing }) : listing,
+            hoverImage ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+              "img",
+              {
+                className: "aw-card-alt",
+                src: hoverImage,
+                alt: "",
+                "aria-hidden": "true",
+                loading: "lazy",
+                decoding: "async"
+              }
+            ) : null
+          ]
+        }
+      ),
       /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { className: "aw-card-meta", children: [
         /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Heading, { className: "aw-card-name", children: name }),
         type || price ? /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("p", { className: "aw-card-facts", children: [
@@ -470,10 +487,51 @@ var Awebound = (() => {
     ] }) });
   }
 
+  // packages/brand/src/components/plate.tsx
+  var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
+  function Plate({
+    color,
+    ink,
+    tall,
+    wide,
+    priority,
+    as: Tag = "section",
+    className,
+    style,
+    children,
+    ...rest
+  }) {
+    return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(
+      Tag,
+      {
+        ...rest,
+        className: cx("aw-plate", className),
+        "data-ink": ink,
+        style: { "--plate": color, ...style },
+        children: [
+          tall ? /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("picture", { className: "aw-plate-bg", "aria-hidden": "true", children: [
+            wide ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("source", { media: "(min-width: 900px)", srcSet: wide }) : null,
+            /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+              "img",
+              {
+                src: tall,
+                alt: "",
+                loading: priority ? "eager" : "lazy",
+                fetchPriority: priority ? "high" : void 0,
+                decoding: "async"
+              }
+            )
+          ] }) : null,
+          children
+        ]
+      }
+    );
+  }
+
   // packages/brand/src/components/radio-group.ts
-  var import_react3 = __toESM(require_react(), 1);
+  var import_react4 = __toESM(require_react(), 1);
   function useRadioGroup(options, value, onChange, disabled = []) {
-    const refs = (0, import_react3.useRef)([]);
+    const refs = (0, import_react4.useRef)([]);
     const enabled = options.filter((o) => !disabled.includes(o));
     const focusTarget = value && enabled.includes(value) ? value : enabled[0];
     function move(from, delta) {
@@ -516,17 +574,17 @@ var Awebound = (() => {
   }
 
   // packages/brand/src/components/swatches.tsx
-  var import_jsx_runtime10 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
   function Swatches({ colors, value, onChange, label = "Color", className }) {
     const { itemProps } = useRadioGroup(
       colors.map((c) => c.name),
       value,
       onChange
     );
-    return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { role: "radiogroup", "aria-label": label, className: cx("aw-swatches", className), children: [
+    return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { role: "radiogroup", "aria-label": label, className: cx("aw-swatches", className), children: [
       colors.map((c, i) => {
         const on = value === c.name;
-        return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+        return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
           "button",
           {
             type: "button",
@@ -537,17 +595,17 @@ var Awebound = (() => {
             className: cx("aw-swatch", on && "is-on"),
             onClick: () => onChange == null ? void 0 : onChange(c.name),
             ...itemProps(c.name, i),
-            children: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("i", { style: { background: c.hex } })
+            children: /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("i", { style: { background: c.hex } })
           },
           c.name
         );
       }),
-      value ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "aw-small aw-swatches-name", children: value }) : null
+      value ? /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "aw-small aw-swatches-name", children: value }) : null
     ] });
   }
 
   // packages/brand/src/components/size-selector.tsx
-  var import_jsx_runtime11 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
   function SizeSelector({
     sizes = ["S", "M", "L", "XL", "2XL"],
     value,
@@ -557,10 +615,10 @@ var Awebound = (() => {
     className
   }) {
     const { itemProps } = useRadioGroup(sizes, value, onChange, unavailable);
-    return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("div", { role: "radiogroup", "aria-label": label, className: cx("aw-sizes", className), children: sizes.map((s, i) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { role: "radiogroup", "aria-label": label, className: cx("aw-sizes", className), children: sizes.map((s, i) => {
       const na = unavailable.includes(s);
       const on = value === s;
-      return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+      return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
         "button",
         {
           type: "button",
@@ -579,7 +637,7 @@ var Awebound = (() => {
   }
 
   // packages/brand/src/components/collection-banner.tsx
-  var import_jsx_runtime12 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
   function CollectionBanner({
     family,
     eyebrow,
@@ -590,7 +648,7 @@ var Awebound = (() => {
     children,
     className
   }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+    return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
       "section",
       {
         className: cx(
@@ -599,19 +657,19 @@ var Awebound = (() => {
           "aw-grain",
           className
         ),
-        children: /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)("div", { className: "aw-banner-in", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("p", { className: "aw-label", children: eyebrow }),
-          /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Heading, { className: "aw-h2", children: family }),
-          story ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("p", { className: "aw-banner-story", children: story }) : null,
+        children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "aw-banner-in", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("p", { className: "aw-label", children: eyebrow }),
+          /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Heading, { className: "aw-h2", children: family }),
+          story ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("p", { className: "aw-banner-story", children: story }) : null,
           children,
-          action ? /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(Button, { variant: tone === "feature" ? "on-feature" : "secondary", href: action.href, children: action.label }) : null
+          action ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Button, { variant: tone === "feature" ? "on-feature" : "secondary", href: action.href, children: action.label }) : null
         ] })
       }
     );
   }
 
   // packages/brand/src/components/altar-panel.tsx
-  var import_jsx_runtime13 = __toESM(require_jsx_runtime(), 1);
+  var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
   function AltarPanel({
     mark = "wordmark",
     eyebrow,
@@ -624,21 +682,29 @@ var Awebound = (() => {
     id,
     className
   }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("section", { id, className: cx("aw-altar", className), children: /* @__PURE__ */ (0, import_jsx_runtime13.jsxs)("div", { className: "aw-altar-in", children: [
-      mark === "cross" ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(ThornCross, { height: 120, className: "aw-altar-mark" }) : null,
-      mark === "wordmark" ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Wordmark, { height: 88, className: "aw-altar-mark" }) : null,
-      eyebrow ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("p", { className: "aw-label", children: eyebrow }) : null,
-      title ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Heading, { className: "aw-h2", children: title }) : null,
-      body ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)("p", { className: "aw-altar-body", children: body }) : null,
-      scripture ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(ScriptureRef, { reference: scripture }) : null,
-      children,
-      action ? /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(Button, { variant: "on-altar", href: action.href, children: action.label }) : null
-    ] }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+      "section",
+      {
+        id,
+        className: cx("aw-altar", className),
+        "data-opening": Heading === "h1" ? true : void 0,
+        children: /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "aw-altar-in", children: [
+          mark === "cross" ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(ThornCross, { height: 120, className: "aw-altar-mark" }) : null,
+          mark === "wordmark" ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Wordmark, { height: 88, className: "aw-altar-mark" }) : null,
+          eyebrow ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "aw-label", children: eyebrow }) : null,
+          title ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Heading, { className: Heading === "h1" ? "aw-h1" : "aw-h2", children: title }) : null,
+          body ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "aw-altar-body", children: body }) : null,
+          scripture ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(ScriptureRef, { reference: scripture }) : null,
+          children,
+          action ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Button, { variant: "on-altar", href: action.href, children: action.label }) : null
+        ] })
+      }
+    );
   }
 
   // packages/brand/src/components/footer.tsx
-  var import_react4 = __toESM(require_react(), 1);
-  var import_jsx_runtime14 = __toESM(require_jsx_runtime(), 1);
+  var import_react5 = __toESM(require_react(), 1);
+  var import_jsx_runtime15 = __toESM(require_jsx_runtime(), 1);
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   function Footer({
     links = [],
@@ -649,11 +715,11 @@ var Awebound = (() => {
     onSubscribe,
     children
   }) {
-    const inputId = (0, import_react4.useId)();
-    const errorId = (0, import_react4.useId)();
-    const [email, setEmail] = (0, import_react4.useState)("");
-    const [state, setState] = (0, import_react4.useState)("idle");
-    const [message, setMessage] = (0, import_react4.useState)("");
+    const inputId = (0, import_react5.useId)();
+    const errorId = (0, import_react5.useId)();
+    const [email, setEmail] = (0, import_react5.useState)("");
+    const [state, setState] = (0, import_react5.useState)("idle");
+    const [message, setMessage] = (0, import_react5.useState)("");
     async function submit(e) {
       e.preventDefault();
       if (!EMAIL.test(email)) {
@@ -670,18 +736,18 @@ var Awebound = (() => {
         setMessage("That didn\u2019t go through. Try again in a moment.");
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("footer", { className: "aw-footer", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "aw-footer-in", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "aw-footer-brand", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(ThornCross, { size: "small", height: 40, title: "" }),
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "aw-small", children: tagline }),
+    return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("footer", { className: "aw-footer", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "aw-footer-in", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "aw-footer-brand", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(ThornCross, { size: "small", height: 40, title: "" }),
+          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "aw-small", children: tagline }),
           children
         ] }),
-        signup ? /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("form", { className: "aw-footer-form", onSubmit: submit, noValidate: true, children: [
-          /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("label", { htmlFor: inputId, className: "aw-label", children: "Get release updates" }),
-          state === "done" ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a release opens for ordering." }) : /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)(import_jsx_runtime14.Fragment, { children: [
-            /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "aw-footer-row", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
+        signup ? /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("form", { className: "aw-footer-form", onSubmit: submit, noValidate: true, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("label", { htmlFor: inputId, className: "aw-label", children: "Get release updates" }),
+          state === "done" ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a release opens for ordering." }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "aw-footer-row", children: [
+              /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
                 "input",
                 {
                   id: inputId,
@@ -697,22 +763,22 @@ var Awebound = (() => {
                   "aria-describedby": state === "error" ? errorId : void 0
                 }
               ),
-              /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Button, { variant: "secondary", type: "submit", disabled: state === "sending", children: "Notify me" })
+              /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Button, { variant: "secondary", type: "submit", disabled: state === "sending", children: "Notify me" })
             ] }),
-            state === "error" ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { id: errorId, className: "aw-form-error", role: "alert", children: message }) : null
+            state === "error" ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { id: errorId, className: "aw-form-error", role: "alert", children: message }) : null
           ] })
-        ] }) : /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", {}),
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("nav", { className: "aw-footer-nav", "aria-label": "Footer", children: links.map((l) => /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(BrandLink, { href: l.href, children: l.label }, l.label)) })
+        ] }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", {}),
+        /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("nav", { className: "aw-footer-nav", "aria-label": "Footer", children: links.map((l) => /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(BrandLink, { href: l.href, children: l.label }, l.label)) })
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("div", { className: "aw-footer-legal aw-small", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime14.jsxs)("p", { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "aw-footer-legal aw-small", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("p", { children: [
           "\xA9 ",
           year != null ? year : (/* @__PURE__ */ new Date()).getFullYear(),
           " Awebound"
         ] }),
-        notice ? /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("p", { className: "aw-footer-notice", children: notice }) : null
+        notice ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "aw-footer-notice", children: notice }) : null
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime14.jsx)("div", { className: "aw-footer-mark", children: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(Wordmark, { title: "Awebound", style: { width: "100%", height: "auto" } }) })
+      /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "aw-footer-mark", children: /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(Wordmark, { title: "Awebound", style: { width: "100%", height: "auto" } }) })
     ] });
   }
   return __toCommonJS(index_exports);

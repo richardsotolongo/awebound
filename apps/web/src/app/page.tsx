@@ -1,10 +1,12 @@
 import { ScriptureRef } from "@awebound/brand";
+import { FitName } from "@/components/fit-name";
 import { JsonLd } from "@/components/json-ld";
 import { NotifyForm } from "@/features/bag/notify-form";
-import { EMPTY_LIST } from "@/features/catalog/query";
+import { EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
 import { Campaign } from "@/features/home/campaign";
 import { Founder } from "@/features/home/founder";
-import { ReleaseCard } from "@/features/release/release-card";
+import { LeadPiece } from "@/features/home/lead-piece";
+import { ReleaseWall } from "@/features/release/release-wall";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
 import { getLatestRelease, getProduct, searchProducts, withFallback } from "@/server/catalog";
@@ -37,8 +39,9 @@ const STORE = {
 };
 
 /**
- * The home page, in order: one piece up close with the ways into the shop, Richard's note, every
- * piece in the latest release, and the optional sign-up for release updates.
+ * The home page, in order: the tagline and the ways into the shop on the lead piece's plate, that
+ * piece up close, Richard's note, the latest release as a wall of its pieces, and the optional
+ * sign-up for release updates.
  */
 export default async function Home() {
   const release = await withFallback(getLatestRelease, null);
@@ -72,25 +75,27 @@ export default async function Home() {
   return (
     <>
       <Campaign release={release} piece={piece} />
+      <LeadPiece release={release} piece={piece} />
 
       <Founder />
 
       {release && pieces.length > 0 ? (
-        <section id="pieces" className="lineup aw-container" aria-labelledby="lineup-title">
-          <header className="lineup-head">
-            <h2 id="lineup-title" className="aw-h1">
-              {release.name}
-            </h2>
-            <p className="aw-body">{release.tagline}</p>
-            <ScriptureRef reference={release.scriptureRef} align="start" />
+        <section id="pieces" className="lineup" aria-labelledby="lineup-title">
+          <header className="aw-container release-head">
+            <FitName id="lineup-title">{release.name}</FitName>
+            <div className="release-sub">
+              <p className="release-tagline">{release.tagline}</p>
+              <ScriptureRef reference={release.scriptureRef} align="start" />
+            </div>
           </header>
-          <ul className="product-grid lineup-grid" aria-label={`The ${release.name} pieces`}>
-            {pieces.map((p) => (
-              <li key={p.slug}>
-                <ReleaseCard product={p} />
-              </li>
-            ))}
-          </ul>
+          <ReleaseWall
+            pieces={pieces}
+            label={`The ${release.name} pieces`}
+            more={{
+              href: shopCanonical(release.slug),
+              label: `See all ${release.pieces} pieces`,
+            }}
+          />
         </section>
       ) : null}
 

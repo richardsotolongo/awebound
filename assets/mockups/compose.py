@@ -5,8 +5,11 @@ A product listed in fourthwall.json gets one image per entry in its Fourthwall i
 same order (1.webp, 2.webp, ...; the first is the listing image): finished photos are cropped to
 the site's 4:5 frame, and Fourthwall's cut-out renders are placed on the piece's own surface. A
 product not listed there falls back to its approved mockup (cutouts/, made by cutout.py) in the
-views below. Every product also gets detail.webp, a close-up of its artwork (the home page shows
-it beside the featured piece; it is not part of the product gallery), and a story scene.
+views below. Every product also gets detail.webp, a close-up of its artwork (not part of the
+product gallery), and its plate: the surface alone as a wide and a tall field (plate-wide.webp,
+plate-tall.webp) and the listing view cut out with its shadow (piece.webp). The site sets the
+cut-out and large lettering on the plate; `python3 assets/mockups/compose.py plates` prints the
+contrast each plate gives bone and coal lettering.
 
 Every piece shares the canvas, margins, garment scale and a soft cast shadow, so the shop grid
 reads as one set. Each piece gets its own surface: a color drawn from its artwork, a texture
@@ -34,6 +37,13 @@ OUT = HERE.parent.parent / "apps" / "web" / "public" / "products"
 
 W, H = 1000, 1250  # 4:5, the shop's image ratio
 DETAIL_W, DETAIL_H = 640, 800  # smaller than every crop below, so a close-up is never enlarged
+PIECE_W, PIECE_H = 960, 1200  # the cut-out garment, 4:5 like the listing image
+# A plate is the surface alone: (size, where the garment sits, where the lettering sits as
+# left, top, right, bottom). Positions are fractions of the plate.
+PLATES = {
+    "wide": ((1600, 900), (0.72, 0.5), (0.04, 0.1, 0.52, 0.9)),
+    "tall": ((900, 1400), (0.5, 0.7), (0.05, 0.03, 0.95, 0.44)),
+}
 
 # Surface per piece: color (sRGB), texture and light. `accent` adds a narrow band along the base.
 STYLE = {
@@ -63,18 +73,17 @@ CAPS = ("lambs-mark", "signature-cap")
 
 # `views`, for mockup-only products: views in display order (the first is the listing image and
 # always shows the whole garment). `detail`, for every product: a close crop of the main artwork,
-# (view, center x, center y, width) as fractions of the garment. Its view is also the one the
-# story scene shows.
+# (view, center x, center y, width) as fractions of the garment.
 VIEWS = {
-    "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.5, 0.72)},
-    "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.47, 0.42, 0.74)},
-    # The whole print and nothing else: this close-up opens the home page.
+    "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
+    "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.5)},
+    # Every close-up frames the whole print and nothing else.
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.41, 0.48)},
-    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64)},
-    "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.52, 0.45, 0.74)},
-    "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.48, 0.66)},
-    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62)},
-    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.62)},
+    "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
+    "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.51, 0.445, 0.53)},
+    "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
+    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
+    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.4, 0.56)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
 }
@@ -255,110 +264,85 @@ def detail(slug: str) -> None:
     img.save(OUT / slug / "detail.webp", "WEBP", quality=82, method=6)
 
 
-# A story scene shows a piece hanging in a pointed stone niche, lit from above, in the piece's
-# own color (the site no longer shows these; they are kept for other uses). Two layers:
-# story-niche.webp (the niche, transparent outside the arch) and story-piece.webp (the garment
-# and the shadow it casts, transparent elsewhere).
-STORY_W, STORY_H = 880, 1100
-STORY_VIEW = {slug: spec["detail"][0] for slug, spec in VIEWS.items()}
+# Lettering sits on the plate, so the surface under it falls into shade for bone lettering and
+# is lifted a little for coal lettering. The value is the tone under the lettering relative to
+# under the garment; pieces not listed keep an even surface.
+PLATE_SHADE = {
+    "thorns-to-lilies": 0.86,
+    "still-the-storm": 0.84,
+    "the-passage": 0.7,
+    "by-his-hem": 0.66,
+    "stone-in-motion": 0.68,
+    "to-live-is-christ": 1.05,
+    "wonderfully-made": 1.06,
+    "signature-cap": 1.1,
+}
+BONE, COAL = (240, 230, 210), (21, 20, 19)
 
 
-def arch_mask(w: int, h: int, left: float, right: float, top: float, bottom: float, sharp: float = 0.62) -> np.ndarray:
-    """A pointed (two-centred) arch over a rectangle. `sharp` is each arc's radius as a fraction
-    of the span; 0.5 would be a round arch."""
+def plate(slug: str, kind: str) -> Image.Image:
+    """The piece's surface alone, lit where the garment will sit."""
+    (w, h), (cx, cy), _ = PLATES[kind]
+    style = STYLE[slug]
+    rng = np.random.default_rng(sum(map(ord, slug)) + w)
+    # The piece's own light, drawn on a larger sheet and cut so its centre lands on the garment.
+    # Light from the upper left is mirrored on the wide plate, where the garment sits to the right.
+    sheet_w, sheet_h = round(2 * w * max(cx, 1 - cx)), round(2 * h * max(cy, 1 - cy))
+    light = lighting(style["light"], sheet_h, sheet_w)
+    if cx > 0.5 and style["light"] == "upper-left":
+        light = light[:, ::-1]
+    x0, y0 = round(sheet_w / 2 - cx * w), round(sheet_h / 2 - cy * h)
+    light = light[y0 : y0 + h, x0 : x0 + w]
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
-    span = right - left
-    r = sharp * span
-    rise = np.sqrt(r**2 - (r - span / 2) ** 2)
-    spring = top + rise
-    inside_rect = (xx >= left) & (xx <= right) & (yy >= spring) & (yy <= bottom)
-    # Left half under the arc centred on the right, and the reverse.
-    left_arc = np.hypot(xx - (left + r), yy - spring) <= r
-    right_arc = np.hypot(xx - (right - r), yy - spring) <= r
-    in_arch = (yy < spring) & (yy >= top) & left_arc & right_arc
-    return inside_rect | in_arch
+    near = np.exp(-((np.hypot(xx - cx * w, yy - cy * h) / (0.46 * max(w, h))) ** 2))
+    shade = PLATE_SHADE.get(slug, 1.0)
+    tone = shade + (1 - shade) * near
+    base = srgb_to_linear(np.array(style["color"], np.float32) / 255)
+    surface = texture(style["texture"], rng, h, w) * light * tone
+    return to_image(np.ones((h, w, 3), np.float32) * base * (surface**2.2)[..., None])
 
 
-def soft(mask: np.ndarray, sigma: float = 0.8) -> np.ndarray:
-    from scipy import ndimage
+def listing_view(slug: str) -> str:
+    gallery = MANIFEST.get(slug, {}).get("gallery")
+    return gallery[0]["view"] if gallery else VIEWS[slug]["views"][0]
 
-    return ndimage.gaussian_filter(mask.astype(np.float32), sigma)
+
+def piece(slug: str) -> Image.Image:
+    """The listing view cut out, with the shadow it casts, transparent elsewhere."""
+    w, h = PIECE_W, PIECE_H
+    garment, at = place(load_garment(slug, listing_view(slug)), w, h, 0.92, 0.86, 0.49)
+    dx = {"top": 0, "spot": 0, "shaft": -14}.get(STYLE[slug]["light"], 16)
+    cast = shadow(garment.getchannel("A"), w, h, at, w / W, dx)
+    img = Image.fromarray(np.dstack([np.zeros((h, w, 3)), cast * 255]).astype(np.uint8), "RGBA")
+    img.alpha_composite(garment, at)
+    return img
 
 
-def story(slug: str) -> None:
-    from scipy import ndimage
+def luminance(rgb: np.ndarray) -> np.ndarray:
+    return srgb_to_linear(rgb.astype(np.float32) / 255) @ np.array([0.2126, 0.7152, 0.0722], np.float32)
 
-    w, h = STORY_W, STORY_H
-    rng = np.random.default_rng(sum(map(ord, slug)) + 7)
-    rows = np.mgrid[0:h, 0:w][0]
-    y01 = rows.astype(np.float32) / h
-    outer = arch_mask(w, h, 22, w - 22, 18, h - 18)
-    step = arch_mask(w, h, 52, w - 52, 54, h - 18)  # the molding steps in once
-    inner = arch_mask(w, h, 78, w - 78, 86, h - 18)  # the opening
-    sill_top = h - 132
 
-    # Frame: dark stone, a little lighter than the page, in two steps, each face lit from above.
-    stone = srgb_to_linear(np.array([46, 43, 40], np.float32) / 255)
-    tex = texture("speckle", rng, h, w)
+def check_plates() -> None:
+    """Prints the contrast bone and coal lettering get on each plate where the lettering sits,
+    at its worst (against the lightest part for bone, the darkest for coal). 3:1 is the bar for
+    large lettering; the better ink is the one to name in catalog.json."""
+    bone, coal = float(luminance(np.array(BONE))), float(luminance(np.array(COAL)))
+    for slug in VIEWS:
+        row = []
+        for kind, (_, _, (left, top, right, bottom)) in PLATES.items():
+            img = Image.open(OUT / slug / f"plate-{kind}.webp").convert("RGB").filter(ImageFilter.GaussianBlur(4))
+            zone = img.crop((round(left * img.width), round(top * img.height), round(right * img.width), round(bottom * img.height)))
+            lum = luminance(np.asarray(zone))
+            lightest, darkest = np.percentile(lum, 99), np.percentile(lum, 1)
+            row.append(f"{kind}: bone {(bone + 0.05) / (lightest + 0.05):.1f}  coal {(darkest + 0.05) / (coal + 0.05):.1f}")
+        print(f"{slug:18}", "   ".join(row))
 
-    def band(a: np.ndarray, b: np.ndarray, lift: float) -> np.ndarray:
-        d_a = ndimage.distance_transform_edt(a)
-        d_b = ndimage.distance_transform_edt(~b)
-        t = np.clip(d_a / np.maximum(d_a + d_b, 1), 0, 1)
-        return lift + 0.32 * np.sin(np.pi * t) * (1.15 - 0.7 * y01)
 
-    shade = np.where(step, band(step, inner, 0.7), band(outer, step, 0.86))
-    frame = stone * (tex * shade)[..., None] ** 2.2
-
-    # Interior: the piece's surface, deeper toward the arch and the sides (the niche has depth),
-    # under a pool of light from above.
-    wall = backdrop(slug, w, h)
-    depth = ndimage.distance_transform_edt(inner)
-    occlusion = 1 - 0.6 * np.exp(-depth / 40)
-    xs = np.mgrid[0:h, 0:w][1].astype(np.float32) / w
-    pool = np.exp(-(((xs - 0.5) / 0.42) ** 2) - (((y01 - 0.2) / 0.5) ** 2))
-    light = 0.62 + 0.5 * pool
-    wall = wall * ((occlusion * light) ** 2.2)[..., None]
-
-    # Sill: a stone ledge across the base, its top face catching the light, its front in shade.
-    top_face = inner & (rows >= sill_top) & (rows < sill_top + 30)
-    front_face = inner & (rows >= sill_top + 30)
-    k = np.clip((rows - sill_top) / 30, 0, 1).astype(np.float32)
-    top_tone = (1.9 - 0.5 * k) * tex
-    wall = np.where(top_face[..., None], stone * (top_tone**2.2)[..., None], wall)
-    wall = np.where(front_face[..., None], stone * ((0.72 * tex) ** 2.2)[..., None], wall)
-    edge = inner & (rows >= sill_top) & (rows < sill_top + 2)
-    wall[edge] = srgb_to_linear(np.array([112, 105, 96], np.float32) / 255)
-    wall[inner & (rows >= sill_top + 30) & (rows < sill_top + 32)] *= 0.55
-
-    a_inner = soft(inner)
-    rgb = wall * a_inner[..., None] + frame * (1 - a_inner)[..., None]
-    niche = Image.fromarray(
-        np.dstack([(linear_to_srgb(rgb) * 255).round(), soft(outer) * 255]).astype(np.uint8), "RGBA"
-    )
-
-    # The garment hangs centred in the opening; its shadow falls on the back wall.
-    cutout = load_garment(slug, STORY_VIEW[slug])
-    hat = slug in CAPS
-    open_w = w - 2 * 78
-    box_w, box_h = open_w * (0.74 if hat else 0.74), (sill_top - 200) * (0.6 if hat else 0.88)
-    scale = min(box_w / cutout.width, box_h / cutout.height)
-    size = (round(cutout.width * scale), round(cutout.height * scale))
-    garment = cutout.resize(size, Image.LANCZOS)
-    x = (w - size[0]) // 2
-    # Caps rest on the sill; tees and hoodies hang a little above the middle of the opening.
-    y = sill_top + 6 - size[1] if hat else round(200 + (sill_top - 200 - size[1]) * 0.45)
-    a = Image.new("L", (w, h), 0)
-    a.paste(garment.getchannel("A"), (x, y + (8 if hat else 26)))
-    cast = np.asarray(a.filter(ImageFilter.GaussianBlur(10 if hat else 26)), np.float32) / 255
-    cast = cast * 0.6 * (inner & (rows < sill_top + (30 if hat else 0)))
-    piece = Image.fromarray(np.dstack([np.zeros((h, w, 3)), cast * 255]).astype(np.uint8), "RGBA")
-    piece.alpha_composite(garment, (x, y))
-
+def plates(slug: str) -> None:
     folder = OUT / slug
-    niche.save(folder / "story-niche.webp", "WEBP", quality=86, method=6)
-    piece.save(folder / "story-piece.webp", "WEBP", quality=88, method=6)
-    print(slug, "story")
+    plate(slug, "wide").save(folder / "plate-wide.webp", "WEBP", quality=62, method=6)
+    plate(slug, "tall").save(folder / "plate-tall.webp", "WEBP", quality=62, method=6)
+    piece(slug).save(folder / "piece.webp", "WEBP", quality=80, method=6)
 
 
 def main() -> None:
@@ -366,8 +350,7 @@ def main() -> None:
         folder = OUT / slug
         folder.mkdir(parents=True, exist_ok=True)
         for old in folder.glob("*.webp"):
-            if not old.name.startswith("story-"):
-                old.unlink()
+            old.unlink()
         hat = slug in CAPS
         # Same margins for every garment; caps are wide, so they get a little more width.
         place_garment = lambda cutout: compose(slug, cutout, W, H, 0.84 if hat else 0.76, 0.74, 0.5)
@@ -387,8 +370,11 @@ def main() -> None:
                 place_garment(load_garment(slug, view)).save(folder / f"{view}.webp", "WEBP", quality=86, method=6)
             print(slug, "mockup views")
         detail(slug)
-        story(slug)
+        plates(slug)
+    check_plates()
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    check_plates() if sys.argv[1:] == ["plates"] else main()

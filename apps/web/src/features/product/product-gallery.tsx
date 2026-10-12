@@ -1,7 +1,14 @@
 "use client";
 
 import type { ProductImage } from "@/shared";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ViewTransition,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 
 /** How far the image zooms: close enough to read the print, far enough to know where you are. */
 const ZOOM = 2;
@@ -12,13 +19,22 @@ const SWIPE_SLOP = 8;
 
 const clamp = (n: number) => Math.min(1, Math.max(0, n));
 
+interface ProductGalleryProps {
+  images: ProductImage[];
+  name: string;
+  slug: string;
+  /** The piece's plate color (a CSS value), behind the images while they load. */
+  plate: string;
+}
+
 /**
- * The product's images in order (the first is the listing image). Thumbnails on desktop; swipe
- * with dots on phones. Hovering with a mouse, or pressing and holding with a finger, zooms into
- * the image under the pointer so the print can be seen up close; it follows the pointer and
- * zooms back out when the pointer leaves or the finger lifts.
+ * The stage: the product's images in order (the first is the listing image), filling the left of
+ * the page on desktop with thumbnails beneath it; swipe with dots on phones. Hovering with a mouse,
+ * or pressing and holding with a finger, zooms into the image under the pointer so the print can
+ * be seen up close; it follows the pointer and zooms back out when the pointer leaves or the
+ * finger lifts. The first image shares its name with the piece's tiles, so it morphs from them.
  */
-export function ProductGallery({ images, name }: { images: ProductImage[]; name: string }) {
+export function ProductGallery({ images, name, slug, plate }: ProductGalleryProps) {
   const [current, setCurrent] = useState(0);
   const [zooming, setZooming] = useState(false);
   const stage = useRef<HTMLDivElement>(null);
@@ -114,65 +130,75 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
   }
 
   return (
-    <div className="gallery">
-      <ul className="gallery-thumbs" aria-label={`${name} views`}>
-        {images.map((img, i) => (
-          <li key={img.url}>
-            <button
-              type="button"
-              aria-current={i === current}
-              onClick={() => setCurrent(i)}
-              aria-label={`Show image ${i + 1} of ${images.length}, ${img.view} view`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element -- catalog images may come from a provider CDN */}
-              <img src={img.url} alt="" loading="lazy" />
-            </button>
-          </li>
-        ))}
-      </ul>
-      <div>
-        <div
-          className="gallery-stage"
-          ref={stage}
-          onScroll={onScroll}
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
-          data-zooming={zooming}
-        >
-          {images.map((img, i) => (
+    <div className="gallery" style={{ "--plate": plate } as CSSProperties}>
+      <div
+        className="gallery-stage"
+        ref={stage}
+        onScroll={onScroll}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        data-zooming={zooming}
+      >
+        {images.map((img, i) => {
+          const picture = (
+            /* eslint-disable-next-line @next/next/no-img-element -- catalog images may come from a provider CDN */
+            <img
+              ref={(node) => {
+                frames.current[i] = node;
+              }}
+              src={img.url}
+              alt={img.alt}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : undefined}
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+            />
+          );
+          return (
             <div
               key={img.url}
               className="gallery-frame"
               style={{ opacity: i === current ? 1 : 0 }}
               aria-hidden={i === current ? undefined : true}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- catalog images may come from a provider CDN */}
-              <img
-                ref={(node) => {
-                  frames.current[i] = node;
-                }}
-                src={img.url}
-                alt={img.alt}
-                loading={i === 0 ? "eager" : "lazy"}
-                fetchPriority={i === 0 ? "high" : undefined}
-                draggable={false}
-                onContextMenu={(e) => e.preventDefault()}
-              />
+              {i === 0 ? (
+                <ViewTransition name={`piece-${slug}`} share="piece" default="none">
+                  {picture}
+                </ViewTransition>
+              ) : (
+                picture
+              )}
             </div>
-          ))}
-        </div>
-        {images.length > 1 ? (
+          );
+        })}
+      </div>
+      {images.length > 1 ? (
+        <>
+          <ul className="gallery-thumbs" aria-label={`${name} views`}>
+            {images.map((img, i) => (
+              <li key={img.url}>
+                <button
+                  type="button"
+                  aria-current={i === current}
+                  onClick={() => setCurrent(i)}
+                  aria-label={`Show image ${i + 1} of ${images.length}, ${img.view} view`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- catalog images may come from a provider CDN */}
+                  <img src={img.url} alt="" loading="lazy" />
+                </button>
+              </li>
+            ))}
+          </ul>
           <div className="gallery-dots" aria-hidden="true">
             {images.map((img, i) => (
               <span key={img.url} data-on={i === current} />
             ))}
           </div>
-        ) : null}
-        <p className="gallery-hint aw-small" aria-hidden="true">
-          <span className="gallery-hint-hover">Hover over the image to zoom in</span>
-          <span className="gallery-hint-touch">Press and hold the image to zoom in</span>
-        </p>
-      </div>
+        </>
+      ) : null}
+      <p className="gallery-hint aw-small" aria-hidden="true">
+        Press and hold the image to zoom in
+      </p>
     </div>
   );
 }

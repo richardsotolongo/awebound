@@ -1,18 +1,32 @@
-import { ScriptureQuote, ThornRule, quoted } from "@awebound/brand";
+import { ScriptureQuote, quoted } from "@awebound/brand";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ViewTransition } from "react";
 import { JsonLd } from "@/components/json-ld";
-import { Reveal } from "@/components/reveal";
 import { shopCanonical } from "@/features/catalog/query";
+import { PieceNav } from "@/features/product/piece-nav";
 import { ProductGallery } from "@/features/product/product-gallery";
 import { ProductPurchase } from "@/features/product/product-purchase";
-import { ReleaseCard } from "@/features/release/release-card";
+import { StoryBand } from "@/features/product/story-band";
+import { ReleaseWall } from "@/features/release/release-wall";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
+import { plateCss } from "@/shared";
 
 type Params = Promise<{ slug: string }>;
+
+// Each product page renders on its first visit and is then served from cache for a minute (the
+// home page's freshness), so it is ready when a tile's image morphs into it. Nothing is rendered
+// at build, so a Fourthwall outage during a deploy can't fail it.
+export const revalidate = 60;
+export function generateStaticParams() {
+  return [];
+}
+
+/** Moving between neighbouring pieces: the page slides in from the side it lies on. */
+const SLIDE = { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const product = await getProduct((await params).slug).catch(() => null);
@@ -40,7 +54,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   const at = pieces.findIndex((p) => p.slug === product.slug);
   const prev = at > 0 ? pieces[at - 1] : undefined;
   const next = at >= 0 && at < pieces.length - 1 ? pieces[at + 1] : undefined;
-  const others = pieces.filter((p) => p.slug !== product.slug).slice(0, 3);
+  const others = pieces.filter((p) => p.slug !== product.slug);
   const { scripture, story } = product;
 
   const url = `${siteUrl}/shop/${product.slug}`;
@@ -90,128 +104,92 @@ export default async function ProductPage({ params }: { params: Params }) {
   };
 
   return (
-    <div className="aw-container">
-      <nav aria-label="Breadcrumb" className="aw-small crumbs">
-        <Link href="/shop">Shop</Link>
-        <span aria-hidden="true"> / </span>
-        <Link href={`/collections/${product.collection.slug}`}>{product.collection.name}</Link>
-        <span aria-hidden="true"> / </span>
-        <span aria-current="page">{product.name}</span>
-      </nav>
-
-      <div className="pdp">
-        <ProductGallery images={product.images} name={product.name} />
-
-        <div className="buy">
-          <div className="buy-head">
-            <p className="aw-label">
-              <Link href={`/collections/${product.collection.slug}`}>
-                {product.collection.name}
-              </Link>{" "}
-              · {product.category.cut}
-            </p>
-            <h1 className="buy-name">{product.name}</h1>
-            <ScriptureQuote
-              text={scripture.text}
-              reference={scripture.reference}
-              translation={scripture.translation}
-              excerpt={scripture.excerpt}
-              size="md"
+    <>
+      <ViewTransition key={product.slug} enter={SLIDE} exit={SLIDE} default="none">
+        <div className="pdp-page">
+          <div className="pdp">
+            <ProductGallery
+              images={product.images}
+              name={product.name}
+              slug={product.slug}
+              plate={plateCss(product.plate)}
             />
+
+            <div className="buy">
+              <nav aria-label="Breadcrumb" className="aw-small crumbs">
+                <Link href="/shop">Shop</Link>
+                <span aria-hidden="true"> / </span>
+                <Link href={`/collections/${product.collection.slug}`}>
+                  {product.collection.name}
+                </Link>
+                <span aria-hidden="true"> / </span>
+                <span aria-current="page">{product.name}</span>
+              </nav>
+              <h1 className="buy-name">{product.name}</h1>
+              <ProductPurchase product={product}>
+                <ScriptureQuote
+                  text={scripture.text}
+                  reference={scripture.reference}
+                  translation={scripture.translation}
+                  excerpt={scripture.excerpt}
+                  size="md"
+                />
+              </ProductPurchase>
+            </div>
           </div>
 
-          <ProductPurchase product={product} />
+          <StoryBand product={product} />
 
-          <section className="buy-story" aria-labelledby="design-title">
-            <p className="aw-label">The design · {story.theme}</p>
-            <h2 id="design-title" className="aw-h2">
-              {story.call}
-            </h2>
-            <p className="aw-body buy-story-art">{story.art}</p>
-            <p className="aw-body">{story.meaning}</p>
-          </section>
-
-          <section aria-labelledby="details-title" className="buy-details">
-            <h2 id="details-title" className="aw-label">
+          <section className="aw-container details" aria-labelledby="details-title">
+            <h2 id="details-title" className="aw-h2">
               Product details
             </h2>
-            <dl className="spec">
-              <dt>Garment</dt>
-              <dd>{product.category.cut}</dd>
-              <dt>Fit</dt>
-              <dd>{story.fit}</dd>
-              <dt>{product.colors.length > 1 ? "Colors" : "Color"}</dt>
-              <dd>{product.colors.map((c) => c.name).join(", ")}</dd>
-              <dt>Front</dt>
-              <dd>{story.front}</dd>
-              <dt>Back</dt>
-              <dd>{story.back}</dd>
-              <dt>{story.process === "embroidered" ? "Thread" : "Inks"}</dt>
-              <dd>{story.inks}</dd>
-              <dt>Fabric</dt>
-              <dd>{story.material ?? "Fabric details are posted before ordering opens."}</dd>
-            </dl>
-            <p className="field-help">
-              Questions about fit? <Link href="/contact">Ask us</Link>.
-            </p>
+            <div>
+              <dl className="spec">
+                <dt>Garment</dt>
+                <dd>{product.category.cut}</dd>
+                <dt>Fit</dt>
+                <dd>{story.fit}</dd>
+                <dt>{product.colors.length > 1 ? "Colors" : "Color"}</dt>
+                <dd>{product.colors.map((c) => c.name).join(", ")}</dd>
+                <dt>Front</dt>
+                <dd>{story.front}</dd>
+                <dt>Back</dt>
+                <dd>{story.back}</dd>
+                <dt>{story.process === "embroidered" ? "Thread" : "Inks"}</dt>
+                <dd>{story.inks}</dd>
+                <dt>Fabric</dt>
+                <dd>{story.material ?? "Fabric details are posted before ordering opens."}</dd>
+              </dl>
+              <p className="field-help">
+                Questions about fit? <Link href="/contact">Ask us</Link>.
+              </p>
+            </div>
           </section>
-        </div>
-      </div>
 
-      {prev || next ? (
-        <nav className="piece-nav" aria-label="Other pieces in this release">
-          {prev ? (
-            <Link href={`/shop/${prev.slug}`} rel="prev" className="piece-nav-link">
-              <span className="aw-label">Previous</span>
-              <span className="aw-product-name">{prev.name}</span>
-            </Link>
-          ) : (
-            <span />
-          )}
-          {next ? (
-            <Link
-              href={`/shop/${next.slug}`}
-              rel="next"
-              className="piece-nav-link"
-              data-next="true"
-            >
-              <span className="aw-label">Next</span>
-              <span className="aw-product-name">{next.name}</span>
-            </Link>
+          <PieceNav prev={prev} next={next} />
+
+          {others.length > 0 ? (
+            <section className="more" aria-labelledby="related-title">
+              <h2 id="related-title" className="aw-container aw-h2">
+                More from {product.collection.name}
+              </h2>
+              <ReleaseWall
+                nameOnLeave
+                pieces={others}
+                label={`More ${product.collection.name} pieces`}
+                more={{
+                  href: shopCanonical(product.collection.slug),
+                  label: `See all ${pieces.length} pieces`,
+                }}
+              />
+            </section>
           ) : null}
-        </nav>
-      ) : null}
-
-      {others.length > 0 ? (
-        <section className="section" aria-labelledby="related-title" style={{ paddingTop: 0 }}>
-          <ThornRule />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
-              margin: "var(--space-12) 0 var(--space-8)",
-            }}
-          >
-            <h2 id="related-title" className="aw-h2">
-              More from {product.collection.name}
-            </h2>
-            <Link href={`/collections/${product.collection.slug}`} className="aw-btn aw-btn-link">
-              See all {pieces.length}
-            </Link>
-          </div>
-          <ul className="product-grid" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {others.map((p, i) => (
-              <Reveal as="li" key={p.slug} delay={i * 0.05}>
-                <ReleaseCard product={p} />
-              </Reveal>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+        </div>
+      </ViewTransition>
 
       <JsonLd data={jsonLd} />
       <JsonLd data={crumbs} />
-    </div>
+    </>
   );
 }

@@ -13,7 +13,6 @@ export default function ContactPage() {
   return (
     <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
       <PageHeader
-        eyebrow="Contact"
         title="Write to us"
         intro="Questions about an order, sizing, wholesale for a church or ministry, or anything else. A real person reads every message."
       />

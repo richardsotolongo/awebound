@@ -1,7 +1,6 @@
 "use client";
 
 import type { ProductList, ProductQueryInput } from "@/shared";
-import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { loadMoreProducts } from "@/server/actions";
 import { useCatalogState } from "./catalog-state";
@@ -12,11 +11,13 @@ interface ProductGridProps {
   /** The query that produced `initial`, used to fetch further pages. */
   query: ProductQueryInput;
   queryKey: string;
-  wide?: boolean;
 }
 
-/** The results grid. Cards animate in and out as filters change; "Show more" appends the next page. */
-export function ProductGrid({ initial, query, queryKey, wide }: ProductGridProps) {
+/**
+ * The results grid. Each card's image carries its piece's name for view transitions, so a filter
+ * or sort change moves the cards that stay to their new places; "Show more" appends the next page.
+ */
+export function ProductGrid({ initial, query, queryKey }: ProductGridProps) {
   const { isPending } = useCatalogState();
   const [items, setItems] = useState(initial.items);
   const [page, setPage] = useState(1);
@@ -54,27 +55,13 @@ export function ProductGrid({ initial, query, queryKey, wide }: ProductGridProps
 
   return (
     <div className="shop-grid" data-pending={isPending} aria-busy={isPending}>
-      <motion.ul
-        className="product-grid"
-        data-wide={wide}
-        style={{ listStyle: "none", margin: 0, padding: 0 }}
-        layout
-      >
-        <AnimatePresence initial={false} mode="popLayout">
-          {items.map((p, i) => (
-            <motion.li
-              key={p.slug}
-              layout
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
-            >
-              <ReleaseCard product={p} priority={i < 3} />
-            </motion.li>
-          ))}
-        </AnimatePresence>
-      </motion.ul>
+      <ul className="product-grid">
+        {items.map((p, i) => (
+          <li key={p.slug}>
+            <ReleaseCard product={p} priority={i < 3} />
+          </li>
+        ))}
+      </ul>
       {hasMore ? (
         <div className="shop-more">
           <p className="aw-small">

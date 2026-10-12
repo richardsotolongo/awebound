@@ -1,6 +1,7 @@
 import { AltarPanel, Button, ScriptureQuote, ThornRule } from "@awebound/brand";
-import { Reveal } from "@/components/reveal";
+import { ReleaseCard } from "@/features/release/release-card";
 import { pageMeta } from "@/lib/site";
+import { getProduct, withFallback } from "@/server/catalog";
 import { TRANSLATION, TRANSLATION_NAME, VERSES } from "@/server/scripture";
 
 export const metadata = pageMeta({
@@ -21,6 +22,11 @@ const STORY = [
   "Whether you’re here for the artwork, the meaning behind it, or simply to learn more, you’re welcome here. Thank you for taking the time to be part of this beginning.",
   "Bound in awe. Worn without shame.",
 ];
+
+export const revalidate = 60;
+
+/** The pieces the “Biblical imagery” line below describes, shown beside it. */
+const NAMED = ["still-the-storm", "thorns-to-lilies", "stone-in-motion"];
 
 /** Why each part of a design is there. */
 const TOGETHER = [
@@ -61,7 +67,10 @@ const DESIGN_STORY = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const named = (
+    await Promise.all(NAMED.map((slug) => withFallback(() => getProduct(slug), null)))
+  ).filter((p) => p !== null);
   const reverence = [
     "We use symbols. Out of reverence, we never show Jesus, God the Father or the Holy Spirit as a person.",
     `Scripture is quoted word for word, with its full reference. On this website we quote the ${TRANSLATION_NAME}.${
@@ -92,7 +101,7 @@ export default function AboutPage() {
               <img
                 src="/about/richard-960.webp"
                 srcSet="/about/richard-480.webp 480w, /about/richard-960.webp 960w"
-                sizes="(max-width: 1023px) min(100vw - 32px, 420px), 420px"
+                sizes="(max-width: 899px) min(100vw - 32px, 480px), 480px"
                 width={960}
                 height={1200}
                 alt="Portrait of Richard"
@@ -112,14 +121,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section aw-grain about-awe" aria-labelledby="awe-title">
+      <section className="section about-awe" aria-labelledby="awe-title">
         <div className="aw-container about-split">
-          <Reveal className="about-split-head">
-            <p className="aw-label">The name</p>
-            <h2 id="awe-title" className="aw-h1">
-              What “bound in awe” means
-            </h2>
-          </Reveal>
+          <h2 id="awe-title" className="aw-h1">
+            What “bound in awe” means
+          </h2>
           <div className="about-split-body">
             <p className="aw-body">
               Awe is what you feel when you catch a glimpse of who God is. To be bound in awe is to
@@ -141,9 +147,8 @@ export default function AboutPage() {
       </section>
 
       <section className="section about-together" aria-labelledby="together-title">
-        <div className="aw-container" style={{ display: "grid", gap: "var(--space-12)" }}>
-          <Reveal className="about-together-head">
-            <p className="aw-label">Why it belongs together</p>
+        <div className="aw-container about-together-in">
+          <div className="about-together-head">
             <h2 id="together-title" className="aw-h1">
               Scripture, art, lettering, clothing
             </h2>
@@ -151,49 +156,57 @@ export default function AboutPage() {
               Each part does its own job. Together they make something worth wearing, and worth
               asking about.
             </p>
-          </Reveal>
+          </div>
           <ul className="about-together-grid">
-            {TOGETHER.map((item, i) => (
-              <Reveal as="li" key={item.title} delay={i * 0.06}>
+            {TOGETHER.map((item) => (
+              <li key={item.title}>
                 <h3 className="aw-h3">{item.title}</h3>
                 <p className="aw-body">{item.body}</p>
-              </Reveal>
+              </li>
             ))}
           </ul>
         </div>
+        {named.length > 0 ? (
+          <ul className="wall about-wall" aria-label="Three of the pieces">
+            {named.map((p) => (
+              <li key={p.slug}>
+                <ReleaseCard product={p} tile />
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </section>
 
-      <section className="section aw-grain design-story" aria-labelledby="design-story-title">
+      <section className="section design-story" aria-labelledby="design-story-title">
         <div className="aw-container design-story-inner">
-          <Reveal className="design-story-head">
-            <p className="aw-label">How we make it</p>
+          <div className="design-story-head">
             <h2 id="design-story-title" className="aw-h1">
               Every design tells a story
             </h2>
             <p className="aw-body">Every piece, in every release, is made the same way.</p>
-          </Reveal>
+          </div>
           <ol className="design-story-steps">
-            {DESIGN_STORY.map((step, i) => (
-              <Reveal as="li" key={step.title} delay={i * 0.08}>
+            {DESIGN_STORY.map((step) => (
+              <li key={step.title}>
                 <span className="design-story-num" aria-hidden="true">
                   {step.numeral}
                 </span>
                 <h3 className="aw-h3">{step.title}</h3>
                 <p className="aw-body">{step.body}</p>
-              </Reveal>
+              </li>
             ))}
           </ol>
         </div>
       </section>
 
       <section className="section" aria-labelledby="reverence-title">
-        <div className="aw-container" style={{ display: "grid", gap: "var(--space-12)" }}>
+        <div className="aw-container about-close">
           <ThornRule />
           <div className="split split-even">
             <h2 id="reverence-title" className="aw-h1">
               How reverence shapes the work
             </h2>
-            <ul className="prose" style={{ margin: 0 }}>
+            <ul className="prose">
               {reverence.map((c) => (
                 <li key={c}>{c}</li>
               ))}

@@ -4,25 +4,7 @@
     position: sticky;
     top: 0;
     z-index: 40;
-  }
-
-  /* Light from above behind a page's title. The glow is an ellipse that fades to nothing inside
-     its own box (closest-side, eased stops), and the box is larger than the block it lights, so
-     no edge, container or section boundary ever shows as a line. Put it on a positioned
-     element with isolation; size and place it with top/left/width/height per use. */
-  .soft-glow::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(
-      closest-side,
-      var(--light-shaft),
-      color-mix(in srgb, var(--light-shaft) 62%, transparent) 30%,
-      color-mix(in srgb, var(--light-shaft) 30%, transparent) 55%,
-      color-mix(in srgb, var(--light-shaft) 10%, transparent) 78%,
-      transparent
-    );
+    view-transition-name: site-header;
   }
 
   .page-header {
@@ -126,28 +108,6 @@
     border: 0;
   }
 
-  .scroll-rail {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(0, 1fr);
-    gap: var(--space-8);
-  }
-  @media (max-width: 767px) {
-    .scroll-rail {
-      grid-auto-columns: 72%;
-      gap: var(--space-4);
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: var(--space-4);
-      margin-inline: calc(var(--gutter-mobile) * -1);
-      padding-inline: var(--gutter-mobile);
-      scrollbar-width: thin;
-    }
-    .scroll-rail > * {
-      scroll-snap-align: start;
-    }
-  }
-
   .split {
     display: grid;
     grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
@@ -165,52 +125,154 @@
     }
   }
 
-  .product-grid {
+  /* The release heading: the name across the width, its call and reference beneath. Used by
+     the home lineup, the shop and Collections. */
+  .release-head {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-8);
+    gap: var(--space-6);
+    justify-items: start;
   }
-  /* Cards in a row share one height, whatever the name length. */
-  .product-grid > li,
-  .scroll-rail > li {
+  .release-head > * {
+    min-width: 0;
+  }
+  .release-head .aw-fit {
+    width: 100%;
+  }
+  .release-sub {
+    width: 100%;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3) var(--space-8);
   }
-  .product-grid > li > .aw-card,
-  .scroll-rail > li > .aw-card {
-    flex: 1;
+  .release-tagline {
+    margin: 0;
+    max-width: 40ch;
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.5;
+    color: var(--ink);
   }
-  .aw-card-link {
-    height: 100%;
-  }
-  @media (min-width: 1100px) {
-    .product-grid[data-wide="true"] {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-  @media (max-width: 1023px) {
-    .product-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  @media (max-width: 899px) {
+    .release-head {
       gap: var(--space-4);
     }
   }
-  /* A last card alone on its row sits in the middle, not stranded on the left. */
-  @media (min-width: 1024px) {
-    .product-grid:not([data-wide="true"]) > li:last-child:nth-child(3n + 1):not(:first-child) {
-      grid-column: 2;
+
+  /* The shop grid: three cards across from 900px, two from 600px, one below, where the image
+     runs edge to edge and the words keep the page's margin. */
+  .product-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8) var(--space-6);
+  }
+  @media (max-width: 899px) {
+    .product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-6) var(--space-4);
     }
   }
-  @media (min-width: 600px) and (max-width: 1023px) {
-    .product-grid > li:last-child:nth-child(2n + 1):not(:first-child) {
-      grid-column: 1 / -1;
-      justify-self: center;
-      width: calc(50% - var(--space-2));
-    }
-  }
-  /* Phones: one piece per row, image beside the words (see .aw-card in the brand package). */
   @media (max-width: 599px) {
     .product-grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-3);
+      gap: var(--space-4);
+      margin-inline: calc(var(--gutter) * -1);
+    }
+    .product-grid .aw-card-meta {
+      padding-inline: var(--gutter);
+    }
+  }
+
+  /* The wall: pieces as one unbroken field of their own colors, no gaps, the words under each
+     tile. Two across on phones, three from 600px, five from 1100px. */
+  .wall {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wall > li {
+    display: flex;
+    min-width: 0;
+  }
+  .wall > li > .aw-card {
+    flex: 1;
+  }
+  .wall .aw-card-meta {
+    padding: var(--space-3) var(--space-4) var(--space-8);
+    gap: var(--space-1);
+  }
+  .wall .aw-card-name {
+    font-size: 15px;
+    line-height: 20px;
+  }
+  /* In a narrow tile the price drops under the garment type instead of squeezing it. */
+  .wall .aw-card-facts {
+    flex-wrap: wrap;
+    gap: 0 var(--space-2);
+  }
+  .wall .aw-card-facts > span:first-child {
+    white-space: nowrap;
+  }
+  /* The tile that fills a short last row with a way to the whole release. */
+  .wall-more {
+    grid-column: span var(--two);
+  }
+  .wall-more[data-two="false"] {
+    display: none;
+  }
+  .wall-more a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-4);
+    min-height: 180px;
+    padding: var(--space-6) var(--space-4) var(--space-8);
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(26px, 3vw, 40px);
+    line-height: 1.05;
+  }
+  .wall-more a:hover {
+    color: var(--accent-text);
+  }
+  @media (min-width: 600px) {
+    .wall {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .wall-more,
+    .wall-more[data-two="false"] {
+      display: flex;
+      grid-column: span var(--three);
+    }
+    .wall-more[data-three="false"] {
+      display: none;
+    }
+  }
+  @media (min-width: 1100px) {
+    .wall {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .wall .aw-card-name {
+      font-size: 16px;
+      line-height: 21px;
+    }
+    .wall-more,
+    .wall-more[data-two="false"],
+    .wall-more[data-three="false"] {
+      display: flex;
+      grid-column: span var(--five);
+    }
+    .wall-more[data-five="false"] {
+      display: none;
     }
   }
 
@@ -219,27 +281,78 @@
     scroll-margin-top: calc(var(--header-height) + var(--space-4));
   }
 
+  /* A page that couldn't be shown: not found, or an error. */
+  .stopped {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+  }
+
   /*
-   * The standard entrance: a short rise tied to scroll position. Content starts mostly visible
-   * (never hidden), and without scroll-driven animation or with reduced motion it simply shows.
+   * View transitions: the site's one motion. A piece's listing image travels between its tile
+   * and the product page's stage (both carry the name piece-<slug> and the class "piece");
+   * neighbouring pieces arrive from their side; the page behind changes with a short cross-fade
+   * and the header holds still. Without support, or with reduced motion, navigation is instant.
    */
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .reveal {
-        animation: reveal-rise linear both;
-        animation-timeline: view();
-        animation-range: entry var(--reveal-delay, 0%) entry calc(45% + var(--reveal-delay, 0%));
-      }
+  ::view-transition {
+    pointer-events: none;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 180ms;
+  }
+  ::view-transition-group(site-header) {
+    animation: none;
+    z-index: 100;
+  }
+  ::view-transition-old(site-header) {
+    display: none;
+  }
+  ::view-transition-new(site-header) {
+    animation: none;
+  }
+  ::view-transition-group(.piece) {
+    animation-duration: 420ms;
+    animation-timing-function: var(--ease-reverent);
+  }
+  /* A tile is 4:5 and the stage is wider: the picture fills the moving frame, never stretches. */
+  ::view-transition-old(.piece),
+  ::view-transition-new(.piece) {
+    height: 100%;
+    object-fit: cover;
+  }
+  ::view-transition-old(.nav-forward) {
+    --slide: -100%;
+    animation: 420ms var(--ease-reverent) both slide-away;
+  }
+  ::view-transition-new(.nav-forward) {
+    --slide: 100%;
+    animation: 420ms var(--ease-reverent) both slide-in;
+  }
+  ::view-transition-old(.nav-back) {
+    --slide: 100%;
+    animation: 420ms var(--ease-reverent) both slide-away;
+  }
+  ::view-transition-new(.nav-back) {
+    --slide: -100%;
+    animation: 420ms var(--ease-reverent) both slide-in;
+  }
+  @keyframes slide-away {
+    to {
+      translate: var(--slide) 0;
     }
   }
-  @keyframes reveal-rise {
+  @keyframes slide-in {
     from {
-      opacity: 0.4;
-      translate: 0 14px;
+      translate: var(--slide) 0;
     }
-    to {
-      opacity: 1;
-      translate: 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(*),
+    ::view-transition-new(*),
+    ::view-transition-group(*) {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
     }
   }
 }
@@ -306,7 +419,8 @@
 @layer components {
   /* About */
   .about-founder {
-    background: var(--surface-page);
+    padding-top: 0;
+    background: var(--altar);
     color: var(--ink);
   }
   .about-split {
@@ -328,7 +442,7 @@
     margin: var(--space-6) 0 0;
     display: grid;
     gap: var(--space-3);
-    max-width: 420px;
+    max-width: 480px;
   }
   .founder-photo img {
     display: block;
@@ -336,16 +450,27 @@
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: var(--radius-sm);
-    box-shadow: 0 0 0 1px var(--line-strong);
   }
   .founder-photo figcaption {
     color: var(--ink-subtle);
+  }
+  .about-together-in,
+  .about-close {
+    display: grid;
+    gap: var(--space-12);
   }
   .about-together-head {
     display: grid;
     gap: var(--space-3);
     max-width: 640px;
+  }
+  /* Three of the pieces the copy names, across the width at every size. */
+  .wall.about-wall {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: var(--space-12);
+  }
+  .about-close .prose {
+    margin: 0;
   }
   .about-together-grid {
     list-style: none;

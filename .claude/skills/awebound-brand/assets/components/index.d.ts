@@ -1,5 +1,5 @@
 /* Types for awebound-components.jsx and awebound.umd.js, generated from packages/brand/src by scripts/sync-from-site.mjs. */
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, CSSProperties, ComponentType, KeyboardEvent, ReactNode, JSX } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, CSSProperties, ComponentType, HTMLAttributes, KeyboardEvent, ReactNode, JSX } from "react";
 
 /** Joins truthy class names. */
 export declare function cx(...parts: Array<string | false | null | undefined>): string;
@@ -192,11 +192,12 @@ export interface HeroProps {
 /** The page opener. Carries the page's only oxblood glow. One hero per page. */
 export declare function Hero({ eyebrow, title, body, primary, secondary, scripture, image, imageAlt, className, }: HeroProps): JSX.Element;
 
+import * as React from "react";
 export interface ProductCardProps {
     name: string;
     /** Garment type, e.g. "Oversized tee". */
     type?: string;
-    /** The piece's Scripture, quoted in full under the name. */
+    /** The piece's Scripture, quoted in full under the name. Wall tiles leave it out. */
     quote?: {
         text: string;
         reference: string;
@@ -212,6 +213,19 @@ export interface ProductCardProps {
     price?: string;
     /** Said plainly under the price when it applies: "Sold out", "Not open for ordering yet". */
     status?: string;
+    /** The piece's plate color (a CSS value), behind the image while it loads. */
+    plate?: string;
+    /**
+     * Names the image for the morph into the product page, which gives its first image the same
+     * name. Once per page: leave it off a second card for the same piece.
+     */
+    transitionName?: string;
+    /**
+     * When the image answers to that name. "always" (default) suits a page of tiles. "leaving"
+     * names it only once its link is followed: for a product page, whose tiles would otherwise
+     * pair with the next page's tiles and fade out one by one.
+     */
+    transitionWhen?: "always" | "leaving";
     /** Load the image eagerly (above the fold). */
     priority?: boolean;
     /** Heading level for the name; h3 under a section heading. */
@@ -219,11 +233,31 @@ export interface ProductCardProps {
     className?: string;
 }
 /**
- * A product tile: the whole garment, the name, its type and price, then its Scripture in italic
- * with the reference. The name comes first: nothing sits above it as a label. The whole card
- * links to the product page.
+ * A product tile: the whole garment, the name, its type and price, then (on shop cards) its
+ * Scripture in italic with the reference. The name comes first: nothing sits above it as a
+ * label. The whole card links to the product page.
  */
-export declare function ProductCard({ name, type, quote, image, imageAlt, hoverImage, href, price, status, priority, as: Heading, className, }: ProductCardProps): JSX.Element;
+export declare function ProductCard({ name, type, quote, image, imageAlt, hoverImage, href, price, status, plate, transitionName, transitionWhen, priority, as: Heading, className, }: ProductCardProps): React.JSX.Element;
+
+export interface PlateProps extends Omit<HTMLAttributes<HTMLElement>, "color"> {
+    /** The piece's plate color as a CSS value, e.g. `var(--plate-oxblood)`. */
+    color: string;
+    /** What sits on it: bone on the darker surfaces, coal on the lighter ones. */
+    ink: "bone" | "coal";
+    /** The surface image, portrait: shown below 900px, and above it when there is no `wide`. */
+    tall?: string;
+    /** The surface image, landscape: shown from 900px. */
+    wide?: string;
+    /** Load the surface first: the plate that opens a page. */
+    priority?: boolean;
+    as?: "section" | "div";
+    children: ReactNode;
+}
+/**
+ * A piece's own surface as a full-bleed field. Put only large lettering (24px and up), filled
+ * buttons and images on it; small text belongs on coal or bone. Buttons inside take the ink.
+ */
+export declare function Plate({ color, ink, tall, wide, priority, as: Tag, className, style, children, ...rest }: PlateProps): JSX.Element;
 
 export interface SwatchColor {
     name: string;
@@ -284,7 +318,10 @@ export interface AltarPanelProps {
     id?: string;
     className?: string;
 }
-/** A warm-bone panel that breaks the dark page and carries the signature lockup. One or two per page. */
+/**
+ * A warm-bone panel that breaks the dark page and carries the signature lockup. One or two per
+ * page. As the page's opening (`as="h1"`) the wordmark and the title take their full size.
+ */
 export declare function AltarPanel({ mark, eyebrow, title, as: Heading, body, scripture, action, children, id, className, }: AltarPanelProps): JSX.Element;
 
 export interface FooterProps {
@@ -309,6 +346,6 @@ export declare function Footer({ links, tagline, year, notice, signup, onSubscri
 declare global {
     interface Window {
         /** Set by awebound.umd.js. */
-        Awebound: { cx: typeof cx; BRAND_HEX: typeof BRAND_HEX; BrandLinkProvider: typeof BrandLinkProvider; BrandLink: typeof BrandLink; WORDMARK: typeof WORDMARK; THORN_CROSS: typeof THORN_CROSS; THORN_CROSS_SMALL: typeof THORN_CROSS_SMALL; LILY: typeof LILY; THORN_VINE: typeof THORN_VINE; THORN_WREATH: typeof THORN_WREATH; Wordmark: typeof Wordmark; ThornCross: typeof ThornCross; Mark: typeof Mark; useRadioGroup: typeof useRadioGroup; Button: typeof Button; ScriptureRef: typeof ScriptureRef; quoted: typeof quoted; ScriptureQuote: typeof ScriptureQuote; ThornRule: typeof ThornRule; Header: typeof Header; Hero: typeof Hero; ProductCard: typeof ProductCard; Swatches: typeof Swatches; SizeSelector: typeof SizeSelector; CollectionBanner: typeof CollectionBanner; AltarPanel: typeof AltarPanel; Footer: typeof Footer };
+        Awebound: { cx: typeof cx; BRAND_HEX: typeof BRAND_HEX; BrandLinkProvider: typeof BrandLinkProvider; BrandLink: typeof BrandLink; WORDMARK: typeof WORDMARK; THORN_CROSS: typeof THORN_CROSS; THORN_CROSS_SMALL: typeof THORN_CROSS_SMALL; LILY: typeof LILY; THORN_VINE: typeof THORN_VINE; THORN_WREATH: typeof THORN_WREATH; Wordmark: typeof Wordmark; ThornCross: typeof ThornCross; Mark: typeof Mark; useRadioGroup: typeof useRadioGroup; Button: typeof Button; ScriptureRef: typeof ScriptureRef; quoted: typeof quoted; ScriptureQuote: typeof ScriptureQuote; ThornRule: typeof ThornRule; Header: typeof Header; Hero: typeof Hero; ProductCard: typeof ProductCard; Plate: typeof Plate; Swatches: typeof Swatches; SizeSelector: typeof SizeSelector; CollectionBanner: typeof CollectionBanner; AltarPanel: typeof AltarPanel; Footer: typeof Footer };
     }
 }

@@ -102,6 +102,8 @@
     max-width: 62ch;
   }
   .aw-display,
+  .aw-poster,
+  .aw-fit,
   .aw-h1,
   .aw-h2 {
     margin: 0;
@@ -115,13 +117,33 @@
     font-size: clamp(44px, 6vw, 76px);
     line-height: 1;
   }
+  /* Poster lettering: the tagline, a piece's call, a page's opening words. Each use sets its
+     own size in container units so its longest line fits; this is the fallback. */
+  .aw-poster {
+    font-size: clamp(44px, 9vw, 132px);
+    line-height: 0.9;
+    letter-spacing: 0;
+  }
+  /* A name set to fill its line: the element is the measure, the span inside carries the size.
+     --ems is the name's width in ems at this weight (the site works it out from the font's
+     letter widths); the 2% under keeps it clear of the edge. */
+  .aw-fit {
+    container-type: inline-size;
+  }
+  .aw-fit > span {
+    display: block;
+    font-size: clamp(44px, calc(98cqi / var(--ems, 5)), 480px);
+    line-height: 0.84;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
   .aw-h1 {
-    font-size: clamp(36px, 4.4vw, 52px);
-    line-height: 1.05;
+    font-size: clamp(40px, 5.2vw, 72px);
+    line-height: 1.02;
   }
   .aw-h2 {
-    font-size: clamp(30px, 3.2vw, 38px);
-    line-height: 1.1;
+    font-size: clamp(30px, 3.4vw, 44px);
+    line-height: 1.08;
   }
   .aw-product-name {
     margin: 0;
@@ -184,6 +206,56 @@
     pointer-events: none;
     opacity: 0.07;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .94 0 0 0 0 .9 0 0 0 0 .82 0 0 0 1.4 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Plate: a piece's own surface as a full-bleed field (--plate comes from a --plate-* token).
+     Only large lettering, filled buttons and images sit on it; small text stays on coal or
+     bone. Buttons and the focus ring take the plate's ink. */
+  .aw-plate {
+    position: relative;
+    isolation: isolate;
+    background: var(--plate, var(--surface));
+    --plate-ink: var(--brand-bone);
+    --plate-ink-on: var(--brand-coal);
+    --focus-ring: var(--plate-ink);
+    color: var(--plate-ink);
+  }
+  .aw-plate[data-ink="coal"] {
+    --plate-ink: var(--brand-coal);
+    --plate-ink-on: var(--brand-bone);
+  }
+  .aw-plate-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .aw-plate-bg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .aw-plate .aw-poster,
+  .aw-plate .aw-fit,
+  .aw-plate .aw-h1,
+  .aw-plate .aw-h2 {
+    color: var(--plate-ink);
+  }
+  .aw-plate .aw-btn-primary {
+    background: var(--plate-ink);
+    color: var(--plate-ink-on);
+  }
+  .aw-plate .aw-btn-primary:hover {
+    background: color-mix(in srgb, var(--plate-ink) 86%, var(--plate-ink-on));
+  }
+  .aw-plate .aw-btn-secondary {
+    background: var(--plate-ink-on);
+    color: var(--plate-ink);
+    border-color: var(--plate-ink);
+  }
+  .aw-plate .aw-btn-secondary:hover {
+    background: color-mix(in srgb, var(--plate-ink-on) 86%, var(--plate-ink));
+    border-color: var(--plate-ink);
   }
 
   /* Button */
@@ -318,8 +390,8 @@
     font-size: 23px;
   }
   .aw-verse-lg .aw-quote {
-    font-size: clamp(25px, 2.3vw, 30px);
-    line-height: 1.36;
+    font-size: clamp(25px, 2.6vw, 36px);
+    line-height: 1.32;
   }
   @media (max-width: 767px) {
     .aw-verse-sm .aw-quote {
@@ -567,9 +639,8 @@
     }
   }
 
-  /* ProductCard */
+  /* ProductCard: the whole garment on its own color, the words beneath on the page. */
   .aw-card {
-    background: var(--surface-raised);
     min-width: 0;
   }
   .aw-card-link {
@@ -580,7 +651,7 @@
   .aw-card-media {
     position: relative;
     overflow: hidden;
-    background: var(--surface);
+    background: var(--plate, var(--surface));
     aspect-ratio: 4 / 5;
   }
   .aw-card-media img {
@@ -590,15 +661,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition:
-      transform var(--duration-base) ease,
-      opacity var(--duration-base) ease;
+    transition: opacity var(--duration-base) ease;
   }
   .aw-card-media .aw-card-alt {
     opacity: 0;
-  }
-  .aw-card-link:hover .aw-card-media img {
-    transform: scale(1.025);
   }
   .aw-card-link:hover .aw-card-alt,
   .aw-card-link:focus-visible .aw-card-alt {
@@ -606,7 +672,7 @@
   }
   .aw-card-meta {
     min-width: 0;
-    padding: var(--space-4) var(--space-4) var(--space-6);
+    padding: var(--space-4) 0 var(--space-6);
     display: grid;
     align-content: start;
     gap: var(--space-2);
@@ -653,16 +719,7 @@
   .aw-card-link:hover .aw-card-name {
     color: var(--accent-text);
   }
-  /* Phones: image beside the words, so a release fits in a short scroll. */
   @media (max-width: 599px) {
-    .aw-card-link {
-      display: grid;
-      grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
-      align-items: start;
-    }
-    .aw-card-meta {
-      padding: var(--space-3) var(--space-4) var(--space-4);
-    }
     .aw-card-name {
       font-size: 16px;
       line-height: 21px;
@@ -791,8 +848,18 @@
   .aw-altar-body {
     color: var(--on-altar-muted);
   }
+  .aw-altar .aw-h1,
   .aw-altar .aw-h2 {
     color: var(--altar-mark);
+  }
+  .aw-altar[data-opening] .aw-altar-in {
+    max-width: 960px;
+    gap: var(--space-8);
+  }
+  /* The lockup at poster size: as wide as the panel allows, in proportion. */
+  .aw-altar[data-opening] .aw-altar-mark {
+    width: min(100%, 620px);
+    height: auto !important;
   }
   .aw-altar-body {
     margin: 0;

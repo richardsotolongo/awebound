@@ -1,7 +1,8 @@
 import { Button, ScriptureRef } from "@awebound/brand";
-import Link from "next/link";
-import { EMPTY_LIST } from "@/features/catalog/query";
+import { FitName } from "@/components/fit-name";
+import { EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
 import { releaseStatusText } from "@/features/release/release-status";
+import { ReleaseWall } from "@/features/release/release-wall";
 import { pageMeta } from "@/lib/site";
 import { getReleases, searchProducts, withFallback } from "@/server/catalog";
 
@@ -14,21 +15,23 @@ export const metadata = pageMeta({
 
 export const revalidate = 60;
 
-/** Every release that has pieces on the site, newest first. Only real releases are listed. */
+/**
+ * Every release that has pieces on the site, newest first, each under its name with the wall of
+ * its pieces. Only real releases are listed.
+ */
 export default async function CollectionsPage() {
   const releases = await withFallback(getReleases, []);
-  const covers = await Promise.all(
+  const walls = await Promise.all(
     releases.map((r) =>
-      withFallback(() => searchProducts({ collection: [r.slug], pageSize: 3 }), EMPTY_LIST).then(
+      withFallback(() => searchProducts({ collection: [r.slug], pageSize: 48 }), EMPTY_LIST).then(
         (list) => list.items,
       ),
     ),
   );
 
   return (
-    <div className="aw-container section collections">
-      <header className="collections-head">
-        <p className="aw-label">Collections</p>
+    <div className="collections">
+      <header className="aw-container collections-head">
         <h1 className="aw-h1">Every release, by name</h1>
         <p className="aw-body">
           Each Awebound collection is a small set of pieces drawn from one call in Scripture. The
@@ -37,37 +40,36 @@ export default async function CollectionsPage() {
       </header>
 
       {releases.length === 0 ? (
-        <p className="aw-body">The first collection is on its way.</p>
+        <p className="aw-container aw-body">The first collection is on its way.</p>
       ) : (
-        <ul className="collections-list">
-          {releases.map((r, i) => (
-            <li key={r.slug} className="collection-row">
-              <Link href={`/collections/${r.slug}`} className="collection-covers" tabIndex={-1}>
-                {covers[i]?.map((p) => (
-                  // eslint-disable-next-line @next/next/no-img-element -- catalog images
-                  <img key={p.slug} src={p.image.url} alt="" loading="lazy" decoding="async" />
-                ))}
-              </Link>
-              <div className="collection-text">
-                <p className="aw-label">
-                  {i === 0 ? "Latest drop · " : ""}Release {r.number} · {r.pieces}{" "}
-                  {r.pieces === 1 ? "piece" : "pieces"}
+        releases.map((r, i) => {
+          const status = releaseStatusText(r);
+          return (
+            <section key={r.slug} className="release" aria-labelledby={`release-${r.slug}`}>
+              <header className="aw-container release-head">
+                <FitName id={`release-${r.slug}`}>{r.name}</FitName>
+                <div className="release-sub">
+                  <p className="release-tagline">{r.tagline}</p>
+                  <ScriptureRef reference={r.scriptureRef} align="start" />
+                </div>
+                <p className="aw-small">
+                  Release {r.number}, {r.pieces} {r.pieces === 1 ? "piece" : "pieces"}.
+                  {status ? ` ${status}` : ""}
                 </p>
-                <h2 className="collection-name">
-                  <Link href={`/collections/${r.slug}`}>{r.name}</Link>
-                </h2>
-                <p className="aw-body">{r.tagline}</p>
-                <ScriptureRef reference={r.scriptureRef} align="start" />
-                {releaseStatusText(r) ? <p className="aw-small">{releaseStatusText(r)}</p> : null}
                 <div className="aw-btn-row">
                   <Button variant="secondary" href={`/collections/${r.slug}`}>
                     Explore {r.name}
                   </Button>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </header>
+              <ReleaseWall
+                pieces={walls[i] ?? []}
+                label={`The ${r.name} pieces`}
+                more={{ href: shopCanonical(r.slug), label: `See all ${r.pieces} pieces` }}
+              />
+            </section>
+          );
+        })
       )}
     </div>
   );

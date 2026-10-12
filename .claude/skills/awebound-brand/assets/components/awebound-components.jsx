@@ -323,7 +323,10 @@ function Hero({
 }
 
 // packages/brand/src/components/product-card.tsx
+import * as React from "react";
+import { useState } from "react";
 import { jsx as jsx9, jsxs as jsxs6 } from "react/jsx-runtime";
+var Morph = React.ViewTransition;
 function ProductCard({
   name,
   type,
@@ -334,33 +337,46 @@ function ProductCard({
   href,
   price,
   status,
+  plate,
+  transitionName,
+  transitionWhen = "always",
   priority,
   as: Heading = "h3",
   className
 }) {
-  return /* @__PURE__ */ jsx9("article", { className: cx("aw-card", className), children: /* @__PURE__ */ jsxs6(BrandLink, { href, className: "aw-card-link", children: [
-    /* @__PURE__ */ jsxs6("div", { className: "aw-card-media", children: [
-      /* @__PURE__ */ jsx9(
-        "img",
-        {
-          src: image,
-          alt: imageAlt ?? name,
-          loading: priority ? "eager" : "lazy",
-          decoding: "async"
-        }
-      ),
-      hoverImage ? /* @__PURE__ */ jsx9(
-        "img",
-        {
-          className: "aw-card-alt",
-          src: hoverImage,
-          alt: "",
-          "aria-hidden": "true",
-          loading: "lazy",
-          decoding: "async"
-        }
-      ) : null
-    ] }),
+  const [leaving, setLeaving] = useState(false);
+  const named = transitionWhen === "always" || leaving;
+  const listing = /* @__PURE__ */ jsx9(
+    "img",
+    {
+      src: image,
+      alt: imageAlt ?? name,
+      loading: priority ? "eager" : "lazy",
+      decoding: "async"
+    }
+  );
+  return /* @__PURE__ */ jsx9("article", { className: cx("aw-card", className), children: /* @__PURE__ */ jsxs6(BrandLink, { href, className: "aw-card-link", onClick: () => setLeaving(true), children: [
+    /* @__PURE__ */ jsxs6(
+      "div",
+      {
+        className: "aw-card-media",
+        style: plate ? { "--plate": plate } : void 0,
+        children: [
+          Morph ? /* @__PURE__ */ jsx9(Morph, { name: named ? transitionName : void 0, share: "piece", default: "none", children: listing }) : listing,
+          hoverImage ? /* @__PURE__ */ jsx9(
+            "img",
+            {
+              className: "aw-card-alt",
+              src: hoverImage,
+              alt: "",
+              "aria-hidden": "true",
+              loading: "lazy",
+              decoding: "async"
+            }
+          ) : null
+        ]
+      }
+    ),
     /* @__PURE__ */ jsxs6("div", { className: "aw-card-meta", children: [
       /* @__PURE__ */ jsx9(Heading, { className: "aw-card-name", children: name }),
       type || price ? /* @__PURE__ */ jsxs6("p", { className: "aw-card-facts", children: [
@@ -380,6 +396,47 @@ function ProductCard({
       ) : null
     ] })
   ] }) });
+}
+
+// packages/brand/src/components/plate.tsx
+import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
+function Plate({
+  color,
+  ink,
+  tall,
+  wide,
+  priority,
+  as: Tag = "section",
+  className,
+  style,
+  children,
+  ...rest
+}) {
+  return /* @__PURE__ */ jsxs7(
+    Tag,
+    {
+      ...rest,
+      className: cx("aw-plate", className),
+      "data-ink": ink,
+      style: { "--plate": color, ...style },
+      children: [
+        tall ? /* @__PURE__ */ jsxs7("picture", { className: "aw-plate-bg", "aria-hidden": "true", children: [
+          wide ? /* @__PURE__ */ jsx10("source", { media: "(min-width: 900px)", srcSet: wide }) : null,
+          /* @__PURE__ */ jsx10(
+            "img",
+            {
+              src: tall,
+              alt: "",
+              loading: priority ? "eager" : "lazy",
+              fetchPriority: priority ? "high" : void 0,
+              decoding: "async"
+            }
+          )
+        ] }) : null,
+        children
+      ]
+    }
+  );
 }
 
 // packages/brand/src/components/radio-group.ts
@@ -427,17 +484,17 @@ function useRadioGroup(options, value, onChange, disabled = []) {
 }
 
 // packages/brand/src/components/swatches.tsx
-import { jsx as jsx10, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx11, jsxs as jsxs8 } from "react/jsx-runtime";
 function Swatches({ colors, value, onChange, label = "Color", className }) {
   const { itemProps } = useRadioGroup(
     colors.map((c) => c.name),
     value,
     onChange
   );
-  return /* @__PURE__ */ jsxs7("div", { role: "radiogroup", "aria-label": label, className: cx("aw-swatches", className), children: [
+  return /* @__PURE__ */ jsxs8("div", { role: "radiogroup", "aria-label": label, className: cx("aw-swatches", className), children: [
     colors.map((c, i) => {
       const on = value === c.name;
-      return /* @__PURE__ */ jsx10(
+      return /* @__PURE__ */ jsx11(
         "button",
         {
           type: "button",
@@ -448,17 +505,17 @@ function Swatches({ colors, value, onChange, label = "Color", className }) {
           className: cx("aw-swatch", on && "is-on"),
           onClick: () => onChange?.(c.name),
           ...itemProps(c.name, i),
-          children: /* @__PURE__ */ jsx10("i", { style: { background: c.hex } })
+          children: /* @__PURE__ */ jsx11("i", { style: { background: c.hex } })
         },
         c.name
       );
     }),
-    value ? /* @__PURE__ */ jsx10("span", { className: "aw-small aw-swatches-name", children: value }) : null
+    value ? /* @__PURE__ */ jsx11("span", { className: "aw-small aw-swatches-name", children: value }) : null
   ] });
 }
 
 // packages/brand/src/components/size-selector.tsx
-import { jsx as jsx11 } from "react/jsx-runtime";
+import { jsx as jsx12 } from "react/jsx-runtime";
 function SizeSelector({
   sizes = ["S", "M", "L", "XL", "2XL"],
   value,
@@ -468,10 +525,10 @@ function SizeSelector({
   className
 }) {
   const { itemProps } = useRadioGroup(sizes, value, onChange, unavailable);
-  return /* @__PURE__ */ jsx11("div", { role: "radiogroup", "aria-label": label, className: cx("aw-sizes", className), children: sizes.map((s, i) => {
+  return /* @__PURE__ */ jsx12("div", { role: "radiogroup", "aria-label": label, className: cx("aw-sizes", className), children: sizes.map((s, i) => {
     const na = unavailable.includes(s);
     const on = value === s;
-    return /* @__PURE__ */ jsx11(
+    return /* @__PURE__ */ jsx12(
       "button",
       {
         type: "button",
@@ -490,7 +547,7 @@ function SizeSelector({
 }
 
 // packages/brand/src/components/collection-banner.tsx
-import { jsx as jsx12, jsxs as jsxs8 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs9 } from "react/jsx-runtime";
 function CollectionBanner({
   family,
   eyebrow,
@@ -501,7 +558,7 @@ function CollectionBanner({
   children,
   className
 }) {
-  return /* @__PURE__ */ jsx12(
+  return /* @__PURE__ */ jsx13(
     "section",
     {
       className: cx(
@@ -510,19 +567,19 @@ function CollectionBanner({
         "aw-grain",
         className
       ),
-      children: /* @__PURE__ */ jsxs8("div", { className: "aw-banner-in", children: [
-        /* @__PURE__ */ jsx12("p", { className: "aw-label", children: eyebrow }),
-        /* @__PURE__ */ jsx12(Heading, { className: "aw-h2", children: family }),
-        story ? /* @__PURE__ */ jsx12("p", { className: "aw-banner-story", children: story }) : null,
+      children: /* @__PURE__ */ jsxs9("div", { className: "aw-banner-in", children: [
+        /* @__PURE__ */ jsx13("p", { className: "aw-label", children: eyebrow }),
+        /* @__PURE__ */ jsx13(Heading, { className: "aw-h2", children: family }),
+        story ? /* @__PURE__ */ jsx13("p", { className: "aw-banner-story", children: story }) : null,
         children,
-        action ? /* @__PURE__ */ jsx12(Button, { variant: tone === "feature" ? "on-feature" : "secondary", href: action.href, children: action.label }) : null
+        action ? /* @__PURE__ */ jsx13(Button, { variant: tone === "feature" ? "on-feature" : "secondary", href: action.href, children: action.label }) : null
       ] })
     }
   );
 }
 
 // packages/brand/src/components/altar-panel.tsx
-import { jsx as jsx13, jsxs as jsxs9 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs10 } from "react/jsx-runtime";
 function AltarPanel({
   mark = "wordmark",
   eyebrow,
@@ -535,21 +592,29 @@ function AltarPanel({
   id,
   className
 }) {
-  return /* @__PURE__ */ jsx13("section", { id, className: cx("aw-altar", className), children: /* @__PURE__ */ jsxs9("div", { className: "aw-altar-in", children: [
-    mark === "cross" ? /* @__PURE__ */ jsx13(ThornCross, { height: 120, className: "aw-altar-mark" }) : null,
-    mark === "wordmark" ? /* @__PURE__ */ jsx13(Wordmark, { height: 88, className: "aw-altar-mark" }) : null,
-    eyebrow ? /* @__PURE__ */ jsx13("p", { className: "aw-label", children: eyebrow }) : null,
-    title ? /* @__PURE__ */ jsx13(Heading, { className: "aw-h2", children: title }) : null,
-    body ? /* @__PURE__ */ jsx13("p", { className: "aw-altar-body", children: body }) : null,
-    scripture ? /* @__PURE__ */ jsx13(ScriptureRef, { reference: scripture }) : null,
-    children,
-    action ? /* @__PURE__ */ jsx13(Button, { variant: "on-altar", href: action.href, children: action.label }) : null
-  ] }) });
+  return /* @__PURE__ */ jsx14(
+    "section",
+    {
+      id,
+      className: cx("aw-altar", className),
+      "data-opening": Heading === "h1" ? true : void 0,
+      children: /* @__PURE__ */ jsxs10("div", { className: "aw-altar-in", children: [
+        mark === "cross" ? /* @__PURE__ */ jsx14(ThornCross, { height: 120, className: "aw-altar-mark" }) : null,
+        mark === "wordmark" ? /* @__PURE__ */ jsx14(Wordmark, { height: 88, className: "aw-altar-mark" }) : null,
+        eyebrow ? /* @__PURE__ */ jsx14("p", { className: "aw-label", children: eyebrow }) : null,
+        title ? /* @__PURE__ */ jsx14(Heading, { className: Heading === "h1" ? "aw-h1" : "aw-h2", children: title }) : null,
+        body ? /* @__PURE__ */ jsx14("p", { className: "aw-altar-body", children: body }) : null,
+        scripture ? /* @__PURE__ */ jsx14(ScriptureRef, { reference: scripture }) : null,
+        children,
+        action ? /* @__PURE__ */ jsx14(Button, { variant: "on-altar", href: action.href, children: action.label }) : null
+      ] })
+    }
+  );
 }
 
 // packages/brand/src/components/footer.tsx
-import { useId as useId2, useState } from "react";
-import { Fragment as Fragment2, jsx as jsx14, jsxs as jsxs10 } from "react/jsx-runtime";
+import { useId as useId2, useState as useState2 } from "react";
+import { Fragment as Fragment2, jsx as jsx15, jsxs as jsxs11 } from "react/jsx-runtime";
 var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function Footer({
   links = [],
@@ -562,9 +627,9 @@ function Footer({
 }) {
   const inputId = useId2();
   const errorId = useId2();
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState("idle");
-  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState2("");
+  const [state, setState] = useState2("idle");
+  const [message, setMessage] = useState2("");
   async function submit(e) {
     e.preventDefault();
     if (!EMAIL.test(email)) {
@@ -581,18 +646,18 @@ function Footer({
       setMessage("That didn\u2019t go through. Try again in a moment.");
     }
   }
-  return /* @__PURE__ */ jsxs10("footer", { className: "aw-footer", children: [
-    /* @__PURE__ */ jsxs10("div", { className: "aw-footer-in", children: [
-      /* @__PURE__ */ jsxs10("div", { className: "aw-footer-brand", children: [
-        /* @__PURE__ */ jsx14(ThornCross, { size: "small", height: 40, title: "" }),
-        /* @__PURE__ */ jsx14("p", { className: "aw-small", children: tagline }),
+  return /* @__PURE__ */ jsxs11("footer", { className: "aw-footer", children: [
+    /* @__PURE__ */ jsxs11("div", { className: "aw-footer-in", children: [
+      /* @__PURE__ */ jsxs11("div", { className: "aw-footer-brand", children: [
+        /* @__PURE__ */ jsx15(ThornCross, { size: "small", height: 40, title: "" }),
+        /* @__PURE__ */ jsx15("p", { className: "aw-small", children: tagline }),
         children
       ] }),
-      signup ? /* @__PURE__ */ jsxs10("form", { className: "aw-footer-form", onSubmit: submit, noValidate: true, children: [
-        /* @__PURE__ */ jsx14("label", { htmlFor: inputId, className: "aw-label", children: "Get release updates" }),
-        state === "done" ? /* @__PURE__ */ jsx14("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a release opens for ordering." }) : /* @__PURE__ */ jsxs10(Fragment2, { children: [
-          /* @__PURE__ */ jsxs10("div", { className: "aw-footer-row", children: [
-            /* @__PURE__ */ jsx14(
+      signup ? /* @__PURE__ */ jsxs11("form", { className: "aw-footer-form", onSubmit: submit, noValidate: true, children: [
+        /* @__PURE__ */ jsx15("label", { htmlFor: inputId, className: "aw-label", children: "Get release updates" }),
+        state === "done" ? /* @__PURE__ */ jsx15("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a release opens for ordering." }) : /* @__PURE__ */ jsxs11(Fragment2, { children: [
+          /* @__PURE__ */ jsxs11("div", { className: "aw-footer-row", children: [
+            /* @__PURE__ */ jsx15(
               "input",
               {
                 id: inputId,
@@ -608,22 +673,22 @@ function Footer({
                 "aria-describedby": state === "error" ? errorId : void 0
               }
             ),
-            /* @__PURE__ */ jsx14(Button, { variant: "secondary", type: "submit", disabled: state === "sending", children: "Notify me" })
+            /* @__PURE__ */ jsx15(Button, { variant: "secondary", type: "submit", disabled: state === "sending", children: "Notify me" })
           ] }),
-          state === "error" ? /* @__PURE__ */ jsx14("p", { id: errorId, className: "aw-form-error", role: "alert", children: message }) : null
+          state === "error" ? /* @__PURE__ */ jsx15("p", { id: errorId, className: "aw-form-error", role: "alert", children: message }) : null
         ] })
-      ] }) : /* @__PURE__ */ jsx14("div", {}),
-      /* @__PURE__ */ jsx14("nav", { className: "aw-footer-nav", "aria-label": "Footer", children: links.map((l) => /* @__PURE__ */ jsx14(BrandLink, { href: l.href, children: l.label }, l.label)) })
+      ] }) : /* @__PURE__ */ jsx15("div", {}),
+      /* @__PURE__ */ jsx15("nav", { className: "aw-footer-nav", "aria-label": "Footer", children: links.map((l) => /* @__PURE__ */ jsx15(BrandLink, { href: l.href, children: l.label }, l.label)) })
     ] }),
-    /* @__PURE__ */ jsxs10("div", { className: "aw-footer-legal aw-small", children: [
-      /* @__PURE__ */ jsxs10("p", { children: [
+    /* @__PURE__ */ jsxs11("div", { className: "aw-footer-legal aw-small", children: [
+      /* @__PURE__ */ jsxs11("p", { children: [
         "\xA9 ",
         year ?? (/* @__PURE__ */ new Date()).getFullYear(),
         " Awebound"
       ] }),
-      notice ? /* @__PURE__ */ jsx14("p", { className: "aw-footer-notice", children: notice }) : null
+      notice ? /* @__PURE__ */ jsx15("p", { className: "aw-footer-notice", children: notice }) : null
     ] }),
-    /* @__PURE__ */ jsx14("div", { className: "aw-footer-mark", children: /* @__PURE__ */ jsx14(Wordmark, { title: "Awebound", style: { width: "100%", height: "auto" } }) })
+    /* @__PURE__ */ jsx15("div", { className: "aw-footer-mark", children: /* @__PURE__ */ jsx15(Wordmark, { title: "Awebound", style: { width: "100%", height: "auto" } }) })
   ] });
 }
 export {
@@ -638,6 +703,7 @@ export {
   Hero,
   LILY,
   Mark,
+  Plate,
   ProductCard,
   ScriptureQuote,
   ScriptureRef,

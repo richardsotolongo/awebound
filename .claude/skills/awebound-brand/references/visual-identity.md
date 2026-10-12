@@ -19,8 +19,8 @@ The A3 wordmark, the Thorn Cross, color, type and layout, as the live site uses 
 ## Color
 
 - Website: four coal surfaces (`surface-page` → `surface-overlay`) give depth like stacked stone. Text is `ink`, `ink-muted`, `ink-subtle`.
-- Oxblood (`primary`) is a fill, never text on coal: the primary button, the active nav underline, text selection, and at most one `glow-primary` per screen.
-- Light from above: the shop header lights its title with `.soft-glow`, a bone `light-shaft` glow that fades to nothing with no visible edge. The home page uses no glow. The oxblood glow belongs to the brand `Hero` component and to posts.
+- Oxblood (`primary`) is a fill, never text on coal: the primary button, the active category underline, text selection. No glows, gradients or blur anywhere on the site.
+- **Plates**: each piece’s own surface as a full-bleed field, the one place color enters the page. `plate-oxblood`, `plate-ochre`, `plate-sage`, `plate-cornflower`, `plate-slate`, `plate-parchment`, `plate-terracotta`, `plate-rose`, `plate-linen`, `plate-concrete` are the surfaces’ colors (photography, not interface: never on links, borders, text or controls). On a plate, lettering and buttons take its ink: bone on oxblood, slate, sage, cornflower and terracotta; coal on ochre, parchment, rose, linen and concrete. Only lettering of 24px and up, filled buttons and images sit on a plate.
 - Accent text on dark is `accent-text` (Copper 300) for links, hover states, the bag count and form errors. Scripture references are `scripture` (gold).
 - `panel-feature` (washed oxblood) carries drop banners, with `on-feature` text. `bb-copper` is for illustration and rules; `bb-faded-burgundy` for text on bone.
 - Garment swatches: Behold's colors come from Fourthwall and map to `garment-black`, `garment-ecru`, `garment-french-navy`, `garment-cypress` and `garment-carolina-blue`. The other `garment-*`, `cap-*` and `bucket-*` swatches and the `rh-*` / `ra-*` palettes are legacy values from the pre-Behold lookbook; keep them out of new work unless a new piece uses that color.
@@ -29,18 +29,18 @@ The A3 wordmark, the Thorn Cross, color, type and layout, as the live site uses 
 
 Three families, each with one job. The site self-hosts them (OFL) and exposes `--font-grenze`, `--font-manrope` and `--font-cormorant`; `--font-display`, `--font-sans` and `--font-scripture` point at them with fallbacks.
 
-- **Grenze Gotisch** (`--font-display`, weight 600): the home headline, release names ("Behold") and selected major headings. Always mixed case, the home headline included: blackletter capitals are hard to read. Never paragraphs, sizing, prices or numerals, which turn into blackletter shapes.
+- **Grenze Gotisch** (`--font-display`, weight 600): lettering at poster size. The tagline, release names ("Behold" filling the width), each piece’s call on its plate, page titles. Always mixed case: blackletter capitals are hard to read. Sized so the longest line fits its column. Never paragraphs, sizing, prices or numerals, which turn into blackletter shapes.
 - **Cormorant Garamond Italic 500** (`--font-scripture`): Scripture quotations only, in curly double quotes. No added letter spacing; line height about 1.4.
 - **Manrope** (`--font-sans`): everything else: body (16–18px), navigation, labels, buttons, prices, filters, forms, sizing, Scripture references, and product names (800, caps, 0.04em tracking).
 - No `font-stretch`, no faux bold or italic, no outlined or distressed type, no type stretched to imitate the wordmark, no fourth decorative face. Body lines about 62 characters at most.
 
 ## Layout and the metal hint
 
-- Container `container-max` (1200px); gutters `gutter-mobile` (16px) / `gutter-desktop` (48px); sections `space-16` (mobile) / `space-24` (desktop) apart. Header `header-height` (80px, 64px on phones), sticky and solid, with anchors landing below it; it uses its menu layout below 900px.
+- Container `container-max` (1440px, so the header, page content and full-bleed bands share one edge); gutters `gutter-mobile` (16px) / `gutter-desktop` (48px), `gutter` for whichever applies; sections `space-16` (mobile) / `space-24` (desktop) apart. Bands (plates, walls, bone panels) run edge to edge and meet with hard cuts; text keeps its own measure. Header `header-height` (80px, 64px on phones), sticky and solid, with anchors landing below it; it uses its menu layout below 900px.
 - Corners `radius-0`; buttons and inputs `radius-sm` (2px) at most. No pills.
-- Faint film grain (`.aw-grain`) on backgrounds (the brand Hero, banners, posts), never over text or product photos.
+- Faint film grain (`.aw-grain`) is for the brand Hero, banners and posts, never over text or product photos. The site itself uses none.
 - Divide sections with `ThornRule`. Quote Scripture with `ScriptureQuote`; a bare reference uses `ScriptureRef` (upright Manrope caps in gold between short rules).
-- Motion: short rises and fades on `ease-reverent`, 200–300ms; product cards cross-fade to the other side on hover and zoom slightly. Decoration may draw or move, but artwork, Scripture and buttons stay readable at every frame (no long fades, nothing starting near invisible). No flames, embers, glitch or shake. Reduced motion gets still, complete pages.
+- Motion is one idea: a piece’s listing image travels from its tile or card into its product page (about 420ms on `ease-reverent`), neighbouring pieces slide in from their side, and pages change with a short cross-fade. Tiles cross-fade to the other side on hover or focus. Nothing animates on load or on scroll; artwork, Scripture and buttons are whole and readable at every frame (never cropped, wiped or faded in). No flames, embers, glitch or shake. Reduced motion gets instant navigation and still pages.
 - Off limits: skulls, gore, inverted or occult symbols, flames as decoration, illegible display type, blackletter for anything but display headings. A pastor and a metalhead should both find the page beautiful.
 
 ## Accessibility
@@ -64,7 +64,7 @@ Three families, each with one job. The site self-hosts them (OFL) and exposes `-
 | `ink-subtle`                                                      | #8C847A                               | #665F57 | Captions, placeholders, the legal line. Dark theme: not on `surface-overlay` (4.0:1).                                                        |
 | `accent-text`                                                     | #C47A55                               | #8E4A55 | Copper 300 (dark) / faded burgundy (light): links, hover states, the bag count, form errors. Dark theme: on `surface-overlay` only at 18px+. |
 | `scripture`                                                       | #B89651                               | #6E5728 | Scripture references only (5.3:1 or better).                                                                                                 |
-| `primary`                                                         | #782B35                               | same    | Oxblood. Primary button fill, the one glow per screen, the active nav underline. Never text on dark (1.9:1).                                 |
+| `primary`                                                         | #782B35                               | same    | Oxblood. Primary button fill on coal, the active category underline. Never text on dark (1.9:1).                                             |
 | `primary-hover`                                                   | #8A3240                               | same    | Primary button hover and pressed fill.                                                                                                       |
 | `on-primary`                                                      | #F0E6D2                               | same    | Text and icons on primary (7.7:1).                                                                                                           |
 | `focus-ring`                                                      | #C47A55                               | #782B35 | Keyboard focus: 2px solid, 2px offset.                                                                                                       |
@@ -76,7 +76,6 @@ Three families, each with one job. The site self-hosts them (OFL) and exposes `-
 | `brand-coal` / `brand-bone` / `brand-oxblood` / `brand-warm-bone` | #151413 / #F0E6D2 / #782B35 / #E8DDC9 | same    | The four brand colors, for lockups, packaging and print.                                                                                     |
 | `bb-copper`                                                       | #A65D3D                               | same    | Oxidized copper: illustration, rules, badges. As text only at 24px+ (3.7:1 on coal).                                                         |
 | `scrim`                                                           | #0D0C0B at 80%                        | same    | Backdrop behind drawers and sheets.                                                                                                          |
-| `light-shaft`                                                     | #F0E6D2 at 12%                        | same    | Light from above (`.soft-glow`) behind the shop title; bone, not a new color.                                                                |
 
 Garment swatches, legacy palettes, spacing, shadows and motion are in `tokens.json`.
 
@@ -84,18 +83,20 @@ Garment swatches, legacy palettes, spacing, shadows and motion are in `tokens.js
 
 Classes come from `assets/components/awebound.css`. Display sizes are fluid.
 
-| Style (class)      | Family                    | Size / line                                      | Weight | Tracking | Use                                                                                                          |
-| ------------------ | ------------------------- | ------------------------------------------------ | ------ | -------- | ------------------------------------------------------------------------------------------------------------ |
-| `.aw-display`      | Grenze Gotisch            | clamp(44px, 6vw, 76px) / 1                       | 600    | 0.005em  | Hero headline, one per page.                                                                                 |
-| `.aw-h1`           | Grenze Gotisch            | clamp(36px, 4.4vw, 52px) / 1.05                  | 600    | 0.005em  | Page titles.                                                                                                 |
-| `.aw-h2`           | Grenze Gotisch            | clamp(30px, 3.2vw, 38px) / 1.1                   | 600    | 0.005em  | Section titles and release names.                                                                            |
-| `.aw-quote`        | Cormorant Garamond Italic | 23px / 1.42 (19px in cards, up to 30px featured) | 500    | 0        | Scripture quotations only. Mobile 21px (18 / 23).                                                            |
-| `.aw-product-name` | Manrope                   | 20px / 26px                                      | 800    | 0.04em   | Product name on the product page, caps. Mobile 18/24px.                                                      |
-| `.aw-card-name`    | Manrope                   | 18px / 24px                                      | 800    | 0.04em   | Product name on cards, caps. Phones 16/21px.                                                                 |
-| `.aw-h3`           | Manrope                   | 20px / 27px                                      | 700    | 0        | Sub-headings, sentence case. Mobile 18/25px.                                                                 |
-| `.aw-body`         | Manrope                   | 17px / 27px                                      | 400    | 0        | Body copy in `ink-muted`, max 62ch. Mobile 16/26px.                                                          |
-| `.aw-small`        | Manrope                   | 14px / 21px                                      | 400    | 0        | Captions, form help, footer text.                                                                            |
-| `.aw-label`        | Manrope                   | 12px / 16px                                      | 700    | 0.16em   | Eyebrows and labels, caps.                                                                                   |
-| `.aw-btn`          | Manrope                   | 13px / 13px                                      | 700    | 0.12em   | Button text, caps.                                                                                           |
-| `.aw-meta`         | Manrope                   | 13px / 16px                                      | 700    | 0.1em    | Prices and small figures in `accent-text`, tabular figures. Never a design code.                             |
-| `.aw-scripture`    | Manrope                   | 12.5px / 18px                                    | 700    | 0.12em   | Scripture references in `scripture`, caps, between 32px rules; the translation part is 600. 11.5px in cards. |
+| Style (class)      | Family                    | Size / line                                       | Weight | Tracking | Use                                                                                                          |
+| ------------------ | ------------------------- | ------------------------------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `.aw-poster`       | Grenze Gotisch            | set per use in container units, up to 150px / 0.9 | 600    | 0        | Lettering at poster size: the tagline, a piece’s call on its plate.                                          |
+| `.aw-fit`          | Grenze Gotisch            | fills its line, up to 480px / 0.84                | 600    | 0        | A release name across the width (the site works out its width in ems).                                       |
+| `.aw-display`      | Grenze Gotisch            | clamp(44px, 6vw, 76px) / 1                        | 600    | 0.005em  | The brand Hero’s headline (marketing builds).                                                                |
+| `.aw-h1`           | Grenze Gotisch            | clamp(40px, 5.2vw, 72px) / 1.02                   | 600    | 0.005em  | Page titles.                                                                                                 |
+| `.aw-h2`           | Grenze Gotisch            | clamp(30px, 3.4vw, 44px) / 1.08                   | 600    | 0.005em  | Section titles.                                                                                              |
+| `.aw-quote`        | Cormorant Garamond Italic | 23px / 1.42 (19px in cards, up to 36px featured)  | 500    | 0        | Scripture quotations only. Mobile 21px (18 / 23).                                                            |
+| `.aw-product-name` | Manrope                   | 20px / 26px                                       | 800    | 0.04em   | Product names in running layouts, caps. Mobile 18/24px. The product page’s own name runs up to 60px.         |
+| `.aw-card-name`    | Manrope                   | 18px / 24px                                       | 800    | 0.04em   | Product name on cards, caps. Phones 16/21px.                                                                 |
+| `.aw-h3`           | Manrope                   | 20px / 27px                                       | 700    | 0        | Sub-headings, sentence case. Mobile 18/25px.                                                                 |
+| `.aw-body`         | Manrope                   | 17px / 27px                                       | 400    | 0        | Body copy in `ink-muted`, max 62ch. Mobile 16/26px.                                                          |
+| `.aw-small`        | Manrope                   | 14px / 21px                                       | 400    | 0        | Captions, form help, footer text.                                                                            |
+| `.aw-label`        | Manrope                   | 12px / 16px                                       | 700    | 0.16em   | Form and group labels, caps. Never above a heading.                                                          |
+| `.aw-btn`          | Manrope                   | 13px / 13px                                       | 700    | 0.12em   | Button text, caps.                                                                                           |
+| `.aw-meta`         | Manrope                   | 13px / 16px                                       | 700    | 0.1em    | Prices and small figures in `accent-text`, tabular figures. Never a design code.                             |
+| `.aw-scripture`    | Manrope                   | 12.5px / 18px                                     | 700    | 0.12em   | Scripture references in `scripture`, caps, between 32px rules; the translation part is 600. 11.5px in cards. |

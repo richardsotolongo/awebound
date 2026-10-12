@@ -90,9 +90,11 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 - [ ] **Wordmark cleanup** by a designer before large back prints; physical test of the proposed minimum print (1.75 in) and embroidery (2.25 in) sizes.
 - [ ] **Lookbook page**, if wanted (left out until there's content).
 - [ ] **Wording to review with Richard** (new in the October 2026 home page): the release-status sentences, the button labels “View Thorns to Lilies” and “See all 10 pieces”, the About “Clothing” line (“That’s where the artwork gets seen, and where a conversation can start.”), the bag's notices for saved pieces, the delivery line for a piece that can be ordered before times are confirmed (“Not confirmed yet. Ask us before you order if timing matters.”), three reworded FAQ answers, and two lines in `llms.txt` (“Everyone is welcome…” and “Awebound was started by Richard, who wants to serve Christ and others…”). His own note and story are verbatim.
-- [ ] **Remaining labels above headings** on About (“The name”, “Why it belongs together”, “How we make it”, the I/II/III numerals), the shop and Collections (“Latest drop · Release 01”), product pages and Contact. The home page and product cards have none; decide whether the rest follow.
-- [ ] **Close-up crops for the other pieces.** Every piece has a `detail.webp`, but only Thorns to Lilies' crop was framed for the home page. By His Hem and Stone in Motion show a strip of surface above the collar. Adjust `VIEWS` in `assets/mockups/compose.py` before featuring another piece.
-- [ ] **Story scenes** (`story-niche.webp`, `story-piece.webp` and `story()` in `assets/mockups/compose.py`) are no longer shown anywhere. Delete them if they aren't wanted for social posts.
+- [x] **Labels above headings** are gone from every page (October 2026 revamp). About keeps I, II, III on “How we make it”, a real sequence.
+- [x] **Close-up crops**: every piece's `detail.webp` frames the whole print and nothing else (`VIEWS` in `assets/mockups/compose.py`).
+- [x] **Story scenes** deleted (`story-niche.webp`, `story-piece.webp`, `story()`); each piece now has a plate instead (`plate-wide.webp`, `plate-tall.webp`, `piece.webp`).
+- [ ] **For Richard to look at (October 2026 revamp).** Wall tiles (home, Collections, “More from Behold”, About) leave the verse out; shop cards and product pages keep it. On a plate the main button takes the plate's ink (bone on the oxblood plate, not oxblood). Each piece's call (“Behold His power”) is set as large lettering on its product page. New functional wording: “See all N pieces” on the tile that fills a short row, “Release 01, 10 pieces.” on Collections, and bag lines that read “Oversized tee, Ecru, size M”.
+- [ ] **Original print files.** Close-ups are cropped from Fourthwall's 1536×2048 renders, so a print can be shown about 600px wide before it softens. With Richard's print files the close-ups could go full screen.
 - [ ] **Unsubscribe link** in drop-note emails before the first marketing send (today people unsubscribe by replying).
 
 ## Engineering follow-ups
@@ -102,7 +104,10 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 - [ ] **After a purchase** the bag isn't cleared and there's no return page from Fourthwall's checkout. Notify sign-ups don't record whether someone asked about “ordering opens” or “back in stock”, and nothing sends either email yet.
 - [ ] **Latest Drop follows the content's release date**, so adding a Release 02 that is still in preview would replace a Release 01 that can be ordered on the home page. Decide the rule before the second release.
 - [ ] Vercel Firewall rate-limit rule on Server Action POSTs (contact, subscribe, checkout). The in-app limits are per server instance.
-- [ ] `next/image` with `remotePatterns` for Fourthwall's image CDN (product photos are plain `<img>` tags today).
+- [ ] `next/image` with `remotePatterns` for Fourthwall's image CDN (product photos are plain `<img>` tags today), and smaller sources for tiles and thumbnails (every size shows the 1000×1250 file).
+- [ ] **View transitions in Safari and Firefox.** The morph and the neighbour slide were checked in Chrome only. Both browsers support same-document view transitions (Safari 18, Firefox 144); without support navigation is simply instant.
+- [ ] **Shared JavaScript.** The Supabase browser client (about 66 KB gzip) loads on every page through the header and the bag; load it only where an account is used. The wordmark's path is also inlined two or three times per page.
+- [ ] **Lamb's Mark cut-out** (`piece.webp`) is 154 KB: its distressed twill doesn't compress. It only loads if that cap leads the home page.
 - [ ] Error monitoring (for example Sentry).
 - [ ] Privacy-friendly analytics, and a matching update to the privacy policy.
 - [ ] Accessibility pass with real screen readers (VoiceOver, NVDA) on the journey, filters and bag.

@@ -15,6 +15,7 @@ export { ThornRule, type ThornRuleProps } from "./components/thorn-rule";
 export { Header, type HeaderProps, type NavLink } from "./components/header";
 export { Hero, type HeroProps, type Action } from "./components/hero";
 export { ProductCard, type ProductCardProps } from "./components/product-card";
+export { Plate, type PlateProps } from "./components/plate";
 export { Swatches, type SwatchesProps, type SwatchColor } from "./components/swatches";
 export { SizeSelector, type SizeSelectorProps } from "./components/size-selector";
 export { CollectionBanner, type CollectionBannerProps } from "./components/collection-banner";

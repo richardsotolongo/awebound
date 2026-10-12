@@ -213,7 +213,6 @@ export default function FaqPage() {
   return (
     <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
       <PageHeader
-        eyebrow="FAQ"
         title="Questions, answered"
         intro={<>Can’t find what you need? Write to {mail}.</>}
       />
