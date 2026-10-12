@@ -22,25 +22,26 @@ const SOLD_OUT_CODES = new Set([
 /** Re-prices the shopper's bag from the live catalog. */
 export async function validateBag(lines: BagLineInput[]): Promise<Bag> {
   const catalog = await getCatalog();
-  return priceBag(lines, catalog.findVariants(lines.map((l) => l.sku)));
+  return priceBag(lines, catalog.findVariants(lines));
 }
 
 /**
- * Creates a Fourthwall cart from the bag's available lines and returns the hosted checkout URL.
- * Site SKUs are Fourthwall variant ids, so lines map straight to cart items.
+ * Creates a Fourthwall cart from the bag's lines that can be ordered now and returns the hosted
+ * checkout URL. Site SKUs are Fourthwall variant ids, so lines map straight to cart items.
+ * Previews aren't in Fourthwall yet: they are left out and stay saved in the shopper's bag.
  */
 export async function startCheckout(
   input: BagLineInput[],
   customerId?: string,
 ): Promise<CheckoutResult> {
   const catalog = await getCatalog();
-  const priced = priceBag(input, catalog.findVariants(input.map((l) => l.sku)));
-  const lines = priced.lines.filter((l) => l.available);
-  if (lines.length === 0) throw new UserError("Your bag has nothing available to check out.");
-  // Previews aren't in Fourthwall yet, so there is nothing to put in a cart.
-  if (lines.some((l) => catalog.findBySlug(l.productSlug)?.preview)) {
+  const priced = priceBag(input, catalog.findVariants(input));
+  const lines = priced.lines.filter((l) => l.available && !l.preview);
+  if (lines.length === 0) {
     throw new UserError(
-      "Ordering isn’t open yet. Your bag keeps your selections, and we’ll email you when ordering opens if you leave your address.",
+      priced.lines.some((l) => l.preview)
+        ? "The pieces in your bag aren’t open for ordering yet. They stay saved, and we’ll email you when they open if you leave your address."
+        : "Your bag has nothing available to check out.",
     );
   }
 
@@ -69,26 +70,33 @@ export async function startCheckout(
 }
 
 /**
- * Prices a bag against the catalog. The client's copy of prices is never trusted: unknown SKUs
- * are dropped, sold-out lines are kept but flagged, duplicate SKUs are merged and quantities capped.
+ * Prices a bag against the catalog (`catalog` maps each line's SKU to its variant, see
+ * findVariants). The client's copy of prices is never trusted: lines that no longer match a
+ * variant are dropped, sold-out lines are kept but flagged, lines for the same variant are merged
+ * and quantities capped. A line comes back under its variant's current SKU.
  */
 export function priceBag(input: BagLineInput[], catalog: Map<string, VariantWithProduct>): Bag {
   const currency = catalog.values().next().value?.product.currency ?? CURRENCY;
   const issues: BagIssue[] = [];
-  const merged = new Map<string, number>();
-  for (const line of input) merged.set(line.sku, (merged.get(line.sku) ?? 0) + line.quantity);
-
-  const lines: BagLine[] = [];
-  for (const [sku, requested] of merged) {
-    const found = catalog.get(sku);
+  const merged = new Map<string, { found: VariantWithProduct; requested: number }>();
+  for (const line of input) {
+    const found = catalog.get(line.sku);
     if (!found) {
-      issues.push({
-        sku,
-        kind: "not_found",
-        message: "This item is no longer in the shop and was removed.",
-      });
+      if (!issues.some((i) => i.sku === line.sku)) {
+        issues.push({
+          sku: line.sku,
+          kind: "not_found",
+          message: "A piece in your bag is no longer available and was removed.",
+        });
+      }
       continue;
     }
+    const requested = (merged.get(found.variant.sku)?.requested ?? 0) + line.quantity;
+    merged.set(found.variant.sku, { found, requested });
+  }
+
+  const lines: BagLine[] = [];
+  for (const [sku, { found, requested }] of merged) {
     const quantity = Math.min(requested, MAX_LINE_QUANTITY);
     if (quantity !== requested) {
       issues.push({
@@ -121,8 +129,9 @@ export function priceBag(input: BagLineInput[], catalog: Map<string, VariantWith
     });
   }
 
+  // What checkout would charge now: previews and sold-out lines are not part of it.
   const subtotalCents = lines
-    .filter((l) => l.available)
+    .filter((l) => l.available && !l.preview)
     .reduce((sum, l) => sum + l.unitPriceCents * l.quantity, 0);
 
   return { lines, subtotalCents, currency, issues };

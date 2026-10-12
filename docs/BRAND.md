@@ -2,7 +2,9 @@
 
 > This is the repo copy of the `awebound-brand` skill's guide (`.claude/skills/awebound-brand/SKILL.md`). Keep the two in step.
 
-Awebound is an independent Christian apparel brand, founded by Richard, for believers aged 18 to 30 who are not ashamed to express their faith and want to wear it boldly. Awebound makes clothing rooted in Scripture and reverence for Jesus Christ: every piece tells part of His story in bold art and lettering. The range covers tees, oversized tees, hoodies, tank tops and hats, with more to come.
+Awebound is an independent Christian apparel brand, founded by Richard out of his faith and reverence for Jesus Christ. Awebound makes clothing rooted in Scripture: every piece tells part of His story in bold art and lettering. The range covers tees, oversized tees, hoodies, tank tops and hats, with more to come.
+
+**The store welcomes everyone.** Someone who doesn’t share Richard’s faith should still find the clothes beautiful, understand where they come from and buy comfortably. The site says what Awebound makes and why. It never tells a visitor what to believe, assumes they believe, or says who the clothes are “for”.
 
 Tagline: **Bound in awe. Worn without shame.** (Romans 1:16 is behind the second half.)
 
@@ -40,11 +42,11 @@ Break one and the work is off-brand no matter how good it looks.
 
 Three families, each with one job. Load only the files used, self-hosted, with fallbacks.
 
-| Role               | Family                                                    | Use                                                                                                                                                                                                                                   |
-| ------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Display            | **Grenze Gotisch** (variable, ~600)                       | The hero headline, collection names ("Behold"), selected major headings. Mixed case for headings; the hero headline alone is set in caps (BOUND IN AWE. / WORN WITHOUT SHAME.). Prominent and restrained so it supports the wordmark. |
-| Scripture          | **Cormorant Garamond Italic 500** (a genuine italic file) | Quotations only. About 23px beside a product name, 19px in cards, up to 30px for a featured verse; no added letter spacing; line height about 1.4.                                                                                    |
-| Body and interface | **Manrope** (variable)                                    | Paragraphs (16–18px, generous line height), navigation, labels, buttons, prices, filters, forms, sizing, shipping, Scripture references, and product names (800 weight, caps, slight tracking).                                       |
+| Role               | Family                                                    | Use                                                                                                                                                                                                                                                          |
+| ------------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Display            | **Grenze Gotisch** (variable, ~600)                       | The hero headline, collection names ("Behold"), selected major headings. Always mixed case, the home headline included (“Bound in awe. / Worn without shame.”): blackletter capitals are hard to read. Prominent and restrained so it supports the wordmark. |
+| Scripture          | **Cormorant Garamond Italic 500** (a genuine italic file) | Quotations only. About 23px beside a product name, 19px in cards, up to 30px for a featured verse; no added letter spacing; line height about 1.4.                                                                                                           |
+| Body and interface | **Manrope** (variable)                                    | Paragraphs (16–18px, generous line height), navigation, labels, buttons, prices, filters, forms, sizing, shipping, Scripture references, and product names (800 weight, caps, slight tracking).                                                              |
 
 Avoid gothic type for paragraphs, sizing, numbers and roman numerals (they turn to blackletter shapes; set numerals in Manrope); stretching or compressing any font to imitate the wordmark; distressed effects; heavy letter spacing in Scripture; a fourth decorative face.
 
@@ -54,11 +56,12 @@ Avoid gothic type for paragraphs, sizing, numbers and roman numerals (they turn 
 - **Latest Drop** always means the newest release with pieces on the site, worked out from the catalog, never hard-coded. Say "Latest Drop", not "New Collection".
 - The shop has two selectors that combine: **Collection** (Latest Drop, All Collections, then each release by name) and **Category** (All Products, Tees, Oversized Tees, Hoodies, Hats). Show accurate counts and a clear active state, an empty state that says what is missing with a reset, and shareable URLs (`/shop?collection=behold&category=hats`; `/collections/<slug>` opens the shop filtered to it).
 - The main navigation is Shop, Collections, About, Contact, with the account link (Sign in or Account) and the bag beside it. **Collections** lists only releases that exist: never fictional or empty "coming soon" collections.
-- **Release status**. While a release is in preview (its pieces aren't orderable yet): show "Release 01 — Behold — Coming Soon" by the opening buttons; buttons read **Explore Behold** and **Get Release Updates** (to the email sign-up); product pages say "Ordering isn’t open yet", the button reads **Save to bag**, and the bag explains that it saves selections on this device and doesn't place an order or charge anyone. Never announce a launch date until it is confirmed. Once ordering opens, labels switch (Shop Behold, Add to bag, Check out) and preview messages go.
+- **Release status** is one plain sentence, never a label, chip or dot. A release is in _preview_ while none of its pieces can be ordered (“Ordering for Behold isn’t open yet.”), _partial_ once some can (“Some Behold pieces can be ordered now. The rest are still in preview.”) and _open_ when all can, when nothing is said. A piece speaks for itself: “Sold out”, “Some sizes sold out”, or, inside a partial release, “Not open for ordering yet”. Never say ordering isn’t open beside a piece that can be ordered, and never announce a launch date until it is confirmed.
+- **Previews and the bag.** A preview’s product page says ordering isn’t open yet, the button reads **Save to bag**, and it explains that saving keeps the size and color on this device and doesn’t place an order or charge anyone. In the bag, pieces that can be ordered go to checkout; saved previews stay, marked “Not open for ordering yet. Saved for later.”, and are left out of the checkout total. A selection saved before a piece went on sale carries over when it is published.
 
 ## Presenting a piece
 
-- **Card** (home grid, shop, related): the whole garment showing its main artwork; garment type and price; the name; the NIV quote and its label. The card links to the product page. No color subtitle ("Tee · Faded black") and no code.
+- **Card** (home grid, shop, related): the whole garment showing its main artwork; the name first; garment type and price on one row beneath it (“From $40” when sizes differ in price); a plain status line when one applies; the NIV quote and its label. The card links to the product page. Nothing sits above the name, and there is no color subtitle ("Tee · Faded black") and no code.
 - **Product page**, top to bottom: release and garment type; the name; the quote and its label beside the name (not repeated lower down); price; color (name beside the swatch) and size with a size guide; Save to bag or Add to bag; **delivery and returns** in brief; the design story (theme, the call such as "Behold His mercy", what the art shows and what it means); **Product details** (garment, fit, color, front, back, inks or thread, fabric); then the previous and next pieces and the rest of the release.
 - **Delivery and returns summary** beside the buy button: made to order; production time and shipping time stated separately; how shipping is charged (calculated at checkout for the address, shown before paying); links to the size guide and the returns and refunds policy; the difference between a problem with an order (damage, a misprint or defect, or the wrong item or size sent, reported within 30 days of delivery with a photo: replaced at no cost, or refunded if a replacement isn't possible) and a size the customer chose that doesn't fit (made to order, so no returns or exchanges for it). Only confirmed details: until production and shipping times are confirmed, say they will be confirmed before ordering opens.
 - Selected size and color always show in the bag and order summary; cut, fit and fabric in Product details; measurements and sizing advice in the size guide.
@@ -67,22 +70,21 @@ Avoid gothic type for paragraphs, sizing, numbers and roman numerals (they turn 
 
 ## Home page order
 
-1. Garment-led hero: the clothes beside the label CHRISTIAN APPAREL, the headline, the brand paragraph ("Awebound makes clothing rooted in Scripture and reverence for Jesus Christ. Every piece tells part of His story in bold art and lettering, from the storm He calmed to the tomb He left empty."), the release status and its two buttons.
-2. A short introduction to the latest release: its theme and its connection to Scripture.
-3. Every piece in the release, in its order.
-4. Two featured design stories: the piece hanging in a pointed stone niche in its own color (the garment drifts slightly against the niche on scroll; still under reduced motion), the moment in Scripture and how the artwork carries it.
-5. A concise founder story.
-6. The release sign-up: a clear reason to leave an email (hear when the release can be ordered).
+1. **The opening.** The headline “Bound in awe. Worn without shame.” with no label above it; the brand paragraph ("Awebound makes clothing rooted in Scripture and reverence for Jesus Christ. Every piece tells part of His story in bold art and lettering, from the storm He calmed to the tomb He left empty."); two buttons, **View [piece]** to its product page and **See all 10 pieces** to the shop; and the release-status sentence when ordering isn’t fully open. Beside the words: one piece shown whole (the release’s first featured piece), a close-up of its print with one sentence on what the art shows, and its name, price and NIV quote. On phones the words and buttons come first, then the piece: the first button must be on the first screen.
+2. **Richard’s note**, on bone paper: his portrait, the heading “My faith in God comes first.”, his name, his two sentences and **Read my story**.
+3. **The release**: its name, its one-line call and reference, then every piece in order.
+4. **The sign-up** for release updates, which nobody has to use.
 
-Motion is short and never hides words: decoration may draw or move, but artwork, Scripture and buttons stay readable throughout (no long fades, nothing starting near invisible), anchors land below the sticky header, and reduced-motion settings get still, complete pages. Test on phones as well as desktop.
+What the page leaves out on purpose: labels above headings, status chips, glows, stone-niche scenes, and any animation on load or on scroll. Elsewhere, motion is short and never hides words: artwork, Scripture and buttons stay readable throughout, anchors land below the sticky header, and reduced-motion settings get still, complete pages. Test on phones as well as desktop.
 
 ## Imagery and product photos
 
 - Product images show **the item exactly as Fourthwall will make it**, and follow each product's image list in Fourthwall, in the same order: the first is the listing image. Tees and hoodies have four images, caps six. Finished photos are shown as they are (cropped to 4:5); Fourthwall's cut-out renders are placed on the piece's own surface. A piece not yet in Fourthwall uses a clean cutout of the approved mockup. Each garment sits on its own surface, with a soft realistic shadow and enough contrast to set the garment apart. The set shares the 4:5 canvas, margins and garment scale (tees about three quarters of the width) so the grid reads as one family; each piece gets its own surface, a color drawn from its artwork with its own texture and light, so every piece looks distinct.
 - Behold surfaces: Still the Storm, deep storm slate with cloud-soft texture lit from above; By His Hem, muted sage plaster (the rust print's complement); Thorns to Lilies, deep oxblood plaster under a spotlight; Torn Veil, warm parchment crossed by a shaft of light; Stone in Motion, dusty cornflower stone with a fine speckle; To Live Is Christ, warm ochre plaster lit from above; The Passage, burnt terracotta plaster under a spotlight; Wonderfully Made, dusty rose paper lit from above; Lamb's Mark, cool bone linen with a narrow oxblood band at the base; Signature Cap, warm concrete with a fine speckle lit from above.
-- Home design stories use a rendered scene per piece: the garment hanging in a pointed stone niche in its surface color (`story-niche.webp` and `story-piece.webp` beside each piece's images). No line art behind the pieces.
+- The home page’s close-up (`detail.webp` beside each piece’s images) is a crop of the artwork from its Fourthwall render: the whole print on its fabric, never enlarged, retouched or recolored. It is not part of the product gallery. Story scenes (a garment hanging in a stone niche) are no longer shown on the site.
+- Richard’s portrait (`apps/web/public/about/richard-*.webp`): captions and alt text name Richard and nothing he is wearing, and it is never presented as a photo of a product.
 - The product stays the focal point: preserve the artwork and garment colors exactly; the listing image always shows the whole garment; artwork crops are secondary images; no props or textures over the print; no fog, dramatic effects, glows or white outlines; clean garment edges. Changing the page color doesn't fix an embedded white background: cut the garment out and composite it.
-- Keep the source images intact. In the repo, `assets/mockups/fourthwall.json` lists each product's Fourthwall images in order and `fourthwall.py` downloads them; `assets/mockups/source` holds the approved mockups and `cutout.py` cuts them out; `compose.py` builds the site images (`1.webp`, `2.webp`, …) and the story scenes.
+- Keep the source images intact. In the repo, `assets/mockups/fourthwall.json` lists each product's Fourthwall images in order and `fourthwall.py` downloads them; `assets/mockups/source` holds the approved mockups and `cutout.py` cuts them out; `compose.py` builds the site images (`1.webp`, `2.webp`, …) and each piece’s close-up.
 - New apparel art: symbols only (above), engraved line work, bone, black, deep red and the occasional single accent ink (Stone in Motion's cobalt).
 
 ## Voice
@@ -90,10 +92,11 @@ Motion is short and never hides words: decoration may draw or move, but artwork,
 Reverent, weighty, sure of itself: short sentences, concrete images from Scripture, no sermons, no exclamation marks, no hype words ("insane", "fire", "drip"), no fear or guilt ("Don't be lukewarm"). Sentence case in copy (buttons display caps through styling; button and selector labels may be title case, as in Explore Behold, Latest Drop). Emoji only in social captions, at most one.
 
 - **Design and meaning get equal attention.** Talk about the art, lettering and garment plainly, and let the Scripture and its meaning carry the faith.
-- **Conversations about Christ are a natural outcome**, not the sales pitch: when someone asks what a piece means, the wearer gets to answer. "We plant the seed; God makes it grow" (1 Corinthians 3:6).
+- **Three voices, kept apart.** What Awebound makes: plain statements about the clothes and where they come from. What the passage says: the exact quotation, and one sentence on what the art shows. What Richard intends: his own first person, under his name. New marketing copy is functional (where a button goes, what can be ordered).
+- **Conversations about Jesus are Richard’s hope**, not the sales pitch. Say it as his intention (“artwork that… opens the door to conversations about Jesus Christ”). Don’t tell wearers what they will say, and don’t assume the reader believes.
 - **Bound in awe**: held by who He is, letting reverence for Jesus Christ shape what we make and wear. **Worn without shame**: not ashamed of the gospel.
-- **Founder story**: use only Richard's own stated words. He started Awebound for people who are not ashamed to express their faith and want to wear it boldly; he built it with faith at the forefront of every design; every design tells a story about our Lord and Savior, Jesus Christ; the hope is that each piece starts a conversation about Him. About himself (the first-person note and portrait on About): a Florida native and a Christian; his faith in God comes first; living for Christ is his sole purpose and priority in life; creating Awebound is one branch of hopefully being used by God to start conversations wherever the apparel is bought. Never invent a testimony, background or experience beyond that. Ask Richard for anything more personal.
-- **Sound like a person.** Active voice, plain words, contractions where they're natural, short sentences, concrete detail from the passage. Cut filler, stacked hedges, "not X, but Y" turns, colon-led one-liners, lists of three used for rhythm, and summing-up lines at the end of a paragraph. Write for Christians who are curious about Awebound, not for search engines. US English.
+- **Founder story**: Richard’s own words, as he supplied them in October 2026, and nothing invented beyond them. The home page carries his short note under the heading “My faith in God comes first.”: “I started Awebound with a desire to serve Christ and others through clothing rooted in Scripture. I want to create pieces people love wearing, with artwork that reflects biblical stories and opens the door to conversations about Jesus Christ.” Its link reads **Read my story**. About carries his full story (`STORY` in `apps/web/src/app/about/page.tsx`): he serves his community in law enforcement and leads a men’s Bible study; he believes we are saved by grace through faith in Jesus Christ, and his desire to serve Him comes from gratitude for that grace; he is drawn to expressive lettering, oversized fits and artwork that tells a story; Behold is the beginning of the work; and whoever comes for the artwork, the meaning behind it or simply to learn more is welcome. Keep his beliefs in his first person. Never add a testimony, struggle, rank, place, congregation or quotation; never turn his convictions into claims about the visitor; never tie a spiritual promise to buying; and don’t wrap his story in quotation marks or set it like Scripture. Ask Richard for anything more.
+- **Sound like a person.** Active voice, plain words, contractions where they're natural, short sentences, concrete detail from the passage. Cut filler, stacked hedges, "not X, but Y" turns, colon-led one-liners, lists of three used for rhythm, and summing-up lines at the end of a paragraph. Write for anyone curious about Awebound, Christian or not, and not for search engines. US English.
 - Say the actual cut of each product (tee, oversized tee, hoodie, tank, cap); never describe the whole brand as one fit.
 
 ### Product copy fields
@@ -111,7 +114,7 @@ Fit: [cut and silhouette] · Fabric: [the blank's fabric, from Fourthwall]
 
 ### Calls to action
 
-Explore [release] · Get Release Updates · Shop [release] (once ordering opens) · View [piece] · Save to bag (preview) or Add to bag · Notify me · Read our story. Avoid "Buy now" and countdown pressure.
+View [piece] · See all [n] pieces · Explore [release] (on Collections) · Save to bag (preview) or Add to bag · Check out · Notify me · Read my story (under Richard’s note). A button says exactly where it goes. Avoid "Buy now" and countdown pressure.
 
 ## Behold (Release 01)
 
@@ -128,7 +131,7 @@ Explore [release] · Get Release Updates · Shop [release] (once ordering opens)
 | Lamb's Mark                       | Distressed cap with adjustable strap, Black | $30   | “Look, the Lamb of God, who takes away the sin of the world!” John 1:29 — NIV, excerpt                                          | Sacrifice    |
 | Signature Cap                     | Structured cap with snap back, Black        | $25   | “In him we have redemption through his blood, the forgiveness of sins” Ephesians 1:7 — NIV, excerpt                             | Redemption   |
 
-Larger sizes cost more: tees $42 in 2XL and $44 in 3XL (the larger-cut organic tee stops at 2XL), hoodies $62 and $64. Caps are one size. Live prices come from Fourthwall; the content file mirrors them for previews.
+Larger sizes cost more: tees $42 in 2XL and $44 in 3XL (the larger-cut organic tee stops at 2XL), hoodies $62 and $64, so those pieces are listed as “From $40” and “From $60”. Caps are one size. Live prices come from Fourthwall; the content file mirrors them for previews.
 
 The Signature Cap prints no reference; the website pairs it with Ephesians 1:7 because its red thorns stand for Christ's sacrifice, the meaning Richard gave it.
 
@@ -153,16 +156,18 @@ Site-wide verses: Romans 1:16 (excerpt, "worn without shame") and 1 Corinthians 
 - Grenze Gotisch only for display; Cormorant Garamond Italic only for quotations; Manrope for everything else; body 16–18px.
 - No internal codes visible; no "streetwear"; no garment/color subtitles where the Scripture belongs.
 - Every quotation is exact NIV with a matching label (and "excerpt" when partial), wraps in full, and agrees across home, shop and product page. Printed art isn't labeled NIV unless it uses NIV wording. The Biblica notice is present wherever NIV is quoted.
-- Release status is honest: preview messages while ordering is closed, no unconfirmed dates or delivery times.
+- Release status is honest and plain: one sentence for a preview or partly open release, nothing said beside a piece that can be ordered, no unconfirmed dates or delivery times.
+- On the home page and product cards: no small label above a heading, no status chips, no middle-dot metadata strings, no decorative numbering, and no entrance or scroll animation. Don’t add new labels elsewhere.
+- Nothing tells the visitor what to believe or who the clothes are for; Richard’s convictions stay in his first person.
 - Symbols-only imagery; styled product images with no white backgrounds, whole garment first.
-- Copy has no exclamation marks, hype, fear or guilt, and no invented founder details.
+- Copy has no exclamation marks, hype, fear or guilt, no invented founder details, and never names what Richard wears in the portrait.
 
 ## Open items
 
 - Biblica's written permission for NIV on the website, and separately for By His Hem, whose back prints NIV wording, before launch. The Passage (“I will fear no evil”) and Wonderfully Made (“Fearfully & wonderfully made”) print wording that the King James Version shares.
 - Publishing the ten Behold products in Fourthwall, which turns on live prices, sizes and checkout and moves the release out of preview.
 - Confirmed production and shipping times and shipping rates (Fourthwall), then fill them on the product pages and FAQ.
-- Photographs of real samples to replace the Fourthwall renders.
+- Photographs of real samples to replace the Fourthwall renders, and photos of the clothes being worn.
 - Social links (Instagram, TikTok) for the footer.
 - A designer's cleanup of the traced wordmark before large back prints; physical tests of the proposed minimum print (1.75in) and embroidery (2.25in) sizes.
 

@@ -6,7 +6,7 @@ import { SITE, pageMeta } from "@/lib/site";
 export const metadata = pageMeta({
   path: "/contact",
   title: "Contact",
-  description: `Questions about an order, sizing or wholesale for your church. Write to us at ${SITE.contactEmail}.`,
+  description: `Questions about an order, sizing or wholesale for a church or ministry. Write to us at ${SITE.contactEmail}.`,
 });
 
 export default function ContactPage() {
@@ -15,7 +15,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="Contact"
         title="Write to us"
-        intro="Questions about an order, sizing, wholesale for your church or anything else. A real person reads every message."
+        intro="Questions about an order, sizing, wholesale for a church or ministry, or anything else. A real person reads every message."
       />
       <div className="split">
         <ContactForm />

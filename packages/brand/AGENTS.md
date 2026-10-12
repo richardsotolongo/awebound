@@ -19,11 +19,12 @@ The Awebound brand system as code. The rules are in the `awebound-brand` skill a
 - Wordmark and Thorn Cross come from `<Wordmark />` / `<ThornCross />` (or the SVGs). Never type AWEBOUND, never split letters from thorns, never stretch, outline, shadow or gradient them. Wordmark ≥ 120px wide; smaller → `ThornCross size="small"`.
 - Crosses stay upright and whole. The Thorn Cross is the brand mark.
 - Type (fonts are loaded by the app and exposed as `--font-grenze`, `--font-cormorant`, `--font-manrope`):
-  - Grenze Gotisch (`--font-display`): `.aw-display`, `.aw-h1`, `.aw-h2`, collection names. Mixed case; only the home hero headline is set in caps. Never for paragraphs, sizing, prices or numerals.
+  - Grenze Gotisch (`--font-display`): `.aw-display`, `.aw-h1`, `.aw-h2`, collection names. Always mixed case (blackletter capitals are hard to read). Never for paragraphs, sizing, prices or numerals.
   - Cormorant Garamond Italic 500 (`--font-scripture`): `.aw-quote` / `ScriptureQuote`, Scripture quotations only. No letter spacing.
   - Manrope (`--font-sans`): everything else, including `.aw-product-name` and `.aw-card-name` (800, caps), `.aw-label`, `.aw-meta`, buttons, `.aw-scripture` references, body 16–18px. No `font-stretch`, no faux styles.
 - `ScriptureQuote` wraps the text in curly quotes (inner double quotes become single) and labels it "Reference — NIV" (", excerpt" when partial). Quotes always wrap in full.
-- `ProductCard` shows the whole garment, garment type and price, the name and the Scripture quote. It takes no design code: codes are never shown.
+- `ProductCard` shows the whole garment, then the name, the garment type and price on one row, an optional plain status line (“Sold out”), and the Scripture quote. The name comes first, so no small label sits above it. It takes no design code: codes are never shown.
+- `Header` switches to its phone layout (menu, wordmark, account and bag icons) below 900px: the links, account and bag need that much to sit on one line. `AltarPanel` takes `as="h1"` when it opens a page.
 - Oxblood (`--primary`) is a fill. Accent text on dark is `--accent-text` (copper); Scripture is `--scripture` (gold).
 - One `.aw-btn-primary` and one `--glow-primary` per screen. The footer's sign-up button is secondary for that reason.
 - Corners 0 or 2px. No pills. Touch targets ≥ `--tap-min` (44px).

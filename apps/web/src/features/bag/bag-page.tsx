@@ -17,7 +17,14 @@ export function BagPageContents() {
   }, []);
 
   if (!hydrated) return <p className="aw-small">Loading your bag…</p>;
-  if (lines.length === 0) return <BagEmpty />;
+  if (lines.length === 0) {
+    return (
+      <>
+        <BagIssues issues={issues} />
+        <BagEmpty />
+      </>
+    );
+  }
 
   return (
     <div className="split">

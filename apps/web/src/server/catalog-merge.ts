@@ -11,6 +11,9 @@ export interface MergedCatalog {
   missing: string[];
 }
 
+/** A piece before its release's status is known (it depends on the other pieces). */
+type Piece = Omit<ProductDetail, "releaseStatus">;
+
 const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
 function inStock(product: FourthwallProduct, variant: FourthwallVariant): boolean {
@@ -32,9 +35,9 @@ const skuPart = (value: string) =>
 
 /**
  * A content entry that isn't in Fourthwall yet: shown with the site's price, sizes and mockups so
- * the release can be seen before it's for sale. Checkout refuses these lines (see server/bag.ts).
+ * the release can be seen before it's for sale. Checkout leaves these lines out (see server/bag.ts).
  */
-function previewProduct(item: ProductContent): ProductDetail {
+function previewProduct(item: ProductContent): Piece {
   const variants = item.colors.flatMap((color) =>
     item.sizes.map((size) => ({
       sku: `${item.code}-${skuPart(color.name)}-${skuPart(size)}`,
@@ -52,9 +55,11 @@ function previewProduct(item: ProductContent): ProductDetail {
     collection: item.collection,
     position: item.position,
     preview: true,
+    availability: "preview",
     category: item.category,
     baseColor: item.colors[0]?.name ?? "",
     priceCents: item.priceCents,
+    priceVaries: variants.some((v) => v.priceCents !== item.priceCents),
     currency: "USD",
     colors: item.colors,
     sizes: item.sizes,
@@ -89,7 +94,7 @@ export function mergeFourthwallCatalog(
   );
   const used = new Set<string>();
   const missing: string[] = [];
-  const merged: ProductDetail[] = [];
+  const merged: Piece[] = [];
 
   for (const item of content.products) {
     const fw = bySlug.get(item.fourthwallSlug);
@@ -126,6 +131,9 @@ export function mergeFourthwallCatalog(
     const sizes = [...new Set(variants.map((v) => v.size))].sort(
       (a, b) => sizeRank(a) - sizeRank(b),
     );
+    // The listed price is the lowest one a shopper can pay now, so a sold-out size never sets it.
+    const inStockNow = variants.filter((v) => v.available);
+    const prices = (inStockNow.length > 0 ? inStockNow : variants).map((v) => v.priceCents);
 
     // The site's own images win: they are Fourthwall's renders of this product (or approved
     // mockups) placed on the piece's styled surface by assets/mockups. Fourthwall's photos are the
@@ -147,9 +155,16 @@ export function mergeFourthwallCatalog(
       collection: item.collection,
       position: item.position,
       preview: false,
+      availability:
+        inStockNow.length === 0
+          ? "sold_out"
+          : inStockNow.length < variants.length
+            ? "partial"
+            : "available",
       category: item.category,
       baseColor: colors[0]?.name ?? fallbackColor,
-      priceCents: Math.min(...variants.map((v) => v.priceCents)),
+      priceCents: Math.min(...prices),
+      priceVaries: inStockNow.length > 0 && new Set(prices).size > 1,
       currency: first.unitPrice.currency,
       colors,
       sizes,
@@ -165,11 +180,20 @@ export function mergeFourthwallCatalog(
     });
   }
 
+  // "partial" promises that something can be ordered, so a published piece that is sold out
+  // doesn't count towards it.
+  const releaseStatus = (slug: string) => {
+    const pieces = merged.filter((p) => p.collection.slug === slug);
+    if (!pieces.some((p) => p.preview)) return "open";
+    const canOrder = (p: Piece) => p.availability === "available" || p.availability === "partial";
+    return pieces.some(canOrder) ? "partial" : "preview";
+  };
+
   return {
     catalog: {
       categories: content.categories,
       collections: content.collections,
-      products: merged,
+      products: merged.map((p) => ({ ...p, releaseStatus: releaseStatus(p.collection.slug) })),
     },
     unmatched: [...bySlug.keys()].filter((slug) => !used.has(slug)),
     missing,

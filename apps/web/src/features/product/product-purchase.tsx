@@ -6,13 +6,14 @@ import { useMemo, useRef, useState } from "react";
 import { Sheet } from "@/components/sheet";
 import { useBag } from "@/features/bag/bag-store";
 import { NotifyForm } from "@/features/bag/notify-form";
+import { priceLabel } from "@/features/catalog/query";
 import { DeliverySummary } from "./delivery-summary";
 import { SizeGuide } from "./size-guide";
 
 /**
- * Price, color, size and the bag button, then delivery and returns in brief. While the release
- * is in preview the button saves the selection to the bag and says plainly that nothing is
- * ordered; once the piece is in Fourthwall it adds to the bag for checkout.
+ * Price, color, size and the bag button, then delivery and returns in brief. While the piece is
+ * a preview the button saves the selection to the bag and says plainly that nothing is ordered;
+ * once the piece is in Fourthwall it adds to the bag for checkout.
  */
 export function ProductPurchase({ product }: { product: ProductDetail }) {
   const add = useBag((s) => s.add);
@@ -31,7 +32,10 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
   const soldOutSizes = variantsForColor.filter((v) => !v.available).map((v) => v.size);
   const allSoldOut = variantsForColor.length > 0 && soldOutSizes.length === variantsForColor.length;
   const variant = variantsForColor.find((v) => v.size === size);
-  const price = variant?.priceCents ?? product.priceCents;
+  // Until a size is chosen the price is the listed one ("From $40" when sizes differ).
+  const price = variant ? formatPrice(variant.priceCents, product.currency) : priceLabel(product);
+  // In a release where other pieces can already be ordered, speak for this piece only.
+  const releaseInPreview = product.releaseStatus === "preview";
 
   function changeColor(next: string) {
     setColor(next);
@@ -66,7 +70,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
 
   return (
     <>
-      <p className="buy-price">{formatPrice(price, product.currency)}</p>
+      <p className="buy-price">{price}</p>
 
       <div className="buy-option">
         <div className="buy-option-head">
@@ -116,10 +120,15 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
         </div>
       ) : product.preview ? (
         <div className="buy-preview">
-          <p className="buy-preview-title">Ordering isn’t open yet</p>
+          <p className="buy-preview-title">
+            {releaseInPreview
+              ? "Ordering isn’t open yet"
+              : "This piece isn’t open for ordering yet"}
+          </p>
           <p className="aw-small">
-            {product.collection.name} is in preview. Saving this piece keeps your size and color in
-            your bag on this device. It doesn’t place an order or charge you.
+            {releaseInPreview ? `${product.collection.name} is in preview. ` : ""}
+            Saving this piece keeps your size and color in your bag on this device. It doesn’t place
+            an order or charge you.
           </p>
           <Button variant="primary" block onClick={addToBag}>
             Save to bag
@@ -127,7 +136,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
           <NotifyForm
             source="product"
             productSlug={product.slug}
-            label="Email me when ordering opens"
+            label="Email me when this piece can be ordered"
           />
         </div>
       ) : (

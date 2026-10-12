@@ -12,6 +12,8 @@ export interface AltarPanelProps {
   mark?: "wordmark" | "cross" | "none";
   eyebrow?: string;
   title?: string;
+  /** Heading level for the title; "h1" when the panel opens the page. */
+  as?: "h1" | "h2";
   body?: string;
   scripture?: string;
   action?: Action;
@@ -25,6 +27,7 @@ export function AltarPanel({
   mark = "wordmark",
   eyebrow,
   title,
+  as: Heading = "h2",
   body,
   scripture,
   action,
@@ -38,7 +41,7 @@ export function AltarPanel({
         {mark === "cross" ? <ThornCross height={120} className="aw-altar-mark" /> : null}
         {mark === "wordmark" ? <Wordmark height={88} className="aw-altar-mark" /> : null}
         {eyebrow ? <p className="aw-label">{eyebrow}</p> : null}
-        {title ? <h2 className="aw-h2">{title}</h2> : null}
+        {title ? <Heading className="aw-h2">{title}</Heading> : null}
         {body ? <p className="aw-altar-body">{body}</p> : null}
         {scripture ? <ScriptureRef reference={scripture} /> : null}
         {children}

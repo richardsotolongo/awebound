@@ -5,7 +5,8 @@ A product listed in fourthwall.json gets one image per entry in its Fourthwall i
 same order (1.webp, 2.webp, ...; the first is the listing image): finished photos are cropped to
 the site's 4:5 frame, and Fourthwall's cut-out renders are placed on the piece's own surface. A
 product not listed there falls back to its approved mockup (cutouts/, made by cutout.py) in the
-views below, plus a close-up of the artwork. Every product also gets the home page's story scene.
+views below. Every product also gets detail.webp, a close-up of its artwork (the home page shows
+it beside the featured piece; it is not part of the product gallery), and a story scene.
 
 Every piece shares the canvas, margins, garment scale and a soft cast shadow, so the shop grid
 reads as one set. Each piece gets its own surface: a color drawn from its artwork, a texture
@@ -32,7 +33,7 @@ MANIFEST = json.loads((HERE / "fourthwall.json").read_text())["products"]
 OUT = HERE.parent.parent / "apps" / "web" / "public" / "products"
 
 W, H = 1000, 1250  # 4:5, the shop's image ratio
-DETAIL_W, DETAIL_H = 800, 1000
+DETAIL_W, DETAIL_H = 640, 800  # smaller than every crop below, so a close-up is never enlarged
 
 # Surface per piece: color (sRGB), texture and light. `accent` adds a narrow band along the base.
 STYLE = {
@@ -60,13 +61,15 @@ STYLE = {
 
 CAPS = ("lambs-mark", "signature-cap")
 
-# For mockup-only products: views in display order (the first is the listing image and always
-# shows the whole garment), and `detail`, a close crop of the main artwork: (view, center x,
-# center y, width), as fractions of the cutout. Its view is also the one the story scene shows.
+# `views`, for mockup-only products: views in display order (the first is the listing image and
+# always shows the whole garment). `detail`, for every product: a close crop of the main artwork,
+# (view, center x, center y, width) as fractions of the garment. Its view is also the one the
+# story scene shows.
 VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.5, 0.72)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.47, 0.42, 0.74)},
-    "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.68)},
+    # The whole print and nothing else: this close-up opens the home page.
+    "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.41, 0.48)},
     "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.46, 0.64)},
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.52, 0.45, 0.74)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.48, 0.66)},
@@ -234,10 +237,28 @@ def compose(slug: str, cutout: Image.Image, w: int, h: int, max_w: float, max_h:
     return img
 
 
-# The home page's design stories show each piece hanging in a pointed stone niche, lit from
-# above, in the piece's own color. Two layers so the page can move the garment a little against
-# the niche as it scrolls: story-niche.webp (the niche, transparent outside the arch) and
-# story-piece.webp (the garment and the shadow it casts, transparent elsewhere).
+def detail(slug: str) -> None:
+    """detail.webp: a close-up of the main artwork, cropped from the Fourthwall render of its view
+    (or the mockup cutout), downscaled and never enlarged, and laid on the piece's surface so any
+    edge that shows matches."""
+    view, cx, cy, frac = VIEWS[slug]["detail"]
+    cutout = load_garment(slug, view)
+    cw = round(cutout.width * frac)
+    ch = round(cw * DETAIL_H / DETAIL_W)
+    left = round(cutout.width * cx - cw / 2)
+    top = round(cutout.height * cy - ch / 2)
+    crop = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+    crop.paste(cutout.crop((left, top, left + cw, top + ch)), (0, 0))
+    img = to_image(backdrop(slug, DETAIL_W, DETAIL_H))
+    art = crop.resize((DETAIL_W, DETAIL_H), Image.LANCZOS)
+    img.paste(art, (0, 0), art)
+    img.save(OUT / slug / "detail.webp", "WEBP", quality=82, method=6)
+
+
+# A story scene shows a piece hanging in a pointed stone niche, lit from above, in the piece's
+# own color (the site no longer shows these; they are kept for other uses). Two layers:
+# story-niche.webp (the niche, transparent outside the arch) and story-piece.webp (the garment
+# and the shadow it casts, transparent elsewhere).
 STORY_W, STORY_H = 880, 1100
 STORY_VIEW = {slug: spec["detail"][0] for slug, spec in VIEWS.items()}
 
@@ -361,25 +382,11 @@ def main() -> None:
                     img = place_garment(trimmed(Image.open(source).convert("RGBA")))
                 img.save(folder / f"{n}.webp", "WEBP", quality=86, method=6)
             print(slug, f"{len(gallery)} images")
-            story(slug)
-            continue
-
-        for view in spec["views"]:
-            place_garment(load_garment(slug, view)).save(folder / f"{view}.webp", "WEBP", quality=86, method=6)
-        view, cx, cy, frac = spec["detail"]
-        cutout = load_garment(slug, view)
-        # Crop the artwork, then lay it on the same surface so any edge that shows matches.
-        cw = round(cutout.width * frac)
-        ch = round(cw * DETAIL_H / DETAIL_W)
-        left = round(cutout.width * cx - cw / 2)
-        top = round(cutout.height * cy - ch / 2)
-        crop = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
-        crop.paste(cutout.crop((left, top, left + cw, top + ch)), (0, 0))
-        detail = to_image(backdrop(slug, DETAIL_W, DETAIL_H))
-        art = crop.resize((DETAIL_W, DETAIL_H), Image.LANCZOS)
-        detail.paste(art, (0, 0), art)
-        detail.save(folder / "detail.webp", "WEBP", quality=88, method=6)
-        print(slug, "mockup views and detail")
+        else:
+            for view in spec["views"]:
+                place_garment(load_garment(slug, view)).save(folder / f"{view}.webp", "WEBP", quality=86, method=6)
+            print(slug, "mockup views")
+        detail(slug)
         story(slug)
 
 

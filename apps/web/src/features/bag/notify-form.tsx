@@ -43,7 +43,7 @@ export function NotifyForm({ source, productSlug, label = "Email", help }: Notif
 
   return (
     <form onSubmit={submit} className="field" noValidate>
-      <label htmlFor={id} className="aw-label">
+      <label htmlFor={id} className="field-label">
         {label}
       </label>
       {help ? <p className="field-help">{help}</p> : null}

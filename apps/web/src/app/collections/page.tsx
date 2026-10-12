@@ -1,6 +1,7 @@
 import { Button, ScriptureRef } from "@awebound/brand";
 import Link from "next/link";
 import { EMPTY_LIST } from "@/features/catalog/query";
+import { releaseStatusText } from "@/features/release/release-status";
 import { pageMeta } from "@/lib/site";
 import { getReleases, searchProducts, withFallback } from "@/server/catalog";
 
@@ -57,12 +58,7 @@ export default async function CollectionsPage() {
                 </h2>
                 <p className="aw-body">{r.tagline}</p>
                 <ScriptureRef reference={r.scriptureRef} align="start" />
-                {r.status === "preview" ? (
-                  <p className="release-status">
-                    <span className="release-status-dot" aria-hidden="true" />
-                    Coming soon: ordering isn’t open yet
-                  </p>
-                ) : null}
+                {releaseStatusText(r) ? <p className="aw-small">{releaseStatusText(r)}</p> : null}
                 <div className="aw-btn-row">
                   <Button variant="secondary" href={`/collections/${r.slug}`}>
                     Explore {r.name}

@@ -8,7 +8,7 @@ import { accountsEnabled } from "@/lib/env";
 import { useSignedIn } from "@/lib/supabase/browser";
 import { startCheckout, validateBag } from "@/server/actions";
 import { NotifyForm } from "./notify-form";
-import { bagSubtotal, useBag } from "./bag-store";
+import { bagSubtotal, orderable, saved, toLineInput, useBag } from "./bag-store";
 
 /** Re-prices the bag on the server whenever it is shown. */
 export function useBagValidation(active: boolean) {
@@ -20,25 +20,42 @@ export function useBagValidation(active: boolean) {
   });
   const key = lines.map((l) => `${l.sku}:${l.quantity}`).join("|");
 
+  // Forget past notices when the bag is closed, so reopening it starts clean.
+  const [wasActive, setWasActive] = useState(active);
+  if (wasActive !== active) {
+    setWasActive(active);
+    if (!active) setChecked({ key: "", issues: [] });
+  }
+
   useEffect(() => {
     if (!active || lines.length === 0) return;
     let cancelled = false;
-    validateBag({ lines: lines.map(({ sku, quantity }) => ({ sku, quantity })) })
+    validateBag({ lines: lines.map(toLineInput) })
       .then((result) => {
         // On failure keep the local copy; checkout re-validates anyway.
         if (cancelled || !result.ok) return;
         const bag = result.data;
-        setChecked({
+        // A removal changes the bag, which checks it again; that second check has nothing left
+        // to report, so removals already said are kept while the bag stays open.
+        setChecked((prev) => ({
           key: bag.lines.map((l) => `${l.sku}:${l.quantity}`).join("|"),
-          issues: bag.issues,
-        });
+          issues: [
+            ...prev.issues.filter(
+              (i) => i.kind === "not_found" && !bag.issues.some((b) => b.sku === i.sku),
+            ),
+            ...bag.issues,
+          ],
+        }));
+        // A new SKU or preview flag means the piece went on sale (or back) since it was saved.
         const changed =
           bag.lines.length !== lines.length ||
           bag.lines.some(
             (l, i) =>
+              l.sku !== lines[i]?.sku ||
               l.quantity !== lines[i]?.quantity ||
               l.unitPriceCents !== lines[i]?.snapshot.unitPriceCents ||
-              l.available !== lines[i]?.snapshot.available,
+              l.available !== lines[i]?.snapshot.available ||
+              l.preview !== lines[i]?.snapshot.preview,
           );
         if (changed) reconcile(bag);
       })
@@ -59,6 +76,8 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
   const lines = useBag((s) => s.lines);
   const setQuantity = useBag((s) => s.setQuantity);
   const remove = useBag((s) => s.remove);
+  // Beside pieces that can be ordered, a saved preview says why it isn't part of checkout.
+  const mixed = orderable(lines).length > 0 && saved(lines).length > 0;
 
   return (
     <ul className="bag-lines">
@@ -76,6 +95,9 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
               {snapshot.cut} · {snapshot.color} ·{" "}
               {snapshot.size === "One size" ? "One size" : `Size ${snapshot.size}`}
             </p>
+            {mixed && snapshot.preview ? (
+              <p className="aw-small">Not open for ordering yet. Saved for later.</p>
+            ) : null}
             {snapshot.available ? (
               <div className="qty" role="group" aria-label={`Quantity of ${snapshot.name}`}>
                 <button
@@ -111,22 +133,25 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-/** Subtotal and the button that hands the bag to Fourthwall's hosted checkout. */
+/**
+ * Subtotal and the button that hands the bag to Fourthwall's hosted checkout. Pieces that can
+ * be ordered go to checkout; saved previews stay in the bag. A bag of previews only gets the
+ * "ordering isn't open yet" notice instead of the button.
+ */
 export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
   const lines = useBag((s) => s.lines);
   const signedIn = useSignedIn();
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
   const subtotal = bagSubtotal(lines);
-  const available = lines.filter((l) => l.snapshot.available);
-  const preview = available.find((l) => l.snapshot.preview);
+  const open = orderable(lines);
+  const previews = saved(lines);
+  const preview = open.length === 0 ? previews[0] : undefined;
 
   async function checkout() {
     setState("loading");
     setError("");
-    const result = await startCheckout({
-      lines: available.map(({ sku, quantity }) => ({ sku, quantity })),
-    }).catch(() => null);
+    const result = await startCheckout({ lines: open.map(toLineInput) }).catch(() => null);
     if (result?.ok) {
       window.location.assign(result.data.url);
     } else {
@@ -145,25 +170,31 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
       </div>
       {preview ? (
         <div className="notice">
-          <p className="buy-preview-title">Ordering isn’t open yet</p>
+          <p className="buy-preview-title">Not open for ordering yet</p>
           <p className="aw-small">
             Your bag saves your selections on this device. It doesn’t place an order or charge you.
-            Leave your email to hear when ordering opens.
+            Leave your email to hear when these pieces can be ordered.
           </p>
           <NotifyForm
             source="product"
             productSlug={preview.snapshot.productSlug}
-            label="Email me when ordering opens"
+            label="Email me when they can be ordered"
           />
         </div>
       ) : (
         <>
+          {previews.length > 0 ? (
+            <p className="field-help">
+              The subtotal covers the pieces you can order now. The rest aren’t open for ordering
+              yet and stay saved in your bag.
+            </p>
+          ) : null}
           <p className="field-help">Shipping and tax are calculated at checkout.</p>
           <Button
             variant="primary"
             block
             onClick={checkout}
-            disabled={state === "loading" || available.length === 0}
+            disabled={state === "loading" || open.length === 0}
           >
             {state === "loading" ? "Opening checkout…" : "Check out"}
           </Button>
@@ -190,9 +221,10 @@ export function BagIssues({ issues }: { issues: BagIssue[] }) {
   if (issues.length === 0) return null;
   return (
     <div className="notice" role="status" style={{ marginBottom: "var(--space-6)" }}>
-      {issues.map((i) => (
-        <p key={`${i.sku}-${i.kind}`} className="aw-small">
-          {i.message}
+      {/* Several lines can earn the same notice (two removals); say each thing once. */}
+      {[...new Set(issues.map((i) => i.message))].map((message) => (
+        <p key={message} className="aw-small">
+          {message}
         </p>
       ))}
     </div>

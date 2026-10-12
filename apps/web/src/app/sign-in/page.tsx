@@ -26,7 +26,8 @@ export default async function SignInPage({
   const next = safeNext(params.next);
   const error = params.error ? (ERRORS[params.error] ?? ERRORS.link) : null;
   const release = await withFallback(getLatestRelease, null);
-  const open = release?.status === "open";
+  // Guest checkout exists as soon as any piece can be ordered.
+  const canOrder = release?.status === "open" || release?.status === "partial";
   const closed = accountsClosedCopy(release);
 
   return (
@@ -45,7 +46,7 @@ export default async function SignInPage({
           </span>
           <h1 className="aw-h1">Sign in</h1>
           <p className="aw-body">
-            {open
+            {canOrder
               ? "An account keeps your details in one place. You can always check out as a guest instead."
               : "An account keeps your details in one place. You won’t need one to order once ordering opens."}
           </p>

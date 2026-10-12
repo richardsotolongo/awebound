@@ -1,6 +1,8 @@
 # Brand and voice
 
-Awebound is an independent Christian apparel brand, founded by Richard, for believers aged 18 to 30 who are not ashamed to express their faith and want to wear it boldly. It makes clothing rooted in Scripture and reverence for Jesus Christ: every piece tells part of His story in bold art and lettering. The range covers tees, oversized tees, hoodies, tank tops and hats, with more to come. Never describe the whole brand as one cut or garment type.
+Awebound is an independent Christian apparel brand, founded by Richard out of his faith and reverence for Jesus Christ. It makes clothing rooted in Scripture: every piece tells part of His story in bold art and lettering. The range covers tees, oversized tees, hoodies, tank tops and hats, with more to come. Never describe the whole brand as one cut or garment type.
+
+The store welcomes everyone. Write so that someone who doesn’t share Richard’s faith still understands where the clothes come from and feels free to buy them: say what Awebound makes and why, and never tell the reader what to believe, assume they believe, or say who the clothes are “for”.
 
 Tagline: **Bound in awe. Worn without shame.** Bound in awe: held by who He is, letting reverence for Jesus Christ shape what we make and wear. Worn without shame: not ashamed of the gospel (Romans 1:16).
 
@@ -15,7 +17,8 @@ A release (`collection` in code) is a small set of pieces drawn from one call in
 ## What to say
 
 - **Design and meaning get equal attention.** Talk about the art, lettering and garment plainly, and let the Scripture and its meaning carry the faith.
-- **Conversations about Christ are a natural outcome**, not the sales pitch: when someone asks what a piece means, the wearer gets to answer. "We plant the seed; God makes it grow" (1 Corinthians 3:6).
+- **Three voices, kept apart.** What Awebound makes (plain statements about the clothes and their source), what the passage says (the exact quotation and one sentence on what the art shows), and what Richard intends (his own first person, under his name).
+- **Conversations about Jesus are Richard’s hope**, not the sales pitch. Say it as his intention; don’t tell wearers what they will say, and don’t assume the reader believes.
 - Say "Christian apparel", "clothing", "pieces" or "Awebound". Never "streetwear". Fit words such as "oversized" belong in product details and sizing.
 - In brand prose, pronouns for God are capitalized (His mercy, He is risen). Quotations keep their translation's casing.
 
@@ -31,11 +34,11 @@ A release (`collection` in code) is a small set of pieces drawn from one call in
 
 ## Sound like a person
 
-Active voice, plain words, contractions where they're natural, short sentences, concrete detail from the passage. Cut filler, stacked hedges, "not X, but Y" turns, colon-led one-liners, lists of three used for rhythm, and summing-up lines at the end of a paragraph. Write for Christians who are curious about Awebound, not for search engines. US English.
+Active voice, plain words, contractions where they're natural, short sentences, concrete detail from the passage. Cut filler, stacked hedges, "not X, but Y" turns, colon-led one-liners, lists of three used for rhythm, and summing-up lines at the end of a paragraph. Write for anyone curious about Awebound, Christian or not, and not for search engines. US English.
 
 ## Mechanics
 
-- Sentence case in copy. Buttons display caps through styling; button and selector labels may be title case (Explore Behold, Get Release Updates, Latest Drop).
+- Sentence case in copy and in button labels (buttons display caps through styling). Selector labels may be title case (Latest Drop, All Collections).
 - No exclamation marks. Emoji only in social captions, at most one, never in place of a word.
 - Never hard-code a price in copy; prices come from Fourthwall (or the preview price in the content file).
 - Only confirmed facts: no launch dates, delivery times or shipping rates until they're confirmed.
@@ -70,7 +73,13 @@ Fit: Larger oversized · dropped shoulder, extra-boxy body · Fabric: 100% organ
 
 ## Founder story
 
-Use only Richard's own stated words. He started Awebound for people who are not ashamed to express their faith and want to wear it boldly; he built it with faith at the forefront of every design; every design tells a story about our Lord and Savior, Jesus Christ; the hope is that each piece starts a conversation about Him. About himself (the first-person note and portrait on About): a Florida native and a Christian; his faith in God comes first; living for Christ is his sole purpose and priority in life; creating Awebound is one branch of hopefully being used by God to start conversations wherever the apparel is bought. Never invent a testimony, background or experience beyond that. Ask Richard for anything more personal.
+Richard’s own words, as he supplied them in October 2026, and nothing invented beyond them.
+
+- **Home page note.** Heading: “My faith in God comes first.” Body: “I started Awebound with a desire to serve Christ and others through clothing rooted in Scripture. I want to create pieces people love wearing, with artwork that reflects biblical stories and opens the door to conversations about Jesus Christ.” Link: **Read my story**.
+- **About, “My story”.** His full text lives in `STORY` in `apps/web/src/app/about/page.tsx`: he is the founder; his faith in God comes first; he serves his community in law enforcement and leads a men’s Bible study; he believes we are saved by grace through faith in Jesus Christ, and his desire to serve Him comes from gratitude for that grace; he is drawn to expressive lettering, oversized fits and artwork that tells a story; Behold is the beginning of the work; whoever comes for the artwork, the meaning behind it or simply to learn more is welcome.
+- Keep his beliefs in his first person. Never add a testimony, struggle, rank, place, congregation or quotation; never turn his convictions into claims about the visitor; never tie a spiritual promise to buying; don’t wrap his story in quotation marks or set it like Scripture.
+- Captions and alt text for his portrait name Richard and nothing he is wearing.
+- Ask Richard for anything more.
 
 ## Naming
 
@@ -80,6 +89,6 @@ Use only Richard's own stated words. He started Awebound for people who are not 
 
 ## Calls to action
 
-Explore [release] · Get Release Updates · Shop [release] (once ordering opens) · View [piece] · Save to bag (preview) or Add to bag · Check out · Notify me · Read our story. Avoid "Buy now" and countdown pressure.
+View [piece] · See all [n] pieces · Explore [release] (on Collections) · Save to bag (preview) or Add to bag · Check out · Notify me · Read my story (under Richard’s note). A button says exactly where it goes. Avoid "Buy now" and countdown pressure.
 
-While a release is in preview: "Release 01 — Behold — Coming Soon" by the opening buttons; product pages say "Ordering isn’t open yet" and offer Save to bag; the bag says it saves selections on this device and doesn't place an order or charge anyone. Once ordering opens, the labels switch on their own.
+Release status is one plain sentence, never a label or chip: “Ordering for Behold isn’t open yet.” while nothing can be ordered; “Some Behold pieces can be ordered now. The rest are still in preview.” once some can; nothing once all can. A piece says “Sold out”, “Some sizes sold out” or, inside a partly open release, “Not open for ordering yet”. A preview’s product page says ordering isn’t open yet and offers Save to bag; the bag says it saves selections on this device and doesn’t place an order or charge anyone, and keeps saved previews apart from pieces that can be checked out.

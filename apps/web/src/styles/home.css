@@ -1,328 +1,204 @@
-/* Home page: hero, the latest release and its grid, two design stories, the founder story and
-   the release sign-up. Motion is short and never hides the words: only decoration animates. */
+/* Home page: one piece up close with the ways into the shop, the founder's note, the whole
+   release, and the optional sign-up. Nothing here animates on load or on scroll. */
 @layer components {
-  /* 1. Hero: the clothes beside the headline. */
-  .hero {
-    position: relative;
-    isolation: isolate;
+  /* 1. Campaign: the words and two actions; the piece shown whole; a close-up of its print with
+     its name, price and Scripture. */
+  .campaign {
     padding-block: var(--space-12) var(--space-16);
-    overflow: hidden;
   }
-  /* The soft glow sits behind the headline and fades out before the hero's edges. */
-  .hero::after {
-    top: -35%;
-    left: -12%;
-    width: 72%;
-    height: 120%;
-  }
-  .hero-in {
+  .campaign-in {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7.5fr);
     gap: var(--space-12);
-    align-items: center;
+    align-items: start;
   }
-  .hero-text {
+  .campaign-text {
     display: grid;
     gap: var(--space-6);
     justify-items: start;
+    padding-top: var(--space-6);
   }
-  .hero-text .aw-label {
-    color: var(--scripture);
-  }
-  .hero-title {
+  .campaign-title {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(46px, 5vw, 76px);
-    line-height: 1;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    font-size: clamp(40px, 4.6vw, 64px);
+    line-height: 1.02;
+    letter-spacing: 0.005em;
     color: var(--ink);
   }
-  .hero-title span {
+  .campaign-title span {
     display: block;
   }
-  .hero-body {
+  .campaign-lede {
     margin: 0;
-    max-width: 46ch;
+    max-width: 44ch;
     font-size: 18px;
     line-height: 1.6;
     color: var(--ink-muted);
   }
-  .hero-pieces {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+  .campaign-actions {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
-    aspect-ratio: 6 / 5;
   }
-  .hero-pieces > li:first-child {
-    grid-row: 1 / 3;
+  .campaign-status {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--ink-muted);
   }
-  .hero-pieces[data-count="1"] {
-    grid-template-columns: 1fr;
-    aspect-ratio: 4 / 5;
+  /* Underlined: color alone doesn't mark a link inside a sentence. */
+  .campaign-status a {
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
-  .hero-pieces[data-count="2"] {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-    aspect-ratio: 8 / 5;
+  .campaign-figure {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: start;
   }
-  .hero-pieces[data-count="2"] > li:first-child {
-    grid-row: auto;
-  }
-  .hero-piece {
-    position: relative;
+  .campaign-garment {
     display: block;
-    height: 100%;
-    overflow: hidden;
     background: var(--surface);
   }
-  .hero-piece img {
+  .campaign-garment img,
+  .campaign-detail img {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--duration-base) var(--ease-reverent);
-  }
-  .hero-piece:hover img {
-    transform: scale(1.02);
-  }
-  .hero-piece-name {
-    position: absolute;
-    left: var(--space-3);
-    bottom: var(--space-3);
-    padding: var(--space-1) var(--space-2);
-    background: color-mix(in srgb, var(--surface-page) 82%, transparent);
-    font-weight: 700;
-    font-size: 11px;
-    line-height: 16px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-text > *,
-    .hero-pieces > li {
-      animation: hero-rise 420ms var(--ease-reverent) both;
-    }
-    .hero-text > :nth-child(2) {
-      animation-delay: 40ms;
-    }
-    .hero-text > :nth-child(3) {
-      animation-delay: 80ms;
-    }
-    .hero-text > :nth-child(n + 4) {
-      animation-delay: 120ms;
-    }
-    .hero-pieces > li:nth-child(2) {
-      animation-delay: 60ms;
-    }
-    .hero-pieces > li:nth-child(3) {
-      animation-delay: 120ms;
-    }
-  }
-  @keyframes hero-rise {
-    from {
-      opacity: 0.35;
-      translate: 0 10px;
-    }
-    to {
-      opacity: 1;
-      translate: 0 0;
-    }
-  }
-  @media (max-width: 899px) {
-    .hero {
-      padding-block: var(--space-6) var(--space-16);
-    }
-    .hero-in {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--space-8);
-    }
-    /* On phones the clothes come first, so the first screen shows what Awebound makes. */
-    .hero-pieces {
-      order: -1;
-      max-height: 46svh;
-      margin-inline: auto;
-      width: min(100%, calc(46svh * 1.2));
-    }
-    .hero-text {
-      gap: var(--space-4);
-    }
-    .hero-pieces > li + li .hero-piece-name {
-      display: none;
-    }
-    .hero-body {
-      font-size: 17px;
-    }
-  }
-
-  /* 2–3. The latest release: a short introduction, then every piece. */
-  .behold {
-    padding-block: var(--space-16);
-    border-top: 1px solid var(--line);
-  }
-  .behold-intro {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    gap: var(--space-8) var(--space-16);
-    align-items: end;
-    padding-bottom: var(--space-12);
-    border-bottom: 1px solid var(--line);
-  }
-  .behold-name {
-    display: grid;
-    gap: var(--space-3);
-  }
-  .behold-name .aw-label {
-    color: var(--scripture);
-  }
-  .behold-title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(76px, 11vw, 168px);
-    line-height: 0.86;
-    color: var(--ink);
-  }
-  .behold-text {
-    display: grid;
-    gap: var(--space-4);
-    justify-items: start;
-  }
-  .behold-tagline {
-    margin: 0;
-    font-weight: 700;
-    font-size: 21px;
-    line-height: 1.4;
-    color: var(--ink);
-    max-width: 36ch;
-  }
-  .home-grid {
-    list-style: none;
-    margin: var(--space-12) 0 0;
-    padding: 0;
-  }
-  .behold-note {
-    margin: var(--space-8) 0 0;
-    text-align: center;
-  }
-  .behold-note a {
-    color: var(--accent-text);
-  }
-  /* The curtain: the name opens from the center as it scrolls in. Short, and only the name. */
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: view()) {
-      .behold-title {
-        animation: behold-open linear both;
-        animation-timeline: view();
-        animation-range: entry 0% entry 70%;
-      }
-    }
-  }
-  @keyframes behold-open {
-    from {
-      clip-path: inset(0 38% 0 38%);
-      opacity: 0.5;
-    }
-    to {
-      clip-path: inset(0 0 0 0);
-      opacity: 1;
-    }
-  }
-  @media (max-width: 899px) {
-    .behold {
-      padding-block: var(--space-16) var(--space-12);
-    }
-    .behold-intro {
-      grid-template-columns: minmax(0, 1fr);
-      align-items: start;
-      padding-bottom: var(--space-8);
-    }
-    .behold-tagline {
-      font-size: 19px;
-    }
-    .home-grid {
-      margin-top: var(--space-8);
-    }
-  }
-
-  /* 4. Two design stories. */
-  .stories {
-    padding-block: var(--space-16) var(--space-24);
-    overflow-x: clip;
-  }
-  .stories-head {
-    display: grid;
-    gap: var(--space-3);
-    margin-bottom: var(--space-8);
-  }
-  .story {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-16);
-    align-items: center;
-    padding-block: var(--space-16);
-  }
-  .story + .story {
-    border-top: 1px solid var(--line);
-  }
-  .story[data-flip="true"] .story-art {
-    order: 2;
-  }
-  .story-art {
-    display: grid;
-    place-items: center;
-    padding-inline: 4%;
-  }
-  /* The niche and the garment are two layers of the same 4:5 frame. */
-  .story-plate {
-    position: relative;
-    width: min(100%, 460px);
+    height: auto;
     aspect-ratio: 4 / 5;
-  }
-  .story-plate img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
     object-fit: cover;
-    display: block;
   }
-  .story-text {
+  .campaign-aside {
     display: grid;
     gap: var(--space-6);
-    justify-items: start;
-    max-width: 520px;
+    align-content: start;
   }
-  .story-text .aw-label {
-    color: var(--scripture);
+  .campaign-detail {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
   }
-  .story-text .aw-h2 {
-    font-size: clamp(36px, 4vw, 52px);
+  .campaign-detail figcaption {
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--ink-muted);
   }
+  .campaign-piece {
+    display: grid;
+    gap: var(--space-2);
+  }
+  /* The name is a link with a full-height tap area. */
+  .campaign-piece .aw-product-name a {
+    display: inline-block;
+    margin-block: -9px;
+    padding-block: 9px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .campaign-piece .aw-product-name a:hover {
+    color: var(--accent-text);
+  }
+  .campaign-facts {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin: 0;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--ink-muted);
+  }
+  .campaign-price {
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .campaign-piece-status {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 21px;
+    color: var(--ink);
+  }
+  .campaign-piece .aw-verse {
+    margin-top: var(--space-1);
+  }
+  .campaign-piece .aw-quote {
+    color: var(--ink);
+  }
+  /* Two columns: the piece keeps its size and its close-up and caption sit in a row beneath. */
+  @media (max-width: 1099px) {
+    .campaign-in {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+    .campaign-figure {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 460px;
+    }
+    .campaign-aside {
+      grid-template-columns: 150px minmax(0, 1fr);
+    }
+  }
+  /* One column: the words and actions first, then the piece beside its close-up. */
   @media (max-width: 899px) {
-    .story {
+    .campaign {
+      padding-block: var(--space-6) var(--space-12);
+    }
+    .campaign-in {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-8);
-      padding-block: var(--space-12);
     }
-    .story[data-flip="true"] .story-art {
-      order: 0;
+    .campaign-text {
+      gap: var(--space-4);
+      padding-top: 0;
     }
-    .story-art {
-      padding-inline: 8%;
+    .campaign-lede {
+      font-size: 16px;
+      line-height: 26px;
     }
-    .story-plate {
-      width: min(100%, 380px);
+    .campaign-figure {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      max-width: none;
+    }
+    .campaign-aside {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  /* Phones: full-width actions, the piece, its name and price, then the close-up. */
+  @media (max-width: 599px) {
+    .campaign-actions {
+      display: grid;
+      width: 100%;
+    }
+    .campaign-figure {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .campaign-piece {
+      order: -1;
+    }
+    .campaign-detail {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: var(--space-4);
+      align-items: end;
+    }
+  }
+  /* The narrowest phones: keep the first action on the first screen. */
+  @media (max-width: 359px) {
+    .campaign {
+      padding-top: var(--space-4);
+    }
+    .campaign-title {
+      font-size: 36px;
     }
   }
 
-  /* 5. Why Awebound: on bone paper, to break the dark page. */
+  /* 2. The founder's note, on bone paper. */
   .founder {
     padding-block: var(--space-24);
     background: var(--surface-page);
@@ -330,34 +206,81 @@
   }
   .founder-in {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
     gap: var(--space-16);
-    align-items: start;
+    align-items: center;
   }
-  .founder-head {
-    display: grid;
-    gap: var(--space-3);
+  .founder-portrait {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
   }
-  .founder-text {
+  .founder-words {
     display: grid;
-    gap: var(--space-6);
-    max-width: 62ch;
+    gap: var(--space-4);
+    justify-items: start;
+    max-width: 56ch;
+  }
+  .founder-words .aw-body {
+    margin-bottom: var(--space-2);
   }
   @media (max-width: 899px) {
     .founder {
       padding-block: var(--space-16);
     }
     .founder-in {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
       gap: var(--space-8);
     }
   }
+  /* Phones: the portrait beside the heading, then the note across the full width. */
+  @media (max-width: 599px) {
+    .founder-in {
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: var(--space-4);
+      align-items: end;
+    }
+    .founder-words {
+      display: contents;
+    }
+    .founder-words > :not(h2) {
+      grid-column: 1 / -1;
+    }
+    .founder-words > .aw-btn {
+      justify-self: start;
+    }
+  }
 
-  /* 6. Release updates sign-up. */
+  /* 3. The latest release: its name and call, then every piece. */
+  .lineup {
+    padding-block: var(--space-24) var(--space-16);
+  }
+  .lineup-head {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    margin-bottom: var(--space-12);
+  }
+  .lineup-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  @media (max-width: 899px) {
+    .lineup {
+      padding-block: var(--space-16) var(--space-12);
+    }
+    .lineup-head {
+      margin-bottom: var(--space-8);
+    }
+  }
+
+  /* 4. Release updates sign-up. */
   .updates {
     padding-block: var(--space-24);
     background: var(--surface);
-    border-top: 1px solid var(--line);
   }
   .updates-in {
     display: grid;
@@ -369,21 +292,12 @@
     display: grid;
     gap: var(--space-4);
   }
-  .updates-in .aw-label {
-    color: var(--scripture);
-  }
   @media (max-width: 899px) {
     .updates {
       padding-block: var(--space-16);
     }
     .updates-in {
       grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-piece img {
-      transition: none;
     }
   }
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DELIVERY } from "@/lib/delivery";
 
 interface DeliverySummaryProps {
-  /** Ordering isn't open yet: delivery details are confirmed before it opens. */
+  /** The piece can't be ordered yet: delivery details are confirmed before it can. */
   preview: boolean;
   /** How the piece's art goes on (the product story's `process`). */
   process: "printed" | "embroidered";
@@ -15,7 +15,15 @@ interface DeliverySummaryProps {
  * problem with an order and a size that doesn't fit. Shows only confirmed details.
  */
 export function DeliverySummary({ preview, process, onSizeGuide }: DeliverySummaryProps) {
-  const pending = "Confirmed before ordering opens";
+  // Times show only once confirmed (lib/delivery.ts). Until then a preview says they come before
+  // ordering opens; a piece that can already be ordered says to ask.
+  const ask = "Not confirmed yet. Ask us before you order if timing matters.";
+  const production = preview ? "Confirmed before ordering opens" : (DELIVERY.productionTime ?? ask);
+  const shipping = preview
+    ? "Estimated before ordering opens"
+    : DELIVERY.shippingTime
+      ? `${DELIVERY.shippingTime}, after production`
+      : ask;
   return (
     <section className="delivery" aria-labelledby="delivery-title">
       <h2 id="delivery-title" className="aw-label">
@@ -28,15 +36,11 @@ export function DeliverySummary({ preview, process, onSizeGuide }: DeliverySumma
         </div>
         <div>
           <dt>Production time</dt>
-          <dd>{!preview && DELIVERY.productionTime ? DELIVERY.productionTime : pending}</dd>
+          <dd>{production}</dd>
         </div>
         <div>
           <dt>Shipping time</dt>
-          <dd>
-            {!preview && DELIVERY.shippingTime
-              ? `${DELIVERY.shippingTime}, after production`
-              : "Estimated before ordering opens"}
-          </dd>
+          <dd>{shipping}</dd>
         </div>
         <div>
           <dt>Shipping cost</dt>

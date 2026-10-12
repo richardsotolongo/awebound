@@ -1,7 +1,7 @@
 /**
  * Fulfillment facts shown beside the buy button. Only confirmed details go here: leave a value
- * null until it is confirmed with Fourthwall, and the product page says it will be confirmed
- * before ordering opens.
+ * null until it is confirmed with Fourthwall. Until then a preview's page says it will be confirmed
+ * before ordering opens, and a piece that can be ordered says to ask.
  */
 export const DELIVERY = {
   /** Every piece is printed or embroidered after it is ordered. */
