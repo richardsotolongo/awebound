@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
+import { DELIVERY } from "@/lib/delivery";
 import { SITE, pageMeta } from "@/lib/site";
 import { TRANSLATION, TRANSLATION_NAME, TRANSLATION_NOTICE } from "@/server/scripture";
 
@@ -26,15 +27,13 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     title: "Ordering",
     items: [
       {
-        q: "When can I order?",
-        text: "Each release opens for ordering after a short preview. While a piece is in preview you can save it to your bag, which keeps your size and color but doesn’t place an order or charge you. Leave your email on the home page or in the footer and we’ll tell you when ordering opens. We announce a date only once it’s confirmed.",
+        q: "How do I order?",
+        text: "Choose a piece, pick your color and size, and add it to your bag. When you’re ready, check out from the bag. You’ll get an order confirmation by email, and tracking once it ships.",
         a: (
           <p>
-            Each release opens for ordering after a short preview. While a piece is in preview you
-            can save it to your bag, which keeps your size and color but doesn’t place an order or
-            charge you. Leave your email on the <Link href="/#updates">home page</Link> or in the
-            footer and we’ll tell you when ordering opens. We announce a date only once it’s
-            confirmed.
+            Choose a piece, pick your color and size, and add it to your bag. When you’re ready,
+            check out from the bag. You’ll get an order confirmation by email, and tracking once it
+            ships.
           </p>
         ),
       },
@@ -105,12 +104,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "How long does delivery take?",
-        text: "Every piece is made to order, then shipped. Production time and shipping time are shown beside the buy button on every product page once they are confirmed. You’ll get tracking by email when your order ships.",
+        text: `Every piece is made to order. Production takes ${DELIVERY.productionTime}, then shipping takes ${DELIVERY.shippingTime}. You’ll get tracking by email when your order ships; it can pause for a day or two while the package changes carriers.`,
         a: (
           <p>
-            Every piece is made to order, then shipped. Production time and shipping time are shown
-            beside the buy button on every product page once they are confirmed. You’ll get tracking
-            by email when your order ships.
+            Every piece is made to order. Production takes {DELIVERY.productionTime}, then shipping
+            takes {DELIVERY.shippingTime}. You’ll get tracking by email when your order ships; it
+            can pause for a day or two while the package changes carriers.
           </p>
         ),
       },

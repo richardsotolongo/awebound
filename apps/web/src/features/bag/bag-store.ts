@@ -81,25 +81,12 @@ export const useBag = create<BagState>()(
 
 export const bagCount = (lines: BagEntry[]) => lines.reduce((n, l) => n + l.quantity, 0);
 
-/** Lines that can be checked out now: in stock, and not previews. */
-export const orderable = (lines: BagEntry[]) =>
-  lines.filter((l) => l.snapshot.available && !l.snapshot.preview);
+/** Lines that go to checkout: everything in stock. */
+export const orderable = (lines: BagEntry[]) => lines.filter((l) => l.snapshot.available);
 
-/** Previews saved for when their piece opens for ordering. */
-export const saved = (lines: BagEntry[]) =>
-  lines.filter((l) => l.snapshot.available && l.snapshot.preview);
-
-/**
- * What checkout would charge: the lines that can be ordered now. A bag holding only saved
- * previews shows what they come to instead, since nothing in it can be charged yet.
- */
-export const bagSubtotal = (lines: BagEntry[]) => {
-  const open = orderable(lines);
-  return (open.length > 0 ? open : saved(lines)).reduce(
-    (n, l) => n + l.quantity * l.snapshot.unitPriceCents,
-    0,
-  );
-};
+/** What checkout would charge before shipping and tax. */
+export const bagSubtotal = (lines: BagEntry[]) =>
+  orderable(lines).reduce((n, l) => n + l.quantity * l.snapshot.unitPriceCents, 0);
 
 /** A line as the server needs it: the SKU, and what was chosen in case the SKU has changed. */
 export const toLineInput = ({ sku, quantity, snapshot }: BagEntry) => ({

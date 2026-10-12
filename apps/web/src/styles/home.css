@@ -110,19 +110,6 @@
     color: var(--ink);
     text-wrap: pretty;
   }
-  .lead-status {
-    margin: 0;
-    max-width: 46ch;
-    font-size: 14px;
-    line-height: 21px;
-    color: var(--ink-muted);
-  }
-  /* Underlined: color alone doesn't mark a link inside a sentence. */
-  .lead-status a {
-    color: var(--accent-text);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
   .lead-detail {
     margin: 0;
     display: grid;

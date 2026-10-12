@@ -41,8 +41,8 @@ export function DeleteAccount({ email }: { email: string }) {
   return (
     <div className="account-delete">
       <p className="aw-body">
-        This removes your sign-in, your profile and your drop-notes subscription. Orders stay with
-        Fourthwall for receipts and returns.
+        This removes your sign-in, your profile and your drop-notes subscription. Orders you placed
+        stay on record with our checkout partner for receipts and returns.
       </p>
       {state === "idle" ? (
         <div>
@@ -56,7 +56,7 @@ export function DeleteAccount({ email }: { email: string }) {
             Delete your account?
           </p>
           <p className="aw-small">
-            You can’t undo this. You can still order as a guest whenever ordering is open.
+            You can’t undo this. You can still order as a guest at any time.
           </p>
           <div className="account-actions">
             <Button variant="primary" onClick={confirm} disabled={state === "deleting"}>

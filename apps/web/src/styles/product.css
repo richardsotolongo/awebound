@@ -266,6 +266,22 @@
   .buy-size-note {
     margin-top: var(--space-3);
   }
+  /* A size that costs more (2XL and up) says so once chosen. Empty, it takes no room but stays
+     in the page, so screen readers announce it when it fills (aria-live). */
+  .buy-size-price {
+    margin: var(--space-3) 0 0;
+    padding: var(--space-2) var(--space-3);
+    border-left: 2px solid var(--accent-text);
+    background: var(--surface-raised);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .buy-size-price:empty {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
   .size-guide-image {
     display: block;
     border: 1px solid var(--line);
@@ -291,29 +307,8 @@
 }
 
 @layer components {
-  /* Preview: ordering isn't open yet. */
-  .buy-preview {
-    display: grid;
-    gap: var(--space-4);
-    padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
-    border-left: 2px solid var(--scripture);
-  }
-  .buy-preview-title {
-    margin: 0;
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink);
-  }
-  .buy-preview .aw-small,
   .notice .aw-small {
     color: var(--ink-muted);
-  }
-  .notice .buy-preview-title {
-    margin-bottom: var(--space-2);
   }
 
   /* Delivery and returns, beside the buying controls. */

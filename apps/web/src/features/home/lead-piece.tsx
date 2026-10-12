@@ -1,19 +1,13 @@
 import { ScriptureQuote } from "@awebound/brand";
-import type { ProductDetail, Release } from "@/shared";
+import type { ProductDetail } from "@/shared";
 import Link from "next/link";
 import { pieceStatus, priceLabel } from "@/features/catalog/query";
 
 /**
- * Under the opening plate, on coal: what Awebound makes and whether the release can be ordered,
- * then the lead piece up close: its print, name, price and Scripture.
+ * Under the opening plate, on coal: what Awebound makes, then the lead piece up close: its
+ * print, name, price and Scripture.
  */
-export function LeadPiece({
-  release,
-  piece,
-}: {
-  release: Release | null;
-  piece: ProductDetail | null;
-}) {
+export function LeadPiece({ piece }: { piece: ProductDetail | null }) {
   const status = piece ? pieceStatus(piece) : undefined;
   return (
     <section className="lead">
@@ -24,18 +18,6 @@ export function LeadPiece({
             tells part of His story in bold art and lettering, from the storm He calmed to the tomb
             He left empty.
           </p>
-          {release?.status === "preview" ? (
-            <p className="lead-status">
-              Ordering for {release.name} isn’t open yet. You can save pieces to your bag now and{" "}
-              <a href="#updates">get an email when it opens</a>.
-            </p>
-          ) : null}
-          {release?.status === "partial" ? (
-            <p className="lead-status">
-              Some {release.name} pieces can be ordered now. The rest are still in preview, and you
-              can save them to your bag.
-            </p>
-          ) : null}
         </div>
 
         {piece ? (

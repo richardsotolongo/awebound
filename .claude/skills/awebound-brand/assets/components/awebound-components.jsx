@@ -655,7 +655,7 @@ function Footer({
       ] }),
       signup ? /* @__PURE__ */ jsxs11("form", { className: "aw-footer-form", onSubmit: submit, noValidate: true, children: [
         /* @__PURE__ */ jsx15("label", { htmlFor: inputId, className: "aw-label", children: "Get release updates" }),
-        state === "done" ? /* @__PURE__ */ jsx15("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a release opens for ordering." }) : /* @__PURE__ */ jsxs11(Fragment2, { children: [
+        state === "done" ? /* @__PURE__ */ jsx15("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a new release is ready." }) : /* @__PURE__ */ jsxs11(Fragment2, { children: [
           /* @__PURE__ */ jsxs11("div", { className: "aw-footer-row", children: [
             /* @__PURE__ */ jsx15(
               "input",

@@ -34,7 +34,7 @@ export async function GET() {
     "- Every design starts with one passage of Scripture and tells part of the story of Jesus Christ. The full reference is printed on every design.",
     "- The art uses symbols: a cross, a crown of thorns, lilies, the rolled-away stone, the Lamb. Out of reverence, it never shows Jesus, God the Father or the Holy Spirit as a person.",
     "- Awebound was started by Richard, who wants to serve Christ and others through clothing rooted in Scripture.",
-    "- Every piece is made to order. Each release opens for ordering after a short preview. During a preview you can save pieces to your bag and leave your email to hear when ordering opens; nothing is ordered or charged. No account is needed to order.",
+    `- Every piece is made to order: production takes ${DELIVERY.productionTime}, then shipping takes ${DELIVERY.shippingTime}. No account is needed to order; checkout works as a guest.`,
     `- A damaged, misprinted or defective piece, or the wrong item or size sent, reported within ${DELIVERY.problemWindowDays} days of delivery with a photo is replaced at no cost, or refunded if a replacement isn’t possible. Made-to-order pieces can’t be returned or exchanged for a size the customer chose or a change of mind. Customers in the EU, UK and EEA keep their legal 14-day right of withdrawal.`,
     `- Contact: ${SITE.contactEmail}`,
     "",
@@ -43,13 +43,7 @@ export async function GET() {
       "",
       `${r.tagline} ${r.story}`,
       "",
-      `Scripture: ${r.scriptureRef}. ${
-        r.status === "open"
-          ? "Open for ordering."
-          : r.status === "partial"
-            ? "Some pieces can be ordered now; the rest are still in preview."
-            : "In preview: ordering isn’t open yet."
-      }`,
+      `Scripture: ${r.scriptureRef}.`,
       "",
       ...pieces
         .filter((p) => p.collection.slug === r.slug)
@@ -58,7 +52,7 @@ export async function GET() {
           link(
             p.name,
             `/shop/${p.slug}`,
-            `${p.category.cut}${p.preview ? "" : `, ${priceLabel(p).toLowerCase()}`}. ${p.scripture.reference}. ${p.story.art}`,
+            `${p.category.cut}, ${priceLabel(p)}. ${p.scripture.reference}. ${p.story.art}`,
           ),
         ),
       "",

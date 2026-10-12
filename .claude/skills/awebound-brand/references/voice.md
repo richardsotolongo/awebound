@@ -40,7 +40,7 @@ Active voice, plain words, contractions where they're natural, short sentences, 
 
 - Sentence case in copy and in button labels (buttons display caps through styling). Selector labels may be title case (Latest Drop, All Collections).
 - No exclamation marks. Emoji only in social captions, at most one, never in place of a word.
-- Never hard-code a price in copy; prices come from Fourthwall (or the preview price in the content file).
+- Never hard-code a price in copy; prices come from Fourthwall (or the content file until a piece is published). List the base price with no “From”; a 2XL or 3XL upcharge is said under the sizes once chosen.
 - Only confirmed facts: no launch dates, delivery times or shipping rates until they're confirmed.
 
 ## Product copy fields
@@ -89,6 +89,6 @@ Richard’s own words, as he supplied them in October 2026, and nothing invented
 
 ## Calls to action
 
-View [piece] · See all [n] pieces · Explore [release] (on Collections) · Save to bag (preview) or Add to bag · Check out · Notify me · Read my story (under Richard’s note). A button says exactly where it goes. Avoid "Buy now" and countdown pressure.
+View [piece] · See all [n] pieces · Shop [release] (on Collections) · Add to bag · Check out · Notify me · Read my story (under Richard’s note). A button says exactly where it goes. Avoid "Buy now" and countdown pressure.
 
-Release status is one plain sentence, never a label or chip: “Ordering for Behold isn’t open yet.” while nothing can be ordered; “Some Behold pieces can be ordered now. The rest are still in preview.” once some can; nothing once all can. A piece says “Sold out”, “Some sizes sold out” or, inside a partly open release, “Not open for ordering yet”. A preview’s product page says ordering isn’t open yet and offers Save to bag; the bag says it saves selections on this device and doesn’t place an order or charge anyone, and keeps saved previews apart from pieces that can be checked out.
+The site always reads as open for ordering: no release-status sentences, no “coming soon”, no preview notices and no “ordering isn’t open”. A piece says only “Sold out” or “Some sizes sold out”. A piece not yet published in Fourthwall looks like one on sale (Add to bag, Check out); only checkout can’t start, and the bag says “Checkout isn’t available right now. Your bag is saved, so please try again a little later.” Never name the supplier to customers: “our print and fulfillment partner”.

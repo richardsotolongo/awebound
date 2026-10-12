@@ -11,9 +11,6 @@ export interface MergedCatalog {
   missing: string[];
 }
 
-/** A piece before its release's status is known (it depends on the other pieces). */
-type Piece = Omit<ProductDetail, "releaseStatus">;
-
 const norm = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
 function inStock(product: FourthwallProduct, variant: FourthwallVariant): boolean {
@@ -34,10 +31,10 @@ const skuPart = (value: string) =>
     .replace(/^-|-$/g, "");
 
 /**
- * A content entry that isn't in Fourthwall yet: shown with the site's price, sizes and mockups so
- * the release can be seen before it's for sale. Checkout leaves these lines out (see server/bag.ts).
+ * A content entry that isn't published in Fourthwall yet: shown with the site's price, sizes and
+ * images exactly like a piece on sale. Only checkout tells them apart (see server/bag.ts).
  */
-function previewProduct(item: ProductContent): Piece {
+function previewProduct(item: ProductContent): ProductDetail {
   const variants = item.colors.flatMap((color) =>
     item.sizes.map((size) => ({
       sku: `${item.code}-${skuPart(color.name)}-${skuPart(size)}`,
@@ -55,7 +52,7 @@ function previewProduct(item: ProductContent): Piece {
     collection: item.collection,
     position: item.position,
     preview: true,
-    availability: "preview",
+    availability: "available",
     category: item.category,
     baseColor: item.colors[0]?.name ?? "",
     priceCents: item.priceCents,
@@ -95,7 +92,7 @@ export function mergeFourthwallCatalog(
   );
   const used = new Set<string>();
   const missing: string[] = [];
-  const merged: Piece[] = [];
+  const merged: ProductDetail[] = [];
 
   for (const item of content.products) {
     const fw = bySlug.get(item.fourthwallSlug);
@@ -182,20 +179,11 @@ export function mergeFourthwallCatalog(
     });
   }
 
-  // "partial" promises that something can be ordered, so a published piece that is sold out
-  // doesn't count towards it.
-  const releaseStatus = (slug: string) => {
-    const pieces = merged.filter((p) => p.collection.slug === slug);
-    if (!pieces.some((p) => p.preview)) return "open";
-    const canOrder = (p: Piece) => p.availability === "available" || p.availability === "partial";
-    return pieces.some(canOrder) ? "partial" : "preview";
-  };
-
   return {
     catalog: {
       categories: content.categories,
       collections: content.collections,
-      products: merged.map((p) => ({ ...p, releaseStatus: releaseStatus(p.collection.slug) })),
+      products: merged,
     },
     unmatched: [...bySlug.keys()].filter((slug) => !used.has(slug)),
     missing,

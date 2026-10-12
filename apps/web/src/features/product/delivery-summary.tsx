@@ -2,8 +2,6 @@ import Link from "next/link";
 import { DELIVERY } from "@/lib/delivery";
 
 interface DeliverySummaryProps {
-  /** The piece can't be ordered yet: delivery details are confirmed before it can. */
-  preview: boolean;
   /** How the piece's art goes on (the product story's `process`). */
   process: "printed" | "embroidered";
   onSizeGuide?: () => void;
@@ -14,16 +12,10 @@ interface DeliverySummaryProps {
  * shipping times (stated separately), how shipping is charged, and the difference between a
  * problem with an order and a size that doesn't fit. Shows only confirmed details.
  */
-export function DeliverySummary({ preview, process, onSizeGuide }: DeliverySummaryProps) {
-  // Times show only once confirmed (lib/delivery.ts). Until then a preview says they come before
-  // ordering opens; a piece that can already be ordered says to ask.
-  const ask = "Not confirmed yet. Ask us before you order if timing matters.";
-  const production = preview ? "Confirmed before ordering opens" : (DELIVERY.productionTime ?? ask);
-  const shipping = preview
-    ? "Estimated before ordering opens"
-    : DELIVERY.shippingTime
-      ? `${DELIVERY.shippingTime}, after production`
-      : ask;
+export function DeliverySummary({ process, onSizeGuide }: DeliverySummaryProps) {
+  const ask = "Ask us before you order if timing matters.";
+  const production = DELIVERY.productionTime ?? ask;
+  const shipping = DELIVERY.shippingTime ? `${DELIVERY.shippingTime}, after production` : ask;
   return (
     <section className="delivery" aria-labelledby="delivery-title">
       <h2 id="delivery-title" className="aw-label">
@@ -44,10 +36,7 @@ export function DeliverySummary({ preview, process, onSizeGuide }: DeliverySumma
         </div>
         <div>
           <dt>Shipping cost</dt>
-          <dd>
-            Calculated at checkout for your address and shown before you pay.
-            {preview ? " Rates are confirmed before ordering opens." : ""}
-          </dd>
+          <dd>Calculated at checkout for your address and shown before you pay.</dd>
         </div>
         <div>
           <dt>A problem with your order</dt>

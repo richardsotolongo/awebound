@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import { accountsEnabled } from "@/lib/env";
 import { useSignedIn } from "@/lib/supabase/browser";
 import { startCheckout, validateBag } from "@/server/actions";
-import { NotifyForm } from "./notify-form";
-import { bagSubtotal, orderable, saved, toLineInput, useBag } from "./bag-store";
+import { bagSubtotal, orderable, toLineInput, useBag } from "./bag-store";
 
 /** Re-prices the bag on the server whenever it is shown. */
 export function useBagValidation(active: boolean) {
@@ -76,8 +75,6 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
   const lines = useBag((s) => s.lines);
   const setQuantity = useBag((s) => s.setQuantity);
   const remove = useBag((s) => s.remove);
-  // Beside pieces that can be ordered, a saved preview says why it isn't part of checkout.
-  const mixed = orderable(lines).length > 0 && saved(lines).length > 0;
 
   return (
     <ul className="bag-lines">
@@ -95,9 +92,6 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
               {snapshot.cut}, {snapshot.color},{" "}
               {snapshot.size === "One size" ? "one size" : `size ${snapshot.size}`}
             </p>
-            {mixed && snapshot.preview ? (
-              <p className="aw-small">Not open for ordering yet. Saved for later.</p>
-            ) : null}
             {snapshot.available ? (
               <div className="qty" role="group" aria-label={`Quantity of ${snapshot.name}`}>
                 <button
@@ -134,9 +128,9 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 /**
- * Subtotal and the button that hands the bag to Fourthwall's hosted checkout. Pieces that can
- * be ordered go to checkout; saved previews stay in the bag. A bag of previews only gets the
- * "ordering isn't open yet" notice instead of the button.
+ * Subtotal and the button that hands the bag to Fourthwall's hosted checkout. If checkout can't
+ * start (a piece isn't published in Fourthwall yet, or Fourthwall is down), the server's message
+ * shows under the button and the bag stays as it is.
  */
 export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
   const lines = useBag((s) => s.lines);
@@ -145,8 +139,6 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
   const [error, setError] = useState("");
   const subtotal = bagSubtotal(lines);
   const open = orderable(lines);
-  const previews = saved(lines);
-  const preview = open.length === 0 ? previews[0] : undefined;
 
   async function checkout() {
     setState("loading");
@@ -168,46 +160,23 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
           {formatPrice(subtotal)}
         </span>
       </div>
-      {preview ? (
-        <div className="notice">
-          <p className="buy-preview-title">Not open for ordering yet</p>
-          <p className="aw-small">
-            Your bag saves your selections on this device. It doesn’t place an order or charge you.
-            Leave your email to hear when these pieces can be ordered.
-          </p>
-          <NotifyForm
-            source="product"
-            productSlug={preview.snapshot.productSlug}
-            label="Email me when they can be ordered"
-          />
-        </div>
-      ) : (
-        <>
-          {previews.length > 0 ? (
-            <p className="field-help">
-              The subtotal covers the pieces you can order now. The rest aren’t open for ordering
-              yet and stay saved in your bag.
-            </p>
-          ) : null}
-          <p className="field-help">Shipping and tax are calculated at checkout.</p>
-          <Button
-            variant="primary"
-            block
-            onClick={checkout}
-            disabled={state === "loading" || open.length === 0}
-          >
-            {state === "loading" ? "Opening checkout…" : "Check out"}
-          </Button>
-          {accountsEnabled && !signedIn ? (
-            <p className="field-help">
-              Checking out as a guest. Have an account?{" "}
-              <Link href="/sign-in?next=/bag" onClick={onNavigate}>
-                Sign in
-              </Link>
-            </p>
-          ) : null}
-        </>
-      )}
+      <p className="field-help">Shipping and tax are calculated at checkout.</p>
+      <Button
+        variant="primary"
+        block
+        onClick={checkout}
+        disabled={state === "loading" || open.length === 0}
+      >
+        {state === "loading" ? "Opening checkout…" : "Check out"}
+      </Button>
+      {accountsEnabled && !signedIn ? (
+        <p className="field-help">
+          Checking out as a guest. Have an account?{" "}
+          <Link href="/sign-in?next=/bag" onClick={onNavigate}>
+            Sign in
+          </Link>
+        </p>
+      ) : null}
       {state === "error" ? (
         <p className="aw-form-error" role="alert">
           {error}

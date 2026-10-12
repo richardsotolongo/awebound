@@ -33,7 +33,7 @@ export const BagLineSchema = z.object({
   unitPriceCents: z.number().int(),
   quantity: z.number().int(),
   available: z.boolean(),
-  /** The piece isn't in Fourthwall yet: the line stays saved in the bag and is left out of checkout. */
+  /** The piece isn't published in Fourthwall yet, so checkout can't start with this line. */
   preview: z.boolean().default(false),
 });
 export type BagLine = z.infer<typeof BagLineSchema>;

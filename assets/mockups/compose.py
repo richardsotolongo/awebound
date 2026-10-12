@@ -77,14 +77,15 @@ CAPS = ("lambs-mark", "signature-cap")
 VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.5)},
-    # Every close-up frames the whole print and nothing else.
+    # Every close-up frames the whole print and nothing else, and stays inside the garment:
+    # a crop that reaches past its edge shows the surface beside it (check_details reports any).
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.41, 0.48)},
     "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
-    "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.51, 0.445, 0.53)},
+    "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.4985, 0.415, 0.48)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
     "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
     "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
-    "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.4, 0.56)},
+    "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.43, 0.54)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
 }
 
@@ -264,6 +265,22 @@ def detail(slug: str) -> None:
     img.save(OUT / slug / "detail.webp", "WEBP", quality=82, method=6)
 
 
+def check_details() -> None:
+    """Prints any close-up whose crop reaches past the garment (the surface would show at its
+    edge) or would have to be enlarged. Both should be fixed in VIEWS."""
+    for slug, spec in VIEWS.items():
+        view, cx, cy, frac = spec["detail"]
+        alpha = np.asarray(load_garment(slug, view).getchannel("A"))
+        h, w = alpha.shape
+        cw = round(w * frac)
+        ch = round(cw * DETAIL_H / DETAIL_W)
+        left, top = round(w * cx - cw / 2), round(h * cy - ch / 2)
+        inside = 0 <= left and 0 <= top and left + cw <= w and top + ch <= h
+        edge = int((alpha[max(top, 0) : top + ch, max(left, 0) : left + cw] < 250).sum())
+        if not inside or edge > 50 or cw < DETAIL_W:
+            print(f"detail {slug}: {edge} px past the garment, crop {cw} px wide (min {DETAIL_W})")
+
+
 # Lettering sits on the plate, so the surface under it falls into shade for bone lettering and
 # is lifted a little for coal lettering. The value is the tone under the lettering relative to
 # under the garment; pieces not listed keep an even surface.
@@ -372,6 +389,7 @@ def main() -> None:
         detail(slug)
         plates(slug)
     check_plates()
+    check_details()
 
 
 if __name__ == "__main__":

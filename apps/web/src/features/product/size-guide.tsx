@@ -11,8 +11,8 @@ export function SizeGuide({ guide, cut }: { guide: Guide | null; cut: string }) 
     return (
       <div className="prose">
         <p>
-          Measurements for this {cut.toLowerCase()} are posted before ordering opens.{" "}
-          <Link href="/contact">Ask us</Link> if you need them sooner.
+          <Link href="/contact">Ask us</Link> for this {cut.toLowerCase()}’s measurements and we’ll
+          send them.
         </p>
       </div>
     );

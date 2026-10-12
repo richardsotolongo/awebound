@@ -211,7 +211,7 @@ export interface ProductCardProps {
     hoverImage?: string;
     href: string;
     price?: string;
-    /** Said plainly under the price when it applies: "Sold out", "Not open for ordering yet". */
+    /** Said plainly under the price when it applies: "Sold out", "Some sizes sold out". */
     status?: string;
     /** The piece's plate color (a CSS value), behind the image while it loads. */
     plate?: string;

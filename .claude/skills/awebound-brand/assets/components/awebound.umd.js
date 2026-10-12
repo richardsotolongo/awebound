@@ -745,7 +745,7 @@ var Awebound = (() => {
         ] }),
         signup ? /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("form", { className: "aw-footer-form", onSubmit: submit, noValidate: true, children: [
           /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("label", { htmlFor: inputId, className: "aw-label", children: "Get release updates" }),
-          state === "done" ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a release opens for ordering." }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
+          state === "done" ? /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "aw-small", role: "status", children: "You\u2019re on the list. We\u2019ll email you when a new release is ready." }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
             /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "aw-footer-row", children: [
               /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
                 "input",

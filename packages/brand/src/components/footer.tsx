@@ -73,7 +73,7 @@ export function Footer({
             </label>
             {state === "done" ? (
               <p className="aw-small" role="status">
-                You’re on the list. We’ll email you when a release opens for ordering.
+                You’re on the list. We’ll email you when a new release is ready.
               </p>
             ) : (
               <>

@@ -56,26 +56,15 @@ export default async function Home() {
   const lead = pieces.find((p) => p.featured) ?? pieces[0];
   const piece = lead ? await withFallback(() => getProduct(lead.slug), null) : null;
 
-  const updates =
-    !release || release.status === "open"
-      ? {
-          title: "Hear about the next release",
-          body: "Leave your email and we’ll tell you when the next release is ready.",
-        }
-      : release.status === "partial"
-        ? {
-            title: `Know when the rest of ${release.name} opens`,
-            body: `Some ${release.name} pieces can be ordered now. Leave your email and we’ll tell you when the rest are available.`,
-          }
-        : {
-            title: `Know when ${release.name} opens`,
-            body: `Ordering for ${release.name} isn’t open yet. Leave your email and we’ll tell you when the pieces are available to order.`,
-          };
+  const updates = {
+    title: "Hear about the next release",
+    body: "Leave your email and we’ll tell you when the next release is ready.",
+  };
 
   return (
     <>
       <Campaign release={release} piece={piece} />
-      <LeadPiece release={release} piece={piece} />
+      <LeadPiece piece={piece} />
 
       <Founder />
 

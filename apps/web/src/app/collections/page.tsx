@@ -1,7 +1,6 @@
 import { Button, ScriptureRef } from "@awebound/brand";
 import { FitName } from "@/components/fit-name";
 import { EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
-import { releaseStatusText } from "@/features/release/release-status";
 import { ReleaseWall } from "@/features/release/release-wall";
 import { pageMeta } from "@/lib/site";
 import { getReleases, searchProducts, withFallback } from "@/server/catalog";
@@ -43,7 +42,6 @@ export default async function CollectionsPage() {
         <p className="aw-container aw-body">The first collection is on its way.</p>
       ) : (
         releases.map((r, i) => {
-          const status = releaseStatusText(r);
           return (
             <section key={r.slug} className="release" aria-labelledby={`release-${r.slug}`}>
               <header className="aw-container release-head">
@@ -54,11 +52,10 @@ export default async function CollectionsPage() {
                 </div>
                 <p className="aw-small">
                   Release {r.number}, {r.pieces} {r.pieces === 1 ? "piece" : "pieces"}.
-                  {status ? ` ${status}` : ""}
                 </p>
                 <div className="aw-btn-row">
                   <Button variant="secondary" href={`/collections/${r.slug}`}>
-                    Explore {r.name}
+                    Shop {r.name}
                   </Button>
                 </div>
               </header>

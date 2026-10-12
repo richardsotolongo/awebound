@@ -186,11 +186,11 @@ export function accountDeleted(): RenderedEmail {
       eyebrow("Account deleted"),
       lead("Your Awebound account is deleted."),
       row(
-        "We removed your sign-in, your profile and your drop-notes subscription. Orders you placed stay with Fourthwall, our checkout partner, for receipts and returns.",
+        "We removed your sign-in, your profile and your drop-notes subscription. Orders you placed stay on record with our checkout partner for receipts and returns.",
       ),
       small("If you didn’t ask for this, reply to this email and we’ll look into it."),
     ],
   });
-  const text = `Your Awebound account is deleted.\n\nWe removed your sign-in, your profile and your drop-notes subscription. Orders you placed stay with Fourthwall, our checkout partner, for receipts and returns.\n\nIf you didn’t ask for this, reply to this email and we’ll look into it.`;
+  const text = `Your Awebound account is deleted.\n\nWe removed your sign-in, your profile and your drop-notes subscription. Orders you placed stay on record with our checkout partner for receipts and returns.\n\nIf you didn’t ask for this, reply to this email and we’ll look into it.`;
   return { subject, html, text };
 }

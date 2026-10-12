@@ -26,9 +26,10 @@ export async function validateBag(lines: BagLineInput[]): Promise<Bag> {
 }
 
 /**
- * Creates a Fourthwall cart from the bag's lines that can be ordered now and returns the hosted
- * checkout URL. Site SKUs are Fourthwall variant ids, so lines map straight to cart items.
- * Previews aren't in Fourthwall yet: they are left out and stay saved in the shopper's bag.
+ * Creates a Fourthwall cart from the bag's in-stock lines and returns the hosted checkout URL.
+ * Site SKUs are Fourthwall variant ids, so lines map straight to cart items. A piece that isn't
+ * published in Fourthwall yet has no variant there, so a bag holding one can't check out: the
+ * shopper gets a plain "try again" message and the bag stays as it is.
  */
 export async function startCheckout(
   input: BagLineInput[],
@@ -36,12 +37,11 @@ export async function startCheckout(
 ): Promise<CheckoutResult> {
   const catalog = await getCatalog();
   const priced = priceBag(input, catalog.findVariants(input));
-  const lines = priced.lines.filter((l) => l.available && !l.preview);
-  if (lines.length === 0) {
+  const lines = priced.lines.filter((l) => l.available);
+  if (lines.length === 0) throw new UserError("Your bag has nothing available to check out.");
+  if (lines.some((l) => l.preview)) {
     throw new UserError(
-      priced.lines.some((l) => l.preview)
-        ? "The pieces in your bag aren’t open for ordering yet. They stay saved, and we’ll email you when they open if you leave your address."
-        : "Your bag has nothing available to check out.",
+      "Checkout isn’t available right now. Your bag is saved, so please try again a little later.",
     );
   }
 
@@ -129,9 +129,9 @@ export function priceBag(input: BagLineInput[], catalog: Map<string, VariantWith
     });
   }
 
-  // What checkout would charge now: previews and sold-out lines are not part of it.
+  // What checkout would charge before shipping and tax: sold-out lines are not part of it.
   const subtotalCents = lines
-    .filter((l) => l.available && !l.preview)
+    .filter((l) => l.available)
     .reduce((sum, l) => sum + l.unitPriceCents * l.quantity, 0);
 
   return { lines, subtotalCents, currency, issues };

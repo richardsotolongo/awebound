@@ -39,7 +39,6 @@ export function toSummary(p: ProductDetail): ProductSummary {
     position: p.position,
     preview: p.preview,
     availability: p.availability,
-    releaseStatus: p.releaseStatus,
     category: p.category,
     baseColor: p.baseColor,
     priceCents: p.priceCents,
@@ -226,7 +225,6 @@ export class CatalogIndex {
           ...c,
           pieces: pieces.length,
           releasedAt: pieces.reduce((max, p) => (p.releasedAt > max ? p.releasedAt : max), ""),
-          status: pieces[0]?.releaseStatus ?? ("preview" as const),
         };
       })
       .filter((r) => r.pieces > 0)

@@ -72,19 +72,10 @@ export type Collection = z.infer<typeof CollectionSchema>;
 export const LATEST_DROP = "latest";
 export const ALL_COLLECTIONS = "all";
 
-/**
- * Whether a release can be ordered: "preview" while none of its pieces can, "partial" once some
- * can and others are still previews, "open" when every piece is in Fourthwall. Release-level
- * wording across the site follows it; a single piece follows its own `availability`.
- */
-export const ReleaseStatusSchema = z.enum(["preview", "partial", "open"]);
-export type ReleaseStatus = z.infer<typeof ReleaseStatusSchema>;
-
 /** A release as the site lists it. */
 export const ReleaseSchema = CollectionSchema.extend({
   pieces: z.number().int(),
   releasedAt: z.string(),
-  status: ReleaseStatusSchema,
 });
 export type Release = z.infer<typeof ReleaseSchema>;
 
@@ -147,19 +138,18 @@ export const ProductSummarySchema = z.object({
   /** Order within its release, from 1. Drives the default sort. */
   position: z.number().int().positive(),
   /**
-   * True while the piece is on the site but not yet in Fourthwall: it shows with the site's price
-   * and images, can be saved to the bag, and is left out of checkout.
+   * True while the piece is on the site but not yet published in Fourthwall. Internal only: the
+   * site shows it exactly like a piece on sale (the owner's choice, so the site is ready to show),
+   * and only checkout treats it differently (server/bag.ts).
    */
   preview: z.boolean(),
-  /** What a shopper can do with the piece now. "partial": some sizes or colors are sold out. */
-  availability: z.enum(["preview", "available", "partial", "sold_out"]),
-  /** The status of the release the piece belongs to. */
-  releaseStatus: ReleaseStatusSchema,
+  /** What a shopper can do with the piece. "partial": some sizes or colors are sold out. */
+  availability: z.enum(["available", "partial", "sold_out"]),
   category: CategorySchema,
   baseColor: z.string(),
   /** The lowest price among the sizes that can be ordered. */
   priceCents: z.number().int().nonnegative(),
-  /** Sizes differ in price, so `priceCents` is shown as "From $40". */
+  /** Some sizes cost more (2XL and up). The listed price is the base; choosing one says so. */
   priceVaries: z.boolean(),
   currency: z.string().length(3),
   colors: z.array(ColorSchema),

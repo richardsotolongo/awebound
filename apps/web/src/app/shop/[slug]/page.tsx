@@ -159,7 +159,7 @@ export default async function ProductPage({ params }: { params: Params }) {
                 <dt>{story.process === "embroidered" ? "Thread" : "Inks"}</dt>
                 <dd>{story.inks}</dd>
                 <dt>Fabric</dt>
-                <dd>{story.material ?? "Fabric details are posted before ordering opens."}</dd>
+                <dd>{story.material ?? "Ask us for fabric details."}</dd>
               </dl>
               <p className="field-help">
                 Questions about fit? <Link href="/contact">Ask us</Link>.

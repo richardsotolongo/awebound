@@ -12,10 +12,10 @@ import { SizeGuide } from "./size-guide";
 
 /**
  * Garment type and price, the piece's Scripture (`children`), color, size and the bag button,
- * then delivery and returns in brief. While the piece is a preview the button saves the
- * selection to the bag and says plainly that nothing is ordered; once the piece is in Fourthwall
- * it adds to the bag for checkout. On phones the price and the button stay within reach in a bar
- * once the button has scrolled away, until the page turns to the other pieces.
+ * then delivery and returns in brief. The price is the base price; choosing a size that costs
+ * more (2XL and up) updates it and says so under the sizes. On phones the price and the button
+ * stay within reach in a bar once the button has scrolled away, until the page turns to the
+ * other pieces.
  */
 export function ProductPurchase({
   product,
@@ -61,10 +61,10 @@ export function ProductPurchase({
   const soldOutSizes = variantsForColor.filter((v) => !v.available).map((v) => v.size);
   const allSoldOut = variantsForColor.length > 0 && soldOutSizes.length === variantsForColor.length;
   const variant = variantsForColor.find((v) => v.size === size);
-  // Until a size is chosen the price is the listed one ("From $40" when sizes differ).
+  // Until a size is chosen the price is the base price.
   const price = variant ? formatPrice(variant.priceCents, product.currency) : priceLabel(product);
-  // In a release where other pieces can already be ordered, speak for this piece only.
-  const releaseInPreview = product.releaseStatus === "preview";
+  // A size that costs more than the base price (2XL and up) says so once it's chosen.
+  const extraCents = variant ? variant.priceCents - product.priceCents : 0;
 
   function changeColor(next: string) {
     setColor(next);
@@ -138,6 +138,11 @@ export function ProductPurchase({
         {product.sizeGuide?.note ? (
           <p className="buy-size-note aw-small">{product.sizeGuide.note}</p>
         ) : null}
+        <p className="buy-size-price" aria-live="polite">
+          {variant && extraCents > 0
+            ? `${variant.size} is ${price}, ${formatPrice(extraCents, product.currency)} more than other sizes.`
+            : null}
+        </p>
         {error ? (
           <p className="buy-error" role="alert">
             {error}
@@ -153,27 +158,6 @@ export function ProductPurchase({
             </p>
             <NotifyForm source="product" productSlug={product.slug} label="Your email" />
           </div>
-        ) : product.preview ? (
-          <div className="buy-preview">
-            <p className="buy-preview-title">
-              {releaseInPreview
-                ? "Ordering isn’t open yet"
-                : "This piece isn’t open for ordering yet"}
-            </p>
-            <p className="aw-small">
-              {releaseInPreview ? `${product.collection.name} is in preview. ` : ""}
-              Saving this piece keeps your size and color in your bag on this device. It doesn’t
-              place an order or charge you.
-            </p>
-            <Button variant="primary" block onClick={addToBag}>
-              Save to bag
-            </Button>
-            <NotifyForm
-              source="product"
-              productSlug={product.slug}
-              label="Email me when this piece can be ordered"
-            />
-          </div>
         ) : (
           <Button variant="primary" block onClick={addToBag}>
             Add to bag
@@ -181,11 +165,7 @@ export function ProductPurchase({
         )}
       </div>
 
-      <DeliverySummary
-        preview={product.preview}
-        process={product.story.process}
-        onSizeGuide={() => setGuideOpen(true)}
-      />
+      <DeliverySummary process={product.story.process} onSizeGuide={() => setGuideOpen(true)} />
 
       {allSoldOut ? null : (
         <div className="buy-bar" data-on={past && !atOthers} inert={!(past && !atOthers)}>
@@ -194,7 +174,7 @@ export function ProductPurchase({
             <span className="buy-price">{price}</span>
           </p>
           <Button variant="primary" onClick={addToBag}>
-            {product.preview ? "Save to bag" : "Add to bag"}
+            Add to bag
           </Button>
         </div>
       )}

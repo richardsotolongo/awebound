@@ -19,7 +19,7 @@ export const revalidate = 60;
 export default async function AccountPage() {
   if (!accountsEnabled) {
     const release = await withFallback(getLatestRelease, null);
-    const copy = accountsClosedCopy(release);
+    const copy = accountsClosedCopy();
     return (
       <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
         <PageHeader title={copy.title} intro={copy.intro} />
@@ -81,7 +81,7 @@ export default async function AccountPage() {
             Orders
           </h2>
           <p className="aw-body">
-            Checkout runs through Fourthwall, our print and fulfillment partner. Order confirmations
+            Checkout is handled securely by our print and fulfillment partner. Order confirmations
             and tracking come by email to <span className="account-email">{email}</span>.
           </p>
           <p className="field-help">

@@ -41,9 +41,9 @@ const sections: LegalSection[] = [
             store a password.
           </li>
           <li>
-            <strong>Orders</strong> (once checkout opens): your name, shipping address, email, phone
-            if given, and what you ordered. Payment details are handled by our payment provider; we
-            never see or store full card numbers.
+            <strong>Orders:</strong> your name, shipping address, email, phone if given, and what
+            you ordered. Payment details are handled by our payment provider; we never see or store
+            full card numbers.
           </li>
         </ul>
         <h3>Information collected automatically</h3>
@@ -71,9 +71,7 @@ const sections: LegalSection[] = [
       <ul>
         <li>To answer your messages and provide customer support.</li>
         <li>To send drop notes and the notices you asked for. You can stop them at any time.</li>
-        <li>
-          To run your account and, once checkout opens, to make, ship and support your orders.
-        </li>
+        <li>To run your account and to make, ship and support your orders.</li>
         <li>To keep the store secure, prevent fraud and spam, and fix problems.</li>
         <li>To meet legal, tax and accounting obligations.</li>
       </ul>
@@ -94,8 +92,8 @@ const sections: LegalSection[] = [
           <li>Google, if you choose to sign in with Google.</li>
           <li>Our website and server hosting providers.</li>
           <li>
-            Once checkout opens, our commerce, payment and print-on-demand partners, to take payment
-            and make and ship your order.
+            Our checkout, payment and print-on-demand partners, to take payment and make and ship
+            your order.
           </li>
         </ul>
         <p>

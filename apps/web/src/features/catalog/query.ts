@@ -62,21 +62,18 @@ export const EMPTY_FACETS: CatalogFacets = {
   price: { min: 0, max: 0 },
 };
 
-/** A piece's price as listed: "From $40" when its sizes differ in price. */
-export function priceLabel(p: Pick<ProductSummary, "priceCents" | "priceVaries" | "currency">) {
-  const price = formatPrice(p.priceCents, p.currency);
-  return p.priceVaries ? `From ${price}` : price;
+/**
+ * A piece's price as listed: its base price, with no "From". Sizes that cost more (2XL and up)
+ * say so on the product page once chosen.
+ */
+export function priceLabel(p: Pick<ProductSummary, "priceCents" | "currency">) {
+  return formatPrice(p.priceCents, p.currency);
 }
 
-/**
- * What to say about ordering a piece, when there is something to say. A preview is only called
- * out in a release where other pieces can already be ordered; otherwise the release says it.
- */
-export function pieceStatus(p: Pick<ProductSummary, "availability" | "releaseStatus">) {
+/** What to say about a piece's stock, when there is something to say. */
+export function pieceStatus(p: Pick<ProductSummary, "availability">) {
   if (p.availability === "sold_out") return "Sold out";
   if (p.availability === "partial") return "Some sizes sold out";
-  if (p.availability === "preview" && p.releaseStatus === "partial")
-    return "Not open for ordering yet";
   return undefined;
 }
 

@@ -37,7 +37,7 @@ SCRIPTURE_TRANSLATION=NIV
 ```
 
 - `NEXT_PUBLIC_SITE_URL` is the one address search engines and AI assistants are told about: every canonical link, the sitemap, `llms.txt`, share images and the links in emails are built from it. It must be the live host exactly (`https://www.awebound.store`, with `www`). A production build fails while it is unset or localhost, so a deploy can't publish `localhost` addresses.
-- `FOURTHWALL_STOREFRONT_TOKEN` connects the shop to Fourthwall. Without it (or for pieces not yet created in Fourthwall) the Behold pieces show as previews: the site's prices and mockups, add to bag works, and checkout says it opens soon. After adding it or new Fourthwall products, the home page picks them up within a minute; redeploy if you want it immediately.
+- `FOURTHWALL_STOREFRONT_TOKEN` connects the shop to Fourthwall. Without it (or for pieces not yet created in Fourthwall) the Behold pieces still look ready to order (the site's prices and images, Add to bag), but Check out shows a try-again message. After adding it or new Fourthwall products, the home page picks them up within a minute; redeploy if you want it immediately.
 - The shop lists only products that are public in Fourthwall and match the brand content by slug (see `docs/TODOS.md` → Fourthwall).
 - `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox.
 - `FOURTHWALL_CHECKOUT_DOMAIN` is optional (default `awebound-store-shop.fourthwall.com`); set it if you connect a custom shop domain in Fourthwall.
