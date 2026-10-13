@@ -15,6 +15,18 @@ export const serverEnv = z
       (v) => v ?? "awebound-store-shop.fourthwall.com",
     ),
     SUPABASE_SECRET_KEY: optional,
+    /**
+     * Fourthwall admin → Settings → For developers → Webhooks: the secret that signs order events.
+     * Without it the Archive can't link orders (the webhook answers 503 so Fourthwall retries later).
+     */
+    FOURTHWALL_WEBHOOK_SECRET: optional,
+    /** Fourthwall Open API user (same page). Order sync, past-order claims and Founding settlement. */
+    FOURTHWALL_API_USERNAME: optional,
+    FOURTHWALL_API_PASSWORD: optional,
+    /** Bearer token Vercel sends with the daily reconcile cron (any long random string). */
+    CRON_SECRET: optional,
+    /** Private Supabase Storage bucket holding the wallpapers. */
+    ARCHIVE_STORAGE_BUCKET: optional.transform((v) => v ?? "archive-assets"),
     RESEND_API_KEY: optional,
     EMAIL_FROM: optional.transform((v) => v ?? "Awebound <noreply@awebound.store>"),
     CONTACT_INBOX: optional.transform((v) => v ?? "contact@awebound.store"),

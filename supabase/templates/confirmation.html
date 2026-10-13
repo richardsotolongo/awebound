@@ -106,7 +106,7 @@
                             style="background-color: #782b35; padding: 14px 28px"
                           >
                             <a
-                              href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email&amp;next=/account"
+                              href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email&amp;next={{ .RedirectTo }}"
                               style="
                                 font-family:
                                   Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;

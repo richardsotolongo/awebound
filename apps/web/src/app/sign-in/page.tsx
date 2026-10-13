@@ -1,14 +1,17 @@
 import { ThornCross } from "@awebound/brand";
 import type { Metadata } from "next";
 import { AccountsClosedActions, accountsClosedCopy } from "@/features/account/accounts-closed";
+import { BenefitsList } from "@/features/archive/benefits-list";
 import { SignInForm } from "@/features/auth/sign-in-form";
 import { accountsEnabled } from "@/lib/env";
 import { safeNext } from "@/lib/supabase/server";
+import { getArchiveReadiness } from "@/server/archive/readiness";
 import { getLatestRelease, withFallback } from "@/server/catalog";
 
 export const metadata: Metadata = {
-  title: "Sign in",
-  description: "Sign in to Awebound with Google or a one-time email link. No password needed.",
+  title: "Join Awebound",
+  description:
+    "Create a free Awebound account or sign in with Google or a one-time email link. No password needed.",
   robots: { index: false },
 };
 
@@ -17,6 +20,7 @@ const ERRORS: Record<string, string> = {
   oauth: "Google sign-in didn’t finish. Try again.",
 };
 
+/** Sign-in and sign-up are the same passwordless flow; the page says what the account brings. */
 export default async function SignInPage({
   searchParams,
 }: {
@@ -25,42 +29,39 @@ export default async function SignInPage({
   const params = await searchParams;
   const next = safeNext(params.next);
   const error = params.error ? (ERRORS[params.error] ?? ERRORS.link) : null;
-  const release = await withFallback(getLatestRelease, null);
+  const [release, readiness] = await Promise.all([
+    withFallback(getLatestRelease, null),
+    getArchiveReadiness(),
+  ]);
   const closed = accountsClosedCopy();
 
   return (
-    <div className="aw-container section" style={{ display: "grid", justifyItems: "center" }}>
-      <div style={{ width: "100%", maxWidth: 440, display: "grid", gap: "var(--space-8)" }}>
-        <div
-          style={{
-            display: "grid",
-            gap: "var(--space-4)",
-            justifyItems: "center",
-            textAlign: "center",
-          }}
-        >
-          <span style={{ color: "var(--line-strong)" }}>
-            <ThornCross size="small" height={48} title="" />
-          </span>
-          <h1 className="aw-h1">Sign in</h1>
-          <p className="aw-body">
-            An account keeps your details in one place. You can always check out as a guest instead.
-          </p>
-        </div>
-        {error ? (
-          <p className="notice aw-small" role="alert">
-            {error}
-          </p>
-        ) : null}
-        {accountsEnabled ? (
-          <SignInForm next={next} />
-        ) : (
-          <div className="notice" role="status">
-            <p className="aw-h3">{closed.title}</p>
-            <p className="aw-small">{closed.intro}</p>
-            <AccountsClosedActions release={release} />
+    <div className="aw-container section">
+      <div className="split split-even">
+        <div style={{ width: "100%", maxWidth: 440, display: "grid", gap: "var(--space-8)" }}>
+          <div style={{ display: "grid", gap: "var(--space-4)" }}>
+            <span style={{ color: "var(--line-strong)" }}>
+              <ThornCross size="small" height={48} title="" />
+            </span>
+            <h1 className="aw-h1">Join Awebound</h1>
+            <p className="aw-body">Accounts are free. Guest checkout is always available.</p>
           </div>
-        )}
+          {error ? (
+            <p className="notice aw-small" role="alert">
+              {error}
+            </p>
+          ) : null}
+          {accountsEnabled ? (
+            <SignInForm next={next} />
+          ) : (
+            <div className="notice" role="status">
+              <p className="aw-h3">{closed.title}</p>
+              <p className="aw-small">{closed.intro}</p>
+              <AccountsClosedActions release={release} />
+            </div>
+          )}
+        </div>
+        <BenefitsList readiness={readiness} />
       </div>
     </div>
   );

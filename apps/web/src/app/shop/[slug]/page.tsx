@@ -9,6 +9,8 @@ import { PieceNav } from "@/features/product/piece-nav";
 import { ProductGallery } from "@/features/product/product-gallery";
 import { ProductPurchase } from "@/features/product/product-purchase";
 import { StoryBand } from "@/features/product/story-band";
+import { DesignContext } from "@/features/archive/design-context";
+import { getPublishedPublicCard } from "@/server/archive/content";
 import { ReleaseWall } from "@/features/release/release-wall";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
@@ -56,6 +58,8 @@ export default async function ProductPage({ params }: { params: Params }) {
   const next = at >= 0 && at < pieces.length - 1 ? pieces[at + 1] : undefined;
   const others = pieces.filter((p) => p.slug !== product.slug);
   const { scripture, story } = product;
+  // Only the published public fields of the Archive card reach this cached page.
+  const card = await withFallback(() => getPublishedPublicCard(product.slug), null);
 
   const url = `${siteUrl}/shop/${product.slug}`;
   const prices = product.variants.map((v) => v.priceCents);
@@ -139,6 +143,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           </div>
 
           <StoryBand product={product} />
+          {card ? <DesignContext card={card} /> : null}
 
           <section className="aw-container details" aria-labelledby="details-title">
             <h2 id="details-title" className="aw-h2">

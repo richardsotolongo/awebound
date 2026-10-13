@@ -41,8 +41,9 @@ export function DeleteAccount({ email }: { email: string }) {
   return (
     <div className="account-delete">
       <p className="aw-body">
-        This removes your sign-in, your profile and your drop-notes subscription. Orders you placed
-        stay on record with our checkout partner for receipts and returns.
+        This removes your sign-in, your profile, your saved pieces, your fit and your email
+        preferences. Orders you placed stay on record with our checkout partner for receipts and
+        returns; their link to your account is removed.
       </p>
       {state === "idle" ? (
         <div>

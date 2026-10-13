@@ -1,0 +1,347 @@
+/* My Archive: the account area, its cards and the owner's admin tables. Layout only; colors are tokens. */
+@layer components {
+  .archive-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--space-8);
+  }
+  .archive-nav a {
+    min-height: var(--tap-min);
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+  .archive-nav a[aria-current="page"] {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+  .archive-seal {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+    color: var(--ink);
+  }
+  .archive-seal-mark {
+    color: var(--accent-text);
+    flex: none;
+  }
+  .archive-panel-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .archive-thumbs {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .archive-thumbs a {
+    display: block;
+    width: 72px;
+    aspect-ratio: 4 / 5;
+    background: var(--surface);
+  }
+  .archive-thumbs img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-6);
+  }
+  .archive-card {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .archive-card-media {
+    aspect-ratio: 4 / 5;
+    background: var(--surface-raised);
+    overflow: hidden;
+  }
+  .archive-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .archive-card .aw-product-name {
+    margin: 0;
+  }
+  .archive-story {
+    display: grid;
+    gap: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+  .archive-story-head {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    align-items: center;
+  }
+  .archive-story-head img {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    height: auto;
+  }
+  .archive-story-views {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .archive-story-views img {
+    width: 120px;
+    height: auto;
+  }
+  .archive-section {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 68ch;
+  }
+  .archive-note {
+    padding: var(--space-12) var(--space-8);
+    background: var(--surface-page);
+    color: var(--ink);
+  }
+  .archive-note-in {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 68ch;
+  }
+  .archive-orders {
+    display: grid;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .archive-order {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .archive-order-lines {
+    margin: 0;
+    padding-left: 1.2em;
+    color: var(--ink-muted);
+  }
+  .archive-benefits {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .archive-benefits ul {
+    margin: var(--space-3) 0 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--space-2);
+    list-style: disc;
+    color: var(--ink-muted);
+  }
+  .archive-benefits h3 {
+    color: var(--ink);
+  }
+  .archive-saved-remove {
+    justify-self: end;
+  }
+  .archive-exports {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .archive-export-preview {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .archive-export-preview img {
+    width: 120px;
+    height: auto;
+    border: 1px solid var(--line);
+  }
+  .admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+  .admin-nav a {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-muted);
+    min-height: var(--tap-min);
+    display: inline-flex;
+    align-items: center;
+  }
+  .admin-nav a[aria-current="page"] {
+    color: var(--ink);
+  }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .admin-table th,
+  .admin-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--line);
+  }
+  .admin-table th {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .admin-table code,
+  .admin-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .admin-section {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .admin-editor {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 80ch;
+  }
+  .admin-editor textarea {
+    min-height: 120px;
+  }
+  .admin-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .admin-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+  }
+  .admin-facts div {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .admin-facts dt {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .admin-facts dd {
+    margin: 0;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .admin-wrap {
+    overflow-x: auto;
+  }
+  @media (max-width: 767px) {
+    .archive-story-head,
+    .archive-note {
+      padding: var(--space-6);
+    }
+  }
+}
+@layer components {
+  .archive-rows {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .archive-row {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr) auto;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .archive-row img {
+    width: 88px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    background: var(--surface-raised);
+  }
+  .archive-row-words {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .archive-row-words a {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+  }
+}
+
+/* Owner pages: the few layout bits the admin tables and forms still needed. */
+@layer components {
+  pre.admin-code {
+    margin: 0;
+    max-height: 320px;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+  .admin-list {
+    margin: 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--space-2);
+    color: var(--ink-muted);
+  }
+  .admin-check {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    color: var(--ink);
+  }
+  .admin-check input {
+    margin-top: 6px;
+  }
+  .admin-copy {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    max-width: 68ch;
+  }
+  .admin-copy dt {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .admin-copy dd {
+    margin: 0;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+}

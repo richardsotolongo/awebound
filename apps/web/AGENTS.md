@@ -10,7 +10,10 @@ src/
 │  ├─ page.tsx             home: the tagline on the lead piece's plate, that piece up close, the founder's note, the release as a wall, release sign-up
 │  ├─ shop/                (list)/ the listing (collection selector + category tabs) with its loading state; [slug]/ product pages, cached for a minute
 │  ├─ collections/         every release by name; /collections/<slug> opens the shop filtered to it
-│  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in, account
+│  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in (Join Awebound: the form beside the benefits)
+│  ├─ account/             My Archive (layout guards the session and shows the nav): overview, saved, fit, collection, collection/[slug]
+│  │                       (the owned card), orders, orders/link (claim a past order), settings, admin/* (owner pages, role `admin`)
+│  ├─ api/                 fourthwall/webhook (signed order events), fourthwall/reconcile (cron), archive/assets/[id], archive/designs/[slug]/card.pdf and share.png
 │  └─ auth/                callback (OAuth/PKCE), confirm (email token hash), sign-out (POST)
 ├─ features/               one folder per feature (UI)
 │  ├─ home/                Campaign (the opening plate), LeadPiece (the brand paragraph, status, close-up, name, price, Scripture), Founder (Richard's note)
@@ -18,9 +21,13 @@ src/
 │  ├─ catalog/             CatalogView (collection/category selectors), ShopHeader, URL state, toolbar, filters, chips, grid, query helpers
 │  ├─ product/             gallery (the stage), purchase (type and price, color/size with the 2XL/3XL price note, Add to bag, the phone buy bar), StoryBand, PieceNav, delivery and returns summary, size guide
 │  ├─ bag/                 zustand store (persisted), drawer, bag page, checkout + notify form
+│  ├─ archive/             My Archive UI: nav, benefits list, seal, saved/fit/claim/export/consent/email-change forms, product page story section, save button; admin/ for the owner forms
 │  ├─ contact/ auth/ account/ legal/
 ├─ server/                 server-only code (never import it from a Client Component, except actions.ts)
 │  ├─ actions.ts           Server Actions: validateBag, startCheckout, loadMoreProducts, sendContact, subscribe, updateProfile, deleteAccount
+│  ├─ archive-actions.ts   My Archive's Server Actions; admin-actions.ts the owner's (admin role, audited)
+│  ├─ session.ts, limit.ts the session user and roles; the rate limit
+│  ├─ archive/             My Archive's server modules (docs/ARCHIVE.md): two serializers in content.ts, entitlements, orders, founding, reconcile, claims, assets, exports
 │  ├─ catalog.ts           getCatalog (Fourthwall + brand content), searchProducts, getFacets, getProduct, withFallback
 │  ├─ catalog-merge.ts     merges Fourthwall products with the brand content by slug; previews for the rest
 │  ├─ catalog-search.ts    search, filters, facets and sorting over the merged catalog
@@ -31,7 +38,8 @@ src/
 │  ├─ errors.ts            UserError, Result, run(), parse()
 │  ├─ env.ts               server-only env (zod)
 │  ├─ scripture.ts         resolves Scripture records to the site's translation (SCRIPTURE_TRANSLATION), site verses, the notice
-│  └─ content/             catalog.json (per product: code, release, position, plate, Scripture record, design story, preview price and per-size prices, size guide, images; plus `sizeGuides` per blank), verses.json
+│  └─ content/             catalog.json (per product: code, release, position, plate, Scripture record, design story, preview price and per-size prices, size guide, images; plus `sizeGuides` per blank), verses.json, archive-drafts.json (server-only seed)
+├─ scripts/                command-line tooling run with tsx: archive:seed, archive:intake, archive:render-check, grant:admin, revoke:admin
 ├─ shared/                 zod schemas, types and helpers used by both server and browser
 ├─ components/             site chrome: header, footer, Sheet (native <dialog>), PageHeader, FitName (a release name sized to fill its line), icons,
 │                          JsonLd (structured data), AskAi (the footer's assistant links)
@@ -53,7 +61,8 @@ src/
 - **Metadata**: an indexable page exports `pageMeta({ path, title, description })` from `lib/site.ts`, which sets the canonical address and the whole share card (a page's `openGraph` replaces the layout's). Shop views build their address with `shopCanonical`, which the sitemap shares. Structured data goes through `<JsonLd>`. Only confirmed facts: no offer for a preview, no shipping or return details until they are confirmed, Scripture by reference only in `llms.txt`.
 - **Current path**: use `usePath()` (`lib/pathname.ts`), never `usePathname()` directly, for anything rendered on the server. Vercel renders the prerendered home page as `/index`; the raw value once made the footer and header differ from the browser's render (a hydration error in production only).
 - **Bag**: `useBag` (zustand, persisted to localStorage, rehydrated after mount). The `validateBag` action re-prices it whenever it's shown; never trust client prices. `startCheckout` answers `{ url }` and the browser goes to Fourthwall's hosted checkout. Every in-stock line is in the subtotal and goes to checkout. A bag holding a piece that isn't published in Fourthwall yet can't check out: `startCheckout` refuses it with “Checkout isn’t available right now. Your bag is saved, so please try again a little later.” and the bag stays as it is. A piece's SKUs change when it goes from preview to on sale (they become Fourthwall's variant ids), so each line is sent with its piece, color and size (`toLineInput`) and `CatalogIndex.findVariants` finds it again: a saved selection survives publishing. A line that matches nothing is removed with a notice.
-- **Auth**: Supabase via `@supabase/ssr`. Passwordless only (Google OAuth, email link or 6-digit code). Everything degrades to "Accounts open soon" when `NEXT_PUBLIC_SUPABASE_*` is unset.
+- **Auth**: Supabase via `@supabase/ssr`. Passwordless only (Google OAuth, email link or 6-digit code). Everything degrades to "Accounts open soon" when `NEXT_PUBLIC_SUPABASE_*` is unset. Server code takes the user from `server/session.ts` (`currentUser`, `requireUser`, `requireAdmin`).
+- **My Archive**: two serializers, two responses. Public pages (product pages are cached) read only `getPublishedPublicCard`; account pages and the `/api/archive/*` handlers are dynamic, check `getEntitlement` per request and answer `Cache-Control: private, no-store`. Draft content, storage paths, order rows and anything about another account never reach a public page or a Client Component prop. Every benefit claim in copy is gated by a bit of `getArchiveReadiness()`, so nothing is advertised before it works. New Archive tables are server-only; read and write them through `supabaseAdmin` after the session check. Owner pages live under `/account/admin` and need the `admin` role (`user_roles`, granted from the command line).
 - **Styling**: brand classes (`.aw-*`) for type and components, Tailwind utilities for layout, tokens for every color. No raw hex. Garment swatches go through `colorCss(color)` from `@/shared`: the brand token when the color is known, otherwise Fourthwall's swatch hex (product data, not styling). Fonts are self-hosted from `@fontsource-variable/*` via `next/font/local` (no Google Fonts requests).
 - **Motion**: Motion is one idea: the garment image travels between a tile and its product page (view transitions), and pages cross-fade. Nothing animates on load or on scroll. Artwork, Scripture and buttons are whole and readable in every frame: never cropped, wiped or faded in. Reduced motion gets instant navigation. The morph is React's `<ViewTransition name={"piece-" + slug}>` around a tile's listing image and the product stage's first frame: both ends show the same picture (`1.webp`), and a name appears once per page (the home hero shows a different picture, so it is unnamed; a product page's wall leaves out its own piece). Neighbour links pass `transitionTypes`. Product pages are cached (`revalidate` plus an empty `generateStaticParams`) so the destination is ready. Anchors land below the header (`scroll-margin-top` on every `[id]`).
 - **No labels above headings** on any page (no `.aw-label` over an `h1`–`h3`, no “Latest drop · Release 01” strings, no status chips). Context goes in the heading or a plain sentence. Product cards put the name first for the same reason. Form labels (Color, Size, Collection) stay.

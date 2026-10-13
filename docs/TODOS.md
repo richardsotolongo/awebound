@@ -49,6 +49,18 @@ All variables go in `apps/web/.env.local` locally and in the Vercel project; `ap
 - [ ] **A real inbox for `contact@awebound.store`.** Resend sends mail but doesn't receive it: use Google Workspace, Zoho or forwarding.
 - [ ] **Vercel** ([DEPLOYMENT.md](DEPLOYMENT.md)): one project, Root Directory `apps/web`, domain `www.awebound.store` (`awebound.store` redirects to it).
 
+## My Archive (built October 2026; docs/ARCHIVE.md has the steps)
+
+- [ ] `supabase db push` for the seven Archive migrations, then `supabase config push` (or paste the three templates: the sign-in links now carry `{{ .RedirectTo }}`, and `email-change.html` is new).
+- [ ] Fourthwall → Settings → For developers: a webhook for `ORDER_PLACED` and `ORDER_UPDATED` at `https://www.awebound.store/api/fourthwall/webhook` (`FOURTHWALL_WEBHOOK_SECRET`), and an Open API user (`FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`).
+- [ ] Vercel: the new variables and `CRON_SECRET` (the daily reconcile cron is in `apps/web/vercel.json`).
+- [ ] Rotate any key that was ever committed; earlier commits matched a storefront token and a Resend key.
+- [ ] First admin: sign in once, then `pnpm --filter @awebound/web grant:admin <email>`.
+- [ ] Import, review, approve and publish the ten drafts (Owner → Content). The founder notes are proposed copy until Richard approves them.
+- [ ] Care instructions per product from Fourthwall's product details (Owner → Content → Care).
+- [ ] Wallpaper PNG masters, twenty files (Owner → Assets, or `archive:intake`); the two JPEG previews in `assets/wallpapers/` are placeholders.
+- [ ] After the first real order: confirm the status strings, the line fields and the `checkoutId` match on Owner → Health, and edit `payment-state.ts` if needed.
+
 ## Search and AI discovery
 
 The site publishes `robots.txt`, `sitemap.xml`, `llms.txt`, canonical links and structured data, all built from `NEXT_PUBLIC_SITE_URL`.
@@ -79,7 +91,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 - [ ] Shipping, taxes, order and shipping emails: configure in Fourthwall (it sends them).
 - [ ] Place a test order end to end, then refund it in Fourthwall.
 - [x] Copy reads as live everywhere (no preview or “ordering isn’t open” wording) and never names the supplier: customers see “our print and fulfillment partner” or “our checkout partner”.
-- [ ] Optional: order history on `/account` from Fourthwall's order webhooks (needs an `orders` table and a webhook route).
+- [x] Order history on `/account` from Fourthwall's order webhooks: built as My Archive (`docs/ARCHIVE.md`).
 
 ## Content
 

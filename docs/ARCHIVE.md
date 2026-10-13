@@ -1,0 +1,174 @@
+# My Archive
+
+The account area at `/account`: a free home for saved pieces, remembered sizes and linked orders, and the full story, founder note and digital extras of every design a shopper has bought. Built in October 2026 from the owner's handoff. This file is the owner's guide, the setup list, the content status and the honest report of what is verified and what still waits on a service or a file.
+
+## What a visitor, a member and a buyer get
+
+| Who | Gets |
+| --- | --- |
+| Public visitor | Everything the site showed before, plus a design's published public preview and "The passage in context" on its product page (`/shop/<slug>#story`). |
+| Verified free account | My Archive: Saved Pieces, Your Fit (one remembered size per garment style, with the shop's size guides), Settings (name, email change, sign out everywhere, deletion), order history and the collection view with honest empty states. No full stories, founder notes, wallpapers, PDFs or share images come with signup, and there is no free wallpaper library. |
+| Eligible buyer | For each design bought in a paid, real order linked to the account: the full story, the imagery explanation, the note from Richard, the purchased variants, verified care (once confirmed), the published phone and desktop wallpapers, the design card PDF and the story images. One design never unlocks another. The purchaser owns the benefits, not a gift recipient. |
+| Guest buyer | Checkout and order emails as before. After signing in with the email used at checkout the order links itself; a different email can be proved with a code sent to the address on the order. A guest order never earns the Founding seal. |
+| Founding Member | The first 50 unique buyers whose paid order was placed while signed in. An understated seal on the Archive overview; no rank, count or perks in public. Policy below. |
+
+The wording the handoff fixed is used verbatim: the welcome line, "Your collection starts with your first piece.", "Own this design to unlock its full story and founder note.", "Your wallpaper is being prepared. It will appear here when published.", the sign-in benefits and the Founding sentence.
+
+## Owner guide (`/account/admin`, admins only)
+
+Admins are accounts with the `admin` role. Grant the first one from the command line after that person has signed in once:
+
+```bash
+pnpm --filter @awebound/web grant:admin richard@example.com   # needs NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SECRET_KEY in apps/web/.env.local
+pnpm --filter @awebound/web revoke:admin richard@example.com
+```
+
+Every owner change is written to `owner_audit_log` and shown on the Audit page.
+
+### Health
+
+What is set (by name, never by value), the feature flags, order counts, the last webhook and reconciliation, and the "Provider assumptions" panel (statuses, source types, API versions, checkout matches and the fields seen in real payloads). "Import the ten drafts" loads the editorial drafts as unpublished drafts. "Reconcile orders now" re-reads orders from Fourthwall's API (needs the API user).
+
+Flags (table `feature_flags`): `archive.orders`, `archive.claims`, `archive.founding`, `archive.wallpapers`, `archive.pdf`, `archive.share` are on; every `email.*` flag is off. A flag only allows a feature; the environment must also be ready (the readiness table below).
+
+### Content: the ten drafts
+
+1. **Import** them (Health or Content page, or `pnpm --filter @awebound/web archive:seed`). Each becomes version 1, status `draft`, with `founder_note_proposed = true`. The import checks every draft against `catalog.json` (slug, name, Scripture reference, catalog code, garment, collection) and refuses a draft that disagrees.
+2. **Review** on Content → the design: edit any field, "Save draft". Saving resets the approval.
+3. **Approve**: tick "I’ve reviewed the founder note and it is my own wording", then Approve. The founder notes are proposed copy written in Richard's voice; they stay unpublishable until he approves them as his own.
+4. **Publish** one design, or "Publish all approved" on the Content page. Publishing retires the previous published version; the product page and the owned cards read the published version only.
+5. **Care**: the care form on each design records verified care instructions and their source (Fourthwall's product details, the blank's care label). Until then the card says care isn't confirmed; no universal washing recipe is guessed. The FAQ's general care line is unchanged.
+
+What the public sees from a published card: the preview and the biblical context. What an owner sees: the full story, imagery, founder note, care, extras. These are two separate server responses; draft content never leaves the admin pages.
+
+### Wallpapers
+
+Expected: twenty design-specific PNGs (`behold-<slug>-phone.png` and `behold-<slug>-desktop.png`). Lock/home variants are optional later additions. Intake:
+
+- **Admin → Assets**: choose the design (or "Unassigned"), the format and a title, pick the PNG. The browser uploads straight to the private bucket (so Vercel's request limit never applies); the server then reads the real pixel size and type from the bytes, records the hash and size, and lists the file as uploaded. Assign it if needed, then **Publish**. The previous published file of that design and format retires. A landscape phone file or a portrait desktop file shows a warning.
+- **Command line** (files handed to Claude or kept in the repo under `assets/wallpapers/`):
+
+  ```bash
+  pnpm --filter @awebound/web archive:intake -- assets/wallpapers/brand-phone.jpg --format phone            # unassigned
+  pnpm --filter @awebound/web archive:intake -- path/to/behold-torn-veil-phone.png --format phone --design torn-veil --publish
+  ```
+
+- Delivery: a buyer's download is a 60-second signed link issued only after the server checks the entitlement; storage paths never appear in public markup or JSON. A missing file shows the "being prepared" line to owners and nothing to the public.
+- The two files Richard sent in chat on October 13 arrived as JPEG previews (472 x 1024 and 1024 x 640) and are kept intact in `assets/wallpapers/` (`brand-phone.jpg`, `brand-desktop.jpg`). They are not assigned to a design and not published. PNG masters at the intended resolution are still needed, committed under `assets/wallpapers/` or uploaded on the Assets page.
+
+### Mappings
+
+The Mappings page lists, per design, the catalog code, slug, Fourthwall slug, the live Fourthwall id and state (once the products are public and the storefront token is set), the stored offer id, the size guide and the care status. Product-to-design mapping is explicit: an order line maps by Fourthwall offer id, else by Fourthwall slug (the first match stores the id). Guides are the owner's own: the Middleweight Oversized T-shirt (Thorns to Lilies, By His Hem, Stone in Motion), the Organic Oversized T-shirt (To Live Is Christ, Still the Storm), the Premium Relaxed Hoodie (the three hoodies), the Low-Profile Adjustable Cap (Lamb’s Mark) and the Mid-Profile Snapback Cap (Signature Cap). Caps remember a fit note, never an invented size range.
+
+### Orders
+
+The Orders page shows every order the webhook or reconciliation recorded (emails as a hash prefix and domain), its payment state, how it was linked, whether the checkout was registered or guest, lines with eligible units, the webhook event log and reconciliation runs. Tools: relink an order to an account (or unlink), adjust eligible units per line with a reason (partial refunds without per-line data land here as "needs review"), mark reviewed.
+
+### Founding
+
+Members, candidates with the reason they wait, places used, the policy. Tools: revoke or restore a seal, award one by hand, and "Settle contested places" (places 46 to 50; enabled after a complete walk of Fourthwall's order list within 24 hours).
+
+## Founding Member policy
+
+Constants: `FOUNDING_CAP = 50`, `FOUNDING_SETTLE_FROM = 45` in `apps/web/src/server/archive/founding-policy.ts` and in `supabase/migrations/20261013000500_archive_founding.sql` (change both together).
+
+- A place needs a paid, real (not test), ordinary (`ORDER` source) order whose cart was created while the buyer was signed in (a `checkout_sessions` row with their user id matched the order's `checkoutId`), a verified account email, and the same email on the order. Google accounts qualify through the same flow.
+- Guest purchases never qualify and never consume a place; a guest order claimed later stays guest. A later separate purchase made while signed in can qualify if a place remains. Several orders from one member use one place.
+- Ordering is by the provider's payment time (`paid_at`, the order's `createdAt` the first time it is seen paid) with the provider's order id as tie-break; never by sign-up time or event arrival.
+- Allocation is one SQL function under an advisory lock with a unique rank, so concurrent webhooks cannot exceed 50 (checked with three parallel loops over 90 buyers: exactly 50 awarded). Places 1 to 45 are awarded as payments confirm; 46 to 50 wait as `contested_window` candidates until the reconciliation has walked Fourthwall's order list, then settle in payment order. Nothing ever re-ranks an awarded seal.
+- Incomplete evidence (no checkout session, email mismatch, flag off, cap reached) records a candidate with its reason instead of an award.
+- Default for the refund edge: an earned seal stays as historical recognition after an ordinary refund and its place is not recycled; the refunded design's story and downloads still close. Erroneous or fraudulent awards are revoked by the owner, audited.
+- A deleted account keeps its place taken. No public counters, discounts, points or leaderboards.
+
+## Order pipeline
+
+1. **Checkout**: `startCheckout` creates the Fourthwall cart with the documented `items` field only (the former undocumented `metadata` field is gone) and records `checkout_sessions(cart_id, user_id or null, email at checkout, lines)`.
+2. **Webhook** `POST /api/fourthwall/webhook`: verifies `X-Fourthwall-Hmac-SHA256` (base64 HMAC-SHA256 of the raw body) with `FOURTHWALL_WEBHOOK_SECRET`, answers 503 while the secret is unset (so Fourthwall retries), stores every event once by id, handles `ORDER_PLACED` and `ORDER_UPDATED` (everything else is stored as ignored), parses both the flat and the `data.order` payload shapes, upserts the order and its lines, links it, evaluates benefits and Founding, and records what the payload contained.
+3. **Linking precedence**: an existing link stays; then the checkout session whose cart id equals the order's `checkoutId` (registered evidence when it had a user, guest evidence otherwise; an email that differs from the account's flags the order for review while benefits still unlock); then an account whose verified email equals the order's email (guest provenance); else unlinked. On every visit to the Archive, unlinked orders with the account's verified email link themselves.
+4. **Payment meaning**: `apps/web/src/server/archive/payment-state.ts` maps Fourthwall statuses to paid / revoked / pending / unknown. Unknown grants nothing and is listed on the Health page: edit the sets after the first real order. Revoked orders close every line; partial refunds with per-line data remove those units, without it the order waits for review with its benefits intact.
+5. **Reconciliation**: `GET /api/fourthwall/reconcile` with `Authorization: Bearer <CRON_SECRET>` (Vercel cron, daily at 06:00 UTC in `apps/web/vercel.json`), the owner's "Reconcile orders now", and a buyer's "Refresh orders" (their own orders, rate-limited). It re-reads pending, unknown, reviewed and stale orders and walks the provider's order list for orders that never arrived, then settles Founding's contested places.
+6. **Claims**: order number → a 6-digit code to the email on the order (Resend), 15 minutes, 5 attempts, stored as hashes; the response never says whether the order exists.
+
+## Setup (owner actions; none performed here)
+
+1. **Database**: `supabase db push` applies the seven new migrations (identity, free tools, content and assets, orders, founding, flags/email/audit, roles). Then `supabase config push` or paste the three templates (`supabase/templates/magic-link.html`, `confirmation.html`, `email-change.html`) into Authentication → Emails. The private bucket `archive-assets` is created by the migration; check it under Storage.
+2. **Fourthwall**: Settings → For developers → Webhooks: add `https://www.awebound.store/api/fourthwall/webhook` for `ORDER_PLACED` and `ORDER_UPDATED`, copy the secret into `FOURTHWALL_WEBHOOK_SECRET`. Open API → Create API user: `FOURTHWALL_API_USERNAME` and `FOURTHWALL_API_PASSWORD`.
+3. **Vercel**: add the variables from `apps/web/.env.example` (the five new ones plus the existing keys), a long random `CRON_SECRET`; the cron in `vercel.json` registers on deploy.
+4. **First admin**: sign in once, then `pnpm --filter @awebound/web grant:admin <email>`.
+5. **Drafts**: Health → "Import the ten drafts", review, approve, publish.
+6. **Wallpapers**: Assets page or the intake command.
+7. Rotate any key that was ever committed (the git history matched a storefront token and a Resend key pattern in earlier commits) and keep `.env.local` out of git.
+
+Readiness, as the site computes it (`apps/web/src/server/archive/readiness.ts`):
+
+| Bit | Needs | Gates |
+| --- | --- | --- |
+| orders | database, `FOURTHWALL_WEBHOOK_SECRET`, flag | order history, the "linked orders" benefit, Founding |
+| platformApi | API user | Refresh orders, reconcile, claim lookups, Founding settlement |
+| claims | orders, `RESEND_API_KEY`, flag | Link a past order |
+| founding | orders, flag | the Founding sentence and seal |
+| content | a published design | full-story benefit, product page story section |
+| wallpapers | database, bucket reachable, flag (and a published file for the benefit line) | wallpaper downloads |
+| pdf / share | flag, the export fonts, a published design | the PDF button and the story images |
+
+## Content status (October 13, 2026)
+
+| Design | Slug | Scripture | Draft | Approved | Published | Care | Phone PNG | Desktop PNG |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Thorns to Lilies | thorns-to-lilies | Isaiah 1:18 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| To Live Is Christ, To Die Is Gain | to-live-is-christ | Philippians 1:21 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| By His Hem | by-his-hem | Matthew 9:21 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Stone in Motion | stone-in-motion | Matthew 28:6 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Still the Storm | still-the-storm | Mark 4:41 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Torn Veil | torn-veil | Matthew 27:51 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| The Passage | the-passage | Psalm 23:4 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Wonderfully Made | wonderfully-made | Psalm 139:14 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Lamb’s Mark | lambs-mark | John 1:29 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Signature Cap | signature-cap | Ephesians 1:7 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+
+The drafts live in `apps/web/src/server/content/archive-drafts.json` (server-only; never imported by a Client Component). All ten pass the catalog check (names, slugs, Scripture references and codes agree with `catalog.json`).
+
+## Report: verified, coded but unconnected, missing
+
+**Verified here (no credentials needed)**
+
+- The seven migrations apply on a local Postgres 16 with stub `auth` and `storage` schemas; 17 assertions pass: profile creation and email sync, the column-level grant (a user can rename but not change their email), the bucket row, Founding awards (45 immediate, 15 contested, settlement in payment order, cap 50, unique ranks, revoke keeps the place, deleted member keeps the place), the entitlement view (paid, real, ordinary orders only), and three concurrent loops over 90 buyers awarding exactly 50.
+- `pnpm typecheck`, `pnpm lint` and `pnpm build` pass.
+- The export pipeline renders a real PDF (`%PDF-`, two pages, embedded Grenze Gotisch, Manrope and Cormorant Garamond) and real PNGs at 1080 x 1920 and 1080 x 1080 from the committed drafts (`pnpm --filter @awebound/web archive:render-check -- thorns-to-lilies`), checked by eye.
+- Webhook signature verification, deduplication, both payload shapes, test-mode and unknown statuses, linking by checkout session and by verified email, revocation, and the protected routes' logged-out and cross-account answers: see "Checks performed".
+
+**Coded, waiting on a service or a file**
+
+- Live order events, the status strings Fourthwall really sends, per-line quantity and refund fields, and whether an order's `checkoutId` equals the Storefront cart id: confirmed by the first real orders; the Health page shows what arrived. Until a cart id matches, registered-checkout evidence stays unconfirmed and Founding awards stay candidates (never fabricated).
+- The Platform API (reconcile, Refresh orders, claims for orders not yet recorded, Founding settlement): needs the API user.
+- Claim codes and every custom email: need `RESEND_API_KEY`. Custom emails stay off by flag in any case.
+- The email-change confirmation: needs the template pushed to Supabase and SMTP configured there (as the sign-in emails already do).
+- Wallpapers: no PNG masters yet.
+- Product-specific care: nothing in the catalog or the reachable provider data confirms it; every card says so until the owner verifies it.
+
+**Not done, by instruction**: no deployment, no `supabase db push`, no webhook registration, no sales activation, no email sent, nothing bought.
+
+## Checks performed (October 13, 2026, in the build sandbox, no credentials)
+
+| Check | Result |
+| --- | --- |
+| Seven migrations on a local Postgres 16 with stub `auth` and `storage` schemas (`validate.sh`: profile trigger and email sync, column-level grant, bucket row, Founding allocation and settlement, revoke and deletion keep the place, entitlement view, three concurrent award loops over 90 buyers) | 17 of 17 assertions pass; exactly 50 places under concurrency |
+| Pure pieces with fixtures: webhook signature (right, wrong secret, changed body, missing, garbage), order parser (flat and `data.order` shapes, quantities, refunds, empty payloads), payment states (paid, revoked, pending, unknown), image headers (PNG, JPEG, WebP refused), `safeNext` (paths, same-site absolute, `//`, backslash, tab, other origin, `javascript:`) | 34 of 34 pass |
+| `pnpm typecheck`, `pnpm lint`, `pnpm build` (Next 16 production build; every Archive route is dynamic) | pass |
+| Exports from the committed drafts (`archive:render-check -- thorns-to-lilies`): PDF (`%PDF-`, two pages, embedded Grenze Gotisch, Manrope and Cormorant Garamond, wordmark path, artwork), story images 1080 x 1920 and 1080 x 1080 | real files, checked by eye |
+| Production server signed out: `/account*` answer the accounts-closed state (no Supabase keys in the sandbox), `/account/admin` 404, the asset, PDF and share handlers 401 with `Cache-Control: private, no-store`, the webhook and reconcile handlers 503 while their secrets are unset, public pages (`/`, `/sign-in`, `/shop/thorns-to-lilies`, FAQ, privacy, terms) carry no protected field names or storage paths, `robots.txt` disallows `/api/` | as expected |
+| Sign-in page copy (Join Awebound, the headline, "Accounts are free. Guest checkout is always available.", the immediate benefits; the purchase benefits and the Founding line stay hidden while nothing is published or connected), product page "Save this piece" | present |
+| Screenshots with the bundled Chromium at 375 px and 1280 px (reduced motion forced): sign-in, product, account | layout reviewed |
+
+Not run here, for want of services: a real session (the proxy's redirect to `/sign-in?next=…`, RLS through the publishable key, the signed upload, the email change, deletion cascade, two accounts' cross-access), live webhooks and the Platform API, Resend, Google. The steps above describe how to run them once the keys reach the environment.
+
+## Provider assumptions to confirm on the first real order
+
+| Assumption | Where it shows | If wrong |
+| --- | --- | --- |
+| `order.checkoutId` equals the Storefront cart id | Health → checkout matches hit/miss; logs `[archive:link]` | orders link by email only; ask Fourthwall for the supported identifier |
+| Status strings (`CONFIRMED`, `CANCELLED`, …) | Health → statuses seen; `payment-state.ts` | edit the sets; reconcile re-derives states |
+| Per-line `quantity` and refund fields | Health → quantityKnown, fields seen | quantities default to 1; partial refunds wait for review |
+| `data.order` vs flat payload, `testMode`, `source.type` values | Health → source types, API versions | the parser accepts both; new source types grant nothing until mapped |
+| `GET /order` paging | logs `[archive:platform]`; reconciliation notes | reconciliation falls back to per-order reads; settlement waits |
+| `paid_at` = the order's `createdAt` | `orders.ts` | prefer a payment timestamp once one is seen |

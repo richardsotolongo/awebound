@@ -22,7 +22,9 @@ const Variant = z.object({
 // Only "PRODUCT" entries parse, so bundles are skipped (the site sells single pieces).
 const Product = z.object({
   type: z.literal("PRODUCT"),
+  id: z.string().optional(),
   slug: z.string(),
+  description: z.string().nullish(),
   state: z.object({ type: z.string() }),
   access: z.object({ type: z.string() }).nullish(),
   images: z.array(Image),
@@ -99,13 +101,13 @@ export async function listProducts(): Promise<FourthwallProduct[]> {
   return products;
 }
 
-/** Creates a cart holding the given variants; its id goes into the hosted checkout URL. */
-export async function createCart(
-  items: { variantId: string; quantity: number }[],
-  metadata: Record<string, string>,
-): Promise<string> {
+/**
+ * Creates a cart holding the given variants; its id goes into the hosted checkout URL. Only the
+ * documented `items` field is sent; the order's checkoutId is matched to this cart id on our side.
+ */
+export async function createCart(items: { variantId: string; quantity: number }[]): Promise<string> {
   const cart = z
     .object({ id: z.string() })
-    .parse(await request("/carts", { method: "POST", body: JSON.stringify({ items, metadata }) }));
+    .parse(await request("/carts", { method: "POST", body: JSON.stringify({ items }) }));
   return cart.id;
 }

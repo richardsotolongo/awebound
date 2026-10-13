@@ -14,6 +14,28 @@ export declare const BRAND_HEX: {
     readonly bone: "#F0E6D2";
     readonly warmBone: "#E8DDC9";
     readonly oxblood: "#782B35";
+    /** The paper card in emails and the design card PDF. */
+    readonly paper: "#F8F2E7";
+    /** Muted text on paper. */
+    readonly muted: "#4A443D";
+};
+/** Each piece's plate (`--plate-*` in tokens.css), for generated images. */
+export declare const PLATE_HEX: {
+    readonly "plate-oxblood": "#60252b";
+    readonly "plate-ochre": "#be9a6a";
+    readonly "plate-sage": "#7a836d";
+    readonly "plate-cornflower": "#687d98";
+    readonly "plate-slate": "#46545c";
+    readonly "plate-parchment": "#c9ba9a";
+    readonly "plate-terracotta": "#966246";
+    readonly "plate-rose": "#be9a96";
+    readonly "plate-linen": "#d0cabf";
+    readonly "plate-concrete": "#96928c";
+};
+/** The ink a plate's lettering takes (`plate.ink` in the content file). */
+export declare const INK_HEX: {
+    readonly bone: "#F0E6D2";
+    readonly coal: "#151413";
 };
 
 export type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
@@ -346,6 +368,6 @@ export declare function Footer({ links, tagline, year, notice, signup, onSubscri
 declare global {
     interface Window {
         /** Set by awebound.umd.js. */
-        Awebound: { cx: typeof cx; BRAND_HEX: typeof BRAND_HEX; BrandLinkProvider: typeof BrandLinkProvider; BrandLink: typeof BrandLink; WORDMARK: typeof WORDMARK; THORN_CROSS: typeof THORN_CROSS; THORN_CROSS_SMALL: typeof THORN_CROSS_SMALL; LILY: typeof LILY; THORN_VINE: typeof THORN_VINE; THORN_WREATH: typeof THORN_WREATH; Wordmark: typeof Wordmark; ThornCross: typeof ThornCross; Mark: typeof Mark; useRadioGroup: typeof useRadioGroup; Button: typeof Button; ScriptureRef: typeof ScriptureRef; quoted: typeof quoted; ScriptureQuote: typeof ScriptureQuote; ThornRule: typeof ThornRule; Header: typeof Header; Hero: typeof Hero; ProductCard: typeof ProductCard; Plate: typeof Plate; Swatches: typeof Swatches; SizeSelector: typeof SizeSelector; CollectionBanner: typeof CollectionBanner; AltarPanel: typeof AltarPanel; Footer: typeof Footer };
+        Awebound: { cx: typeof cx; BRAND_HEX: typeof BRAND_HEX; PLATE_HEX: typeof PLATE_HEX; INK_HEX: typeof INK_HEX; BrandLinkProvider: typeof BrandLinkProvider; BrandLink: typeof BrandLink; WORDMARK: typeof WORDMARK; THORN_CROSS: typeof THORN_CROSS; THORN_CROSS_SMALL: typeof THORN_CROSS_SMALL; LILY: typeof LILY; THORN_VINE: typeof THORN_VINE; THORN_WREATH: typeof THORN_WREATH; Wordmark: typeof Wordmark; ThornCross: typeof ThornCross; Mark: typeof Mark; useRadioGroup: typeof useRadioGroup; Button: typeof Button; ScriptureRef: typeof ScriptureRef; quoted: typeof quoted; ScriptureQuote: typeof ScriptureQuote; ThornRule: typeof ThornRule; Header: typeof Header; Hero: typeof Hero; ProductCard: typeof ProductCard; Plate: typeof Plate; Swatches: typeof Swatches; SizeSelector: typeof SizeSelector; CollectionBanner: typeof CollectionBanner; AltarPanel: typeof AltarPanel; Footer: typeof Footer };
     }
 }

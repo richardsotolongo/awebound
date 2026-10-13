@@ -10,6 +10,7 @@ import { getCatalog } from "./catalog";
 import type { VariantWithProduct } from "./catalog-search";
 import { serverEnv } from "./env";
 import { UserError } from "./errors";
+import { recordCheckoutSession, type CheckoutUser } from "./archive/orders";
 import { createCart, CURRENCY, FourthwallApiError } from "./fourthwall";
 
 const SOLD_OUT_CODES = new Set([
@@ -33,7 +34,7 @@ export async function validateBag(lines: BagLineInput[]): Promise<Bag> {
  */
 export async function startCheckout(
   input: BagLineInput[],
-  customerId?: string,
+  user?: CheckoutUser | null,
 ): Promise<CheckoutResult> {
   const catalog = await getCatalog();
   const priced = priceBag(input, catalog.findVariants(input));
@@ -47,10 +48,7 @@ export async function startCheckout(
 
   let cartId: string;
   try {
-    cartId = await createCart(
-      lines.map((l) => ({ variantId: l.sku, quantity: l.quantity })),
-      { source: "awebound-site", ...(customerId ? { customer: customerId } : {}) },
-    );
+    cartId = await createCart(lines.map((l) => ({ variantId: l.sku, quantity: l.quantity })));
   } catch (err) {
     if (err instanceof FourthwallApiError && err.code && SOLD_OUT_CODES.has(err.code)) {
       throw new UserError("Something in your bag just sold out. Refresh your bag and try again.");
@@ -58,6 +56,14 @@ export async function startCheckout(
     console.error("[checkout] cart creation failed:", err);
     throw new UserError("Checkout is unreachable right now. Try again in a moment.");
   }
+
+  // Who started this checkout (or that nobody was signed in): the order webhook links back through
+  // the cart id. Recorded after the cart exists and never allowed to fail the checkout.
+  await recordCheckoutSession({
+    cartId,
+    user,
+    lines: lines.map((l) => ({ sku: l.sku, productSlug: l.productSlug, color: l.color, size: l.size, quantity: l.quantity })),
+  }).catch(() => undefined);
 
   const domain = serverEnv.FOURTHWALL_CHECKOUT_DOMAIN.replace(/^https?:\/\//, "").replace(
     /\/.*$/,

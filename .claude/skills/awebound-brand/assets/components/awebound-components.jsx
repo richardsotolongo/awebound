@@ -13,8 +13,25 @@ var BRAND_HEX = {
   coal: "#151413",
   bone: "#F0E6D2",
   warmBone: "#E8DDC9",
-  oxblood: "#782B35"
+  oxblood: "#782B35",
+  /** The paper card in emails and the design card PDF. */
+  paper: "#F8F2E7",
+  /** Muted text on paper. */
+  muted: "#4A443D"
 };
+var PLATE_HEX = {
+  "plate-oxblood": "#60252b",
+  "plate-ochre": "#be9a6a",
+  "plate-sage": "#7a836d",
+  "plate-cornflower": "#687d98",
+  "plate-slate": "#46545c",
+  "plate-parchment": "#c9ba9a",
+  "plate-terracotta": "#966246",
+  "plate-rose": "#be9a96",
+  "plate-linen": "#d0cabf",
+  "plate-concrete": "#96928c"
+};
+var INK_HEX = { bone: "#F0E6D2", coal: "#151413" };
 
 // packages/brand/src/link.tsx
 import {
@@ -701,8 +718,10 @@ export {
   Footer,
   Header,
   Hero,
+  INK_HEX,
   LILY,
   Mark,
+  PLATE_HEX,
   Plate,
   ProductCard,
   ScriptureQuote,

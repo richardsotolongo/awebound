@@ -64,7 +64,7 @@ export const FOOTER_NAV: NavLink[] = [
   { label: "Returns", href: "/refunds" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
-  { label: "Account", href: "/account" },
+  { label: "My Archive", href: "/account" },
   { label: "Contact", href: "/contact" },
 ];
 

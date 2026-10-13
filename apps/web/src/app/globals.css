@@ -8,6 +8,7 @@
 @import "../styles/product.css";
 @import "../styles/home.css";
 @import "../styles/prose.css";
+@import "../styles/archive.css";
 
 /* Let Tailwind see the class names used inside the brand package's components. */
 @source "../../../../packages/brand/src";

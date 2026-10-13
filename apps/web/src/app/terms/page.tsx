@@ -61,11 +61,19 @@ const sections: LegalSection[] = [
     id: "accounts",
     title: "Accounts",
     body: (
-      <p>
-        You can sign in with Google or with a one-time link or code sent to your email. Keep access
-        to that email account secure; you’re responsible for activity on your Awebound account. We
-        may suspend accounts used to abuse the store.
-      </p>
+      <>
+        <p>
+          You can sign in with Google or with a one-time link or code sent to your email. Keep
+          access to that email account secure; you’re responsible for activity on your Awebound
+          account. We may suspend accounts used to abuse the store.
+        </p>
+        <p>
+          Accounts are free and never required to order. A purchased design’s full story, founder
+          note and downloads are available to the account that made the purchase; they can’t be
+          transferred or resold. The Founding Member seal is recognition only and carries no
+          discount or other financial benefit.
+        </p>
+      </>
     ),
   },
   {

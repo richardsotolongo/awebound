@@ -32,7 +32,7 @@ export async function proxy(request: NextRequest) {
   if (!signedIn && request.nextUrl.pathname.startsWith("/account")) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
-    url.search = `?next=${encodeURIComponent(request.nextUrl.pathname)}`;
+    url.search = `?next=${encodeURIComponent(request.nextUrl.pathname + request.nextUrl.search)}`;
     return NextResponse.redirect(url);
   }
   return response;
@@ -40,6 +40,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|products/|about/|size-guides/|email/|og.png|icon.svg|apple-icon.png|favicon.ico|robots.txt|sitemap.xml|llms.txt).*)",
+    "/((?!api/|_next/static|_next/image|products/|about/|size-guides/|email/|og.png|icon.svg|apple-icon.png|favicon.ico|robots.txt|sitemap.xml|llms.txt).*)",
   ],
 };

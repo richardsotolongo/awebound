@@ -7,6 +7,7 @@ import { Sheet } from "@/components/sheet";
 import { useBag } from "@/features/bag/bag-store";
 import { NotifyForm } from "@/features/bag/notify-form";
 import { priceLabel } from "@/features/catalog/query";
+import { SavePieceButton } from "@/features/archive/save-piece-button";
 import { DeliverySummary } from "./delivery-summary";
 import { SizeGuide } from "./size-guide";
 
@@ -164,6 +165,8 @@ export function ProductPurchase({
           </Button>
         )}
       </div>
+
+      <SavePieceButton slug={product.slug} />
 
       <DeliverySummary process={product.story.process} onSizeGuide={() => setGuideOpen(true)} />
 
