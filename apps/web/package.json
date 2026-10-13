@@ -13,6 +13,7 @@
     "archive:seed": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/archive-seed.ts",
     "archive:intake": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/archive-intake.ts",
     "archive:render-check": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/archive-render-check.ts",
+    "archive:webhook": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/archive-webhook-fixture.ts",
     "grant:admin": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/grant-admin.ts",
     "revoke:admin": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/revoke-admin.ts"
   },

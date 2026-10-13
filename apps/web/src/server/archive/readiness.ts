@@ -38,9 +38,17 @@ export const getArchiveReadiness = cache(async (): Promise<ArchiveReadiness> => 
   let storage = false;
   if (supabaseAdmin) {
     const [designs, assets, bucket] = await Promise.all([
-      supabaseAdmin.from("archive_designs").select("design_key", { count: "exact", head: true }).not("published_content_id", "is", null),
-      supabaseAdmin.from("archive_assets").select("id", { count: "exact", head: true }).eq("status", "published"),
-      supabaseAdmin.storage.getBucket(serverEnv.ARCHIVE_STORAGE_BUCKET).catch(() => ({ data: null, error: new Error("unreachable") })),
+      supabaseAdmin
+        .from("archive_designs")
+        .select("design_key", { count: "exact", head: true })
+        .not("published_content_id", "is", null),
+      supabaseAdmin
+        .from("archive_assets")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "published"),
+      supabaseAdmin.storage
+        .getBucket(serverEnv.ARCHIVE_STORAGE_BUCKET)
+        .catch(() => ({ data: null, error: new Error("unreachable") })),
     ]);
     publishedDesigns = designs.count ?? 0;
     publishedAssets = assets.count ?? 0;
@@ -52,7 +60,10 @@ export const getArchiveReadiness = cache(async (): Promise<ArchiveReadiness> => 
   } catch {
     fonts = false;
   }
-  const orders = database && Boolean(serverEnv.FOURTHWALL_WEBHOOK_SECRET) && flags["archive.orders"];
+  const orders =
+    database && Boolean(serverEnv.FOURTHWALL_WEBHOOK_SECRET) && flags["archive.orders"];
+  // sendEmail prints in development without a Resend key, so claim codes still reach the terminal.
+  const email = Boolean(serverEnv.RESEND_API_KEY) || process.env.NODE_ENV !== "production";
   const platformApi = platformConfigured();
   const content = publishedDesigns > 0;
   const missing: string[] = [];
@@ -67,7 +78,7 @@ export const getArchiveReadiness = cache(async (): Promise<ArchiveReadiness> => 
     database,
     orders,
     platformApi,
-    claims: orders && Boolean(serverEnv.RESEND_API_KEY) && flags["archive.claims"],
+    claims: orders && email && flags["archive.claims"],
     founding: orders && flags["archive.founding"],
     content,
     publishedDesigns,

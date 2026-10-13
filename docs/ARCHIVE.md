@@ -4,13 +4,13 @@ The account area at `/account`: a free home for saved pieces, remembered sizes a
 
 ## What a visitor, a member and a buyer get
 
-| Who | Gets |
-| --- | --- |
-| Public visitor | Everything the site showed before, plus a design's published public preview and "The passage in context" on its product page (`/shop/<slug>#story`). |
-| Verified free account | My Archive: Saved Pieces, Your Fit (one remembered size per garment style, with the shop's size guides), Settings (name, email change, sign out everywhere, deletion), order history and the collection view with honest empty states. No full stories, founder notes, wallpapers, PDFs or share images come with signup, and there is no free wallpaper library. |
-| Eligible buyer | For each design bought in a paid, real order linked to the account: the full story, the imagery explanation, the note from Richard, the purchased variants, verified care (once confirmed), the published phone and desktop wallpapers, the design card PDF and the story images. One design never unlocks another. The purchaser owns the benefits, not a gift recipient. |
-| Guest buyer | Checkout and order emails as before. After signing in with the email used at checkout the order links itself; a different email can be proved with a code sent to the address on the order. A guest order never earns the Founding seal. |
-| Founding Member | The first 50 unique buyers whose paid order was placed while signed in. An understated seal on the Archive overview; no rank, count or perks in public. Policy below. |
+| Who                   | Gets                                                                                                                                                                                                                                                                                                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public visitor        | Everything the site showed before, plus a design's published public preview and "The passage in context" on its product page (`/shop/<slug>#story`).                                                                                                                                                                                                                       |
+| Verified free account | My Archive: Saved Pieces, Your Fit (one remembered size per garment style, with the shop's size guides), Settings (name, email change, sign out everywhere, deletion), order history and the collection view with honest empty states. No full stories, founder notes, wallpapers, PDFs or share images come with signup, and there is no free wallpaper library.          |
+| Eligible buyer        | For each design bought in a paid, real order linked to the account: the full story, the imagery explanation, the note from Richard, the purchased variants, verified care (once confirmed), the published phone and desktop wallpapers, the design card PDF and the story images. One design never unlocks another. The purchaser owns the benefits, not a gift recipient. |
+| Guest buyer           | Checkout and order emails as before. After signing in with the email used at checkout the order links itself; a different email can be proved with a code sent to the address on the order. A guest order never earns the Founding seal.                                                                                                                                   |
+| Founding Member       | The first 50 unique buyers whose paid order was placed while signed in. An understated seal on the Archive overview; no rank, count or perks in public. Policy below.                                                                                                                                                                                                      |
 
 The wording the handoff fixed is used verbatim: the welcome line, "Your collection starts with your first piece.", "Own this design to unlock its full story and founder note.", "Your wallpaper is being prepared. It will appear here when published.", the sign-in benefits and the Founding sentence.
 
@@ -91,6 +91,8 @@ Constants: `FOUNDING_CAP = 50`, `FOUNDING_SETTLE_FROM = 45` in `apps/web/src/ser
 
 ## Setup (owner actions; none performed here)
 
+The same steps on your own machine, with a local database and a made-up order to walk the purchase flow: [LOCAL-TESTING.md](LOCAL-TESTING.md).
+
 1. **Database**: `supabase db push` applies the seven new migrations (identity, free tools, content and assets, orders, founding, flags/email/audit, roles). Then `supabase config push` or paste the three templates (`supabase/templates/magic-link.html`, `confirmation.html`, `email-change.html`) into Authentication → Emails. The private bucket `archive-assets` is created by the migration; check it under Storage.
 2. **Fourthwall**: Settings → For developers → Webhooks: add `https://www.awebound.store/api/fourthwall/webhook` for `ORDER_PLACED` and `ORDER_UPDATED`, copy the secret into `FOURTHWALL_WEBHOOK_SECRET`. Open API → Create API user: `FOURTHWALL_API_USERNAME` and `FOURTHWALL_API_PASSWORD`.
 3. **Vercel**: add the variables from `apps/web/.env.example` (the five new ones plus the existing keys), a long random `CRON_SECRET`; the cron in `vercel.json` registers on deploy.
@@ -101,30 +103,30 @@ Constants: `FOUNDING_CAP = 50`, `FOUNDING_SETTLE_FROM = 45` in `apps/web/src/ser
 
 Readiness, as the site computes it (`apps/web/src/server/archive/readiness.ts`):
 
-| Bit | Needs | Gates |
-| --- | --- | --- |
-| orders | database, `FOURTHWALL_WEBHOOK_SECRET`, flag | order history, the "linked orders" benefit, Founding |
-| platformApi | API user | Refresh orders, reconcile, claim lookups, Founding settlement |
-| claims | orders, `RESEND_API_KEY`, flag | Link a past order |
-| founding | orders, flag | the Founding sentence and seal |
-| content | a published design | full-story benefit, product page story section |
-| wallpapers | database, bucket reachable, flag (and a published file for the benefit line) | wallpaper downloads |
-| pdf / share | flag, the export fonts, a published design | the PDF button and the story images |
+| Bit         | Needs                                                                        | Gates                                                         |
+| ----------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| orders      | database, `FOURTHWALL_WEBHOOK_SECRET`, flag                                  | order history, the "linked orders" benefit, Founding          |
+| platformApi | API user                                                                     | Refresh orders, reconcile, claim lookups, Founding settlement |
+| claims      | orders, `RESEND_API_KEY`, flag                                               | Link a past order                                             |
+| founding    | orders, flag                                                                 | the Founding sentence and seal                                |
+| content     | a published design                                                           | full-story benefit, product page story section                |
+| wallpapers  | database, bucket reachable, flag (and a published file for the benefit line) | wallpaper downloads                                           |
+| pdf / share | flag, the export fonts, a published design                                   | the PDF button and the story images                           |
 
 ## Content status (October 13, 2026)
 
-| Design | Slug | Scripture | Draft | Approved | Published | Care | Phone PNG | Desktop PNG |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Thorns to Lilies | thorns-to-lilies | Isaiah 1:18 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| To Live Is Christ, To Die Is Gain | to-live-is-christ | Philippians 1:21 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| By His Hem | by-his-hem | Matthew 9:21 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| Stone in Motion | stone-in-motion | Matthew 28:6 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| Still the Storm | still-the-storm | Mark 4:41 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| Torn Veil | torn-veil | Matthew 27:51 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| The Passage | the-passage | Psalm 23:4 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| Wonderfully Made | wonderfully-made | Psalm 139:14 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| Lamb’s Mark | lambs-mark | John 1:29 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
-| Signature Cap | signature-cap | Ephesians 1:7 | in repo, import pending | no | no | unconfirmed | awaiting | awaiting |
+| Design                            | Slug              | Scripture        | Draft                   | Approved | Published | Care        | Phone PNG | Desktop PNG |
+| --------------------------------- | ----------------- | ---------------- | ----------------------- | -------- | --------- | ----------- | --------- | ----------- |
+| Thorns to Lilies                  | thorns-to-lilies  | Isaiah 1:18      | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| To Live Is Christ, To Die Is Gain | to-live-is-christ | Philippians 1:21 | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| By His Hem                        | by-his-hem        | Matthew 9:21     | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| Stone in Motion                   | stone-in-motion   | Matthew 28:6     | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| Still the Storm                   | still-the-storm   | Mark 4:41        | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| Torn Veil                         | torn-veil         | Matthew 27:51    | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| The Passage                       | the-passage       | Psalm 23:4       | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| Wonderfully Made                  | wonderfully-made  | Psalm 139:14     | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| Lamb’s Mark                       | lambs-mark        | John 1:29        | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
+| Signature Cap                     | signature-cap     | Ephesians 1:7    | in repo, import pending | no       | no        | unconfirmed | awaiting  | awaiting    |
 
 The drafts live in `apps/web/src/server/content/archive-drafts.json` (server-only; never imported by a Client Component). All ten pass the catalog check (names, slugs, Scripture references and codes agree with `catalog.json`).
 
@@ -150,26 +152,26 @@ The drafts live in `apps/web/src/server/content/archive-drafts.json` (server-onl
 
 ## Checks performed (October 13, 2026, in the build sandbox, no credentials)
 
-| Check | Result |
-| --- | --- |
-| Seven migrations on a local Postgres 16 with stub `auth` and `storage` schemas (`validate.sh`: profile trigger and email sync, column-level grant, bucket row, Founding allocation and settlement, revoke and deletion keep the place, entitlement view, three concurrent award loops over 90 buyers) | 17 of 17 assertions pass; exactly 50 places under concurrency |
-| Pure pieces with fixtures: webhook signature (right, wrong secret, changed body, missing, garbage), order parser (flat and `data.order` shapes, quantities, refunds, empty payloads), payment states (paid, revoked, pending, unknown), image headers (PNG, JPEG, WebP refused), `safeNext` (paths, same-site absolute, `//`, backslash, tab, other origin, `javascript:`) | 34 of 34 pass |
-| `pnpm typecheck`, `pnpm lint`, `pnpm build` (Next 16 production build; every Archive route is dynamic) | pass |
-| Exports from the committed drafts (`archive:render-check -- thorns-to-lilies`): PDF (`%PDF-`, two pages, embedded Grenze Gotisch, Manrope and Cormorant Garamond, wordmark path, artwork), story images 1080 x 1920 and 1080 x 1080 | real files, checked by eye |
-| Production server signed out: `/account*` redirect to `/sign-in?next=…` with the path and query preserved (built with placeholder public Supabase values), the accounts-closed state without them, `/account/admin` 404, the asset, PDF and share handlers 401 with `Cache-Control: private, no-store`, the webhook and reconcile handlers 503 while their secrets are unset, public pages (`/`, `/sign-in`, `/shop/thorns-to-lilies`, FAQ, privacy, terms) carry no protected field names or storage paths, `robots.txt` disallows `/api/` | as expected |
-| Sign-in page copy (Join Awebound, the headline, "Accounts are free. Guest checkout is always available.", the immediate benefits; the purchase benefits and the Founding line stay hidden while nothing is published or connected), product page "Save this piece" | present |
-| Screenshots with the bundled Chromium at 375 px and 1280 px (reduced motion forced): sign-in, product, account; no element wider than the phone viewport | layout reviewed |
-| Owner pages (`/account/admin/*`): typecheck, lint and the production build; `/account/admin` answers 404 to anyone without the admin role | pass; not walked in a browser (no admin session possible without Supabase) |
+| Check                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Result                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Seven migrations on a local Postgres 16 with stub `auth` and `storage` schemas (`validate.sh`: profile trigger and email sync, column-level grant, bucket row, Founding allocation and settlement, revoke and deletion keep the place, entitlement view, three concurrent award loops over 90 buyers)                                                                                                                                                                                                                                       | 17 of 17 assertions pass; exactly 50 places under concurrency              |
+| Pure pieces with fixtures: webhook signature (right, wrong secret, changed body, missing, garbage), order parser (flat and `data.order` shapes, quantities, refunds, empty payloads), payment states (paid, revoked, pending, unknown), image headers (PNG, JPEG, WebP refused), `safeNext` (paths, same-site absolute, `//`, backslash, tab, other origin, `javascript:`)                                                                                                                                                                  | 34 of 34 pass                                                              |
+| `pnpm typecheck`, `pnpm lint`, `pnpm build` (Next 16 production build; every Archive route is dynamic)                                                                                                                                                                                                                                                                                                                                                                                                                                      | pass                                                                       |
+| Exports from the committed drafts (`archive:render-check -- thorns-to-lilies`): PDF (`%PDF-`, two pages, embedded Grenze Gotisch, Manrope and Cormorant Garamond, wordmark path, artwork), story images 1080 x 1920 and 1080 x 1080                                                                                                                                                                                                                                                                                                         | real files, checked by eye                                                 |
+| Production server signed out: `/account*` redirect to `/sign-in?next=…` with the path and query preserved (built with placeholder public Supabase values), the accounts-closed state without them, `/account/admin` 404, the asset, PDF and share handlers 401 with `Cache-Control: private, no-store`, the webhook and reconcile handlers 503 while their secrets are unset, public pages (`/`, `/sign-in`, `/shop/thorns-to-lilies`, FAQ, privacy, terms) carry no protected field names or storage paths, `robots.txt` disallows `/api/` | as expected                                                                |
+| Sign-in page copy (Join Awebound, the headline, "Accounts are free. Guest checkout is always available.", the immediate benefits; the purchase benefits and the Founding line stay hidden while nothing is published or connected), product page "Save this piece"                                                                                                                                                                                                                                                                          | present                                                                    |
+| Screenshots with the bundled Chromium at 375 px and 1280 px (reduced motion forced): sign-in, product, account; no element wider than the phone viewport                                                                                                                                                                                                                                                                                                                                                                                    | layout reviewed                                                            |
+| Owner pages (`/account/admin/*`): typecheck, lint and the production build; `/account/admin` answers 404 to anyone without the admin role                                                                                                                                                                                                                                                                                                                                                                                                   | pass; not walked in a browser (no admin session possible without Supabase) |
 
 Not run here, for want of services: a real session (RLS through the publishable key, the signed upload, the email change, deletion cascade, two accounts' cross-access), live webhooks and the Platform API, Resend, Google. The steps above describe how to run them once the keys reach the environment.
 
 ## Provider assumptions to confirm on the first real order
 
-| Assumption | Where it shows | If wrong |
-| --- | --- | --- |
-| `order.checkoutId` equals the Storefront cart id | Health → checkout matches hit/miss; logs `[archive:link]` | orders link by email only; ask Fourthwall for the supported identifier |
-| Status strings (`CONFIRMED`, `CANCELLED`, …) | Health → statuses seen; `payment-state.ts` | edit the sets; reconcile re-derives states |
-| Per-line `quantity` and refund fields | Health → quantityKnown, fields seen | quantities default to 1; partial refunds wait for review |
-| `data.order` vs flat payload, `testMode`, `source.type` values | Health → source types, API versions | the parser accepts both; new source types grant nothing until mapped |
-| `GET /order` paging | logs `[archive:platform]`; reconciliation notes | reconciliation falls back to per-order reads; settlement waits |
-| `paid_at` = the order's `createdAt` | `orders.ts` | prefer a payment timestamp once one is seen |
+| Assumption                                                     | Where it shows                                            | If wrong                                                               |
+| -------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `order.checkoutId` equals the Storefront cart id               | Health → checkout matches hit/miss; logs `[archive:link]` | orders link by email only; ask Fourthwall for the supported identifier |
+| Status strings (`CONFIRMED`, `CANCELLED`, …)                   | Health → statuses seen; `payment-state.ts`                | edit the sets; reconcile re-derives states                             |
+| Per-line `quantity` and refund fields                          | Health → quantityKnown, fields seen                       | quantities default to 1; partial refunds wait for review               |
+| `data.order` vs flat payload, `testMode`, `source.type` values | Health → source types, API versions                       | the parser accepts both; new source types grant nothing until mapped   |
+| `GET /order` paging                                            | logs `[archive:platform]`; reconciliation notes           | reconciliation falls back to per-order reads; settlement waits         |
+| `paid_at` = the order's `createdAt`                            | `orders.ts`                                               | prefer a payment timestamp once one is seen                            |
