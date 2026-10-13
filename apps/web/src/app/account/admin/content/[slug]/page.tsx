@@ -65,7 +65,11 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
   ]);
   const published = versions.find((v) => v.status === "published") ?? null;
   const working = open ?? published;
-  const providerDescription = live?.find((p) => p.slug === design.fourthwall_slug)?.description?.replace(/<[^>]+>/g, " ").trim() || null;
+  const providerDescription =
+    live
+      ?.find((p) => p.slug === design.fourthwall_slug)
+      ?.description?.replace(/<[^>]+>/g, " ")
+      .trim() || null;
   const care =
     working?.care_status === "verified"
       ? `Verified from ${working.care_source ?? "an unnamed source"} on ${when(working.care_verified_at)}.`
@@ -73,7 +77,10 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
 
   return (
     <>
-      <PageHeader title={design.name} note={`${design.scripture_reference} · ${design.product_slug}`} />
+      <PageHeader
+        title={design.name}
+        note={`${design.scripture_reference} · ${design.product_slug}`}
+      />
 
       <section className="admin-section">
         <h2 className="aw-h3">Draft</h2>
@@ -95,7 +102,11 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
       <section className="admin-section">
         <h2 className="aw-h3">Care</h2>
         <p className="aw-body">{care}</p>
-        <CareForm designKey={design.design_key} initialInstructions={working?.care_instructions ?? ""} initialSource={working?.care_source ?? ""} />
+        <CareForm
+          designKey={design.design_key}
+          initialInstructions={working?.care_instructions ?? ""}
+          initialSource={working?.care_source ?? ""}
+        />
         {providerDescription ? (
           <>
             <h3 className="aw-h3">Provider description</h3>

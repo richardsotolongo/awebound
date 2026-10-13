@@ -26,18 +26,24 @@ const SYNC = {
 export default async function ArchivePage() {
   const user = await currentUser();
   if (!user) redirect("/sign-in?next=%2Faccount");
-  await Promise.all([autoLinkByEmail(user).catch(() => 0), queueWelcomeIfNew(user).catch(() => undefined)]);
-  const [readiness, saved, fit, guides, entitlements, designs, orders, founding] = await Promise.all([
-    getArchiveReadiness(),
-    listSavedPieces(user.id),
-    getFitPreferences(user.id),
-    Promise.resolve(listFitGuides()),
-    listEntitlements(user.id),
-    listDesigns(),
-    listOrdersForUser(user.id),
-    getFoundingForUser(user.id),
+  await Promise.all([
+    autoLinkByEmail(user).catch(() => 0),
+    queueWelcomeIfNew(user).catch(() => undefined),
   ]);
-  const owned = designs.filter((d) => entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0));
+  const [readiness, saved, fit, guides, entitlements, designs, orders, founding] =
+    await Promise.all([
+      getArchiveReadiness(),
+      listSavedPieces(user.id),
+      getFitPreferences(user.id),
+      Promise.resolve(listFitGuides()),
+      listEntitlements(user.id),
+      listDesigns(),
+      listOrdersForUser(user.id),
+      getFoundingForUser(user.id),
+    ]);
+  const owned = designs.filter((d) =>
+    entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
+  );
   const empty = saved.length === 0 && fit.length === 0 && orders.length === 0 && owned.length === 0;
 
   return (
@@ -130,7 +136,10 @@ export default async function ArchivePage() {
             <p className="aw-body">Your collection starts with your first piece.</p>
           )}
           <div>
-            <Button variant="link" href={owned.length > 0 ? "/account/collection" : "/collections/behold"}>
+            <Button
+              variant="link"
+              href={owned.length > 0 ? "/account/collection" : "/collections/behold"}
+            >
               {owned.length > 0 ? "Open your collection" : "Explore Behold"}
             </Button>
           </div>
@@ -142,7 +151,8 @@ export default async function ArchivePage() {
           </h2>
           {!readiness.orders ? (
             <p className="aw-body">
-              Order history isn’t connected yet. Order confirmations and tracking still come by email.
+              Order history isn’t connected yet. Order confirmations and tracking still come by
+              email.
             </p>
           ) : orders.length > 0 ? (
             <ul className="archive-panel-list">
@@ -174,7 +184,10 @@ export default async function ArchivePage() {
             <h2 id="after-title" className="aw-h3">
               After a purchase
             </h2>
-            <ul className="archive-panel-list" style={{ paddingLeft: "1.2em", listStyle: "disc", color: "var(--ink-muted)" }}>
+            <ul
+              className="archive-panel-list"
+              style={{ paddingLeft: "1.2em", listStyle: "disc", color: "var(--ink-muted)" }}
+            >
               {purchaseBenefits(readiness).map((b) => (
                 <li key={b}>{b}</li>
               ))}

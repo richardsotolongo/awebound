@@ -54,7 +54,9 @@ export async function upsertDesignsFromCatalog(): Promise<number> {
     fourthwall_slug: p.fourthwallSlug,
     position: p.position,
   }));
-  const { error } = await admin().from("archive_designs").upsert(rows, { onConflict: "design_key" });
+  const { error } = await admin()
+    .from("archive_designs")
+    .upsert(rows, { onConflict: "design_key" });
   if (error) throw new Error(`designs upsert failed: ${error.message}`);
   return rows.length;
 }
@@ -67,5 +69,12 @@ export async function mapOffer(designKey: string, offerId: string, actor: string
     .update({ fourthwall_offer_id: offerId })
     .eq("design_key", designKey);
   if (error) throw new Error(`offer mapping failed: ${error.message}`);
-  await audit(actor, "design.map_offer", "design", designKey, { offerId: before?.fourthwall_offer_id ?? null }, { offerId });
+  await audit(
+    actor,
+    "design.map_offer",
+    "design",
+    designKey,
+    { offerId: before?.fourthwall_offer_id ?? null },
+    { offerId },
+  );
 }

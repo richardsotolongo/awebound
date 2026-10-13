@@ -27,7 +27,9 @@ async function variantsFor(userId: string, designKeys: string[]) {
   if (!supabaseAdmin || designKeys.length === 0) return { lines, orders };
   const { data } = await supabaseAdmin
     .from("provider_order_lines")
-    .select("design_key, color, size, eligible_quantity, order:provider_orders!inner(id, friendly_id, user_id, payment_state, test_mode, source_type)")
+    .select(
+      "design_key, color, size, eligible_quantity, order:provider_orders!inner(id, friendly_id, user_id, payment_state, test_mode, source_type)",
+    )
     .in("design_key", designKeys)
     .eq("order.user_id", userId)
     .eq("order.payment_state", "paid")
@@ -53,7 +55,10 @@ async function variantsFor(userId: string, designKeys: string[]) {
 
 export async function listEntitlements(userId: string): Promise<Entitlement[]> {
   if (!supabaseAdmin) return [];
-  const { data, error } = await supabaseAdmin.from("archive_entitlements").select("*").eq("user_id", userId);
+  const { data, error } = await supabaseAdmin
+    .from("archive_entitlements")
+    .select("*")
+    .eq("user_id", userId);
   if (error) throw new Error(`entitlements read failed: ${error.message}`);
   const rows = (data ?? []) as EntitlementView[];
   const { lines, orders } = await variantsFor(
@@ -65,11 +70,17 @@ export async function listEntitlements(userId: string): Promise<Entitlement[]> {
     quantity: r.quantity,
     firstPaidAt: r.first_paid_at,
     variants: lines.get(r.design_key) ?? [],
-    orders: [...(orders.get(r.design_key) ?? new Map())].map(([id, friendlyId]) => ({ id, friendlyId })),
+    orders: [...(orders.get(r.design_key) ?? new Map())].map(([id, friendlyId]) => ({
+      id,
+      friendlyId,
+    })),
   }));
 }
 
-export async function getEntitlement(userId: string, designKey: string): Promise<Entitlement | null> {
+export async function getEntitlement(
+  userId: string,
+  designKey: string,
+): Promise<Entitlement | null> {
   const all = await listEntitlements(userId);
   return all.find((e) => e.designKey === designKey && e.quantity > 0) ?? null;
 }

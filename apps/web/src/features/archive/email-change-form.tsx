@@ -30,7 +30,11 @@ export function EmailChangeForm({ current }: { current: string }) {
     );
     if (err) {
       setState("error");
-      setError(err.status === 429 ? "Too many requests. Wait a minute and try again." : "We couldn’t start the change. Check the address and try again.");
+      setError(
+        err.status === 429
+          ? "Too many requests. Wait a minute and try again."
+          : "We couldn’t start the change. Check the address and try again.",
+      );
       return;
     }
     setState("sent");

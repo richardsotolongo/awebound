@@ -44,7 +44,10 @@ export default async function CollectionPage() {
               <li key={d.design_key} className="archive-card">
                 <div className="archive-card-media">
                   {has ? (
-                    <Link href={`/account/collection/${d.product_slug}`} aria-label={`${d.name}, owned`}>
+                    <Link
+                      href={`/account/collection/${d.product_slug}`}
+                      aria-label={`${d.name}, owned`}
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element -- site image */}
                       <img src={image} alt="" />
                     </Link>
@@ -60,7 +63,9 @@ export default async function CollectionPage() {
                   </Button>
                 ) : isPublished.has(d.design_key) ? (
                   <>
-                    <p className="aw-small">Own this design to unlock its full story and founder note.</p>
+                    <p className="aw-small">
+                      Own this design to unlock its full story and founder note.
+                    </p>
                     <Button variant="link" href={`/shop/${d.product_slug}`}>
                       View the piece
                     </Button>

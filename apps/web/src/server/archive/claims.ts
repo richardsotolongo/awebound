@@ -26,11 +26,16 @@ function admin() {
   return supabaseAdmin;
 }
 
-const codeHash = (code: string, claimId: string) => createHash("sha256").update(`${code}:${claimId}`).digest("hex");
+const codeHash = (code: string, claimId: string) =>
+  createHash("sha256").update(`${code}:${claimId}`).digest("hex");
 
 async function findOrder(friendlyId: string): Promise<OrderRow | null> {
   const db = admin();
-  const { data } = await db.from("provider_orders").select("*").eq("friendly_id", friendlyId).limit(2);
+  const { data } = await db
+    .from("provider_orders")
+    .select("*")
+    .eq("friendly_id", friendlyId)
+    .limit(2);
   const local = (data ?? []) as OrderRow[];
   if (local.length === 1) return local[0]!;
   if (local.length > 1) return null;
@@ -39,19 +44,27 @@ async function findOrder(friendlyId: string): Promise<OrderRow | null> {
     const parsed = parseOrder(await getOrderByFriendlyId(friendlyId));
     if (!parsed) return null;
     await upsertOrderFromParsed(parsed, { source: "reconcile", testMode: false });
-    const { data: stored } = await db.from("provider_orders").select("*").eq("id", parsed.id).maybeSingle();
+    const { data: stored } = await db
+      .from("provider_orders")
+      .select("*")
+      .eq("id", parsed.id)
+      .maybeSingle();
     return (stored as OrderRow | null) ?? null;
   } catch {
     return null;
   }
 }
 
-export async function startClaim(user: User, friendlyIdInput: string): Promise<{ claimId: string }> {
+export async function startClaim(
+  user: User,
+  friendlyIdInput: string,
+): Promise<{ claimId: string }> {
   if (!hasVerifiedEmail(user)) throw new UserError("Confirm your email address first.");
   const db = admin();
   const friendlyId = friendlyIdInput.trim().replace(/^#/, "");
   const order = await findOrder(friendlyId);
-  const claimable = order && !order.test_mode && order.email && (!order.user_id || order.user_id === user.id);
+  const claimable =
+    order && !order.test_mode && order.email && (!order.user_id || order.user_id === user.id);
   const { data, error } = await db
     .from("order_claims")
     .insert({
@@ -69,16 +82,28 @@ export async function startClaim(user: User, friendlyIdInput: string): Promise<{
   const claimId = (data as { id: string }).id;
   if (claimable) {
     const code = String(randomInt(0, 1_000_000)).padStart(6, "0");
-    await db.from("order_claims").update({ code_hash: codeHash(code, claimId) }).eq("id", claimId);
+    await db
+      .from("order_claims")
+      .update({ code_hash: codeHash(code, claimId) })
+      .eq("id", claimId);
     await sendEmail(order.email!, claimCode({ code, friendlyId }));
   }
   logArchive("claim", { user: user.id, claim: claimId, matched: Boolean(claimable) });
   return { claimId };
 }
 
-export async function verifyClaim(user: User, claimId: string, code: string): Promise<{ friendlyId: string }> {
+export async function verifyClaim(
+  user: User,
+  claimId: string,
+  code: string,
+): Promise<{ friendlyId: string }> {
   const db = admin();
-  const { data } = await db.from("order_claims").select("*").eq("id", claimId).eq("user_id", user.id).maybeSingle();
+  const { data } = await db
+    .from("order_claims")
+    .select("*")
+    .eq("id", claimId)
+    .eq("user_id", user.id)
+    .maybeSingle();
   const claim = data as ClaimRow | null;
   const wrong = new UserError("That code didn’t work. Check it, or start again.");
   if (!claim || claim.status === "unmatched" || claim.status === "verified") throw wrong;
@@ -98,11 +123,19 @@ export async function verifyClaim(user: User, claimId: string, code: string): Pr
   }
   const { error } = await db
     .from("provider_orders")
-    .update({ user_id: user.id, link_method: "claim", registered_checkout: false, linked_at: new Date().toISOString() })
+    .update({
+      user_id: user.id,
+      link_method: "claim",
+      registered_checkout: false,
+      linked_at: new Date().toISOString(),
+    })
     .eq("id", claim.order_id!)
     .is("user_id", null);
   if (error) throw new Error(`claim link failed: ${error.message}`);
-  await db.from("order_claims").update({ status: "verified", verified_at: new Date().toISOString() }).eq("id", claimId);
+  await db
+    .from("order_claims")
+    .update({ status: "verified", verified_at: new Date().toISOString() })
+    .eq("id", claimId);
   await audit(user.id, "order.claim", "order", claim.order_id, null, { method: "claim" });
   logArchive("claim", { user: user.id, claim: claimId, verified: true });
   return { friendlyId: claim.friendly_id };

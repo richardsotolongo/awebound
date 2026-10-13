@@ -53,7 +53,8 @@ export function ClaimOrderForm() {
       <div style={{ display: "grid", gap: "var(--space-6)" }}>
         <div className="notice" role="status">
           <p className="aw-small" style={{ color: "var(--ink)" }}>
-            If that order exists, a 6-digit code is on its way to the email address on it. It expires in 15 minutes.
+            If that order exists, a 6-digit code is on its way to the email address on it. It
+            expires in 15 minutes.
           </p>
         </div>
         <form onSubmit={verify} className="field" noValidate>

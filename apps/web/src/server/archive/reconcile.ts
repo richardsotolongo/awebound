@@ -25,7 +25,10 @@ export interface ReconcileReport {
 const STALE_DAYS = 7;
 const MAX_PAGES = 10;
 
-export async function reconcileOrders(opts: { trigger: "cron" | "owner" | "user"; userId?: string }): Promise<ReconcileReport> {
+export async function reconcileOrders(opts: {
+  trigger: "cron" | "owner" | "user";
+  userId?: string;
+}): Promise<ReconcileReport> {
   if (!supabaseAdmin) throw new UserError("Accounts aren’t set up yet.");
   if (!platformConfigured()) throw new UserError("Order sync isn’t available yet.");
   const db = supabaseAdmin;
@@ -47,7 +50,9 @@ export async function reconcileOrders(opts: { trigger: "cron" | "owner" | "user"
     let query = db
       .from("provider_orders")
       .select("id, payment_state, needs_review, last_reconciled_at, user_id")
-      .or(`payment_state.in.(pending,unknown),needs_review.eq.true,last_reconciled_at.is.null,last_reconciled_at.lt.${stale}`)
+      .or(
+        `payment_state.in.(pending,unknown),needs_review.eq.true,last_reconciled_at.is.null,last_reconciled_at.lt.${stale}`,
+      )
       .limit(200);
     if (opts.userId) query = query.eq("user_id", opts.userId);
     const { data: targets } = await query;
@@ -65,7 +70,8 @@ export async function reconcileOrders(opts: { trigger: "cron" | "owner" | "user"
         .eq("listed_all", true)
         .order("finished_at", { ascending: false })
         .limit(1);
-      const cursor = (lastRuns?.[0] as { cursor?: { oldestSeenCreatedAt?: string } } | undefined)?.cursor;
+      const cursor = (lastRuns?.[0] as { cursor?: { oldestSeenCreatedAt?: string } } | undefined)
+        ?.cursor;
       let newestSeen: string | null = null;
       let reachedKnown = false;
       for (let page = 0; page < MAX_PAGES && !reachedKnown; page++) {
@@ -73,16 +79,31 @@ export async function reconcileOrders(opts: { trigger: "cron" | "owner" | "user"
         for (const item of results) {
           const parsed = parseOrder(item);
           if (!parsed) continue;
-          if (!newestSeen || (parsed.createdAt && parsed.createdAt > newestSeen)) newestSeen = parsed.createdAt;
-          if (cursor?.oldestSeenCreatedAt && parsed.createdAt && parsed.createdAt < cursor.oldestSeenCreatedAt) {
+          if (!newestSeen || (parsed.createdAt && parsed.createdAt > newestSeen))
+            newestSeen = parsed.createdAt;
+          if (
+            cursor?.oldestSeenCreatedAt &&
+            parsed.createdAt &&
+            parsed.createdAt < cursor.oldestSeenCreatedAt
+          ) {
             reachedKnown = true;
             break;
           }
-          const { data: known } = await db.from("provider_orders").select("id, provider_updated_at").eq("id", parsed.id).maybeSingle();
+          const { data: known } = await db
+            .from("provider_orders")
+            .select("id, provider_updated_at")
+            .eq("id", parsed.id)
+            .maybeSingle();
           const knownRow = known as Pick<OrderRow, "id" | "provider_updated_at"> | null;
-          if (!knownRow || (parsed.updatedAt && knownRow.provider_updated_at !== parsed.updatedAt)) {
+          if (
+            !knownRow ||
+            (parsed.updatedAt && knownRow.provider_updated_at !== parsed.updatedAt)
+          ) {
             checked++;
-            const result = await upsertOrderFromParsed(parsed, { source: "reconcile", testMode: false });
+            const result = await upsertOrderFromParsed(parsed, {
+              source: "reconcile",
+              testMode: false,
+            });
             if (result.changed) changed++;
           }
         }
@@ -114,6 +135,13 @@ export async function reconcileOrders(opts: { trigger: "cron" | "owner" | "user"
       error,
     })
     .eq("id", run.id);
-  logArchive("reconcile", { run: run.id, trigger: opts.trigger, checked, changed, listedAll, settled });
+  logArchive("reconcile", {
+    run: run.id,
+    trigger: opts.trigger,
+    checked,
+    changed,
+    listedAll,
+    settled,
+  });
   return { runId: run.id, checked, changed, listedAll, settled, error };
 }

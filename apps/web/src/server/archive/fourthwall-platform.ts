@@ -50,7 +50,11 @@ async function request(path: string, params: Record<string, string> = {}): Promi
   }
   if (!res.ok) {
     const code = (json as { code?: unknown } | null)?.code;
-    throw new FourthwallApiError(res.status, code ? String(code) : undefined, `Fourthwall ${scope} failed with ${res.status}`);
+    throw new FourthwallApiError(
+      res.status,
+      code ? String(code) : undefined,
+      `Fourthwall ${scope} failed with ${res.status}`,
+    );
   }
   return json;
 }
@@ -64,8 +68,14 @@ export async function getOrderByFriendlyId(friendlyId: string): Promise<unknown>
 }
 
 /** One page of the shop's orders, newest first where the API supports it. */
-export async function listOrders(page: number, size = 50): Promise<{ results: unknown[]; hasNextPage: boolean }> {
-  const body = (await request("/order", { page: String(page), size: String(size) })) as Record<string, unknown> | null;
+export async function listOrders(
+  page: number,
+  size = 50,
+): Promise<{ results: unknown[]; hasNextPage: boolean }> {
+  const body = (await request("/order", { page: String(page), size: String(size) })) as Record<
+    string,
+    unknown
+  > | null;
   const results = Array.isArray(body?.results) ? body.results : Array.isArray(body) ? body : [];
   const paging = body?.paging as Record<string, unknown> | undefined;
   return { results, hasNextPage: Boolean(paging?.hasNextPage) };

@@ -26,7 +26,9 @@ export function DesignContext({ card }: { card: PublicCard }) {
             )}
           </p>
         ) : null}
-        <p className="aw-small">The full story and a note from Richard unlock in My Archive after purchase.</p>
+        <p className="aw-small">
+          The full story and a note from Richard unlock in My Archive after purchase.
+        </p>
       </div>
     </section>
   );

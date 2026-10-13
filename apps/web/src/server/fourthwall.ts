@@ -53,7 +53,11 @@ async function request(path: string, init: RequestInit = {}, params: Record<stri
   const token = serverEnv.FOURTHWALL_STOREFRONT_TOKEN;
   if (!token) throw new Error("FOURTHWALL_STOREFRONT_TOKEN is not set");
   const url = new URL(`${API_URL}${path}`);
-  url.search = new URLSearchParams({ ...params, storefront_token: token, currency: CURRENCY }).toString();
+  url.search = new URLSearchParams({
+    ...params,
+    storefront_token: token,
+    currency: CURRENCY,
+  }).toString();
 
   let res: Response;
   try {
@@ -105,7 +109,9 @@ export async function listProducts(): Promise<FourthwallProduct[]> {
  * Creates a cart holding the given variants; its id goes into the hosted checkout URL. Only the
  * documented `items` field is sent; the order's checkoutId is matched to this cart id on our side.
  */
-export async function createCart(items: { variantId: string; quantity: number }[]): Promise<string> {
+export async function createCart(
+  items: { variantId: string; quantity: number }[],
+): Promise<string> {
   const cart = z
     .object({ id: z.string() })
     .parse(await request("/carts", { method: "POST", body: JSON.stringify({ items }) }));

@@ -13,7 +13,10 @@ export default async function FoundingPage() {
 
   return (
     <>
-      <PageHeader title="Founding" note={`${placesUsed} of ${FOUNDING_CAP} places used, ${placesLeft} left.`} />
+      <PageHeader
+        title="Founding"
+        note={`${placesUsed} of ${FOUNDING_CAP} places used, ${placesLeft} left.`}
+      />
 
       <section className="admin-section">
         <h2 className="aw-h3">Members</h2>

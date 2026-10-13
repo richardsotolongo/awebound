@@ -9,7 +9,9 @@ export function FoundingSeal() {
       </span>
       <div>
         <p className="aw-h3">Founding Member</p>
-        <p className="aw-small">Recognition for an early purchase made with your Awebound account.</p>
+        <p className="aw-small">
+          Recognition for an early purchase made with your Awebound account.
+        </p>
       </div>
     </div>
   );

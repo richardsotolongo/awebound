@@ -128,9 +128,9 @@ const sections: LegalSection[] = [
           delete your account yourself in My Archive; that removes your sign-in, your profile, your
           saved pieces, your fit preferences and your email preferences, and unlinks your orders
           (the order records themselves stay with our checkout partner for receipts and returns).
-          You can also ask us to show you, correct or delete the
-          personal information we hold about you by writing to {mail}. Depending on where you live,
-          you may have further rights under local law; we’ll honor them.
+          You can also ask us to show you, correct or delete the personal information we hold about
+          you by writing to {mail}. Depending on where you live, you may have further rights under
+          local law; we’ll honor them.
         </p>
       </>
     ),

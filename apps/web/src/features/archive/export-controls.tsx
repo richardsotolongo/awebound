@@ -32,8 +32,11 @@ export function ExportControls({
     try {
       const urls: string[] = [];
       for (const format of ["portrait", "square"] as const) {
-        const res = await fetch(`/api/archive/designs/${slug}/share.png?format=${format}`, { credentials: "same-origin" });
-        if (!res.ok || !res.headers.get("content-type")?.startsWith("image/png")) throw new Error("render failed");
+        const res = await fetch(`/api/archive/designs/${slug}/share.png?format=${format}`, {
+          credentials: "same-origin",
+        });
+        if (!res.ok || !res.headers.get("content-type")?.startsWith("image/png"))
+          throw new Error("render failed");
         urls.push(URL.createObjectURL(await res.blob()));
       }
       setImages({ portrait: urls[0]!, square: urls[1]! });
@@ -63,11 +66,16 @@ export function ExportControls({
   return (
     <div className="archive-exports">
       <p className="aw-body">
-        Share the story: anyone can read the public preview at the link. The images are yours to post.
+        Share the story: anyone can read the public preview at the link. The images are yours to
+        post.
       </p>
       <div className="account-actions">
         {exports.pdf ? (
-          <a href={`/api/archive/designs/${slug}/card.pdf`} download className="aw-btn aw-btn-primary">
+          <a
+            href={`/api/archive/designs/${slug}/card.pdf`}
+            download
+            className="aw-btn aw-btn-primary"
+          >
             Download design card (PDF)
           </a>
         ) : null}
@@ -93,7 +101,13 @@ export function ExportControls({
           <label htmlFor={`${id}-link`} className="aw-label">
             Link
           </label>
-          <input id={`${id}-link`} className="aw-input" readOnly value={link} onFocus={(e) => e.currentTarget.select()} />
+          <input
+            id={`${id}-link`}
+            className="aw-input"
+            readOnly
+            value={link}
+            onFocus={(e) => e.currentTarget.select()}
+          />
         </div>
       ) : null}
       {state === "error" ? (
@@ -105,11 +119,22 @@ export function ExportControls({
         <div className="archive-export-preview">
           {/* eslint-disable-next-line @next/next/no-img-element -- a blob the shopper just made */}
           <img src={images.portrait} alt={`${name} story image, portrait`} />
-          <div className="account-actions" style={{ flexDirection: "column", alignItems: "flex-start" }}>
-            <a href={images.portrait} download={`behold-${slug}-story-portrait.png`} className="aw-btn aw-btn-secondary">
+          <div
+            className="account-actions"
+            style={{ flexDirection: "column", alignItems: "flex-start" }}
+          >
+            <a
+              href={images.portrait}
+              download={`behold-${slug}-story-portrait.png`}
+              className="aw-btn aw-btn-secondary"
+            >
               Download for stories (1080 x 1920)
             </a>
-            <a href={images.square} download={`behold-${slug}-story-square.png`} className="aw-btn aw-btn-secondary">
+            <a
+              href={images.square}
+              download={`behold-${slug}-story-square.png`}
+              className="aw-btn aw-btn-secondary"
+            >
               Download square (1080 x 1080)
             </a>
           </div>

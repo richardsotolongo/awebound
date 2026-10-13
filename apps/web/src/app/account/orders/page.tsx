@@ -16,7 +16,9 @@ const SYNC = {
 } as const;
 
 const date = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
+  iso
+    ? new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "";
 
 export default async function OrdersPage() {
   const user = await currentUser();
@@ -70,11 +72,17 @@ export default async function OrdersPage() {
           ))}
         </ul>
       ) : null}
-      <section className="account-panel" style={{ marginTop: "var(--space-8)" }} aria-labelledby="help-title">
+      <section
+        className="account-panel"
+        style={{ marginTop: "var(--space-8)" }}
+        aria-labelledby="help-title"
+      >
         <h2 id="help-title" className="aw-h3">
           Questions about an order?
         </h2>
-        <p className="aw-body">Write to us with your order number. Confirmations and tracking come by email.</p>
+        <p className="aw-body">
+          Write to us with your order number. Confirmations and tracking come by email.
+        </p>
         <div className="account-actions">
           <Button variant="secondary" href="/contact">
             Contact us

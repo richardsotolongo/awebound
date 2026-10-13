@@ -2,7 +2,11 @@
 
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent } from "react";
-import { adjustOrderLinesAction, markOrderReviewedAction, relinkOrderAction } from "@/server/admin-actions";
+import {
+  adjustOrderLinesAction,
+  markOrderReviewedAction,
+  relinkOrderAction,
+} from "@/server/admin-actions";
 import { Outcome, useOwnerAction } from "./owner-action";
 
 interface Line {
@@ -12,11 +16,21 @@ interface Line {
 }
 
 /** Owner corrections for one order: relink it, adjust eligible quantities, mark it reviewed. Every change is audited. */
-export function OrderTools({ orderId, userId, lines }: { orderId: string; userId: string | null; lines: Line[] }) {
+export function OrderTools({
+  orderId,
+  userId,
+  lines,
+}: {
+  orderId: string;
+  userId: string | null;
+  lines: Line[];
+}) {
   const id = useId();
   const [user, setUser] = useState(userId ?? "");
   const [linkReason, setLinkReason] = useState("");
-  const [quantities, setQuantities] = useState<Record<string, number>>(Object.fromEntries(lines.map((l) => [l.id, l.eligible])));
+  const [quantities, setQuantities] = useState<Record<string, number>>(
+    Object.fromEntries(lines.map((l) => [l.id, l.eligible])),
+  );
   const [adjustReason, setAdjustReason] = useState("");
   const link = useOwnerAction();
   const adjust = useOwnerAction();
@@ -25,13 +39,19 @@ export function OrderTools({ orderId, userId, lines }: { orderId: string; userId
   function relink(e: FormEvent) {
     e.preventDefault();
     const target = user.trim() || null;
-    link.run(() => relinkOrderAction({ orderId, userId: target, reason: linkReason }), target ? "Relinked." : "Unlinked.");
+    link.run(
+      () => relinkOrderAction({ orderId, userId: target, reason: linkReason }),
+      target ? "Relinked." : "Unlinked.",
+    );
   }
 
   function adjustLines(e: FormEvent) {
     e.preventDefault();
     const changes = lines.map((l) => ({ lineId: l.id, eligibleQuantity: quantities[l.id] ?? 0 }));
-    adjust.run(() => adjustOrderLinesAction({ orderId, lines: changes, reason: adjustReason }), "Adjusted.");
+    adjust.run(
+      () => adjustOrderLinesAction({ orderId, lines: changes, reason: adjustReason }),
+      "Adjusted.",
+    );
   }
 
   return (
@@ -40,13 +60,28 @@ export function OrderTools({ orderId, userId, lines }: { orderId: string; userId
         <label htmlFor={`${id}-user`} className="aw-label">
           Account (user id, blank to unlink)
         </label>
-        <input id={`${id}-user`} className="aw-input" value={user} onChange={(e) => setUser(e.target.value)} />
+        <input
+          id={`${id}-user`}
+          className="aw-input"
+          value={user}
+          onChange={(e) => setUser(e.target.value)}
+        />
         <label htmlFor={`${id}-link-reason`} className="aw-label">
           Reason
         </label>
-        <input id={`${id}-link-reason`} className="aw-input" maxLength={300} value={linkReason} onChange={(e) => setLinkReason(e.target.value)} />
+        <input
+          id={`${id}-link-reason`}
+          className="aw-input"
+          maxLength={300}
+          value={linkReason}
+          onChange={(e) => setLinkReason(e.target.value)}
+        />
         <div>
-          <Button variant="secondary" type="submit" disabled={link.busy || linkReason.trim().length < 3}>
+          <Button
+            variant="secondary"
+            type="submit"
+            disabled={link.busy || linkReason.trim().length < 3}
+          >
             Relink
           </Button>
         </div>
@@ -67,16 +102,28 @@ export function OrderTools({ orderId, userId, lines }: { orderId: string; userId
                 max={100}
                 className="aw-input"
                 value={quantities[l.id] ?? 0}
-                onChange={(e) => setQuantities((q) => ({ ...q, [l.id]: Number(e.target.value) || 0 }))}
+                onChange={(e) =>
+                  setQuantities((q) => ({ ...q, [l.id]: Number(e.target.value) || 0 }))
+                }
               />
             </div>
           ))}
           <label htmlFor={`${id}-adjust-reason`} className="aw-label">
             Reason
           </label>
-          <input id={`${id}-adjust-reason`} className="aw-input" maxLength={300} value={adjustReason} onChange={(e) => setAdjustReason(e.target.value)} />
+          <input
+            id={`${id}-adjust-reason`}
+            className="aw-input"
+            maxLength={300}
+            value={adjustReason}
+            onChange={(e) => setAdjustReason(e.target.value)}
+          />
           <div>
-            <Button variant="secondary" type="submit" disabled={adjust.busy || adjustReason.trim().length < 3}>
+            <Button
+              variant="secondary"
+              type="submit"
+              disabled={adjust.busy || adjustReason.trim().length < 3}
+            >
               Adjust eligible quantities
             </Button>
           </div>
@@ -86,7 +133,13 @@ export function OrderTools({ orderId, userId, lines }: { orderId: string; userId
 
       <div className="field">
         <div>
-          <Button variant="secondary" disabled={review.busy} onClick={() => review.run(() => markOrderReviewedAction({ orderId }), "Marked reviewed.")}>
+          <Button
+            variant="secondary"
+            disabled={review.busy}
+            onClick={() =>
+              review.run(() => markOrderReviewedAction({ orderId }), "Marked reviewed.")
+            }
+          >
             Mark reviewed
           </Button>
         </div>

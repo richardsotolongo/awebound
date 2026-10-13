@@ -25,7 +25,11 @@ export type Qualification =
   | { ok: false; reason: CandidateReason | "not_paid" | "test" | "not_order" | "unlinked" };
 
 /** Whether an order can earn its buyer a place. Candidate reasons are recorded; the rest are final. */
-export function qualifies(order: OrderRow, profile: ProfileRow | null, flagOn: boolean): Qualification {
+export function qualifies(
+  order: OrderRow,
+  profile: ProfileRow | null,
+  flagOn: boolean,
+): Qualification {
   if (order.payment_state !== "paid") return { ok: false, reason: "not_paid" };
   if (order.test_mode) return { ok: false, reason: "test" };
   if (order.source_type !== "ORDER") return { ok: false, reason: "not_order" };

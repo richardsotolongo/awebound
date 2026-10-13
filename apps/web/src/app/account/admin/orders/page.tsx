@@ -4,21 +4,33 @@ import { PageHeader } from "@/components/page-header";
 import { ShortId, when } from "@/features/archive/admin/format";
 import { OrderTools } from "@/features/archive/admin/order-tools";
 import { hashEmail } from "@/server/archive/log";
-import { listOrdersAdmin, listReconciliationRuns, listWebhookEvents } from "@/server/archive/orders-admin";
+import {
+  listOrdersAdmin,
+  listReconciliationRuns,
+  listWebhookEvents,
+} from "@/server/archive/orders-admin";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Orders", robots: { index: false } };
 
-const emailLabel = (email: string | null) => (email ? `${hashEmail(email).slice(0, 8)}@${email.split("@")[1] ?? ""}` : "–");
+const emailLabel = (email: string | null) =>
+  email ? `${hashEmail(email).slice(0, 8)}@${email.split("@")[1] ?? ""}` : "–";
 const yesNo = (v: boolean | null) => (v === null ? "–" : v ? "yes" : "no");
 const json = (v: unknown) => JSON.stringify(v, null, 2);
 
 export default async function OrdersPage() {
-  const [orders, events, runs] = await Promise.all([listOrdersAdmin(), listWebhookEvents(), listReconciliationRuns()]);
+  const [orders, events, runs] = await Promise.all([
+    listOrdersAdmin(),
+    listWebhookEvents(),
+    listReconciliationRuns(),
+  ]);
 
   return (
     <>
-      <PageHeader title="Orders" intro="Newest first. An email address shows as a hash prefix and its domain, never in full." />
+      <PageHeader
+        title="Orders"
+        intro="Newest first. An email address shows as a hash prefix and its domain, never in full."
+      />
 
       <section className="admin-section">
         <h2 className="aw-h3">Orders</h2>
@@ -56,7 +68,8 @@ export default async function OrdersPage() {
                       <td>
                         {o.user_id ? (
                           <>
-                            <ShortId id={o.user_id} /> by {o.link_method ?? "–"}, registered checkout {yesNo(o.registered_checkout)}
+                            <ShortId id={o.user_id} /> by {o.link_method ?? "–"}, registered
+                            checkout {yesNo(o.registered_checkout)}
                           </>
                         ) : (
                           "unlinked"
@@ -106,7 +119,9 @@ export default async function OrdersPage() {
                             userId={o.user_id}
                             lines={o.lines.map((l) => ({
                               id: l.id,
-                              label: [l.offer_slug ?? l.offer_name ?? l.id, l.color, l.size].filter(Boolean).join(" "),
+                              label: [l.offer_slug ?? l.offer_name ?? l.id, l.color, l.size]
+                                .filter(Boolean)
+                                .join(" "),
                               eligible: l.eligible_quantity,
                             }))}
                           />

@@ -32,7 +32,8 @@ const ORDER_EVENTS = new Set(["ORDER_PLACED", "ORDER_UPDATED"]);
 
 export async function POST(request: NextRequest) {
   const secret = serverEnv.FOURTHWALL_WEBHOOK_SECRET;
-  if (!secret || !supabaseAdmin) return NextResponse.json({ error: "webhook not configured" }, { status: 503 });
+  if (!secret || !supabaseAdmin)
+    return NextResponse.json({ error: "webhook not configured" }, { status: 503 });
 
   const raw = await request.text();
   if (!verifyWebhookSignature(raw, request.headers.get("x-fourthwall-hmac-sha256"), secret)) {
@@ -60,12 +61,21 @@ export async function POST(request: NextRequest) {
     payload: json as object,
   });
   if (insertError) {
-    if (insertError.code !== "23505") throw new Error(`event insert failed: ${insertError.message}`);
-    const { data: seen } = await supabaseAdmin.from("webhook_events").select("status").eq("id", event.id).maybeSingle();
-    if ((seen as { status: string } | null)?.status !== "failed") return NextResponse.json({ ok: true, duplicate: true });
+    if (insertError.code !== "23505")
+      throw new Error(`event insert failed: ${insertError.message}`);
+    const { data: seen } = await supabaseAdmin
+      .from("webhook_events")
+      .select("status")
+      .eq("id", event.id)
+      .maybeSingle();
+    if ((seen as { status: string } | null)?.status !== "failed")
+      return NextResponse.json({ ok: true, duplicate: true });
   }
 
-  const finish = async (status: "processed" | "ignored" | "failed", patch: Record<string, unknown> = {}) => {
+  const finish = async (
+    status: "processed" | "ignored" | "failed",
+    patch: Record<string, unknown> = {},
+  ) => {
     await supabaseAdmin!
       .from("webhook_events")
       .update({ status, processed_at: new Date().toISOString(), ...patch })
@@ -84,10 +94,17 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await upsertOrderFromParsed(parsed, { source: "webhook", testMode: event.testMode === true });
+    const result = await upsertOrderFromParsed(parsed, {
+      source: "webhook",
+      testMode: event.testMode === true,
+    });
     if (result.unlocked.length > 0) {
       const catalog = await getCatalog().catch(() => null);
-      const { data: order } = await supabaseAdmin.from("provider_orders").select("user_id, email").eq("id", parsed.id).maybeSingle();
+      const { data: order } = await supabaseAdmin
+        .from("provider_orders")
+        .select("user_id, email")
+        .eq("id", parsed.id)
+        .maybeSingle();
       const owner = order as { user_id: string | null; email: string | null } | null;
       for (const designKey of result.unlocked) {
         const slug = designKey.split(":")[1] ?? "";
@@ -99,7 +116,10 @@ export async function POST(request: NextRequest) {
         });
       }
     }
-    await finish("processed", { order_id: parsed.id, notes: { ...result.notes, outOfOrder: result.outOfOrder, state: result.state } });
+    await finish("processed", {
+      order_id: parsed.id,
+      notes: { ...result.notes, outOfOrder: result.outOfOrder, state: result.state },
+    });
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

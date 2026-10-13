@@ -58,16 +58,26 @@ export interface UpsertResult {
 
 const lower = (s: string | null | undefined) => s?.trim().toLowerCase() || null;
 
-async function resolveDesign(designs: DesignRow[], offerId: string | null, offerSlug: string | null): Promise<DesignRow | null> {
+async function resolveDesign(
+  designs: DesignRow[],
+  offerId: string | null,
+  offerSlug: string | null,
+): Promise<DesignRow | null> {
   const byId = offerId ? designs.find((d) => d.fourthwall_offer_id === offerId) : undefined;
   if (byId) return byId;
   const bySlug = offerSlug ? designs.find((d) => d.fourthwall_slug === offerSlug) : undefined;
   if (bySlug && offerId && !bySlug.fourthwall_offer_id) {
     // First sight of this design's offer id: remember it so renamed slugs keep matching.
-    const { error } = await admin().from("archive_designs").update({ fourthwall_offer_id: offerId }).eq("design_key", bySlug.design_key);
+    const { error } = await admin()
+      .from("archive_designs")
+      .update({ fourthwall_offer_id: offerId })
+      .eq("design_key", bySlug.design_key);
     if (!error) {
       bySlug.fourthwall_offer_id = offerId;
-      await audit(null, "design.map_offer", "design", bySlug.design_key, null, { offerId, from: "order" });
+      await audit(null, "design.map_offer", "design", bySlug.design_key, null, {
+        offerId,
+        from: "order",
+      });
     }
   }
   return bySlug ?? null;
@@ -80,7 +90,11 @@ export async function upsertOrderFromParsed(
 ): Promise<UpsertResult> {
   const db = admin();
   const notes: Record<string, unknown> = {};
-  const { data: existingData } = await db.from("provider_orders").select("*").eq("id", parsed.id).maybeSingle();
+  const { data: existingData } = await db
+    .from("provider_orders")
+    .select("*")
+    .eq("id", parsed.id)
+    .maybeSingle();
   const existing = existingData as OrderRow | null;
 
   if (
@@ -88,7 +102,16 @@ export async function upsertOrderFromParsed(
     parsed.updatedAt &&
     new Date(parsed.updatedAt).getTime() < new Date(existing.provider_updated_at).getTime()
   ) {
-    return { orderId: parsed.id, changed: false, outOfOrder: true, state: existing.payment_state, linked: existing.link_method, checkoutMatch: "none", unlocked: [], notes: { outOfOrder: true } };
+    return {
+      orderId: parsed.id,
+      changed: false,
+      outOfOrder: true,
+      state: existing.payment_state,
+      linked: existing.link_method,
+      checkoutMatch: "none",
+      unlocked: [],
+      notes: { outOfOrder: true },
+    };
   }
 
   const state = paymentState(parsed.status);
@@ -98,7 +121,9 @@ export async function upsertOrderFromParsed(
   const hasLineRefunds = parsed.lines.some((l) => l.refundedQuantity !== null);
   const partialRefund =
     isPartialRefundStatus(parsed.status) ||
-    (parsed.refundedCents > 0 && parsed.totalCents !== null && parsed.refundedCents < parsed.totalCents);
+    (parsed.refundedCents > 0 &&
+      parsed.totalCents !== null &&
+      parsed.refundedCents < parsed.totalCents);
   const needsReview = partialRefund && !hasLineRefunds;
 
   const row = {
@@ -127,9 +152,16 @@ export async function upsertOrderFromParsed(
   // Lines
   const designs = await listDesigns();
   const catalog = await getCatalog().catch(() => null);
-  const { data: existingLines } = await db.from("provider_order_lines").select("*").eq("order_id", parsed.id);
+  const { data: existingLines } = await db
+    .from("provider_order_lines")
+    .select("*")
+    .eq("order_id", parsed.id);
   const previous = new Map(((existingLines ?? []) as OrderLineRow[]).map((l) => [l.id, l]));
-  const eligibleBefore = new Set([...previous.values()].filter((l) => l.eligible_quantity > 0 && l.design_key).map((l) => l.design_key!));
+  const eligibleBefore = new Set(
+    [...previous.values()]
+      .filter((l) => l.eligible_quantity > 0 && l.design_key)
+      .map((l) => l.design_key!),
+  );
   const lines = [];
   let variantUnresolved = false;
   for (const [index, line] of parsed.lines.entries()) {
@@ -176,11 +208,14 @@ export async function upsertOrderFromParsed(
     });
   }
   if (lines.length > 0) {
-    const { error: lineError } = await db.from("provider_order_lines").upsert(lines, { onConflict: "id" });
+    const { error: lineError } = await db
+      .from("provider_order_lines")
+      .upsert(lines, { onConflict: "id" });
     if (lineError) throw new Error(`order lines upsert failed: ${lineError.message}`);
   }
   if (variantUnresolved) notes.variantUnresolved = true;
-  if (lines.some((l) => !l.design_key)) notes.unmappedLines = lines.filter((l) => !l.design_key).length;
+  if (lines.some((l) => !l.design_key))
+    notes.unmappedLines = lines.filter((l) => !l.design_key).length;
   notes.quantityKnown = parsed.lines.every((l) => l.quantityKnown);
   notes.statusSeen = parsed.status;
   notes.fieldsSeen = parsed.fieldsSeen;
@@ -191,14 +226,43 @@ export async function upsertOrderFromParsed(
   notes.checkoutMatch = linkResult.checkoutMatch;
 
   // Benefits
-  const unlocked = state === "paid" && !testMode && parsed.sourceType === "ORDER" && linkResult.order.user_id
-    ? [...new Set(lines.filter((l) => l.design_key && l.eligible_quantity > 0).map((l) => l.design_key!))].filter((k) => !eligibleBefore.has(k))
-    : [];
-  if (state === "paid" && !testMode && parsed.sourceType === "ORDER" && linkResult.order.user_id && (await getFlags())["archive.founding"]) {
+  const unlocked =
+    state === "paid" && !testMode && parsed.sourceType === "ORDER" && linkResult.order.user_id
+      ? [
+          ...new Set(
+            lines.filter((l) => l.design_key && l.eligible_quantity > 0).map((l) => l.design_key!),
+          ),
+        ].filter((k) => !eligibleBefore.has(k))
+      : [];
+  if (
+    state === "paid" &&
+    !testMode &&
+    parsed.sourceType === "ORDER" &&
+    linkResult.order.user_id &&
+    (await getFlags())["archive.founding"]
+  ) {
     notes.founding = (await evaluateFounding(parsed.id)).reason;
   }
-  logArchive("order", { order: parsed.id, source: opts.source, state, test: testMode, sourceType: parsed.sourceType, linked: linkResult.order.link_method, checkoutMatch: linkResult.checkoutMatch, lines: lines.length });
-  return { orderId: parsed.id, changed: true, outOfOrder: false, state, linked: linkResult.order.link_method, checkoutMatch: linkResult.checkoutMatch, unlocked, notes };
+  logArchive("order", {
+    order: parsed.id,
+    source: opts.source,
+    state,
+    test: testMode,
+    sourceType: parsed.sourceType,
+    linked: linkResult.order.link_method,
+    checkoutMatch: linkResult.checkoutMatch,
+    lines: lines.length,
+  });
+  return {
+    orderId: parsed.id,
+    changed: true,
+    outOfOrder: false,
+    state,
+    linked: linkResult.order.link_method,
+    checkoutMatch: linkResult.checkoutMatch,
+    unlocked,
+    notes,
+  };
 }
 
 /**
@@ -206,12 +270,18 @@ export async function upsertOrderFromParsed(
  * names (registered evidence when it had a user, guest evidence otherwise); then an account whose
  * verified email equals the order's email (guest provenance); else unlinked.
  */
-export async function linkOrder(order: OrderRow): Promise<{ order: OrderRow; checkoutMatch: "hit" | "miss" | "none" }> {
+export async function linkOrder(
+  order: OrderRow,
+): Promise<{ order: OrderRow; checkoutMatch: "hit" | "miss" | "none" }> {
   const db = admin();
   let checkoutMatch: "hit" | "miss" | "none" = "none";
   const update: Partial<OrderRow> = {};
   if (order.checkout_id && !order.checkout_session_id) {
-    const { data } = await db.from("checkout_sessions").select("*").eq("cart_id", order.checkout_id).maybeSingle();
+    const { data } = await db
+      .from("checkout_sessions")
+      .select("*")
+      .eq("cart_id", order.checkout_id)
+      .maybeSingle();
     const session = data as CheckoutSessionRow | null;
     checkoutMatch = session ? "hit" : "miss";
     if (session) {
@@ -226,7 +296,10 @@ export async function linkOrder(order: OrderRow): Promise<{ order: OrderRow; che
           update.review_reason = "email_mismatch";
         }
       }
-      await db.from("checkout_sessions").update({ matched_order_id: order.id, matched_at: new Date().toISOString() }).eq("id", session.id);
+      await db
+        .from("checkout_sessions")
+        .update({ matched_order_id: order.id, matched_at: new Date().toISOString() })
+        .eq("id", session.id);
     }
     logArchive("link", { order: order.id, checkoutMatch });
   }
@@ -246,7 +319,12 @@ export async function linkOrder(order: OrderRow): Promise<{ order: OrderRow; che
     }
   }
   if (Object.keys(update).length === 0) return { order, checkoutMatch };
-  const { data, error } = await db.from("provider_orders").update(update).eq("id", order.id).select("*").single();
+  const { data, error } = await db
+    .from("provider_orders")
+    .update(update)
+    .eq("id", order.id)
+    .select("*")
+    .single();
   if (error) throw new Error(`order link failed: ${error.message}`);
   return { order: data as OrderRow, checkoutMatch };
 }
@@ -267,7 +345,10 @@ export async function autoLinkByEmail(user: CheckoutUser): Promise<number> {
     await supabaseAdmin
       .from("provider_orders")
       .update({ registered_checkout: false })
-      .in("id", linked.filter((o) => o.registered_checkout === null).map((o) => o.id));
+      .in(
+        "id",
+        linked.filter((o) => o.registered_checkout === null).map((o) => o.id),
+      );
     logArchive("link", { user: user.id, emailMatched: linked.length });
   }
   return linked.length;
@@ -285,9 +366,15 @@ export async function listOrdersForUser(userId: string): Promise<OrderSummary[]>
     id: o.id,
     friendlyId: o.friendly_id,
     placedAt: o.provider_created_at ?? o.first_seen_at,
-    sync: o.payment_state === "paid" ? "confirmed" : o.payment_state === "revoked" ? "revoked" : "pending",
+    sync:
+      o.payment_state === "paid"
+        ? "confirmed"
+        : o.payment_state === "revoked"
+          ? "revoked"
+          : "pending",
     lines: o.lines.map((l) => ({
-      name: (l.product_slug && catalog?.findBySlug(l.product_slug)?.name) || l.offer_name || "Piece",
+      name:
+        (l.product_slug && catalog?.findBySlug(l.product_slug)?.name) || l.offer_name || "Piece",
       color: l.color,
       size: l.size,
       quantity: l.quantity,
@@ -295,45 +382,90 @@ export async function listOrdersForUser(userId: string): Promise<OrderSummary[]>
   }));
 }
 
-export async function getOrder(orderId: string): Promise<(OrderRow & { lines: OrderLineRow[] }) | null> {
+export async function getOrder(
+  orderId: string,
+): Promise<(OrderRow & { lines: OrderLineRow[] }) | null> {
   if (!supabaseAdmin) return null;
-  const { data } = await supabaseAdmin.from("provider_orders").select("*, lines:provider_order_lines(*)").eq("id", orderId).maybeSingle();
+  const { data } = await supabaseAdmin
+    .from("provider_orders")
+    .select("*, lines:provider_order_lines(*)")
+    .eq("id", orderId)
+    .maybeSingle();
   return (data as (OrderRow & { lines: OrderLineRow[] }) | null) ?? null;
 }
 
 // Owner corrections, audited
 
-export async function adjustOrderLines(orderId: string, lines: { lineId: string; eligibleQuantity: number }[], reason: string, actor: string) {
+export async function adjustOrderLines(
+  orderId: string,
+  lines: { lineId: string; eligibleQuantity: number }[],
+  reason: string,
+  actor: string,
+) {
   const order = await getOrder(orderId);
   if (!order) throw new UserError("Unknown order.");
   for (const change of lines) {
     const line = order.lines.find((l) => l.id === change.lineId);
     if (!line) throw new UserError("Unknown order line.");
-    if (change.eligibleQuantity > line.quantity) throw new UserError("Eligible units can’t exceed the units bought.");
+    if (change.eligibleQuantity > line.quantity)
+      throw new UserError("Eligible units can’t exceed the units bought.");
     const { error } = await admin()
       .from("provider_order_lines")
-      .update({ eligible_quantity: change.eligibleQuantity, line_state: "adjusted", adjusted_by: actor, adjusted_at: new Date().toISOString() })
+      .update({
+        eligible_quantity: change.eligibleQuantity,
+        line_state: "adjusted",
+        adjusted_by: actor,
+        adjusted_at: new Date().toISOString(),
+      })
       .eq("id", line.id);
     if (error) throw new Error(`line adjust failed: ${error.message}`);
-    await audit(actor, "order.adjust_line", "order_line", line.id, { eligible: line.eligible_quantity }, { eligible: change.eligibleQuantity }, reason);
+    await audit(
+      actor,
+      "order.adjust_line",
+      "order_line",
+      line.id,
+      { eligible: line.eligible_quantity },
+      { eligible: change.eligibleQuantity },
+      reason,
+    );
   }
 }
 
-export async function relinkOrder(orderId: string, userId: string | null, reason: string, actor: string) {
+export async function relinkOrder(
+  orderId: string,
+  userId: string | null,
+  reason: string,
+  actor: string,
+) {
   const order = await getOrder(orderId);
   if (!order) throw new UserError("Unknown order.");
   const { error } = await admin()
     .from("provider_orders")
-    .update({ user_id: userId, link_method: userId ? "owner" : null, linked_at: userId ? new Date().toISOString() : null })
+    .update({
+      user_id: userId,
+      link_method: userId ? "owner" : null,
+      linked_at: userId ? new Date().toISOString() : null,
+    })
     .eq("id", orderId);
   if (error) throw new Error(`relink failed: ${error.message}`);
-  await audit(actor, "order.relink", "order", orderId, { userId: order.user_id, method: order.link_method }, { userId, method: userId ? "owner" : null }, reason);
+  await audit(
+    actor,
+    "order.relink",
+    "order",
+    orderId,
+    { userId: order.user_id, method: order.link_method },
+    { userId, method: userId ? "owner" : null },
+    reason,
+  );
 }
 
 export async function markOrderReviewed(orderId: string, actor: string) {
   const order = await getOrder(orderId);
   if (!order) throw new UserError("Unknown order.");
-  const { error } = await admin().from("provider_orders").update({ needs_review: false, review_reason: null }).eq("id", orderId);
+  const { error } = await admin()
+    .from("provider_orders")
+    .update({ needs_review: false, review_reason: null })
+    .eq("id", orderId);
   if (error) throw new Error(`review update failed: ${error.message}`);
   await audit(actor, "order.reviewed", "order", orderId, { reason: order.review_reason }, null);
 }

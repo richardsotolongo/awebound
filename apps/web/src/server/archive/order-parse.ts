@@ -37,9 +37,16 @@ export interface ParsedOrder {
 }
 
 type Obj = Record<string, unknown>;
-const obj = (v: unknown): Obj | null => (v && typeof v === "object" && !Array.isArray(v) ? (v as Obj) : null);
-const str = (v: unknown): string | null => (typeof v === "string" && v.trim() ? v.trim() : typeof v === "number" ? String(v) : null);
-const int = (v: unknown): number | null => (typeof v === "number" && Number.isFinite(v) ? Math.round(v) : typeof v === "string" && /^\d+$/.test(v) ? Number(v) : null);
+const obj = (v: unknown): Obj | null =>
+  v && typeof v === "object" && !Array.isArray(v) ? (v as Obj) : null;
+const str = (v: unknown): string | null =>
+  typeof v === "string" && v.trim() ? v.trim() : typeof v === "number" ? String(v) : null;
+const int = (v: unknown): number | null =>
+  typeof v === "number" && Number.isFinite(v)
+    ? Math.round(v)
+    : typeof v === "string" && /^\d+$/.test(v)
+      ? Number(v)
+      : null;
 
 /** `{ value, currency }`, a number or a numeric string, to cents. */
 function money(v: unknown): number | null {
@@ -79,14 +86,15 @@ export function parseOrder(data: unknown): ParsedOrder | null {
   if (!id) return null;
   const amounts = obj(order.amounts);
   const rawLines = [order.offers, order.items, order.lineItems, order.lines].find(Array.isArray) as
-    | unknown[]
-    | undefined;
+    unknown[] | undefined;
   const lines = (rawLines ?? []).map(parseLine).filter((l): l is ParsedLine => l !== null);
   const firstLine = obj(rawLines?.[0]);
   const fieldsSeen = [
     ...Object.keys(order).map((k) => `order.${k}`),
     ...(firstLine ? Object.keys(firstLine).map((k) => `line.${k}`) : []),
-    ...(obj(firstLine?.variant) ? Object.keys(obj(firstLine?.variant)!).map((k) => `line.variant.${k}`) : []),
+    ...(obj(firstLine?.variant)
+      ? Object.keys(obj(firstLine?.variant)!).map((k) => `line.variant.${k}`)
+      : []),
   ];
   return {
     id,

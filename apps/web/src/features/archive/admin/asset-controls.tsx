@@ -12,11 +12,19 @@ export function AssetActions({ assetId, publishable }: { assetId: string; publis
     <div className="field">
       <div className="admin-inline">
         {publishable ? (
-          <Button variant="secondary" disabled={busy} onClick={() => run(() => publishAssetAction({ assetId }), "Published.")}>
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={() => run(() => publishAssetAction({ assetId }), "Published.")}
+          >
             Publish
           </Button>
         ) : null}
-        <Button variant="link" disabled={busy} onClick={() => run(() => retireAssetAction({ assetId }), "Retired.")}>
+        <Button
+          variant="link"
+          disabled={busy}
+          onClick={() => run(() => retireAssetAction({ assetId }), "Retired.")}
+        >
           Retire
         </Button>
       </div>
@@ -26,7 +34,13 @@ export function AssetActions({ assetId, publishable }: { assetId: string; publis
 }
 
 /** Moves a file ingested without a design onto one. */
-export function AssignAssetForm({ assetId, designs }: { assetId: string; designs: { key: string; name: string }[] }) {
+export function AssignAssetForm({
+  assetId,
+  designs,
+}: {
+  assetId: string;
+  designs: { key: string; name: string }[];
+}) {
   const id = useId();
   const [designKey, setDesignKey] = useState(designs[0]?.key ?? "");
   const { busy, message, failed, run } = useOwnerAction();
@@ -39,7 +53,13 @@ export function AssignAssetForm({ assetId, designs }: { assetId: string; designs
   return (
     <form onSubmit={submit} className="field" noValidate>
       <div className="admin-inline">
-        <select id={`${id}-design`} className="aw-select" aria-label="Design" value={designKey} onChange={(e) => setDesignKey(e.target.value)}>
+        <select
+          id={`${id}-design`}
+          className="aw-select"
+          aria-label="Design"
+          value={designKey}
+          onChange={(e) => setDesignKey(e.target.value)}
+        >
           {designs.map((d) => (
             <option key={d.key} value={d.key}>
               {d.name}

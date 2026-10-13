@@ -12,9 +12,18 @@ export function PublishApprovedButton({ designKeys }: { designKeys: string[] }) 
       <div>
         <Button
           disabled={busy || designKeys.length === 0}
-          onClick={() => run(() => publishContentAction({ designKeys }), (r) => `Published ${r.published.length}.`)}
+          onClick={() =>
+            run(
+              () => publishContentAction({ designKeys }),
+              (r) => `Published ${r.published.length}.`,
+            )
+          }
         >
-          {busy ? "Publishing…" : designKeys.length > 0 ? `Publish all approved (${designKeys.length})` : "Publish all approved"}
+          {busy
+            ? "Publishing…"
+            : designKeys.length > 0
+              ? `Publish all approved (${designKeys.length})`
+              : "Publish all approved"}
         </Button>
       </div>
       <Outcome message={message} failed={failed} />

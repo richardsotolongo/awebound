@@ -14,7 +14,11 @@ export function RefreshOrdersButton() {
     const result = await refreshMyOrders().catch(() => null);
     if (result?.ok) {
       setState("done");
-      setMessage(result.data.changed > 0 ? "Your orders are up to date." : "Nothing new from our checkout partner.");
+      setMessage(
+        result.data.changed > 0
+          ? "Your orders are up to date."
+          : "Nothing new from our checkout partner.",
+      );
       router.refresh();
     } else {
       setState("error");

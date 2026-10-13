@@ -11,7 +11,9 @@ export function ConsentForm({ initial, wording }: { initial: boolean; wording: s
   async function change(next: boolean) {
     setChecked(next);
     setStatus("");
-    const result = await setEmailConsent({ topic: "collection_updates", consented: next }).catch(() => null);
+    const result = await setEmailConsent({ topic: "collection_updates", consented: next }).catch(
+      () => null,
+    );
     if (result?.ok) setStatus("Saved.");
     else {
       setChecked(!next);
@@ -20,8 +22,18 @@ export function ConsentForm({ initial, wording }: { initial: boolean; wording: s
   }
   return (
     <div className="field">
-      <label htmlFor={`${id}-consent`} className="aw-body" style={{ display: "flex", gap: "var(--space-3)", alignItems: "flex-start" }}>
-        <input id={`${id}-consent`} type="checkbox" checked={checked} onChange={(e) => change(e.target.checked)} style={{ marginTop: 6 }} />
+      <label
+        htmlFor={`${id}-consent`}
+        className="aw-body"
+        style={{ display: "flex", gap: "var(--space-3)", alignItems: "flex-start" }}
+      >
+        <input
+          id={`${id}-consent`}
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => change(e.target.checked)}
+          style={{ marginTop: 6 }}
+        />
         <span>{wording}</span>
       </label>
       <p className="field-help">Optional. This never affects your account or purchases.</p>

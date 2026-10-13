@@ -195,8 +195,8 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 | `SUPABASE_SECRET_KEY`                                              | Profiles, contact messages and sign-ups (server only)                 |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | Email. The key is required in production; the other two have defaults |
 | `SCRIPTURE_TRANSLATION`                                            | Website Scripture: `NIV` (default) or `KJV`                           |
-| `FOURTHWALL_WEBHOOK_SECRET`                                        | Signs Fourthwall's order webhooks (My Archive orders)                  |
-| `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`               | Fourthwall Open API user: order sync, claims, Founding settlement      |
+| `FOURTHWALL_WEBHOOK_SECRET`                                        | Signs Fourthwall's order webhooks (My Archive orders)                 |
+| `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`               | Fourthwall Open API user: order sync, claims, Founding settlement     |
 | `CRON_SECRET`                                                      | Bearer for the daily reconcile cron                                   |
 | `ARCHIVE_STORAGE_BUCKET`                                           | Optional; private wallpaper bucket, defaults to `archive-assets`      |
 

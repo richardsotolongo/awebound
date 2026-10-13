@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
   const given = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
   const a = Buffer.from(given);
   const b = Buffer.from(secret);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  if (a.length !== b.length || !timingSafeEqual(a, b))
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   try {
     const report = await reconcileOrders({ trigger: "cron" });
     return NextResponse.json(report, { headers: { "cache-control": "no-store" } });

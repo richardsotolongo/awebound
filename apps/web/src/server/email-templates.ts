@@ -198,7 +198,13 @@ export function accountDeleted(): RenderedEmail {
 // My Archive. Custom Archive emails stay off until their flags are on (server/archive/email-outbox.ts);
 // the claim code is the one transactional message, sent when a shopper links a past order.
 
-export function claimCode({ code, friendlyId }: { code: string; friendlyId: string }): RenderedEmail {
+export function claimCode({
+  code,
+  friendlyId,
+}: {
+  code: string;
+  friendlyId: string;
+}): RenderedEmail {
   const subject = `Your code to link order ${friendlyId}`;
   const id = escapeHtml(friendlyId);
   const html = layout({
@@ -231,7 +237,15 @@ export function archiveWelcome(siteUrl: string): RenderedEmail {
   return { subject, html, text };
 }
 
-export function designUnlocked({ name, slug, siteUrl }: { name: string; slug: string; siteUrl: string }): RenderedEmail {
+export function designUnlocked({
+  name,
+  slug,
+  siteUrl,
+}: {
+  name: string;
+  slug: string;
+  siteUrl: string;
+}): RenderedEmail {
   const subject = `${name} is in your Archive`;
   const href = `${siteUrl}/account/collection/${slug}`;
   const html = layout({

@@ -17,8 +17,20 @@ import {
   PublishRequestSchema,
   SaveDraftRequestSchema,
 } from "@/shared";
-import { assignAsset, createUploadTarget, publishAsset, registerAsset, retireAsset } from "./archive/assets";
-import { approveDraft, publishContent, retireContent, saveDraft, verifyCare } from "./archive/content";
+import {
+  assignAsset,
+  createUploadTarget,
+  publishAsset,
+  registerAsset,
+  retireAsset,
+} from "./archive/assets";
+import {
+  approveDraft,
+  publishContent,
+  retireContent,
+  saveDraft,
+  verifyCare,
+} from "./archive/content";
 import { mapOffer } from "./archive/designs";
 import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
@@ -35,7 +47,9 @@ export async function importDraftsAction(): Promise<Result<ImportReport>> {
   return run(async () => importDrafts((await requireAdmin()).id));
 }
 
-export async function saveDraftAction(input: unknown): Promise<Result<{ version: number; status: string }>> {
+export async function saveDraftAction(
+  input: unknown,
+): Promise<Result<{ version: number; status: string }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { designKey, fields } = parse(SaveDraftRequestSchema, input);
@@ -53,7 +67,9 @@ export async function approveDraftAction(input: unknown): Promise<Result<null>> 
   });
 }
 
-export async function publishContentAction(input: unknown): Promise<Result<{ published: string[] }>> {
+export async function publishContentAction(
+  input: unknown,
+): Promise<Result<{ published: string[] }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { designKeys } = parse(PublishRequestSchema, input);
@@ -79,7 +95,9 @@ export async function verifyCareAction(input: unknown): Promise<Result<null>> {
   });
 }
 
-export async function createAssetUploadAction(input: unknown): Promise<Result<{ bucket: string; path: string; token: string }>> {
+export async function createAssetUploadAction(
+  input: unknown,
+): Promise<Result<{ bucket: string; path: string; token: string }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { designKey, format, fileName } = parse(AssetUploadRequestSchema, input);
@@ -87,7 +105,9 @@ export async function createAssetUploadAction(input: unknown): Promise<Result<{ 
   });
 }
 
-export async function registerAssetAction(input: unknown): Promise<Result<{ id: string; width: number; height: number; mime: string }>> {
+export async function registerAssetAction(
+  input: unknown,
+): Promise<Result<{ id: string; width: number; height: number; mime: string }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { designKey, format, path, title } = parse(AssetRegisterRequestSchema, input);
@@ -139,7 +159,9 @@ export async function reconcileNowAction(): Promise<Result<ReconcileReport>> {
   });
 }
 
-export async function settleFoundingAction(): Promise<Result<{ settled: number; skipped: string | null }>> {
+export async function settleFoundingAction(): Promise<
+  Result<{ settled: number; skipped: string | null }>
+> {
   return run(async () => settleFounding("owner", (await requireAdmin()).id));
 }
 
@@ -179,7 +201,9 @@ export async function mapOfferAction(input: unknown): Promise<Result<null>> {
   });
 }
 
-export async function foundingCorrectionAction(input: unknown): Promise<Result<{ reason: string }>> {
+export async function foundingCorrectionAction(
+  input: unknown,
+): Promise<Result<{ reason: string }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { userId, action, reason, orderId } = parse(FoundingCorrectionRequestSchema, input);

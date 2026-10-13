@@ -101,7 +101,9 @@ export async function getOwnedCard(userId: string, slug: string): Promise<OwnedC
 }
 
 /** The published design and content a render reads (the caller has already checked the entitlement). */
-export async function getPublishedForExport(slug: string): Promise<{ design: DesignRow; content: ContentRow } | null> {
+export async function getPublishedForExport(
+  slug: string,
+): Promise<{ design: DesignRow; content: ContentRow } | null> {
   const design = await getDesignBySlug(slug);
   if (!design) return null;
   const content = await publishedContent(design);
@@ -127,7 +129,8 @@ export async function listContentStatus(): Promise<ContentStatus[]> {
   return designs.map((design) => ({
     design,
     latest: rows.find((r) => r.design_key === design.design_key) ?? null,
-    published: rows.find((r) => r.design_key === design.design_key && r.status === "published") ?? null,
+    published:
+      rows.find((r) => r.design_key === design.design_key && r.status === "published") ?? null,
   }));
 }
 
@@ -165,11 +168,20 @@ const fieldColumns = (f: DraftFields) => ({
 });
 
 /** Edits the open draft, or starts the next version from the published row. Any edit needs a new approval. */
-export async function saveDraft(designKey: string, fields: DraftFields, actor: string): Promise<ContentRow> {
+export async function saveDraft(
+  designKey: string,
+  fields: DraftFields,
+  actor: string,
+): Promise<ContentRow> {
   const design = await getDesign(designKey);
   if (!design) throw new UserError("Unknown design.");
   const open = await getOpenDraft(designKey);
-  const reset = { status: "draft", approved_by: null, approved_at: null, founder_note_proposed: true };
+  const reset = {
+    status: "draft",
+    approved_by: null,
+    approved_at: null,
+    founder_note_proposed: true,
+  };
   if (open) {
     const { data, error } = await admin()
       .from("archive_design_content")
@@ -211,10 +223,22 @@ export async function approveDraft(designKey: string, actor: string): Promise<vo
   if (!open) throw new UserError("There is no draft to approve.");
   const { error } = await admin()
     .from("archive_design_content")
-    .update({ status: "approved", approved_by: actor, approved_at: new Date().toISOString(), founder_note_proposed: false })
+    .update({
+      status: "approved",
+      approved_by: actor,
+      approved_at: new Date().toISOString(),
+      founder_note_proposed: false,
+    })
     .eq("id", open.id);
   if (error) throw new Error(`approve failed: ${error.message}`);
-  await audit(actor, "content.approve", "content", open.id, { status: open.status }, { status: "approved" });
+  await audit(
+    actor,
+    "content.approve",
+    "content",
+    open.id,
+    { status: open.status },
+    { status: "approved" },
+  );
 }
 
 /** Publishes approved drafts, one or several. Stops at the first design that isn't approved. */
@@ -224,7 +248,8 @@ export async function publishContent(designKeys: string[], actor: string): Promi
     const design = await getDesign(designKey);
     if (!design) throw new UserError("Unknown design.");
     const open = await getOpenDraft(designKey);
-    if (!open || open.status !== "approved") throw new UserError(`${design.name} isn’t approved yet.`);
+    if (!open || open.status !== "approved")
+      throw new UserError(`${design.name} isn’t approved yet.`);
     const now = new Date().toISOString();
     if (design.published_content_id) {
       const { error } = await admin()
@@ -243,7 +268,14 @@ export async function publishContent(designKeys: string[], actor: string): Promi
       .update({ published_content_id: open.id })
       .eq("design_key", designKey);
     if (pointer) throw new Error(`publish pointer failed: ${pointer.message}`);
-    await audit(actor, "content.publish", "content", open.id, { previous: design.published_content_id }, { version: open.version });
+    await audit(
+      actor,
+      "content.publish",
+      "content",
+      open.id,
+      { previous: design.published_content_id },
+      { version: open.version },
+    );
     published.push(designKey);
   }
   return published;
@@ -257,20 +289,50 @@ export async function retireContent(designKey: string, actor: string): Promise<v
     .update({ status: "retired", retired_at: new Date().toISOString() })
     .eq("id", design.published_content_id);
   if (error) throw new Error(`retire failed: ${error.message}`);
-  await admin().from("archive_designs").update({ published_content_id: null }).eq("design_key", designKey);
-  await audit(actor, "content.retire", "content", design.published_content_id, { published: true }, { published: false });
+  await admin()
+    .from("archive_designs")
+    .update({ published_content_id: null })
+    .eq("design_key", designKey);
+  await audit(
+    actor,
+    "content.retire",
+    "content",
+    design.published_content_id,
+    { published: true },
+    { published: false },
+  );
 }
 
 /** Care comes from the owner's verification (the provider's product details), never guessed. */
-export async function verifyCare(designKey: string, instructions: string, source: string, actor: string): Promise<void> {
+export async function verifyCare(
+  designKey: string,
+  instructions: string,
+  source: string,
+  actor: string,
+): Promise<void> {
   const design = await getDesign(designKey);
   if (!design) throw new UserError("Unknown design.");
-  const target = (await getOpenDraft(designKey)) ?? (design.published_content_id ? await publishedContent(design) : null);
+  const target =
+    (await getOpenDraft(designKey)) ??
+    (design.published_content_id ? await publishedContent(design) : null);
   if (!target) throw new UserError("Import or create a draft first.");
   const { error } = await admin()
     .from("archive_design_content")
-    .update({ care_status: "verified", care_instructions: instructions, care_source: source, care_verified_at: new Date().toISOString(), care_verified_by: actor })
+    .update({
+      care_status: "verified",
+      care_instructions: instructions,
+      care_source: source,
+      care_verified_at: new Date().toISOString(),
+      care_verified_by: actor,
+    })
     .eq("id", target.id);
   if (error) throw new Error(`care update failed: ${error.message}`);
-  await audit(actor, "content.verify_care", "content", target.id, { care_status: target.care_status }, { care_status: "verified", source });
+  await audit(
+    actor,
+    "content.verify_care",
+    "content",
+    target.id,
+    { care_status: target.care_status },
+    { care_status: "verified", source },
+  );
 }

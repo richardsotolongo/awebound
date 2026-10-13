@@ -17,7 +17,9 @@ const LINKS = [
 export function AdminNav() {
   const pathname = usePath();
   const current = (href: string) =>
-    href === "/account/admin" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+    href === "/account/admin"
+      ? pathname === href
+      : pathname === href || pathname.startsWith(`${href}/`);
   return (
     <nav aria-label="Owner" className="admin-nav">
       {LINKS.map((l) => (

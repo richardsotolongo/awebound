@@ -55,11 +55,18 @@ export async function savePiece(userId: string, slug: string): Promise<void> {
   if (!catalog.findBySlug(slug)) throw new UserError("That piece isn’t in the shop.");
   const { error } = await admin()
     .from("saved_pieces")
-    .upsert({ user_id: userId, product_slug: slug }, { onConflict: "user_id,product_slug", ignoreDuplicates: true });
+    .upsert(
+      { user_id: userId, product_slug: slug },
+      { onConflict: "user_id,product_slug", ignoreDuplicates: true },
+    );
   if (error) throw new Error(`save failed: ${error.message}`);
 }
 
 export async function unsavePiece(userId: string, slug: string): Promise<void> {
-  const { error } = await admin().from("saved_pieces").delete().eq("user_id", userId).eq("product_slug", slug);
+  const { error } = await admin()
+    .from("saved_pieces")
+    .delete()
+    .eq("user_id", userId)
+    .eq("product_slug", slug);
   if (error) throw new Error(`unsave failed: ${error.message}`);
 }

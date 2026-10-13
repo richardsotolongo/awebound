@@ -192,11 +192,7 @@ export interface FoundingRow {
 }
 
 export type CandidateReason =
-  | "contested_window"
-  | "email_mismatch"
-  | "no_checkout_evidence"
-  | "flag_off"
-  | "cap_reached";
+  "contested_window" | "email_mismatch" | "no_checkout_evidence" | "flag_off" | "cap_reached";
 
 export interface CandidateRow {
   user_id: string;

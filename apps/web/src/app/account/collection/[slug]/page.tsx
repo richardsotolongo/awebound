@@ -18,7 +18,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 const date = (iso: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : null;
+  iso
+    ? new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : null;
 
 function Locked({ card }: { card: PublicCard }) {
   return (
@@ -50,7 +52,10 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
   const { slug } = await params;
   if (!user) redirect(`/sign-in?next=${encodeURIComponent(`/account/collection/${slug}`)}`);
   if (!ProductSlugSchema.safeParse(slug).success) notFound();
-  const [card, product] = await Promise.all([getOwnedCard(user.id, slug), getProduct(slug).catch(() => null)]);
+  const [card, product] = await Promise.all([
+    getOwnedCard(user.id, slug),
+    getProduct(slug).catch(() => null),
+  ]);
   if (!card) {
     const open = await getPublishedPublicCard(slug);
     if (!open) notFound();
@@ -63,10 +68,20 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
 
   return (
     <div className="archive-story">
-      <PageHeader title={card.name} note={`${card.collection.name}. ${product?.category.cut ?? ""}`.trim()} />
+      <PageHeader
+        title={card.name}
+        note={`${card.collection.name}. ${product?.category.cut ?? ""}`.trim()}
+      />
 
       {product?.plate ? (
-        <Plate as="div" color={plateCss(product.plate)} ink={product.plate.ink} tall={`${files}/plate-tall.webp`} wide={`${files}/plate-wide.webp`} className="archive-story-head">
+        <Plate
+          as="div"
+          color={plateCss(product.plate)}
+          ink={product.plate.ink}
+          tall={`${files}/plate-tall.webp`}
+          wide={`${files}/plate-wide.webp`}
+          className="archive-story-head"
+        >
           {isCap ? (
             <div className="archive-story-views">
               {views.map((v) => (
@@ -179,7 +194,8 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
                 </li>
               ) : (
                 <li key={x.format} className="aw-body">
-                  {x.format === "phone" ? "Phone" : "Desktop"}: your wallpaper is being prepared. It will appear here when published.
+                  {x.format === "phone" ? "Phone" : "Desktop"}: your wallpaper is being prepared. It
+                  will appear here when published.
                 </li>
               ),
             )}
@@ -191,7 +207,13 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
         <h2 id="share-title" className="aw-h2">
           Downloads and sharing
         </h2>
-        <ExportControls slug={slug} name={card.name} shareCopy={card.shareCopy} exports={card.exports} siteUrl={siteUrl} />
+        <ExportControls
+          slug={slug}
+          name={card.name}
+          shareCopy={card.shareCopy}
+          exports={card.exports}
+          siteUrl={siteUrl}
+        />
       </section>
     </div>
   );

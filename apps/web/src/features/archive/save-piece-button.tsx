@@ -29,7 +29,8 @@ export function SavePieceButton({ slug }: { slug: string }) {
   if (!signedIn) {
     return (
       <p className="aw-small">
-        <Link href={`/sign-in?next=${encodeURIComponent(`/shop/${slug}`)}`}>Save this piece</Link> to your Archive.
+        <Link href={`/sign-in?next=${encodeURIComponent(`/shop/${slug}`)}`}>Save this piece</Link>{" "}
+        to your Archive.
       </p>
     );
   }
@@ -46,7 +47,12 @@ export function SavePieceButton({ slug }: { slug: string }) {
 
   return (
     <div>
-      <Button variant="link" onClick={toggle} disabled={busy || saved === null} aria-pressed={saved === true}>
+      <Button
+        variant="link"
+        onClick={toggle}
+        disabled={busy || saved === null}
+        aria-pressed={saved === true}
+      >
         {saved ? "Remove from saved" : "Save this piece"}
       </Button>
       {error ? (

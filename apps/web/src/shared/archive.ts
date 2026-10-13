@@ -38,7 +38,11 @@ export const FitPreferenceRequestSchema = z.object({
 export type FitPreferenceRequest = z.infer<typeof FitPreferenceRequestSchema>;
 export const FitGuideRequestSchema = z.object({ guideId: GuideIdSchema });
 export const ClaimStartRequestSchema = z.object({
-  friendlyId: z.string().trim().min(3, "Enter the order number.").max(40, "That isn't an order number."),
+  friendlyId: z
+    .string()
+    .trim()
+    .min(3, "Enter the order number.")
+    .max(40, "That isn't an order number."),
 });
 export type ClaimStartRequest = z.infer<typeof ClaimStartRequestSchema>;
 export const ClaimVerifyRequestSchema = z.object({
@@ -63,12 +67,17 @@ export const DraftFieldsSchema = z.object({
   notes: z.string().trim().max(1000),
 });
 export type DraftFields = z.infer<typeof DraftFieldsSchema>;
-export const SaveDraftRequestSchema = z.object({ designKey: DesignKeySchema, fields: DraftFieldsSchema });
+export const SaveDraftRequestSchema = z.object({
+  designKey: DesignKeySchema,
+  fields: DraftFieldsSchema,
+});
 export const ApproveRequestSchema = z.object({
   designKey: DesignKeySchema,
   founderNoteReviewed: z.literal(true, "Confirm you have reviewed the founder note."),
 });
-export const PublishRequestSchema = z.object({ designKeys: z.array(DesignKeySchema).min(1).max(10) });
+export const PublishRequestSchema = z.object({
+  designKeys: z.array(DesignKeySchema).min(1).max(10),
+});
 export const DesignKeyRequestSchema = z.object({ designKey: DesignKeySchema });
 export const CareRequestSchema = z.object({
   designKey: DesignKeySchema,
@@ -96,7 +105,12 @@ export const FlagRequestSchema = z.object({
 export const OrderAdjustRequestSchema = z.object({
   orderId: z.string().min(1).max(80),
   lines: z
-    .array(z.object({ lineId: z.string().min(1).max(200), eligibleQuantity: z.number().int().min(0).max(100) }))
+    .array(
+      z.object({
+        lineId: z.string().min(1).max(200),
+        eligibleQuantity: z.number().int().min(0).max(100),
+      }),
+    )
     .min(1)
     .max(50),
   reason: z.string().trim().min(3, "Say why.").max(300),
@@ -136,7 +150,14 @@ export interface PublicCard {
 }
 
 export type OwnedExtra =
-  | { format: AssetFormat; status: "published"; id: string; title: string; width: number; height: number }
+  | {
+      format: AssetFormat;
+      status: "published";
+      id: string;
+      title: string;
+      width: number;
+      height: number;
+    }
   | { format: AssetFormat; status: "preparing" };
 
 /** The purchased part: only for an account that owns the design. */

@@ -25,7 +25,10 @@ export default async function MappingsPage() {
 
   return (
     <>
-      <PageHeader title="Mappings" intro="How each design lines up across the catalog, the shop and the size guides." />
+      <PageHeader
+        title="Mappings"
+        intro="How each design lines up across the catalog, the shop and the size guides."
+      />
       <div className="admin-wrap">
         <table className="admin-table">
           <thead>
@@ -59,7 +62,10 @@ export default async function MappingsPage() {
                   </td>
                   <td>{liveProduct(design.fourthwall_slug)}</td>
                   <td>
-                    <MapOfferForm designKey={design.design_key} current={design.fourthwall_offer_id} />
+                    <MapOfferForm
+                      designKey={design.design_key}
+                      current={design.fourthwall_offer_id}
+                    />
                   </td>
                   <td>{guide ? `${guide.id}: ${guide.name}` : "none"}</td>
                   <td>{latest?.care_status ?? "–"}</td>
@@ -70,7 +76,9 @@ export default async function MappingsPage() {
           </tbody>
         </table>
       </div>
-      {rows.length === 0 ? <p className="aw-body">No designs yet. Import the drafts first.</p> : null}
+      {rows.length === 0 ? (
+        <p className="aw-body">No designs yet. Import the drafts first.</p>
+      ) : null}
     </>
   );
 }

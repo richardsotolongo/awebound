@@ -23,7 +23,11 @@ export function useOwnerAction() {
       return true;
     }
     setFailed(true);
-    setMessage(result ? [result.error, ...Object.values(result.fields ?? {})].join(" ") : "That didn’t work. Try again in a moment.");
+    setMessage(
+      result
+        ? [result.error, ...Object.values(result.fields ?? {})].join(" ")
+        : "That didn’t work. Try again in a moment.",
+    );
     return false;
   }
 

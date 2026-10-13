@@ -24,7 +24,8 @@ function FileLine({ asset }: { asset: AssetRow }) {
   return (
     <div>
       <p className="aw-small">
-        {asset.title}: {asset.width} x {asset.height}, {asset.bytes.toLocaleString("en-US")} bytes, {asset.mime}
+        {asset.title}: {asset.width} x {asset.height}, {asset.bytes.toLocaleString("en-US")} bytes,{" "}
+        {asset.mime}
         {asset.mime === "image/jpeg" ? " (not a PNG master)" : ""},{" "}
         <code className="admin-code" title={asset.sha256}>
           {asset.sha256.slice(0, 8)}
@@ -42,7 +43,10 @@ export default async function AssetsPage() {
 
   return (
     <>
-      <PageHeader title="Assets" intro="One phone and one desktop wallpaper per design. A file goes live only when you publish it." />
+      <PageHeader
+        title="Assets"
+        intro="One phone and one desktop wallpaper per design. A file goes live only when you publish it."
+      />
 
       <section className="admin-section">
         <h2 className="aw-h3">Upload a file</h2>
@@ -64,7 +68,9 @@ export default async function AssetsPage() {
             <tbody>
               {designs.flatMap((d) =>
                 FORMATS.map((format) => {
-                  const mine = assets.filter((a) => a.design_key === d.design_key && a.format === format);
+                  const mine = assets.filter(
+                    (a) => a.design_key === d.design_key && a.format === format,
+                  );
                   const published = mine.find((a) => a.status === "published");
                   const waiting = mine.filter((a) => a.status === "uploaded");
                   return (
@@ -99,7 +105,9 @@ export default async function AssetsPage() {
             </tbody>
           </table>
         </div>
-        {designs.length === 0 ? <p className="aw-body">No designs yet. Import the drafts first.</p> : null}
+        {designs.length === 0 ? (
+          <p className="aw-body">No designs yet. Import the drafts first.</p>
+        ) : null}
       </section>
 
       <section className="admin-section">

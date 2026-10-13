@@ -21,7 +21,13 @@ export function FoundingTools() {
   function submit(e: FormEvent) {
     e.preventDefault();
     correct.run(
-      () => foundingCorrectionAction({ userId: userId.trim(), action, reason, orderId: orderId.trim() || undefined }),
+      () =>
+        foundingCorrectionAction({
+          userId: userId.trim(),
+          action,
+          reason,
+          orderId: orderId.trim() || undefined,
+        }),
       (r) => `Done: ${r.reason}.`,
     );
   }
@@ -32,11 +38,21 @@ export function FoundingTools() {
         <label htmlFor={`${id}-user`} className="aw-label">
           User id
         </label>
-        <input id={`${id}-user`} className="aw-input" value={userId} onChange={(e) => setUserId(e.target.value)} />
+        <input
+          id={`${id}-user`}
+          className="aw-input"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+        />
         <label htmlFor={`${id}-action`} className="aw-label">
           Action
         </label>
-        <select id={`${id}-action`} className="aw-select" value={action} onChange={(e) => setAction(ACTIONS.find((a) => a === e.target.value) ?? "revoke")}>
+        <select
+          id={`${id}-action`}
+          className="aw-select"
+          value={action}
+          onChange={(e) => setAction(ACTIONS.find((a) => a === e.target.value) ?? "revoke")}
+        >
           <option value="revoke">Revoke</option>
           <option value="restore">Restore</option>
           <option value="award">Award</option>
@@ -44,13 +60,29 @@ export function FoundingTools() {
         <label htmlFor={`${id}-order`} className="aw-label">
           Order id (optional, for an award)
         </label>
-        <input id={`${id}-order`} className="aw-input" maxLength={80} value={orderId} onChange={(e) => setOrderId(e.target.value)} />
+        <input
+          id={`${id}-order`}
+          className="aw-input"
+          maxLength={80}
+          value={orderId}
+          onChange={(e) => setOrderId(e.target.value)}
+        />
         <label htmlFor={`${id}-reason`} className="aw-label">
           Reason
         </label>
-        <input id={`${id}-reason`} className="aw-input" maxLength={300} value={reason} onChange={(e) => setReason(e.target.value)} />
+        <input
+          id={`${id}-reason`}
+          className="aw-input"
+          maxLength={300}
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
         <div>
-          <Button variant="secondary" type="submit" disabled={correct.busy || !userId.trim() || reason.trim().length < 3}>
+          <Button
+            variant="secondary"
+            type="submit"
+            disabled={correct.busy || !userId.trim() || reason.trim().length < 3}
+          >
             Apply
           </Button>
         </div>
@@ -59,11 +91,19 @@ export function FoundingTools() {
 
       <div className="field">
         <div>
-          <Button variant="secondary" disabled={settle.busy} onClick={() => settle.run(settleFoundingAction, (r) => r.skipped ?? `Settled ${r.settled}.`)}>
+          <Button
+            variant="secondary"
+            disabled={settle.busy}
+            onClick={() =>
+              settle.run(settleFoundingAction, (r) => r.skipped ?? `Settled ${r.settled}.`)
+            }
+          >
             Settle contested places
           </Button>
         </div>
-        <p className="field-help">Only after the provider’s order list has been walked in the last 24 hours.</p>
+        <p className="field-help">
+          Only after the provider’s order list has been walked in the last 24 hours.
+        </p>
         <Outcome message={settle.message} failed={settle.failed} />
       </div>
     </div>

@@ -23,12 +23,19 @@ const hex = (h: string) => {
   const n = parseInt(h.replace("#", ""), 16);
   return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
 };
-const COLOR = { paper: hex(BRAND_HEX.paper), coal: hex(BRAND_HEX.coal), muted: hex(BRAND_HEX.muted), oxblood: hex(BRAND_HEX.oxblood) };
+const COLOR = {
+  paper: hex(BRAND_HEX.paper),
+  coal: hex(BRAND_HEX.coal),
+  muted: hex(BRAND_HEX.muted),
+  oxblood: hex(BRAND_HEX.oxblood),
+};
 
 /** Drops characters the embedded font can't draw instead of failing the whole card. */
 function printable(font: PDFFont, text: string): string {
   const set = new Set(font.getCharacterSet());
-  return [...text.replace(/\r\n?/g, "\n")].map((ch) => (ch === "\n" || set.has(ch.codePointAt(0)!) ? ch : "?")).join("");
+  return [...text.replace(/\r\n?/g, "\n")]
+    .map((ch) => (ch === "\n" || set.has(ch.codePointAt(0)!) ? ch : "?"))
+    .join("");
 }
 
 function wrap(font: PDFFont, size: number, text: string, maxWidth: number): string[] {
@@ -49,7 +56,11 @@ function wrap(font: PDFFont, size: number, text: string, maxWidth: number): stri
   return lines;
 }
 
-export async function renderDesignCardPdf(design: DesignRow, content: ContentRow, product: ProductDetail): Promise<Uint8Array> {
+export async function renderDesignCardPdf(
+  design: DesignRow,
+  content: ContentRow,
+  product: ProductDetail,
+): Promise<Uint8Array> {
   const fonts = loadFonts();
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
@@ -71,15 +82,35 @@ export async function renderDesignCardPdf(design: DesignRow, content: ContentRow
     page = doc.addPage([PAGE.width, PAGE.height]);
     page.drawRectangle({ x: 0, y: 0, width: PAGE.width, height: PAGE.height, color: COLOR.paper });
     const footerY = 28;
-    page.drawText("Bound in awe. Worn without shame.", { x: left, y: footerY, size: 8, font: sansBold, color: COLOR.muted });
+    page.drawText("Bound in awe. Worn without shame.", {
+      x: left,
+      y: footerY,
+      size: 8,
+      font: sansBold,
+      color: COLOR.muted,
+    });
     const site = "www.awebound.store";
-    page.drawText(site, { x: right - sansBold.widthOfTextAtSize(site, 8), y: footerY, size: 8, font: sansBold, color: COLOR.muted });
+    page.drawText(site, {
+      x: right - sansBold.widthOfTextAtSize(site, 8),
+      y: footerY,
+      size: 8,
+      font: sansBold,
+      color: COLOR.muted,
+    });
     y = PAGE.height - PAGE.margin;
   };
   const ensure = (needed: number) => {
     if (y - needed < PAGE.margin + 24) newPage();
   };
-  const paragraph = (text: string, font: PDFFont, size: number, lineHeight: number, color = COLOR.coal, maxWidth = width, x = left) => {
+  const paragraph = (
+    text: string,
+    font: PDFFont,
+    size: number,
+    lineHeight: number,
+    color = COLOR.coal,
+    maxWidth = width,
+    x = left,
+  ) => {
     for (const line of wrap(font, size, text, maxWidth)) {
       ensure(lineHeight);
       page.drawText(line, { x, y: y - size, size, font, color });
@@ -89,16 +120,32 @@ export async function renderDesignCardPdf(design: DesignRow, content: ContentRow
   const heading = (text: string) => {
     ensure(40);
     y -= 14;
-    page.drawText(printable(sansBold, text.toUpperCase()), { x: left, y: y - 9, size: 9, font: sansBold, color: COLOR.muted });
+    page.drawText(printable(sansBold, text.toUpperCase()), {
+      x: left,
+      y: y - 9,
+      size: 9,
+      font: sansBold,
+      color: COLOR.muted,
+    });
     y -= 20;
   };
 
   newPage();
 
   // Wordmark: the path's box starts at (29, 34) in its own units; scale it to 150 pt wide.
-  const [vx, vy, vw, vh] = WORDMARK.viewBox.split(" ").map(Number) as [number, number, number, number];
+  const [vx, vy, vw, vh] = WORDMARK.viewBox.split(" ").map(Number) as [
+    number,
+    number,
+    number,
+    number,
+  ];
   const scale = 150 / vw;
-  page!.drawSvgPath(WORDMARK.d, { x: left - vx * scale, y: y + vy * scale, scale, color: COLOR.oxblood });
+  page!.drawSvgPath(WORDMARK.d, {
+    x: left - vx * scale,
+    y: y + vy * scale,
+    scale,
+    color: COLOR.oxblood,
+  });
   y -= vh * scale + 28;
 
   // Header: name and cut beside the artwork.
@@ -107,19 +154,40 @@ export async function renderDesignCardPdf(design: DesignRow, content: ContentRow
   const textWidth = width - artWidth - 24;
   const artTop = y;
   try {
-    const webp = await readFile(join(process.cwd(), "public", "products", design.product_slug, "detail.webp"));
+    const webp = await readFile(
+      join(process.cwd(), "public", "products", design.product_slug, "detail.webp"),
+    );
     const png = await doc.embedPng(await sharp(webp).png().toBuffer());
-    page!.drawImage(png, { x: right - artWidth, y: artTop - artHeight, width: artWidth, height: artHeight });
+    page!.drawImage(png, {
+      x: right - artWidth,
+      y: artTop - artHeight,
+      width: artWidth,
+      height: artHeight,
+    });
   } catch {
     // The card still reads without its picture.
   }
   paragraph(design.name, grenze, 28, 32, COLOR.coal, textWidth);
   y -= 4;
-  paragraph(`From ${product.collection.name}, Release ${product.collection.number}. ${product.category.cut}.`, sans, 10.5, 15, COLOR.muted, textWidth);
+  paragraph(
+    `From ${product.collection.name}, Release ${product.collection.number}. ${product.category.cut}.`,
+    sans,
+    10.5,
+    15,
+    COLOR.muted,
+    textWidth,
+  );
   y -= 12;
   paragraph(quoted(product.scripture.text), italic, 14, 19, COLOR.coal, textWidth);
   y -= 2;
-  paragraph(`${product.scripture.reference} — ${product.scripture.translation}${product.scripture.excerpt ? ", excerpt" : ""}`, sansBold, 8.5, 13, COLOR.muted, textWidth);
+  paragraph(
+    `${product.scripture.reference} — ${product.scripture.translation}${product.scripture.excerpt ? ", excerpt" : ""}`,
+    sansBold,
+    8.5,
+    13,
+    COLOR.muted,
+    textWidth,
+  );
   y = Math.min(y, artTop - artHeight) - 8;
 
   heading("The passage in context");

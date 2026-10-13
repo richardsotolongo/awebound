@@ -15,18 +15,28 @@ export const metadata: Metadata = { title: "Settings" };
 
 const RECENT_MINUTES = 15;
 
-export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ changed?: string }> }) {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ changed?: string }>;
+}) {
   const user = await currentUser();
   if (!user) redirect("/sign-in?next=%2Faccount%2Fsettings");
   const { changed } = await searchParams;
   const supabase = (await getServerSupabase())!;
-  const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle<{ full_name: string | null }>();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .maybeSingle<{ full_name: string | null }>();
   const meta = user.user_metadata as { full_name?: string; name?: string } | undefined;
   const name = profile?.full_name ?? meta?.full_name ?? meta?.name ?? "";
   const provider = (user.app_metadata as { provider?: string } | undefined)?.provider;
   const email = user.email ?? "";
   const readiness = await getArchiveReadiness();
-  const consent = readiness.emails.preferencesUi ? await getConsent(user.id, "collection_updates") : null;
+  const consent = readiness.emails.preferencesUi
+    ? await getConsent(user.id, "collection_updates")
+    : null;
   const recent = signedInRecently(user, RECENT_MINUTES);
 
   return (
@@ -35,7 +45,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         title="Settings"
         intro={
           <>
-            Signed in as <span className="account-email">{email}</span> with {provider === "google" ? "Google" : "an email link"}.
+            Signed in as <span className="account-email">{email}</span> with{" "}
+            {provider === "google" ? "Google" : "an email link"}.
           </>
         }
       />
@@ -83,7 +94,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             Signing in
           </h2>
           <p className="aw-body">
-            There is no password to recover. To sign in from a new device, request a new link or code with your email.
+            There is no password to recover. To sign in from a new device, request a new link or
+            code with your email.
           </p>
           <form action="/auth/sign-out" method="post">
             <Button variant="secondary" type="submit">
@@ -98,7 +110,10 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             <h2 id="prefs-title" className="aw-h3">
               Email preferences
             </h2>
-            <ConsentForm initial={consent?.consented === true} wording={CONSENT_WORDING.collection_updates.wording} />
+            <ConsentForm
+              initial={consent?.consented === true}
+              wording={CONSENT_WORDING.collection_updates.wording}
+            />
           </section>
         ) : null}
 
@@ -106,7 +121,9 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
           <h2 id="privacy-title" className="aw-h3">
             Privacy
           </h2>
-          <p className="aw-body">What we keep and why is in the privacy policy. Deleting your account is below.</p>
+          <p className="aw-body">
+            What we keep and why is in the privacy policy. Deleting your account is below.
+          </p>
           <div className="account-actions">
             <Button variant="link" href="/privacy">
               Read the privacy policy

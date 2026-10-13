@@ -2,7 +2,12 @@
 
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent } from "react";
-import { approveDraftAction, publishContentAction, retireContentAction, saveDraftAction } from "@/server/admin-actions";
+import {
+  approveDraftAction,
+  publishContentAction,
+  retireContentAction,
+  saveDraftAction,
+} from "@/server/admin-actions";
 import type { DraftFields } from "@/shared";
 import { Outcome, useOwnerAction } from "./owner-action";
 
@@ -21,7 +26,11 @@ const FIELDS: { key: Key; label: string; max?: number; input?: boolean; lines?: 
   { key: "notes", label: "Notes (owner only)", max: 1000 },
 ];
 
-const lines = (s: string) => s.split("\n").map((l) => l.trim()).filter(Boolean);
+const lines = (s: string) =>
+  s
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
 
 /** One textarea per field with a live count. Saving resets approval; approving needs the founder note read. */
 export function DraftEditor({
@@ -36,14 +45,20 @@ export function DraftEditor({
   hasPublished: boolean;
 }) {
   const id = useId();
-  const [text, setText] = useState<Record<Key, string>>({ ...initial, additionalBibleUrls: initial.additionalBibleUrls.join("\n") });
+  const [text, setText] = useState<Record<Key, string>>({
+    ...initial,
+    additionalBibleUrls: initial.additionalBibleUrls.join("\n"),
+  });
   const [reviewed, setReviewed] = useState(false);
   const { busy, message, failed, run } = useOwnerAction();
 
   function save(e: FormEvent) {
     e.preventDefault();
     const fields: DraftFields = { ...text, additionalBibleUrls: lines(text.additionalBibleUrls) };
-    run(() => saveDraftAction({ designKey, fields }), (r) => `Saved version ${r.version} (${r.status}).`);
+    run(
+      () => saveDraftAction({ designKey, fields }),
+      (r) => `Saved version ${r.version} (${r.status}).`,
+    );
   }
 
   return (
@@ -59,7 +74,13 @@ export function DraftEditor({
               {f.label}
             </label>
             {f.input ? (
-              <input id={`${id}-${f.key}`} className="aw-input" value={value} onChange={(e) => set(e.target.value)} aria-invalid={over || undefined} />
+              <input
+                id={`${id}-${f.key}`}
+                className="aw-input"
+                value={value}
+                onChange={(e) => set(e.target.value)}
+                aria-invalid={over || undefined}
+              />
             ) : (
               <textarea
                 id={`${id}-${f.key}`}
@@ -80,7 +101,12 @@ export function DraftEditor({
         );
       })}
       <label htmlFor={`${id}-reviewed`} className="admin-check">
-        <input id={`${id}-reviewed`} type="checkbox" checked={reviewed} onChange={(e) => setReviewed(e.target.checked)} />
+        <input
+          id={`${id}-reviewed`}
+          type="checkbox"
+          checked={reviewed}
+          onChange={(e) => setReviewed(e.target.checked)}
+        />
         <span>I’ve reviewed the founder note and it is my own wording</span>
       </label>
       <div className="account-actions">
@@ -90,15 +116,24 @@ export function DraftEditor({
         <Button
           variant="secondary"
           disabled={busy || !reviewed}
-          onClick={() => run(() => approveDraftAction({ designKey, founderNoteReviewed: true }), "Approved.")}
+          onClick={() =>
+            run(() => approveDraftAction({ designKey, founderNoteReviewed: true }), "Approved.")
+          }
         >
           Approve
         </Button>
-        <Button disabled={busy || openStatus !== "approved"} onClick={() => run(() => publishContentAction({ designKeys: [designKey] }), "Published.")}>
+        <Button
+          disabled={busy || openStatus !== "approved"}
+          onClick={() => run(() => publishContentAction({ designKeys: [designKey] }), "Published.")}
+        >
           Publish
         </Button>
         {hasPublished ? (
-          <Button variant="link" disabled={busy} onClick={() => run(() => retireContentAction({ designKey }), "Retired.")}>
+          <Button
+            variant="link"
+            disabled={busy}
+            onClick={() => run(() => retireContentAction({ designKey }), "Retired.")}
+          >
             Retire the published version
           </Button>
         ) : null}

@@ -21,7 +21,13 @@ export function immediateBenefits(r: ArchiveReadiness): string[] {
   return out;
 }
 
-export function BenefitsList({ readiness, headline = true }: { readiness: ArchiveReadiness; headline?: boolean }) {
+export function BenefitsList({
+  readiness,
+  headline = true,
+}: {
+  readiness: ArchiveReadiness;
+  headline?: boolean;
+}) {
   const purchase = purchaseBenefits(readiness);
   return (
     <div className="archive-benefits">

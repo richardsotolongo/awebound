@@ -10,7 +10,10 @@ export const metadata: Metadata = { title: "Your fit" };
 export default async function FitPage() {
   const user = await currentUser();
   if (!user) redirect("/sign-in?next=%2Faccount%2Ffit");
-  const [guides, prefs] = await Promise.all([Promise.resolve(listFitGuides()), getFitPreferences(user.id)]);
+  const [guides, prefs] = await Promise.all([
+    Promise.resolve(listFitGuides()),
+    getFitPreferences(user.id),
+  ]);
   return (
     <>
       <PageHeader

@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { FlagToggle } from "@/features/archive/admin/flag-toggle";
 import { when } from "@/features/archive/admin/format";
-import { ImportDraftsButton, ReconcileButton, SendQueuedButton } from "@/features/archive/admin/owner-buttons";
+import {
+  ImportDraftsButton,
+  ReconcileButton,
+  SendQueuedButton,
+} from "@/features/archive/admin/owner-buttons";
 import { listOutbox } from "@/server/archive/email-outbox";
 import { listFlags } from "@/server/archive/flags";
 import { orderCounts, providerAssumptions } from "@/server/archive/orders-admin";
@@ -81,7 +85,10 @@ export default async function HealthPage() {
 
   return (
     <>
-      <PageHeader title="Owner" intro="What is set, what is on, and what the first orders taught us. Names only, never values." />
+      <PageHeader
+        title="Owner"
+        intro="What is set, what is on, and what the first orders taught us. Names only, never values."
+      />
 
       <section className="admin-section">
         <h2 className="aw-h3">Readiness</h2>

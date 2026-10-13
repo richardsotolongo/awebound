@@ -101,10 +101,15 @@ export function FitForm({ guide, initial }: { guide: FitGuide; initial: FitPrefe
         </>
       )}
       <p className="field-help">
-        A saved size is a reminder for you, not a guarantee of fit. Check the size guide before you order.
+        A saved size is a reminder for you, not a guarantee of fit. Check the size guide before you
+        order.
       </p>
       <div className="account-actions">
-        <Button variant="secondary" type="submit" disabled={state === "saving" || !dirty || (!guide.isCap && !size)}>
+        <Button
+          variant="secondary"
+          type="submit"
+          disabled={state === "saving" || !dirty || (!guide.isCap && !size)}
+        >
           {state === "saving" ? "Saving…" : "Save"}
         </Button>
         {saved ? (

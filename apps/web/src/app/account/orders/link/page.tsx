@@ -21,7 +21,8 @@ export default async function LinkOrderPage() {
       {!readiness.claims ? (
         <div className="notice" role="status">
           <p className="aw-body">
-            Linking past orders isn’t available yet. Write to us with your order number and we’ll help.
+            Linking past orders isn’t available yet. Write to us with your order number and we’ll
+            help.
           </p>
           <div>
             <Button variant="secondary" href="/contact">
@@ -31,7 +32,9 @@ export default async function LinkOrderPage() {
         </div>
       ) : !hasVerifiedEmail(user) ? (
         <div className="notice" role="status">
-          <p className="aw-body">Confirm your email address first, then come back to link an order.</p>
+          <p className="aw-body">
+            Confirm your email address first, then come back to link an order.
+          </p>
         </div>
       ) : (
         <div style={{ maxWidth: 520 }}>

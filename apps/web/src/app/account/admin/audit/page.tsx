@@ -14,7 +14,10 @@ export default async function AuditPage() {
 
   return (
     <>
-      <PageHeader title="Audit" intro="Every owner change, newest first. A change made from the command line has no actor." />
+      <PageHeader
+        title="Audit"
+        intro="Every owner change, newest first. A change made from the command line has no actor."
+      />
       {rows.length === 0 ? (
         <p className="aw-body">Nothing recorded yet.</p>
       ) : (

@@ -56,8 +56,18 @@ export async function getFitPreferences(userId: string): Promise<FitPreference[]
     .select("size_guide_id, size, note, updated_at")
     .eq("user_id", userId);
   return (data ?? []).map((r) => {
-    const row = r as { size_guide_id: string; size: string | null; note: string | null; updated_at: string };
-    return { guideId: row.size_guide_id, size: row.size, note: row.note, updatedAt: row.updated_at };
+    const row = r as {
+      size_guide_id: string;
+      size: string | null;
+      note: string | null;
+      updated_at: string;
+    };
+    return {
+      guideId: row.size_guide_id,
+      size: row.size,
+      note: row.note,
+      updatedAt: row.updated_at,
+    };
   });
 }
 
@@ -71,11 +81,15 @@ export async function saveFitPreference(
   const guide = listFitGuides().find((g) => g.id === guideId);
   if (!guide) throw new UserError("That guide isn’t in the shop.");
   if (guide.isCap) size = null;
-  else if (!size || !guide.sizes.includes(size)) throw new UserError("Pick one of the sizes in the guide.");
+  else if (!size || !guide.sizes.includes(size))
+    throw new UserError("Pick one of the sizes in the guide.");
   const cleanNote = note?.trim() || null;
   const { data, error } = await supabaseAdmin
     .from("fit_preferences")
-    .upsert({ user_id: userId, size_guide_id: guideId, size, note: cleanNote }, { onConflict: "user_id,size_guide_id" })
+    .upsert(
+      { user_id: userId, size_guide_id: guideId, size, note: cleanNote },
+      { onConflict: "user_id,size_guide_id" },
+    )
     .select("updated_at")
     .single();
   if (error) throw new Error(`fit save failed: ${error.message}`);
@@ -84,6 +98,10 @@ export async function saveFitPreference(
 
 export async function clearFitPreference(userId: string, guideId: string): Promise<void> {
   if (!supabaseAdmin) throw new UserError("Accounts aren’t set up yet.");
-  const { error } = await supabaseAdmin.from("fit_preferences").delete().eq("user_id", userId).eq("size_guide_id", guideId);
+  const { error } = await supabaseAdmin
+    .from("fit_preferences")
+    .delete()
+    .eq("user_id", userId)
+    .eq("size_guide_id", guideId);
   if (error) throw new Error(`fit clear failed: ${error.message}`);
 }

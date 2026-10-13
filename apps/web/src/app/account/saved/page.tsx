@@ -17,7 +17,11 @@ export default async function SavedPage() {
     <>
       <PageHeader
         title="Saved pieces"
-        intro={saved.length > 0 ? "The pieces you saved from the shop, on every device you sign in to." : undefined}
+        intro={
+          saved.length > 0
+            ? "The pieces you saved from the shop, on every device you sign in to."
+            : undefined
+        }
       />
       {saved.length === 0 ? (
         <div className="shop-empty" role="status">

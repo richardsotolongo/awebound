@@ -12,10 +12,14 @@ const { importDrafts, validateDraftsAgainstCatalog } = await import("../src/serv
 
 const checks = validateDraftsAgainstCatalog();
 for (const c of checks) {
-  console.info(`${c.problems.length === 0 ? "ok     " : "MISMATCH"} ${c.designKey}${c.problems.length ? ": " + c.problems.join("; ") : ""}`);
+  console.info(
+    `${c.problems.length === 0 ? "ok     " : "MISMATCH"} ${c.designKey}${c.problems.length ? ": " + c.problems.join("; ") : ""}`,
+  );
 }
 const report = await importDrafts(null);
-console.info(`inserted ${report.inserted.length} draft(s), skipped ${report.skipped.length} (already present or mismatched).`);
+console.info(
+  `inserted ${report.inserted.length} draft(s), skipped ${report.skipped.length} (already present or mismatched).`,
+);
 if (report.mismatches.length > 0) {
   console.error("Fix the mismatches above (catalog.json is the source of truth) and run again.");
   process.exit(1);

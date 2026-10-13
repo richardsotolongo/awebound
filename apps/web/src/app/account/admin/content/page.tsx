@@ -17,12 +17,17 @@ export default async function ContentPage() {
     const c = checks.find((x) => x.designKey === designKey);
     return c ? c.problems.join("; ") || "ok" : "no draft";
   };
-  const approved = rows.filter((r) => r.latest?.status === "approved").map((r) => r.design.design_key);
+  const approved = rows
+    .filter((r) => r.latest?.status === "approved")
+    .map((r) => r.design.design_key);
   const nothingYet = rows.every((r) => !r.latest);
 
   return (
     <>
-      <PageHeader title="Content" intro="Each design’s story moves from draft to approved to published. Approval needs the founder note read as your own words." />
+      <PageHeader
+        title="Content"
+        intro="Each design’s story moves from draft to approved to published. Approval needs the founder note read as your own words."
+      />
       <div className="admin-wrap">
         <table className="admin-table">
           <thead>
@@ -53,7 +58,9 @@ export default async function ContentPage() {
           </tbody>
         </table>
       </div>
-      {rows.length === 0 ? <p className="aw-body">No designs yet. Import the drafts to create them.</p> : null}
+      {rows.length === 0 ? (
+        <p className="aw-body">No designs yet. Import the drafts to create them.</p>
+      ) : null}
       <div className="admin-section">
         <PublishApprovedButton designKeys={approved} />
         {nothingYet ? <ImportDraftsButton /> : null}

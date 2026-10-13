@@ -1,7 +1,11 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { importDraftsAction, reconcileNowAction, sendQueuedEmailsAction } from "@/server/admin-actions";
+import {
+  importDraftsAction,
+  reconcileNowAction,
+  sendQueuedEmailsAction,
+} from "@/server/admin-actions";
 import { Outcome, useOwnerAction } from "./owner-action";
 
 /** Seeds the ten drafts as unpublished rows; idempotent, so it is safe to press again. */
@@ -15,7 +19,9 @@ export function ImportDraftsButton() {
           disabled={busy}
           onClick={() =>
             run(importDraftsAction, (r) => {
-              const problems = r.mismatches.map((m) => `${m.slug}: ${m.problems.join("; ")}`).join(" ");
+              const problems = r.mismatches
+                .map((m) => `${m.slug}: ${m.problems.join("; ")}`)
+                .join(" ");
               return `Inserted ${r.inserted.length}, skipped ${r.skipped.length}, ${r.mismatches.length} mismatched. ${problems}`.trim();
             })
           }
@@ -47,7 +53,11 @@ export function ReconcileButton({ enabled }: { enabled: boolean }) {
           {busy ? "Checking…" : "Reconcile orders now"}
         </Button>
       </div>
-      {enabled ? null : <p className="field-help">Needs the API user (FOURTHWALL_API_USERNAME and FOURTHWALL_API_PASSWORD).</p>}
+      {enabled ? null : (
+        <p className="field-help">
+          Needs the API user (FOURTHWALL_API_USERNAME and FOURTHWALL_API_PASSWORD).
+        </p>
+      )}
       <Outcome message={message} failed={failed} />
     </div>
   );
@@ -58,7 +68,11 @@ export function SendQueuedButton() {
   return (
     <div className="field">
       <div>
-        <Button variant="secondary" disabled={busy} onClick={() => run(sendQueuedEmailsAction, (r) => `Sent ${r.sent}.`)}>
+        <Button
+          variant="secondary"
+          disabled={busy}
+          onClick={() => run(sendQueuedEmailsAction, (r) => `Sent ${r.sent}.`)}
+        >
           {busy ? "Sending…" : "Send queued emails"}
         </Button>
       </div>

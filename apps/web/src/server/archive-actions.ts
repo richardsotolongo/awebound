@@ -26,7 +26,9 @@ import { requireUser } from "./session";
 
 // My Archive's Server Actions: public endpoints, so every input is parsed and the user comes from the session.
 
-export async function savePieceAction(input: SavePieceRequest): Promise<Result<{ saved: boolean }>> {
+export async function savePieceAction(
+  input: SavePieceRequest,
+): Promise<Result<{ saved: boolean }>> {
   return run(async () => {
     const user = await requireUser();
     const { slug } = parse(SavePieceRequestSchema, input);
@@ -36,7 +38,9 @@ export async function savePieceAction(input: SavePieceRequest): Promise<Result<{
   });
 }
 
-export async function unsavePieceAction(input: SavePieceRequest): Promise<Result<{ saved: boolean }>> {
+export async function unsavePieceAction(
+  input: SavePieceRequest,
+): Promise<Result<{ saved: boolean }>> {
   return run(async () => {
     const user = await requireUser();
     const { slug } = parse(SavePieceRequestSchema, input);
@@ -51,7 +55,9 @@ export async function getSavedSlugsAction(): Promise<Result<string[]>> {
   return run(async () => savedSlugs((await requireUser()).id));
 }
 
-export async function saveFitPreferenceAction(input: FitPreferenceRequest): Promise<Result<FitPreference>> {
+export async function saveFitPreferenceAction(
+  input: FitPreferenceRequest,
+): Promise<Result<FitPreference>> {
   return run(async () => {
     const user = await requireUser();
     const { guideId, size, note } = parse(FitPreferenceRequestSchema, input);
@@ -68,18 +74,24 @@ export async function clearFitPreferenceAction(input: { guideId: string }): Prom
   });
 }
 
-export async function startOrderClaim(input: ClaimStartRequest): Promise<Result<{ claimId: string }>> {
+export async function startOrderClaim(
+  input: ClaimStartRequest,
+): Promise<Result<{ claimId: string }>> {
   return run(async () => {
     const user = await requireUser();
     const { friendlyId } = parse(ClaimStartRequestSchema, input);
     if (!(await getArchiveReadiness()).claims)
-      throw new UserError("Linking past orders isn’t available yet. Write to us with your order number and we’ll help.");
+      throw new UserError(
+        "Linking past orders isn’t available yet. Write to us with your order number and we’ll help.",
+      );
     await limit("claim-start", 5, 60, user.id);
     return startClaim(user, friendlyId);
   });
 }
 
-export async function verifyOrderClaim(input: ClaimVerifyRequest): Promise<Result<{ friendlyId: string }>> {
+export async function verifyOrderClaim(
+  input: ClaimVerifyRequest,
+): Promise<Result<{ friendlyId: string }>> {
   return run(async () => {
     const user = await requireUser();
     const { claimId, code } = parse(ClaimVerifyRequestSchema, input);
@@ -98,7 +110,9 @@ export async function refreshMyOrders(): Promise<Result<{ checked: number; chang
   });
 }
 
-export async function setEmailConsent(input: ConsentRequest): Promise<Result<{ consented: boolean }>> {
+export async function setEmailConsent(
+  input: ConsentRequest,
+): Promise<Result<{ consented: boolean }>> {
   return run(async () => {
     const user = await requireUser();
     const { topic, consented } = parse(ConsentRequestSchema, input);

@@ -16,10 +16,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const user = await currentUser();
   if (!user) return NextResponse.json({ error: "sign in" }, { status: 401, headers: PRIVATE });
   const { slug } = await params;
-  const format = ShareFormatSchema.catch("portrait").parse(request.nextUrl.searchParams.get("format") ?? "portrait");
+  const format = ShareFormatSchema.catch("portrait").parse(
+    request.nextUrl.searchParams.get("format") ?? "portrait",
+  );
   if (!ProductSlugSchema.safeParse(slug).success || !(await getArchiveReadiness()).share)
     return NextResponse.json({ error: "not found" }, { status: 404, headers: PRIVATE });
-  if (!(await getOwnedCard(user.id, slug))) return NextResponse.json({ error: "not found" }, { status: 404, headers: PRIVATE });
+  if (!(await getOwnedCard(user.id, slug)))
+    return NextResponse.json({ error: "not found" }, { status: 404, headers: PRIVATE });
   try {
     await limit("share", 20, 10, user.id);
     const bytes = await shareImage(slug, format);
@@ -32,7 +35,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     });
   } catch (err) {
-    if (err instanceof UserError) return NextResponse.json({ error: err.message }, { status: 429, headers: PRIVATE });
+    if (err instanceof UserError)
+      return NextResponse.json({ error: err.message }, { status: 429, headers: PRIVATE });
     console.error("[archive] share image failed:", err);
     return NextResponse.json({ error: "render failed" }, { status: 500, headers: PRIVATE });
   }

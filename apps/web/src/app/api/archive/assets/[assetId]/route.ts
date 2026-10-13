@@ -9,7 +9,10 @@ export const dynamic = "force-dynamic";
 const PRIVATE = { "cache-control": "private, no-store" };
 
 /** A wallpaper download: the account must own the design, the file must be published. */
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ assetId: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ assetId: string }> },
+) {
   const user = await currentUser();
   if (!user) return NextResponse.json({ error: "sign in" }, { status: 401, headers: PRIVATE });
   const { assetId } = await params;

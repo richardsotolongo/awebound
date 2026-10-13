@@ -62,7 +62,13 @@ export async function startCheckout(
   await recordCheckoutSession({
     cartId,
     user,
-    lines: lines.map((l) => ({ sku: l.sku, productSlug: l.productSlug, color: l.color, size: l.size, quantity: l.quantity })),
+    lines: lines.map((l) => ({
+      sku: l.sku,
+      productSlug: l.productSlug,
+      color: l.color,
+      size: l.size,
+      quantity: l.quantity,
+    })),
   }).catch(() => undefined);
 
   const domain = serverEnv.FOURTHWALL_CHECKOUT_DOMAIN.replace(/^https?:\/\//, "").replace(

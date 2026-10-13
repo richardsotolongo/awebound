@@ -28,7 +28,12 @@ export function FlagToggle({ flagKey, enabled }: { flagKey: FlagKey; enabled: bo
   return (
     <div className="admin-inline">
       <label htmlFor={`${id}-flag`} className="admin-check">
-        <input id={`${id}-flag`} type="checkbox" checked={checked} onChange={(e) => change(e.target.checked)} />
+        <input
+          id={`${id}-flag`}
+          type="checkbox"
+          checked={checked}
+          onChange={(e) => change(e.target.checked)}
+        />
         <span>{checked ? "On" : "Off"}</span>
       </label>
       <span className="field-help" role="status" aria-live="polite">

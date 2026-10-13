@@ -22,12 +22,20 @@ export async function listFlags(): Promise<FlagRow[]> {
   return (data ?? []) as FlagRow[];
 }
 
-export async function setFlag(key: FlagKey, enabled: boolean, note: string | undefined, actor: string) {
+export async function setFlag(
+  key: FlagKey,
+  enabled: boolean,
+  note: string | undefined,
+  actor: string,
+) {
   if (!supabaseAdmin) throw new Error("database not configured");
   const before = (await getFlags())[key];
   const { error } = await supabaseAdmin
     .from("feature_flags")
-    .upsert({ key, enabled, ...(note !== undefined ? { note } : {}), updated_by: actor }, { onConflict: "key" });
+    .upsert(
+      { key, enabled, ...(note !== undefined ? { note } : {}), updated_by: actor },
+      { onConflict: "key" },
+    );
   if (error) throw new Error(`flag update failed: ${error.message}`);
   await audit(actor, "flag.set", "feature_flag", key, { enabled: before }, { enabled, note });
 }

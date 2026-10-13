@@ -49,8 +49,13 @@ export function validateDraftsAgainstCatalog(): DraftCheck[] {
     const problems: string[] = [];
     const product = brandContent.products.find((p) => p.slug === d.catalog_slug);
     if (!product)
-      return { slug: d.catalog_slug, designKey: d.design_key, problems: ["no such piece in catalog.json"] };
-    if (plain(product.name) !== plain(d.name)) problems.push(`name differs: catalog has "${product.name}"`);
+      return {
+        slug: d.catalog_slug,
+        designKey: d.design_key,
+        problems: ["no such piece in catalog.json"],
+      };
+    if (plain(product.name) !== plain(d.name))
+      problems.push(`name differs: catalog has "${product.name}"`);
     if (product.scripture.reference !== d.scripture_reference)
       problems.push(`Scripture differs: catalog has ${product.scripture.reference}`);
     if (product.code !== d.catalog_code) problems.push("catalog code differs");
@@ -58,7 +63,8 @@ export function validateDraftsAgainstCatalog(): DraftCheck[] {
       problems.push(`garment differs: catalog has ${product.category.cut}`);
     if (plain(product.collection.name) !== plain(d.collection))
       problems.push(`collection differs: catalog has ${product.collection.name}`);
-    if (designKeyFor(product.collection.slug, product.slug) !== d.design_key) problems.push("design key differs");
+    if (designKeyFor(product.collection.slug, product.slug) !== d.design_key)
+      problems.push("design key differs");
     return { slug: d.catalog_slug, designKey: d.design_key, problems };
   });
 }
@@ -74,7 +80,9 @@ export async function importDrafts(actor: string | null): Promise<ImportReport> 
   if (!supabaseAdmin) throw new Error("database not configured");
   await upsertDesignsFromCatalog();
   const mismatches = validateDraftsAgainstCatalog().filter((c) => c.problems.length > 0);
-  const { data: existing, error } = await supabaseAdmin.from("archive_design_content").select("design_key");
+  const { data: existing, error } = await supabaseAdmin
+    .from("archive_design_content")
+    .select("design_key");
   if (error) throw new Error(`content read failed: ${error.message}`);
   const has = new Set((existing ?? []).map((r) => (r as { design_key: string }).design_key));
   const inserted: string[] = [];
@@ -103,7 +111,8 @@ export async function importDrafts(actor: string | null): Promise<ImportReport> 
       notes: `Imported from the content drafts prepared ${drafts.prepared_on}. The founder note is proposed wording for Richard's review.`,
       created_by: actor,
     });
-    if (insertError) throw new Error(`draft insert failed for ${d.design_key}: ${insertError.message}`);
+    if (insertError)
+      throw new Error(`draft insert failed for ${d.design_key}: ${insertError.message}`);
     inserted.push(d.design_key);
   }
   await audit(actor, "content.import_drafts", "content", null, null, {

@@ -29,7 +29,10 @@ export const PENDING_STATUSES = new Set(["PLACED", "PENDING", "AWAITING_PAYMENT"
 export const PARTIAL_REFUND_STATUSES = new Set(["PARTIALLY_REFUNDED"]);
 
 export function paymentState(status: string | null | undefined): PaymentState {
-  const s = (status ?? "").trim().toUpperCase().replace(/[\s-]+/g, "_");
+  const s = (status ?? "")
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, "_");
   if (PAID_STATUSES.has(s) || PARTIAL_REFUND_STATUSES.has(s)) return "paid";
   if (REVOKED_STATUSES.has(s)) return "revoked";
   if (PENDING_STATUSES.has(s)) return "pending";
@@ -37,5 +40,10 @@ export function paymentState(status: string | null | undefined): PaymentState {
 }
 
 export function isPartialRefundStatus(status: string | null | undefined): boolean {
-  return PARTIAL_REFUND_STATUSES.has((status ?? "").trim().toUpperCase().replace(/[\s-]+/g, "_"));
+  return PARTIAL_REFUND_STATUSES.has(
+    (status ?? "")
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, "_"),
+  );
 }

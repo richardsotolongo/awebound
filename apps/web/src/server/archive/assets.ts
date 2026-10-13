@@ -29,7 +29,11 @@ export interface ImageHeader {
 /** Reads the dimensions from the file itself: PNG IHDR, or the first JPEG SOF segment. */
 export function readImageHeader(buf: Buffer): ImageHeader | null {
   const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
-  if (buf.length >= 24 && buf.subarray(0, 8).equals(PNG) && buf.toString("ascii", 12, 16) === "IHDR") {
+  if (
+    buf.length >= 24 &&
+    buf.subarray(0, 8).equals(PNG) &&
+    buf.toString("ascii", 12, 16) === "IHDR"
+  ) {
     return { mime: "image/png", width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
   }
   if (buf.length >= 4 && buf[0] === 0xff && buf[1] === 0xd8) {
@@ -42,8 +46,18 @@ export function readImageHeader(buf: Buffer): ImageHeader | null {
         continue;
       }
       const length = buf.readUInt16BE(i + 2);
-      if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
-        return { mime: "image/jpeg", height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) };
+      if (
+        marker >= 0xc0 &&
+        marker <= 0xcf &&
+        marker !== 0xc4 &&
+        marker !== 0xc8 &&
+        marker !== 0xcc
+      ) {
+        return {
+          mime: "image/jpeg",
+          height: buf.readUInt16BE(i + 5),
+          width: buf.readUInt16BE(i + 7),
+        };
       }
       i += 2 + length;
     }
@@ -51,11 +65,20 @@ export function readImageHeader(buf: Buffer): ImageHeader | null {
   return null;
 }
 
-export const assetPath = (designSlug: string | null, format: AssetFormat, id: string, ext: "png" | "jpg") =>
-  `${designSlug ?? "unassigned"}/${format}/${id}.${ext}`;
+export const assetPath = (
+  designSlug: string | null,
+  format: AssetFormat,
+  id: string,
+  ext: "png" | "jpg",
+) => `${designSlug ?? "unassigned"}/${format}/${id}.${ext}`;
 
 /** A one-time upload target so the browser sends the file straight to Storage (never through Vercel). */
-export async function createUploadTarget(designKey: string | null, format: AssetFormat, fileName: string, actor: string) {
+export async function createUploadTarget(
+  designKey: string | null,
+  format: AssetFormat,
+  fileName: string,
+  actor: string,
+) {
   const design = designKey ? await getDesign(designKey) : null;
   if (designKey && !design) throw new UserError("Unknown design.");
   const ext = /\.png$/i.test(fileName) ? "png" : "jpg";
@@ -129,7 +152,12 @@ export async function ingestAsset(input: {
   if (!header) throw new UserError("That file isn’t a PNG or JPEG image.");
   const design = input.designKey ? await getDesign(input.designKey) : null;
   if (input.designKey && !design) throw new UserError("Unknown design.");
-  const path = assetPath(design?.product_slug ?? null, input.format, crypto.randomUUID(), header.mime === "image/png" ? "png" : "jpg");
+  const path = assetPath(
+    design?.product_slug ?? null,
+    input.format,
+    crypto.randomUUID(),
+    header.mime === "image/png" ? "png" : "jpg",
+  );
   const { error } = await admin()
     .storage.from(serverEnv.ARCHIVE_STORAGE_BUCKET)
     .upload(path, input.bytes, { contentType: header.mime, upsert: false });
@@ -139,13 +167,20 @@ export async function ingestAsset(input: {
 
 export async function getAsset(id: string): Promise<AssetRow | null> {
   if (!supabaseAdmin) return null;
-  const { data } = await supabaseAdmin.from("archive_assets").select("*").eq("id", id).maybeSingle();
+  const { data } = await supabaseAdmin
+    .from("archive_assets")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
   return (data as AssetRow | null) ?? null;
 }
 
 export async function listAssets(designKey?: string): Promise<AssetRow[]> {
   if (!supabaseAdmin) return [];
-  let query = supabaseAdmin.from("archive_assets").select("*").order("uploaded_at", { ascending: false });
+  let query = supabaseAdmin
+    .from("archive_assets")
+    .select("*")
+    .order("uploaded_at", { ascending: false });
   if (designKey) query = query.eq("design_key", designKey);
   const { data } = await query;
   return (data ?? []) as AssetRow[];
@@ -156,7 +191,10 @@ export async function assignAsset(id: string, designKey: string, actor: string) 
   if (!asset) throw new UserError("Unknown file.");
   if (asset.status === "published") throw new UserError("Retire the file before moving it.");
   if (!(await getDesign(designKey))) throw new UserError("Unknown design.");
-  const { error } = await admin().from("archive_assets").update({ design_key: designKey }).eq("id", id);
+  const { error } = await admin()
+    .from("archive_assets")
+    .update({ design_key: designKey })
+    .eq("id", id);
   if (error) throw new Error(`asset assign failed: ${error.message}`);
   await audit(actor, "asset.assign", "asset", id, { designKey: asset.design_key }, { designKey });
 }
@@ -166,7 +204,8 @@ export async function publishAsset(id: string, actor: string) {
   const asset = await getAsset(id);
   if (!asset) throw new UserError("Unknown file.");
   if (!asset.design_key) throw new UserError("Assign the file to a design first.");
-  if (asset.status === "retired") throw new UserError("A retired file can’t be published again. Upload it afresh.");
+  if (asset.status === "retired")
+    throw new UserError("A retired file can’t be published again. Upload it afresh.");
   const now = new Date().toISOString();
   const { error: retire } = await admin()
     .from("archive_assets")
@@ -181,7 +220,14 @@ export async function publishAsset(id: string, actor: string) {
     .update({ status: "published", published_by: actor, published_at: now })
     .eq("id", id);
   if (error) throw new Error(`asset publish failed: ${error.message}`);
-  await audit(actor, "asset.publish", "asset", id, { status: asset.status }, { status: "published" });
+  await audit(
+    actor,
+    "asset.publish",
+    "asset",
+    id,
+    { status: asset.status },
+    { status: "published" },
+  );
 }
 
 export async function retireAsset(id: string, actor: string) {
@@ -201,7 +247,14 @@ export async function assetsForOwnedCard(designKey: string): Promise<OwnedExtra[
   return (["phone", "desktop"] as const).map((format) => {
     const file = published.find((a) => a.format === format);
     return file
-      ? { format, status: "published", id: file.id, title: file.title, width: file.width, height: file.height }
+      ? {
+          format,
+          status: "published",
+          id: file.id,
+          title: file.title,
+          width: file.width,
+          height: file.height,
+        }
       : { format, status: "preparing" };
   });
 }
@@ -215,7 +268,9 @@ export async function signedAssetUrl(assetId: string, userId: string): Promise<s
   const ext = asset.mime === "image/png" ? "png" : "jpg";
   const { data, error } = await admin()
     .storage.from(asset.storage_bucket)
-    .createSignedUrl(asset.storage_path, 60, { download: `behold-${design.product_slug}-${asset.format}.${ext}` });
+    .createSignedUrl(asset.storage_path, 60, {
+      download: `behold-${design.product_slug}-${asset.format}.${ext}`,
+    });
   if (error || !data) return null;
   return data.signedUrl;
 }
