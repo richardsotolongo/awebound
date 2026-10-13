@@ -159,6 +159,7 @@ The drafts live in `apps/web/src/server/content/archive-drafts.json` (server-onl
 | Production server signed out: `/account*` answer the accounts-closed state (no Supabase keys in the sandbox), `/account/admin` 404, the asset, PDF and share handlers 401 with `Cache-Control: private, no-store`, the webhook and reconcile handlers 503 while their secrets are unset, public pages (`/`, `/sign-in`, `/shop/thorns-to-lilies`, FAQ, privacy, terms) carry no protected field names or storage paths, `robots.txt` disallows `/api/` | as expected |
 | Sign-in page copy (Join Awebound, the headline, "Accounts are free. Guest checkout is always available.", the immediate benefits; the purchase benefits and the Founding line stay hidden while nothing is published or connected), product page "Save this piece" | present |
 | Screenshots with the bundled Chromium at 375 px and 1280 px (reduced motion forced): sign-in, product, account | layout reviewed |
+| Owner pages (`/account/admin/*`): typecheck and lint; `/account/admin` answers 404 to anyone without the admin role | pass; not walked in a browser (no admin session possible without Supabase) |
 
 Not run here, for want of services: a real session (the proxy's redirect to `/sign-in?next=…`, RLS through the publishable key, the signed upload, the email change, deletion cascade, two accounts' cross-access), live webhooks and the Platform API, Resend, Google. The steps above describe how to run them once the keys reach the environment.
 
