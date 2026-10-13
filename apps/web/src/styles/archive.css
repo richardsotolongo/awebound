@@ -146,6 +146,7 @@
   }
   .archive-benefits {
     display: grid;
+    align-content: start;
     gap: var(--space-6);
   }
   .archive-benefits ul {
