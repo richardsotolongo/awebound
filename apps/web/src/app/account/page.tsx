@@ -1,78 +1,147 @@
 import { Button } from "@awebound/brand";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
-import { AccountsClosedActions, accountsClosedCopy } from "@/features/account/accounts-closed";
-import { DeleteAccount } from "@/features/account/delete-account";
-import { ProfileForm } from "@/features/account/profile-form";
-import { accountsEnabled } from "@/lib/env";
-import { getServerSupabase } from "@/lib/supabase/server";
-import { getLatestRelease, withFallback } from "@/server/catalog";
+import { purchaseBenefits } from "@/features/archive/benefits-list";
+import { FoundingSeal } from "@/features/archive/founding-seal";
+import { listDesigns } from "@/server/archive/designs";
+import { listEntitlements } from "@/server/archive/entitlements";
+import { getFitPreferences, listFitGuides } from "@/server/archive/fit";
+import { getFoundingForUser } from "@/server/archive/founding";
+import { queueWelcomeIfNew } from "@/server/archive/email-outbox";
+import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
+import { getArchiveReadiness } from "@/server/archive/readiness";
+import { listSavedPieces } from "@/server/archive/saved";
+import { currentUser } from "@/server/session";
 
-export const metadata: Metadata = {
-  title: "Account",
-  robots: { index: false },
-};
+export const metadata: Metadata = { title: "My Archive" };
 
-export const revalidate = 60;
+const SYNC = {
+  confirmed: "Payment confirmed",
+  pending: "We’re confirming this order with our checkout partner.",
+  revoked: "Cancelled or refunded",
+} as const;
 
-export default async function AccountPage() {
-  if (!accountsEnabled) {
-    const release = await withFallback(getLatestRelease, null);
-    const copy = accountsClosedCopy();
-    return (
-      <div className="aw-container" style={{ paddingBottom: "var(--space-24)" }}>
-        <PageHeader title={copy.title} intro={copy.intro} />
-        <AccountsClosedActions release={release} />
-      </div>
-    );
-  }
-
-  const supabase = (await getServerSupabase())!;
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
-  if (!user) redirect("/sign-in?next=/account");
-
-  // RLS lets a signed-in user read their own profile row.
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name")
-    .eq("id", user.id)
-    .maybeSingle<{ full_name: string | null }>();
-
-  const meta = user.user_metadata as { full_name?: string; name?: string } | undefined;
-  const name = profile?.full_name ?? meta?.full_name ?? meta?.name ?? "";
-  const provider = (user.app_metadata as { provider?: string } | undefined)?.provider;
-  const email = user.email ?? "";
+export default async function ArchivePage() {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in?next=%2Faccount");
+  await Promise.all([
+    autoLinkByEmail(user).catch(() => 0),
+    queueWelcomeIfNew(user).catch(() => undefined),
+  ]);
+  const [readiness, saved, fit, guides, entitlements, designs, orders, founding] =
+    await Promise.all([
+      getArchiveReadiness(),
+      listSavedPieces(user.id),
+      getFitPreferences(user.id),
+      Promise.resolve(listFitGuides()),
+      listEntitlements(user.id),
+      listDesigns(),
+      listOrdersForUser(user.id),
+      getFoundingForUser(user.id),
+    ]);
+  const owned = designs.filter((d) =>
+    entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
+  );
+  const empty = saved.length === 0 && fit.length === 0 && orders.length === 0 && owned.length === 0;
 
   return (
-    <div className="aw-container account">
+    <>
       <PageHeader
-        title={name ? `Welcome, ${name.split(" ")[0]}` : "Your account"}
+        title="My Archive"
+        note={`Signed in as ${user.email ?? ""}`}
         intro={
-          <>
-            Signed in as <span className="account-email">{email}</span> with{" "}
-            {provider === "google" ? "Google" : "an email link"}.
-          </>
+          empty
+            ? "Your Archive is open. Save a piece, set your fit, and explore Behold. The full stories and extras for your purchased designs will appear here after payment is confirmed."
+            : undefined
         }
-      >
-        <form action="/auth/sign-out" method="post">
-          <Button variant="secondary" type="submit">
-            Sign out
-          </Button>
-        </form>
-      </PageHeader>
+      />
+      {founding && readiness.founding ? <FoundingSeal /> : null}
 
       <div className="account-panels">
-        <section className="account-panel" aria-labelledby="details-title">
-          <h2 id="details-title" className="aw-h3">
-            Your details
+        <section className="account-panel" aria-labelledby="saved-title">
+          <h2 id="saved-title" className="aw-h3">
+            Saved pieces
           </h2>
-          <ProfileForm initialName={name} />
-          <div className="field">
-            <span className="aw-label">Email</span>
-            <p className="aw-body account-email">{email}</p>
-            <p className="field-help">Sign-in links and codes go to this address.</p>
+          {saved.length > 0 ? (
+            <>
+              <p className="aw-small">{saved.length === 1 ? "1 saved" : `${saved.length} saved`}</p>
+              <div className="archive-thumbs">
+                {saved.slice(0, 4).map((s) =>
+                  s.piece ? (
+                    <Link key={s.slug} href={`/shop/${s.slug}`} aria-label={s.piece.name}>
+                      {/* eslint-disable-next-line @next/next/no-img-element -- site image, plain img like the shop */}
+                      <img src={s.piece.image.url} alt="" />
+                    </Link>
+                  ) : null,
+                )}
+              </div>
+              <div>
+                <Button variant="link" href="/account/saved">
+                  See your saved pieces
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="aw-body">Nothing saved yet.</p>
+              <div>
+                <Button variant="secondary" href="/shop">
+                  Visit the shop
+                </Button>
+              </div>
+            </>
+          )}
+        </section>
+
+        <section className="account-panel" aria-labelledby="fit-title">
+          <h2 id="fit-title" className="aw-h3">
+            Your fit
+          </h2>
+          {fit.length > 0 ? (
+            <ul className="archive-panel-list">
+              {fit.map((f) => {
+                const guide = guides.find((g) => g.id === f.guideId);
+                return (
+                  <li key={f.guideId} className="aw-body">
+                    {guide?.name ?? f.guideId}: {f.size ?? f.note ?? "noted"}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="aw-body">No fit saved yet.</p>
+          )}
+          <div>
+            <Button variant="link" href="/account/fit">
+              {fit.length > 0 ? "Change your fit" : "Set your fit"}
+            </Button>
+          </div>
+        </section>
+
+        <section className="account-panel" aria-labelledby="collection-title">
+          <h2 id="collection-title" className="aw-h3">
+            Your collection
+          </h2>
+          {owned.length > 0 ? (
+            <ul className="archive-panel-list">
+              {owned.map((d) => (
+                <li key={d.design_key}>
+                  <Link href={`/account/collection/${d.product_slug}`}>{d.name}</Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="aw-body">Your collection starts with your first piece.</p>
+          )}
+          <div>
+            <Button
+              variant="link"
+              href={owned.length > 0 ? "/account/collection" : "/collections/behold"}
+            >
+              {owned.length > 0 ? "Open your collection" : "Explore Behold"}
+            </Button>
           </div>
         </section>
 
@@ -80,30 +149,52 @@ export default async function AccountPage() {
           <h2 id="orders-title" className="aw-h3">
             Orders
           </h2>
-          <p className="aw-body">
-            Checkout is handled securely by our print and fulfillment partner. Order confirmations
-            and tracking come by email to <span className="account-email">{email}</span>.
-          </p>
-          <p className="field-help">
-            Questions about an order? Write to us with your order number.
-          </p>
+          {!readiness.orders ? (
+            <p className="aw-body">
+              Order history isn’t connected yet. Order confirmations and tracking still come by
+              email.
+            </p>
+          ) : orders.length > 0 ? (
+            <ul className="archive-panel-list">
+              {orders.slice(0, 3).map((o) => (
+                <li key={o.id} className="aw-body">
+                  Order {o.friendlyId ?? o.id}: {SYNC[o.sync]}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="aw-body">No orders linked yet.</p>
+          )}
           <div className="account-actions">
-            <Button variant="secondary" href="/contact">
-              Contact us
-            </Button>
-            <Button variant="link" href="/shop">
-              Visit the shop
-            </Button>
+            {readiness.orders ? (
+              <Button variant="link" href="/account/orders">
+                See your orders
+              </Button>
+            ) : null}
+            {readiness.claims ? (
+              <Button variant="link" href="/account/orders/link">
+                Link a past order
+              </Button>
+            ) : null}
           </div>
         </section>
-      </div>
 
-      <section className="account-panel account-danger" aria-labelledby="delete-title">
-        <h2 id="delete-title" className="aw-h3">
-          Delete account
-        </h2>
-        <DeleteAccount email={email} />
-      </section>
-    </div>
+        {owned.length === 0 && purchaseBenefits(readiness).length > 0 ? (
+          <section className="account-panel" aria-labelledby="after-title">
+            <h2 id="after-title" className="aw-h3">
+              After a purchase
+            </h2>
+            <ul
+              className="archive-panel-list"
+              style={{ paddingLeft: "1.2em", listStyle: "disc", color: "var(--ink-muted)" }}
+            >
+              {purchaseBenefits(readiness).map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+    </>
   );
 }

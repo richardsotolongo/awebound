@@ -76,6 +76,8 @@ Plain modules, one per job. Everything here is server-only; Client Components im
 | `updateProfile`    | `{ fullName }`      | Signed-in users only                                                                                                  |
 | `deleteAccount`    | –                   | Signed-in users only. Removes the sign-in, profile and drop-notes row, emails a confirmation, clears the session      |
 
+My Archive adds `savePieceAction`, `unsavePieceAction`, `getSavedSlugsAction`, `saveFitPreferenceAction`, `clearFitPreferenceAction`, `startOrderClaim`, `verifyOrderClaim`, `refreshMyOrders`, `setEmailConsent` (`archive-actions.ts`) and the owner's actions in `admin-actions.ts`, which first require the `admin` role from `user_roles`.
+
 Every action returns `{ ok: true, data }` or `{ ok: false, error, fields? }`. Next hides thrown error messages in production, so messages meant for the shopper are thrown as `UserError` and come back as values; anything else is logged and becomes a generic message.
 
 ## Data model (Supabase)
@@ -91,6 +93,7 @@ erDiagram
 ```
 
 - The catalog is not in Postgres: Fourthwall supplies it (see "Fourthwall" below).
+- **My Archive** adds server-only tables (RLS on, no policies, `service_role` grants): `saved_pieces`, `fit_preferences`, `archive_designs` + `archive_design_content` (versioned content; the public preview and context are the only fields public pages read), `archive_assets` (wallpapers in the private `archive-assets` bucket), `checkout_sessions` (the cart id of every checkout and who was signed in), `provider_orders` + `provider_order_lines` (Fourthwall's orders as the canonical record), `webhook_events`, `reconciliation_runs`, `order_claims`, the `archive_entitlements` view (paid, real, ordinary orders by design), `founding_members` + `founding_candidates` with `archive_award_founding()`, `feature_flags`, `email_consents`, `email_outbox`, `owner_audit_log`, `user_roles`. `profiles` follows `auth.users` (email and `email_verified_at` by trigger) and a user may update `full_name` only.
 - **Row-level security** is on for every table. Profiles are readable and writable only by their owner (the account page reads with the user's session). `contact_messages` and `subscribers` have no policies at all, so only the server's secret key can touch them.
 - **Profiles** are created by the `on_auth_user_created` trigger (name and avatar from Google when present). `updateProfile` upserts, so a user without a row still works.
 - **Deleting an account** (`/account`) deletes the auth user, which cascades to `profiles` and sets `contact_messages.user_id` to null (messages stay as support history), and removes the `subscribers` row with the same email.
@@ -143,7 +146,7 @@ Every email shares one table layout (`layout` in `email-templates.ts`; the two S
 
 ### Fourthwall
 
-Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code and no orders table. Without `FOURTHWALL_STOREFRONT_TOKEN` every piece is a preview (below).
+Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code. My Archive keeps a copy of each order from Fourthwall's webhooks and Open API (`provider_orders`) to link it to an account; the cart created at checkout is recorded in `checkout_sessions` and matched to the order's `checkoutId`. Route handlers: `POST /api/fourthwall/webhook`, `GET /api/fourthwall/reconcile` (cron), `GET /api/archive/assets/[id]`, `GET /api/archive/designs/[slug]/card.pdf` and `share.png`. Without `FOURTHWALL_STOREFRONT_TOKEN` every piece is a preview (below).
 
 - **Catalog**. `server/fourthwall.ts` loads every product from the Storefront API (`GET /collections/all/products`, only public products are returned) and `server/catalog-merge.ts` merges it with the brand content in `server/content/catalog.json`:
   - Fourthwall is the truth for what can be bought: variants, prices, stock and photos.
@@ -176,7 +179,8 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 - Per-IP rate limits on checkout, contact and subscribe. They are in memory, so per server instance; a Vercel Firewall rate-limit rule is the stronger guard (see TODOS).
 - Logs never include email addresses or tokens.
 - Next sets `nosniff`, `Referrer-Policy`, `X-Frame-Options` and `Permissions-Policy` on every response.
-- Sign-in redirects accept relative paths only (`safeNext`). Sign-out is POST-only.
+- Sign-in redirects accept same-site destinations only (`safeNext`: a path, or an absolute address on this site as the email templates send through `{{ .RedirectTo }}`; control characters and backslashes are refused). Sign-out is POST-only.
+- My Archive: every protected read (orders, full stories, founder notes, wallpapers, PDFs, share images) takes the user from the session and checks `archive_entitlements`; public pages receive only the published public fields through a separate serializer; protected route handlers answer `Cache-Control: private, no-store` and 404 for anything the account doesn't own. The Fourthwall webhook verifies `X-Fourthwall-Hmac-SHA256` over the raw body, stores every event once, and never grants from an unsigned payload; the reconcile route needs the `CRON_SECRET` bearer. Logs never carry emails or payloads (`archive/log.ts`).
 
 ## Environment variables
 
@@ -191,6 +195,10 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 | `SUPABASE_SECRET_KEY`                                              | Profiles, contact messages and sign-ups (server only)                 |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | Email. The key is required in production; the other two have defaults |
 | `SCRIPTURE_TRANSLATION`                                            | Website Scripture: `NIV` (default) or `KJV`                           |
+| `FOURTHWALL_WEBHOOK_SECRET`                                        | Signs Fourthwall's order webhooks (My Archive orders)                 |
+| `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`               | Fourthwall Open API user: order sync, claims, Founding settlement     |
+| `CRON_SECRET`                                                      | Bearer for the daily reconcile cron                                   |
+| `ARCHIVE_STORAGE_BUCKET`                                           | Optional; private wallpaper bucket, defaults to `archive-assets`      |
 
 ## Deployment
 

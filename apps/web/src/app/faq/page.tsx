@@ -39,11 +39,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Do I need an account to order?",
-        text: "No. You can check out as a guest. Accounts are optional: they keep your details in one place, and you sign in with Google or a one-time email link, with no password.",
+        text: "No. You can check out as a guest. Accounts are free and optional: My Archive keeps your saved pieces, your fit and your orders in one place, and you sign in with Google or a one-time email link, with no password.",
         a: (
           <p>
-            No. You can check out as a guest. Accounts are optional: they keep your details in one
-            place, and you sign in with Google or a one-time email link, with no password.
+            No. You can check out as a guest. Accounts are free and optional: My Archive keeps your
+            saved pieces, your fit and your orders in one place, and you sign in with Google or a
+            one-time email link, with no password.
           </p>
         ),
       },
@@ -150,6 +151,45 @@ const GROUPS: { title: string; items: Faq[] }[] = [
             covered: tell us within 30 days of delivery. Check the size guide before you order, and
             write to us if you’re unsure. Customers in the EU, UK and EEA keep their legal 14-day
             right of withdrawal.
+          </p>
+        ),
+      },
+    ],
+  },
+  {
+    title: "Your Archive",
+    items: [
+      {
+        q: "What does an account give me?",
+        text: "Right away: save the pieces you want to return to, remember your preferred sizes and view the right size guides, and keep your linked orders in one place. Each design you buy while signed in unlocks its full story, a note from Richard and its published digital extras in My Archive.",
+        a: (
+          <p>
+            Right away: save the pieces you want to return to, remember your preferred sizes and
+            view the right size guides, and keep your linked orders in one place. Each design you
+            buy while signed in unlocks its full story, a note from Richard and its published
+            digital extras in My Archive.
+          </p>
+        ),
+      },
+      {
+        q: "How do I link an order I placed as a guest?",
+        text: "Sign in with the email address you used at checkout and the order links itself. If you used a different address, open Orders in My Archive, choose Link a past order, and enter the order number: a code goes to the email address on that order.",
+        a: (
+          <p>
+            Sign in with the email address you used at checkout and the order links itself. If you
+            used a different address, open Orders in My Archive, choose Link a past order, and enter
+            the order number: a code goes to the email address on that order.
+          </p>
+        ),
+      },
+      {
+        q: "What is the Founding Member seal?",
+        text: "The first 50 qualifying buyers who use their Awebound account at checkout receive a Founding Member seal. Guest purchases do not qualify. It is recognition on your Archive, not a discount.",
+        a: (
+          <p>
+            The first 50 qualifying buyers who use their Awebound account at checkout receive a
+            Founding Member seal. Guest purchases do not qualify. It is recognition on your Archive,
+            not a discount.
           </p>
         ),
       },

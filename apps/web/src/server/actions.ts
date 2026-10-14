@@ -1,6 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
 import {
   BagValidateRequestSchema,
   CheckoutRequestSchema,
@@ -24,27 +23,11 @@ import * as account from "./account";
 import * as bag from "./bag";
 import { searchProducts } from "./catalog";
 import { parse, run, UserError, type Result } from "./errors";
+import { limit } from "./limit";
 import { submitContactMessage, subscribeToDropNotes } from "./messages";
+import { currentUser } from "./session";
 
 // Server Actions are public endpoints: every input is parsed, and the user comes from the session.
-
-const hits = new Map<string, number[]>();
-
-/** Per-IP limit for actions that send email or create carts. In memory, so per server instance. */
-async function limit(action: string, max: number, minutes: number) {
-  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
-  const key = `${action}:${ip}`;
-  const now = Date.now();
-  const recent = (hits.get(key) ?? []).filter((t) => now - t < minutes * 60_000);
-  if (recent.length >= max)
-    throw new UserError("Too many tries. Wait a few minutes and try again.");
-  hits.set(key, [...recent, now]);
-}
-
-async function currentUser() {
-  const supabase = await getServerSupabase();
-  return (await supabase?.auth.getUser())?.data.user ?? null;
-}
 
 export async function validateBag(input: BagValidateRequest): Promise<Result<Bag>> {
   return run(() => bag.validateBag(parse(BagValidateRequestSchema, input).lines));
@@ -54,7 +37,7 @@ export async function startCheckout(input: CheckoutRequest): Promise<Result<Chec
   return run(async () => {
     await limit("checkout", 30, 10);
     const { lines } = parse(CheckoutRequestSchema, input);
-    return bag.startCheckout(lines, (await currentUser())?.id);
+    return bag.startCheckout(lines, await currentUser());
   });
 }
 

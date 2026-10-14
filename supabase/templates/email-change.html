@@ -1,0 +1,164 @@
+<!doctype html>
+<!-- Awebound email-change confirmation (Supabase "Change Email Address" template). Same layout as apps/web/src/server/email-templates.ts (layout); keep them in step.
+     Supabase fills in the template placeholders. The hosted project needs these pasted into the
+     dashboard (Authentication → Emails) or pushed with `supabase config push`. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
+    <title>Confirm your new email for Awebound</title>
+  </head>
+  <body>
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      bgcolor="#E8DDC9"
+      style="background-color: #e8ddc9"
+    >
+      <tr>
+        <td align="center" style="padding: 40px 16px">
+          <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="max-width: 560px"
+          >
+            <tr>
+              <td align="center" style="padding: 0 0 28px">
+                <img
+                  src="{{ .SiteURL }}/email/wordmark-oxblood.png"
+                  width="200"
+                  height="93"
+                  alt="Awebound"
+                  style="
+                    display: block;
+                    border: 0;
+                    font-family: Georgia, serif;
+                    font-size: 30px;
+                    font-weight: bold;
+                    color: #782b35;
+                  "
+                />
+              </td>
+            </tr>
+            <tr>
+              <td
+                bgcolor="#F8F2E7"
+                style="background-color: #f8f2e7; border: 1px solid #cfc4b1; padding: 36px 32px"
+              >
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td
+                      style="
+                        padding: 0 0 12px;
+                        font-family:
+                          Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+                        font-size: 12px;
+                        line-height: 19px;
+                        color: #4a443d;
+                        letter-spacing: 2px;
+                      "
+                    >
+                      SIGN IN
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding: 0 0 16px;
+                        font-family:
+                          Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+                        font-size: 20px;
+                        line-height: 32px;
+                        color: #151413;
+                      "
+                    >
+                      Confirm your new email address for Awebound.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding: 0 0 16px;
+                        font-family:
+                          Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+                        font-size: 16px;
+                        line-height: 26px;
+                        color: #151413;
+                      "
+                    >
+                      Use the button below. It works once and expires in an hour.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0 24px">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td
+                            bgcolor="#782B35"
+                            style="background-color: #782b35; padding: 14px 28px"
+                          >
+                            <a
+                              href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email_change&amp;next={{ .RedirectTo }}"
+                              style="
+                                font-family:
+                                  Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+                                font-size: 13px;
+                                line-height: 16px;
+                                letter-spacing: 2px;
+                                font-weight: bold;
+                                color: #f0e6d2;
+                                text-decoration: none;
+                              "
+                              >SIGN IN TO AWEBOUND</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="
+                        padding: 0 0 0px;
+                        font-family:
+                          Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #4a443d;
+                      "
+                    >
+                      If you didn’t ask to sign in, you can ignore this email.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td
+                align="center"
+                style="
+                  padding: 24px 16px 0;
+                  font-family: Manrope, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;
+                  font-size: 12px;
+                  line-height: 18px;
+                  letter-spacing: 2px;
+                  color: #4a443d;
+                "
+              >
+                BOUND IN AWE. WORN WITHOUT SHAME.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

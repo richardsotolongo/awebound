@@ -19,6 +19,8 @@ export function SignInForm({ next }: { next: string }) {
   const [error, setError] = useState("");
 
   const callback = () => `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+  // The email templates carry this address as {{ .RedirectTo }}, so a link lands where the shopper started.
+  const emailReturn = () => `${window.location.origin}${next}`;
 
   async function google() {
     const supabase = getBrowserSupabase();
@@ -47,7 +49,7 @@ export function SignInForm({ next }: { next: string }) {
     setError("");
     const { error: err } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: callback(), shouldCreateUser: true },
+      options: { emailRedirectTo: emailReturn(), shouldCreateUser: true },
     });
     setBusy(false);
     if (err) {

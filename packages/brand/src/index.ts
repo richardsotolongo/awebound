@@ -1,5 +1,5 @@
 export { cx } from "./cx";
-export { BRAND_HEX } from "./hex";
+export { BRAND_HEX, INK_HEX, PLATE_HEX } from "./hex";
 export { BrandLink, BrandLinkProvider, type LinkComponent, type LinkProps } from "./link";
 export {
   Wordmark,

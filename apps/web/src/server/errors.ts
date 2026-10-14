@@ -12,8 +12,7 @@ export class UserError extends Error {
 
 /** What every Server Action returns. Next hides thrown messages in production, so errors are values. */
 export type Result<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: string; fields?: Record<string, string> };
+  { ok: true; data: T } | { ok: false; error: string; fields?: Record<string, string> };
 
 export async function run<T>(fn: () => Promise<T>): Promise<Result<T>> {
   try {

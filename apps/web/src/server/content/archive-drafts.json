@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "prepared_for": "Richard Sotolongo",
+  "prepared_on": "2026-10-12",
+  "catalog_source": "https://www.awebound.store/shop",
+  "catalog_checked_on": "2026-10-12",
+  "publication_rule": "Draft proposed copy. Owner approval and provider/catalog mapping required before publication. Never import protected draft content into a public client bundle.",
+  "asset_rule": "Richard will provide phone and desktop wallpapers to Claude as PNG files. No wallpaper files are supplied in this package.",
+  "designs": [
+    {
+      "design_key": "behold:thorns-to-lilies",
+      "catalog_code": "A3-B03",
+      "catalog_slug": "thorns-to-lilies",
+      "name": "Thorns to Lilies",
+      "collection": "Behold",
+      "category": "Oversized tee",
+      "scripture_reference": "Isaiah 1:18",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/thorns-to-lilies/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/thorns-to-lilies/2.webp"
+        }
+      ],
+      "context_reference": "Isaiah 1:16-20",
+      "bible_url": "https://www.bible.com/bible/111/ISA.1.NIV",
+      "public_preview": "A design about repentance, cleansing, and the mercy of God.",
+      "biblical_context": "Isaiah addresses a people whose religious activity has become separated from obedience and justice. God calls them to turn from wrongdoing and offers cleansing for their scarlet sins. The surrounding verses hold mercy and repentance together.",
+      "design_story": "Thorns to Lilies brings the seriousness of sin and the promise of cleansing into one image. The passage invites an honest return to God. Its hope rests in His mercy, and its call reaches into how we live and treat others.",
+      "imagery_meaning": "The thorn crown opening into lilies is an artistic connection between suffering, Christ's sacrifice, and renewed life. The flowers are a design symbol; Isaiah 1:18 itself describes cleansing through the colors scarlet and white.",
+      "founder_note": "My hope for this piece is that it leads someone toward honest repentance and confidence in God's mercy. I want Awebound to speak carefully about grace and the life it calls us into. The flowers carry that hope: Christ can bring beauty into a life surrendered to Him. I want the meaning to stay with you after the artwork first catches your eye.",
+      "share_copy": "Repentance meets mercy. A design inspired by God's promise of cleansing in Isaiah 1:18.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:to-live-is-christ",
+      "catalog_code": "A3-B05",
+      "catalog_slug": "to-live-is-christ",
+      "name": "To Live Is Christ, To Die Is Gain",
+      "collection": "Behold",
+      "category": "Oversized tee",
+      "scripture_reference": "Philippians 1:21",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/to-live-is-christ/1.webp"
+        },
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/to-live-is-christ/2.webp"
+        }
+      ],
+      "context_reference": "Philippians 1:18-26",
+      "bible_url": "https://www.bible.com/bible/111/PHP.1.NIV",
+      "public_preview": "A design about a life centered on Christ and hope beyond death.",
+      "biblical_context": "Writing during imprisonment, Paul hopes Christ will be honored through his life or death. He describes continued life as an opportunity for fruitful service and death as being with Christ. His confidence gives purpose to both his present work and his future.",
+      "design_story": "To Live Is Christ, To Die Is Gain brings the passing of time into a confession of faith. Paul's words give our days a direction: serve Christ and others while we live, with hope grounded in belonging to Him.",
+      "imagery_meaning": "The hourglass makes passing time visible. The surrounding words place that time within Paul's confession, inviting the wearer to consider what deserves their attention, devotion, and service.",
+      "founder_note": "I want my faith to shape how I work, how I serve, and what I create. This passage brings those choices into focus. My hope is that this piece encourages someone to give their present life to Christ with purpose, while trusting Him with what comes after it. The hourglass reminds me that the time we have is worth using faithfully.",
+      "share_copy": "Life with purpose. Hope beyond death. Philippians 1:21 places both in Christ.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:by-his-hem",
+      "catalog_code": "A3-B07",
+      "catalog_slug": "by-his-hem",
+      "name": "By His Hem",
+      "collection": "Behold",
+      "category": "Oversized tee",
+      "scripture_reference": "Matthew 9:21",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/by-his-hem/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/by-his-hem/2.webp"
+        }
+      ],
+      "context_reference": "Matthew 9:20-22",
+      "bible_url": "https://www.bible.com/bible/111/MAT.9.NIV",
+      "public_preview": "A design about reaching toward Jesus in faith.",
+      "biblical_context": "A woman who has suffered bleeding for twelve years approaches Jesus and touches the edge of His cloak. Jesus turns toward her, addresses her personally, and heals her. The account directs attention to Christ and the woman's trust in Him.",
+      "design_story": "By His Hem holds a small gesture within a deeply personal encounter. A reaching hand becomes an image of dependence on Christ. This particular healing account calls us to look at who Jesus is and approach Him with trust.",
+      "imagery_meaning": "The hand grasping the cloak focuses on the moment of reaching. The folds and rust-colored accents give the encounter movement while the Scripture reference leads the viewer back to the passage.",
+      "founder_note": "What speaks to me in this passage is the woman's willingness to reach toward Jesus. I want this piece to encourage that same honest dependence on Him. We can bring our need to Christ without dressing it up first. My hope is that the image opens a conversation about His compassion and gives someone a reason to read the encounter for themselves.",
+      "share_copy": "A reaching hand. Faith in Christ. By His Hem draws from Matthew 9:20-22.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:stone-in-motion",
+      "catalog_code": "A3-B04",
+      "catalog_slug": "stone-in-motion",
+      "name": "Stone in Motion",
+      "collection": "Behold",
+      "category": "Oversized tee",
+      "scripture_reference": "Matthew 28:6",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/stone-in-motion/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/stone-in-motion/2.webp"
+        }
+      ],
+      "context_reference": "Matthew 28:1-10",
+      "bible_url": "https://www.bible.com/bible/111/MAT.28.NIV",
+      "public_preview": "A design about the empty tomb and the resurrection of Jesus.",
+      "biblical_context": "Women arrive at Jesus' tomb and encounter an angel who announces that Jesus has risen. The stone is rolled away, the tomb is empty, and the women are sent to tell the disciples. They then meet the risen Jesus.",
+      "design_story": "Stone in Motion centers the resurrection as the foundation of Christian hope. The opened tomb points to what God has accomplished in Christ. The design invites the viewer to return to the announcement and consider the living Savior it reveals.",
+      "imagery_meaning": "The rolling stone and sweep of blue give the scene a sense of opening and movement. They direct attention toward the empty tomb and its announcement. The artwork preserves its approved printed wording; website quotations follow NIV.",
+      "founder_note": "The resurrection is central to the hope I want Awebound to express. My desire is to make pieces that give people a reason to look closely at Jesus, including His victory over death. I hope this design encourages someone to read the account, sit with its meaning, and carry that hope into how they live and serve the people around them.",
+      "share_copy": "The opened tomb points to a living Savior. Stone in Motion is rooted in Matthew 28:6.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:still-the-storm",
+      "catalog_code": "A3-B02",
+      "catalog_slug": "still-the-storm",
+      "name": "Still the Storm",
+      "collection": "Behold",
+      "category": "Oversized tee",
+      "scripture_reference": "Mark 4:41",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/still-the-storm/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/still-the-storm/2.webp"
+        }
+      ],
+      "context_reference": "Mark 4:35-41",
+      "bible_url": "https://www.bible.com/bible/111/MRK.4.NIV",
+      "public_preview": "A design about the authority of Christ over wind and waves.",
+      "biblical_context": "A fierce storm threatens the boat carrying Jesus and His disciples. Jesus stills the wind and water, then challenges their fear and lack of faith. Their astonishment turns toward His identity and authority.",
+      "design_story": "Still the Storm keeps the disciples' question at the center of the scene. Their encounter reveals the authority of Jesus and calls them toward deeper trust. The artwork offers a reason to consider who He is when circumstances feel beyond our control.",
+      "imagery_meaning": "The breaking wave gives visible form to the danger and force of the storm. The front's cross on the horizon carries the design's Christian focus. Its printed King James wording remains intact while website quotations use NIV.",
+      "founder_note": "I want my faith to shape how I respond when I cannot control everything around me. This account brings my attention back to the authority of Jesus. My hope is that the piece encourages trust in Him and a closer reading of the disciples' question. The artwork can start that conversation; the passage gives it depth.",
+      "share_copy": "Wind and waves obey Him. Still the Storm points to Christ's authority in Mark 4:41.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:torn-veil",
+      "catalog_code": "A3-B06",
+      "catalog_slug": "torn-veil",
+      "name": "Torn Veil",
+      "collection": "Behold",
+      "category": "Hoodie",
+      "scripture_reference": "Matthew 27:51",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/torn-veil/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/torn-veil/2.webp"
+        }
+      ],
+      "context_reference": "Matthew 27:50-54; Hebrews 10:19-22",
+      "bible_url": "https://www.bible.com/bible/111/MAT.27.NIV",
+      "additional_bible_urls": ["https://www.bible.com/bible/111/HEB.10.NIV"],
+      "public_preview": "A design about Christ's sacrifice and access to God through Him.",
+      "biblical_context": "Matthew records the temple curtain tearing from top to bottom at Jesus' death. Hebrews connects access to God with the blood and sacrifice of Christ, calling believers to draw near with sincere faith.",
+      "design_story": "Torn Veil holds the image of an opened curtain beside the finished sacrifice of Christ. Read alongside Hebrews, it points toward the confidence believers have to approach God through Jesus. The design calls attention to what His death has made possible.",
+      "imagery_meaning": "The red curtain opens around breaking light. Its direction of tearing echoes Matthew's account, while the light is an artistic expression of the access and hope associated with Christ's sacrifice.",
+      "founder_note": "I believe we are saved by grace through faith in Jesus Christ, and I want that truth to remain at the center of Awebound. This piece points toward the access we have to God through Him. My hope is that its meaning encourages gratitude, prayer, and a willingness to draw near to Christ with an honest heart.",
+      "share_copy": "The curtain is torn. Through Christ, believers are invited to draw near to God.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:the-passage",
+      "catalog_code": "A3-B08",
+      "catalog_slug": "the-passage",
+      "name": "The Passage",
+      "collection": "Behold",
+      "category": "Hoodie",
+      "scripture_reference": "Psalm 23:4",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/the-passage/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/the-passage/2.webp"
+        }
+      ],
+      "context_reference": "Psalm 23:1-6",
+      "bible_url": "https://www.bible.com/bible/111/PSA.23.NIV",
+      "public_preview": "A design about the Shepherd's presence through the darkest valley.",
+      "biblical_context": "David describes the Lord as his Shepherd, who provides, guides, and remains with him through danger. In the valley, his confidence rests in God's presence and care. The psalm continues with provision, goodness, and life in the Lord's presence.",
+      "design_story": "The Passage centers a journey through the valley with the Shepherd near. Psalm 23 gives fear a place to be brought before God. Its assurance is personal: His presence accompanies the one who walks through the darkness.",
+      "imagery_meaning": "The traveler, dark valley, path, and cross give the passage a visual journey. The cross is a Christian artistic connection; Psalm 23 itself speaks of the Lord as Shepherd. The words keep God's presence at the heart of the scene.",
+      "founder_note": "I want my faith to guide the way I live and serve, including when the way ahead feels uncertain. Psalm 23 keeps my attention on the Shepherd who is present with His people. My hope is that this piece offers a steady reminder to return to Him in prayer and continue walking with trust in His care.",
+      "share_copy": "The Shepherd is present in the valley. The Passage is inspired by Psalm 23:4.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:wonderfully-made",
+      "catalog_code": "A3-B09",
+      "catalog_slug": "wonderfully-made",
+      "name": "Wonderfully Made",
+      "collection": "Behold",
+      "category": "Hoodie",
+      "scripture_reference": "Psalm 139:14",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "back",
+          "url": "https://www.awebound.store/products/wonderfully-made/1.webp"
+        },
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/wonderfully-made/2.webp"
+        }
+      ],
+      "context_reference": "Psalm 139:13-18",
+      "bible_url": "https://www.bible.com/bible/111/PSA.139.NIV",
+      "public_preview": "A design about being formed and known by God.",
+      "biblical_context": "The psalmist praises God for His intimate knowledge and creative work in human life. He reflects on being formed in the womb and held within God's knowledge. This wonder leads him to praise the Creator.",
+      "design_story": "Wonderfully Made invites attention to the care of the Creator and the dignity of the people He forms. The passage turns the reader toward gratitude and reverence. Its beauty is grounded in being known by God.",
+      "imagery_meaning": "Roses surround the lettering beside a wooden cross. The floral details express beauty and care, and the cross connects the piece to the wider Christian identity of Behold. These symbols are artistic additions to the psalm's words.",
+      "founder_note": "My desire to serve Christ and others includes how I see and treat people. I hope this piece encourages someone to look at themselves with gratitude toward God and extend that same care to others. The floral artwork gives the words room to feel personal, while the Scripture directs the attention back to the One who made us.",
+      "share_copy": "Formed with care. Known by God. Wonderfully Made draws from Psalm 139:14.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:lambs-mark",
+      "catalog_code": "A3-H01",
+      "catalog_slug": "lambs-mark",
+      "name": "Lamb’s Mark",
+      "collection": "Behold",
+      "category": "Cap",
+      "scripture_reference": "John 1:29",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/lambs-mark/1.webp"
+        },
+        {
+          "view": "side",
+          "url": "https://www.awebound.store/products/lambs-mark/2.webp"
+        }
+      ],
+      "context_reference": "John 1:29-34",
+      "bible_url": "https://www.bible.com/bible/111/JHN.1.NIV",
+      "public_preview": "A design that directs attention to Jesus, the Lamb of God.",
+      "biblical_context": "John the Baptist identifies Jesus as the Lamb of God who takes away the world's sin. His testimony directs others to Jesus and affirms His identity. The passage establishes the central invitation behind Behold: look toward Christ.",
+      "design_story": "Lamb's Mark carries the collection's invitation in a small, recognizable symbol. The lamb points toward Jesus and His saving work. Its meaning reaches beyond the emblem into John's testimony and the Savior he asks people to see.",
+      "imagery_meaning": "The lamb within a red crown of thorns joins John's identification of Jesus with imagery of His suffering. The thorns are a broader Christian connection, rather than a detail appearing in John 1:29.",
+      "founder_note": "Behold begins with an invitation to look at Jesus. I want that invitation to remain clear even in a small piece like this cap. My hope is that the lamb catches someone's attention and gives the wearer a simple way to speak about Christ. The meaning belongs to Him, and I want the design to keep pointing people in His direction.",
+      "share_copy": "Behold the Lamb. Lamb's Mark points to Jesus through John 1:29.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    },
+    {
+      "design_key": "behold:signature-cap",
+      "catalog_code": "A3-H02",
+      "catalog_slug": "signature-cap",
+      "name": "Signature Cap",
+      "collection": "Behold",
+      "category": "Cap",
+      "scripture_reference": "Ephesians 1:7",
+      "fourthwall_offer_ids": [],
+      "fit_guide_id": null,
+      "content_status": "draft",
+      "approved_by_owner": false,
+      "founder_note_is_proposed_copy": true,
+      "full_story_access": "eligible_design_purchaser",
+      "public_preview_access": "public_after_publication",
+      "media_references": [
+        {
+          "view": "front",
+          "url": "https://www.awebound.store/products/signature-cap/1.webp"
+        },
+        {
+          "view": "side",
+          "url": "https://www.awebound.store/products/signature-cap/2.webp"
+        }
+      ],
+      "context_reference": "Ephesians 1:3-10",
+      "bible_url": "https://www.bible.com/bible/111/EPH.1.NIV",
+      "public_preview": "A signature piece rooted in redemption through Jesus Christ.",
+      "biblical_context": "Paul praises God for the blessings believers receive in Christ. Within that praise, redemption and forgiveness come through Jesus' blood and the richness of God's grace. The passage places these gifts within God's saving purpose.",
+      "design_story": "The Signature Cap carries Awebound's name alongside the cross and the meaning of redemption. Ephesians 1:7 gives the identity its spiritual foundation: forgiveness through Christ and the grace of God. The emblem invites a conversation about what the name stands for.",
+      "imagery_meaning": "The Thornbound Wordmark, red-edged thorns, and Thorn Cross bring the established brand identity together. Their association with Christ's sacrifice connects the cap to its Scripture reference and the meaning of Behold.",
+      "founder_note": "Awebound brings together my faith, my desire to serve others, and my interest in expressive design. I want the name to carry a clear commitment to Jesus Christ and reverence for the Word. My hope for this cap is that it gives someone an everyday way to carry that identity and a natural opening to explain the meaning behind it.",
+      "share_copy": "Bound in awe. Worn without shame. A signature rooted in redemption through Christ.",
+      "care": {
+        "status": "needs_product_specific_verification",
+        "instructions": null
+      },
+      "digital_extras": [
+        {
+          "format": "phone",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        },
+        {
+          "format": "desktop",
+          "input_mime_type": "image/png",
+          "source_png": null,
+          "width": null,
+          "height": null,
+          "status": "awaiting_owner_png",
+          "access": "eligible_design_purchaser"
+        }
+      ]
+    }
+  ]
+}

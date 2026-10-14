@@ -22,7 +22,9 @@ const Variant = z.object({
 // Only "PRODUCT" entries parse, so bundles are skipped (the site sells single pieces).
 const Product = z.object({
   type: z.literal("PRODUCT"),
+  id: z.string().optional(),
   slug: z.string(),
+  description: z.string().nullish(),
   state: z.object({ type: z.string() }),
   access: z.object({ type: z.string() }).nullish(),
   images: z.array(Image),
@@ -51,7 +53,11 @@ async function request(path: string, init: RequestInit = {}, params: Record<stri
   const token = serverEnv.FOURTHWALL_STOREFRONT_TOKEN;
   if (!token) throw new Error("FOURTHWALL_STOREFRONT_TOKEN is not set");
   const url = new URL(`${API_URL}${path}`);
-  url.search = new URLSearchParams({ ...params, storefront_token: token, currency: CURRENCY }).toString();
+  url.search = new URLSearchParams({
+    ...params,
+    storefront_token: token,
+    currency: CURRENCY,
+  }).toString();
 
   let res: Response;
   try {
@@ -99,13 +105,15 @@ export async function listProducts(): Promise<FourthwallProduct[]> {
   return products;
 }
 
-/** Creates a cart holding the given variants; its id goes into the hosted checkout URL. */
+/**
+ * Creates a cart holding the given variants; its id goes into the hosted checkout URL. Only the
+ * documented `items` field is sent; the order's checkoutId is matched to this cart id on our side.
+ */
 export async function createCart(
   items: { variantId: string; quantity: number }[],
-  metadata: Record<string, string>,
 ): Promise<string> {
   const cart = z
     .object({ id: z.string() })
-    .parse(await request("/carts", { method: "POST", body: JSON.stringify({ items, metadata }) }));
+    .parse(await request("/carts", { method: "POST", body: JSON.stringify({ items }) }));
   return cart.id;
 }

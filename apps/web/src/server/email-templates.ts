@@ -186,11 +186,102 @@ export function accountDeleted(): RenderedEmail {
       eyebrow("Account deleted"),
       lead("Your Awebound account is deleted."),
       row(
-        "We removed your sign-in, your profile and your drop-notes subscription. Orders you placed stay on record with our checkout partner for receipts and returns.",
+        "We removed your sign-in, your profile, your saved pieces, your fit and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.",
       ),
       small("If you didn’t ask for this, reply to this email and we’ll look into it."),
     ],
   });
-  const text = `Your Awebound account is deleted.\n\nWe removed your sign-in, your profile and your drop-notes subscription. Orders you placed stay on record with our checkout partner for receipts and returns.\n\nIf you didn’t ask for this, reply to this email and we’ll look into it.`;
+  const text = `Your Awebound account is deleted.\n\nWe removed your sign-in, your profile, your saved pieces, your fit and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.\n\nIf you didn’t ask for this, reply to this email and we’ll look into it.`;
+  return { subject, html, text };
+}
+
+// My Archive. Custom Archive emails stay off until their flags are on (server/archive/email-outbox.ts);
+// the claim code is the one transactional message, sent when a shopper links a past order.
+
+export function claimCode({
+  code,
+  friendlyId,
+}: {
+  code: string;
+  friendlyId: string;
+}): RenderedEmail {
+  const subject = `Your code to link order ${friendlyId}`;
+  const id = escapeHtml(friendlyId);
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead(`Your code to link order ${id} to your Awebound Archive.`),
+      row(escapeHtml(code), { size: 28, bold: true, caps: true, gap: 20 }),
+      small("It expires in 15 minutes. If you didn’t ask for this, ignore this email."),
+    ],
+  });
+  const text = `Your code to link order ${friendlyId} to your Awebound Archive: ${code}\n\nIt expires in 15 minutes. If you didn’t ask for this, ignore this email.`;
+  return { subject, html, text };
+}
+
+export function archiveWelcome(siteUrl: string): RenderedEmail {
+  const subject = "Your Archive is open";
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead("Your Archive is open."),
+      row(
+        "Save the pieces you want to return to, remember your preferred sizes, and keep your orders in one place. Each purchased design unlocks its full story and a note from Richard.",
+      ),
+      button("Open My Archive", `${siteUrl}/account`),
+    ],
+  });
+  const text = `Your Archive is open.\n\nSave the pieces you want to return to, remember your preferred sizes, and keep your orders in one place. Each purchased design unlocks its full story and a note from Richard.\n\nOpen My Archive: ${siteUrl}/account`;
+  return { subject, html, text };
+}
+
+export function designUnlocked({
+  name,
+  slug,
+  siteUrl,
+}: {
+  name: string;
+  slug: string;
+  siteUrl: string;
+}): RenderedEmail {
+  const subject = `${name} is in your Archive`;
+  const href = `${siteUrl}/account/collection/${slug}`;
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead(`${escapeHtml(name)} is in your Archive.`),
+      row("Its full story, the note from Richard and its published extras are ready for you."),
+      button("Read its story", href),
+    ],
+  });
+  const text = `${name} is in your Archive.\n\nIts full story, the note from Richard and its published extras are ready for you.\n\nRead its story: ${href}`;
+  return { subject, html, text };
+}
+
+export function collectionUpdate({
+  subject,
+  lead: leadText,
+  body,
+  siteUrl,
+}: {
+  subject: string;
+  lead: string;
+  body: string;
+  siteUrl: string;
+}): RenderedEmail {
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead(escapeHtml(leadText)),
+      row(escapeHtml(body).replace(/\r?\n/g, "<br>")),
+      button("See the pieces", `${siteUrl}/shop`),
+    ],
+    note: `You asked for these in your Archive settings. <a href="${siteUrl}/account/settings#email" style="color:${C.muted};">Change that here</a>.`,
+  });
+  const text = `${leadText}\n\n${body}\n\nSee the pieces: ${siteUrl}/shop\n\nYou asked for these in your Archive settings. Change that here: ${siteUrl}/account/settings#email`;
   return { subject, html, text };
 }
