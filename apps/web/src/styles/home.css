@@ -1,5 +1,6 @@
-/* Home page: the tagline on the lead piece's plate, that piece up close, the founder's note, the
-   release as a wall, and the optional sign-up. Nothing here animates on load or on scroll. */
+/* Home page: the tagline on the pieces' plates (taking turns), that piece up close, the
+   founder's note, the release as a wall, and the optional sign-up. Nothing animates on load or on
+   scroll; the opening plate's timed cross-fade is the one exception (docs/BRAND.md, Motion). */
 @layer components {
   /* 1. The opening plate: lettering and two actions, the garment cut out beside them. */
   .campaign {
@@ -63,6 +64,66 @@
   }
   .campaign-framed img {
     object-fit: cover;
+  }
+  /* Pieces taking turns (HeroRotator): the next plate and garment fade in whole over the last,
+     which then goes, so every frame shows a complete garment. */
+  .campaign-rotating .campaign-layer,
+  .campaign-rotating .campaign-garment img {
+    opacity: 0;
+    transition: opacity 0s linear 600ms;
+  }
+  .campaign-rotating .campaign-layer {
+    z-index: -2;
+  }
+  .campaign-rotating .campaign-layer[data-on="true"],
+  .campaign-rotating .campaign-garment img[data-on="true"] {
+    opacity: 1;
+    transition: opacity 600ms var(--ease-reverent);
+  }
+  .campaign-rotating .campaign-layer[data-on="true"] {
+    z-index: -1;
+  }
+  .campaign-rotating .campaign-garment {
+    position: relative;
+  }
+  .campaign-rotating .campaign-garment img {
+    position: absolute;
+    inset: 0;
+  }
+  .campaign-rotating .campaign-garment img[data-on="true"] {
+    z-index: 1;
+  }
+  .campaign-rotating,
+  .campaign-rotating .aw-btn {
+    transition-property: color, background-color, border-color;
+    transition-duration: 600ms;
+  }
+  .campaign-controls {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .campaign-control {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    background: var(--plate-ink-on);
+    color: var(--plate-ink);
+    border: 1px solid var(--plate-ink);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .campaign-control:hover {
+    background: color-mix(in srgb, var(--plate-ink-on) 86%, var(--plate-ink));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .campaign-rotating,
+    .campaign-rotating .aw-btn,
+    .campaign-rotating .campaign-layer,
+    .campaign-rotating .campaign-garment img {
+      transition: none;
+    }
   }
   /* One column: the words and actions first, so they are on the first screen; the garment
      follows and may run off the bottom of a short phone. */

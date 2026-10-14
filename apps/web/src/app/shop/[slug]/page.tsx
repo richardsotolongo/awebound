@@ -123,9 +123,7 @@ export default async function ProductPage({ params }: { params: Params }) {
               <nav aria-label="Breadcrumb" className="aw-small crumbs">
                 <Link href="/shop">Shop</Link>
                 <span aria-hidden="true"> / </span>
-                <Link href={`/collections/${product.collection.slug}`}>
-                  {product.collection.name}
-                </Link>
+                <Link href={shopCanonical(product.collection.slug)}>{product.collection.name}</Link>
                 <span aria-hidden="true"> / </span>
                 <span aria-current="page">{product.name}</span>
               </nav>

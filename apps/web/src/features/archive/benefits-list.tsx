@@ -13,10 +13,7 @@ export function purchaseBenefits(r: ArchiveReadiness): string[] {
 }
 
 export function immediateBenefits(r: ArchiveReadiness): string[] {
-  const out = [
-    "Save the pieces you want to return to.",
-    "Remember your preferred sizes and view the right size guides.",
-  ];
+  const out = ["Save the pieces you want to return to."];
   if (r.orders) out.push("Keep your linked orders and purchased collection in one place.");
   return out;
 }
@@ -35,9 +32,9 @@ export function BenefitsList({
         <>
           <h2 className="aw-h2">Your pieces. Their meaning. One Archive.</h2>
           <p className="aw-body">
-            Create a free Awebound account to save pieces, remember your fit, and keep your orders
-            together. Each purchased design unlocks its full story, a note from Richard, and its
-            published digital extras.
+            Create a free Awebound account to save pieces and keep your orders together. Each
+            purchased design unlocks its full story, a note from Richard, and its published digital
+            extras.
           </p>
         </>
       ) : null}

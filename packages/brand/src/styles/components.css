@@ -641,7 +641,24 @@
 
   /* ProductCard: the whole garment on its own color, the words beneath on the page. */
   .aw-card {
+    position: relative;
     min-width: 0;
+  }
+  /* A control over the bottom right of the image (the 4:5 media box), outside the link. */
+  .aw-card-action {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    aspect-ratio: 4 / 5;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: var(--space-2);
+    pointer-events: none;
+  }
+  .aw-card-action > * {
+    pointer-events: auto;
   }
   .aw-card-link {
     display: block;
@@ -666,7 +683,7 @@
   .aw-card-media .aw-card-alt {
     opacity: 0;
   }
-  .aw-card-link:hover .aw-card-alt,
+  .aw-card:hover .aw-card-alt,
   .aw-card-link:focus-visible .aw-card-alt {
     opacity: 1;
   }

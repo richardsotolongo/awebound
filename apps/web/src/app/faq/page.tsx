@@ -39,12 +39,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
       {
         q: "Do I need an account to order?",
-        text: "No. You can check out as a guest. Accounts are free and optional: My Archive keeps your saved pieces, your fit and your orders in one place, and you sign in with Google or a one-time email link, with no password.",
+        text: "No. You can check out as a guest. Accounts are free and optional: My Archive keeps your saved pieces and your orders in one place, and you sign in with Google or a one-time email link, with no password.",
         a: (
           <p>
             No. You can check out as a guest. Accounts are free and optional: My Archive keeps your
-            saved pieces, your fit and your orders in one place, and you sign in with Google or a
-            one-time email link, with no password.
+            saved pieces and your orders in one place, and you sign in with Google or a one-time
+            email link, with no password.
           </p>
         ),
       },
@@ -161,13 +161,12 @@ const GROUPS: { title: string; items: Faq[] }[] = [
     items: [
       {
         q: "What does an account give me?",
-        text: "Right away: save the pieces you want to return to, remember your preferred sizes and view the right size guides, and keep your linked orders in one place. Each design you buy while signed in unlocks its full story, a note from Richard and its published digital extras in My Archive.",
+        text: "Right away: save the pieces you want to return to and keep your linked orders in one place. Each design you buy while signed in unlocks its full story, a note from Richard and its published digital extras in My Archive.",
         a: (
           <p>
-            Right away: save the pieces you want to return to, remember your preferred sizes and
-            view the right size guides, and keep your linked orders in one place. Each design you
-            buy while signed in unlocks its full story, a note from Richard and its published
-            digital extras in My Archive.
+            Right away: save the pieces you want to return to and keep your linked orders in one
+            place. Each design you buy while signed in unlocks its full story, a note from Richard
+            and its published digital extras in My Archive.
           </p>
         ),
       },

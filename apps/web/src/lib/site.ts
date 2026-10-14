@@ -51,20 +51,18 @@ export function pageMeta({
 
 export const MAIN_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
-  { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
 export const FOOTER_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
-  { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Returns", href: "/refunds" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
-  { label: "My Archive", href: "/account" },
+  { label: "Account", href: "/account" },
   { label: "Contact", href: "/contact" },
 ];
 

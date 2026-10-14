@@ -74,7 +74,7 @@ export function ClaimOrderForm() {
               aria-invalid={Boolean(error)}
               aria-describedby={error ? `${id}-error` : undefined}
             />
-            <Button variant="primary" type="submit" disabled={busy || code.length < 6}>
+            <Button variant="secondary" type="submit" disabled={busy || code.length < 6}>
               {busy ? "Checking…" : "Link order"}
             </Button>
           </div>
@@ -113,7 +113,7 @@ export function ClaimOrderForm() {
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : `${id}-help`}
         />
-        <Button variant="primary" type="submit" disabled={busy || friendlyId.trim().length < 3}>
+        <Button variant="secondary" type="submit" disabled={busy || friendlyId.trim().length < 3}>
           {busy ? "Sending…" : "Send the code"}
         </Button>
       </div>

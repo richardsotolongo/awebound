@@ -38,10 +38,10 @@ const sections: LegalSection[] = [
           <li>
             <strong>Account:</strong> if you sign in with Google, your name, email and profile
             picture from Google; if you sign in by email, your email address. We never ask for or
-            store a password. In My Archive we also keep the pieces you save, the sizes you remember
-            for each garment, your email preferences, and the orders linked to your account from our
-            checkout partner (order number, the pieces, their status and the email on the order), so
-            a purchased design can open its full story and extras for you.
+            store a password. In My Archive we also keep the pieces you save, your email
+            preferences, and the orders linked to your account from our checkout partner (order
+            number, the pieces, their status and the email on the order), so a purchased design can
+            open its full story and extras for you.
           </li>
           <li>
             <strong>Orders:</strong> your name, shipping address, email, phone if given, and what
@@ -112,9 +112,9 @@ const sections: LegalSection[] = [
     body: (
       <p>
         We keep information only as long as we need it for the purposes above: drop-note addresses
-        until you unsubscribe, messages for as long as needed to help you, saved pieces and fit
-        preferences until you remove them or delete your account, and order records for as long as
-        tax and accounting rules require.
+        until you unsubscribe, messages for as long as needed to help you, saved pieces until you
+        remove them or delete your account, and order records for as long as tax and accounting
+        rules require.
       </p>
     ),
   },
@@ -126,11 +126,11 @@ const sections: LegalSection[] = [
         <p>
           You can stop drop notes at any time by replying to any of them or writing to us. You can
           delete your account yourself in My Archive; that removes your sign-in, your profile, your
-          saved pieces, your fit preferences and your email preferences, and unlinks your orders
-          (the order records themselves stay with our checkout partner for receipts and returns).
-          You can also ask us to show you, correct or delete the personal information we hold about
-          you by writing to {mail}. Depending on where you live, you may have further rights under
-          local law; we’ll honor them.
+          saved pieces and your email preferences, and unlinks your orders (the order records
+          themselves stay with our checkout partner for receipts and returns). You can also ask us
+          to show you, correct or delete the personal information we hold about you by writing to{" "}
+          {mail}. Depending on where you live, you may have further rights under local law; we’ll
+          honor them.
         </p>
       </>
     ),

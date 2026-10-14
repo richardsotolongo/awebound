@@ -4,19 +4,14 @@ import {
   ClaimStartRequestSchema,
   ClaimVerifyRequestSchema,
   ConsentRequestSchema,
-  FitGuideRequestSchema,
-  FitPreferenceRequestSchema,
   SavePieceRequestSchema,
   type ClaimStartRequest,
   type ClaimVerifyRequest,
   type ConsentRequest,
-  type FitPreference,
-  type FitPreferenceRequest,
   type SavePieceRequest,
 } from "@/shared";
 import { startClaim, verifyClaim } from "./archive/claims";
 import { setConsent } from "./archive/consents";
-import { clearFitPreference, saveFitPreference } from "./archive/fit";
 import { getArchiveReadiness } from "./archive/readiness";
 import { reconcileOrders } from "./archive/reconcile";
 import { savePiece, savedSlugs, unsavePiece } from "./archive/saved";
@@ -53,25 +48,6 @@ export async function unsavePieceAction(
 /** The product page asks after mount whether this piece is saved (pages are cached per piece, not per shopper). */
 export async function getSavedSlugsAction(): Promise<Result<string[]>> {
   return run(async () => savedSlugs((await requireUser()).id));
-}
-
-export async function saveFitPreferenceAction(
-  input: FitPreferenceRequest,
-): Promise<Result<FitPreference>> {
-  return run(async () => {
-    const user = await requireUser();
-    const { guideId, size, note } = parse(FitPreferenceRequestSchema, input);
-    return saveFitPreference(user.id, guideId, size, note);
-  });
-}
-
-export async function clearFitPreferenceAction(input: { guideId: string }): Promise<Result<null>> {
-  return run(async () => {
-    const user = await requireUser();
-    const { guideId } = parse(FitGuideRequestSchema, input);
-    await clearFitPreference(user.id, guideId);
-    return null;
-  });
 }
 
 export async function startOrderClaim(

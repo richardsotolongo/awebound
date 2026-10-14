@@ -46,6 +46,38 @@ export const ArrowRightIcon = (p: IconProps) => (
   </Icon>
 );
 
+export const ArrowLeftIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M20 12H5M10 6l-6 6 6 6" />
+  </Icon>
+);
+
+/** For links that leave the site. */
+export const ArrowUpRightIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M7 17L17 7M8 7h9v9" />
+  </Icon>
+);
+
+export const PauseIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M9 5v14M15 5v14" />
+  </Icon>
+);
+
+export const PlayIcon = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M8 5l11 7-11 7z" />
+  </Icon>
+);
+
+/** Outlined, or filled once the piece is saved. */
+export const HeartIcon = ({ filled, ...p }: IconProps & { filled?: boolean }) => (
+  <Icon {...p} fill={filled ? "currentColor" : "none"} strokeLinejoin="round">
+    <path d="M12 20s-7.5-4.6-7.5-10.1A4.4 4.4 0 0 1 12 7.2a4.4 4.4 0 0 1 7.5 2.7C19.5 15.4 12 20 12 20z" />
+  </Icon>
+);
+
 export const GoogleMark = (p: IconProps) => (
   <svg
     width={p.size ?? 18}

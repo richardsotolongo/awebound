@@ -183,6 +183,17 @@
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
+  /* Add to bag (or the sold-out notice) with the save heart beside it. */
+  .buy-action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .buy-action > .aw-btn,
+  .buy-action > .notice {
+    flex: 1;
+  }
   .buy-option {
     display: grid;
     gap: var(--space-3);

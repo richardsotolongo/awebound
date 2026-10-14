@@ -2,19 +2,29 @@ import { Button, Plate } from "@awebound/brand";
 import { plateCss, type ProductDetail, type Release } from "@/shared";
 import Link from "next/link";
 import { shopCanonical } from "@/features/catalog/query";
+import { HeroRotator, type HeroSlide } from "./hero-rotator";
 
 interface CampaignProps {
   release: Release | null;
   /** The piece the page opens on; null when the catalog can't be read or is empty. */
   piece: ProductDetail | null;
+  /** The release's pieces with a plate, and the one this visit starts on. */
+  slides: HeroSlide[];
+  start: number;
 }
 
 /**
- * The first screen: the tagline at poster size and two ways into the shop, set on the lead
- * piece's own plate with the garment cut out beside them. Without a plate (or a piece) the words
- * stand on coal.
+ * The first screen: the tagline at poster size and two ways into the shop, set on a piece's own
+ * plate with the garment cut out beside them. With two or more plates the pieces take turns
+ * (`HeroRotator`); without a plate (or a piece) the words stand on coal.
  */
-export function Campaign({ release, piece }: CampaignProps) {
+export function Campaign({ release, piece, slides, start }: CampaignProps) {
+  const all =
+    release && release.pieces > 1
+      ? { href: shopCanonical(release.slug), label: `See all ${release.pieces} pieces` }
+      : null;
+  if (slides.length > 1) return <HeroRotator slides={slides} start={start} all={all} />;
+
   const href = piece ? `/shop/${piece.slug}` : "/shop";
   const words = (
     <div className="campaign-text">
@@ -25,9 +35,9 @@ export function Campaign({ release, piece }: CampaignProps) {
         <Button variant="primary" href={href}>
           {piece ? `View ${piece.name}` : "Visit the shop"}
         </Button>
-        {release && release.pieces > 1 ? (
-          <Button variant="secondary" href={shopCanonical(release.slug)}>
-            See all {release.pieces} pieces
+        {all ? (
+          <Button variant="secondary" href={all.href}>
+            {all.label}
           </Button>
         ) : null}
       </div>

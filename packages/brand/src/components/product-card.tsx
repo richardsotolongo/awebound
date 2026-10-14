@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { cx } from "../cx";
 import { BrandLink } from "../link";
 import { ScriptureQuote } from "./scripture-quote";
@@ -41,6 +41,11 @@ export interface ProductCardProps {
   priority?: boolean;
   /** Heading level for the name; h3 under a section heading. */
   as?: "h2" | "h3";
+  /**
+   * A small control in the bottom right of the image, such as a save heart. It sits outside the
+   * card's link, so it can be a button of its own.
+   */
+  action?: ReactNode;
   className?: string;
 }
 
@@ -64,6 +69,7 @@ export function ProductCard({
   transitionWhen = "always",
   priority,
   as: Heading = "h3",
+  action,
   className,
 }: ProductCardProps) {
   const [leaving, setLeaving] = useState(false);
@@ -121,6 +127,7 @@ export function ProductCard({
           ) : null}
         </div>
       </BrandLink>
+      {action ? <div className="aw-card-action">{action}</div> : null}
     </article>
   );
 }

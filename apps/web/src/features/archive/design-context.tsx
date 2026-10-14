@@ -1,4 +1,5 @@
 import type { PublicCard } from "@/shared";
+import { BibleLink } from "./bible-link";
 
 /**
  * The published public part of a design's Archive card on its product page: the preview and the
@@ -15,16 +16,8 @@ export function DesignContext({ card }: { card: PublicCard }) {
           {card.publicPreview}
         </p>
         <p className="aw-body">{card.biblicalContext}</p>
-        {card.contextReference ? (
-          <p className="aw-small">
-            {card.bibleUrl ? (
-              <a href={card.bibleUrl} rel="noopener">
-                Read {card.contextReference} (NIV)
-              </a>
-            ) : (
-              <>Read {card.contextReference}.</>
-            )}
-          </p>
+        {card.contextReference && card.bibleUrl ? (
+          <BibleLink href={card.bibleUrl} reference={card.contextReference} />
         ) : null}
         <p className="aw-small">
           The full story and a note from Richard unlock in My Archive after purchase.

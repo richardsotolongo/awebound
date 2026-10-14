@@ -2,6 +2,7 @@ import { Button, Plate, ScriptureQuote } from "@awebound/brand";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
+import { BibleLink } from "@/features/archive/bible-link";
 import { ExportControls } from "@/features/archive/export-controls";
 import { siteUrl } from "@/lib/env";
 import { getOwnedCard, getPublishedPublicCard } from "@/server/archive/content";
@@ -29,12 +30,8 @@ function Locked({ card }: { card: PublicCard }) {
       <div className="archive-section">
         <h2 className="aw-h3">The passage in context</h2>
         <p className="aw-body">{card.biblicalContext}</p>
-        {card.contextReference ? (
-          <p className="aw-small">
-            <a href={card.bibleUrl || undefined} rel="noopener">
-              Read {card.contextReference} (NIV)
-            </a>
-          </p>
+        {card.contextReference && card.bibleUrl ? (
+          <BibleLink href={card.bibleUrl} reference={card.contextReference} />
         ) : null}
         <p className="aw-body">Own this design to unlock its full story and founder note.</p>
         <div className="aw-btn-row">
@@ -65,6 +62,7 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
   const isCap = product?.category.slug === "hats";
   const views = isCap ? (product?.images ?? []).slice(0, 3) : [];
   const links = [card.bibleUrl, ...card.additionalBibleUrls].filter(Boolean);
+  const wallpapers = card.extras.flatMap((x) => (x.status === "published" ? [x] : []));
 
   return (
     <div className="archive-story">
@@ -91,7 +89,13 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
             </div>
           ) : (
             // eslint-disable-next-line @next/next/no-img-element -- site image
-            <img src={`${files}/piece.webp`} alt={product.image.alt} width={960} height={1200} />
+            <img
+              className="archive-story-piece"
+              src={`${files}/piece.webp`}
+              alt={product.image.alt}
+              width={960}
+              height={1200}
+            />
           )}
         </Plate>
       ) : null}
@@ -111,16 +115,8 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
           The passage in context
         </h2>
         <p className="aw-body">{card.biblicalContext}</p>
-        {card.contextReference ? (
-          <p className="aw-small">
-            {links.length > 0 ? (
-              <a href={links[0]} rel="noopener">
-                Read {card.contextReference} (NIV)
-              </a>
-            ) : (
-              <>Read {card.contextReference}.</>
-            )}
-          </p>
+        {card.contextReference && links[0] ? (
+          <BibleLink href={links[0]} reference={card.contextReference} />
         ) : null}
       </section>
 
@@ -168,37 +164,28 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
         </dl>
       </section>
 
-      <section className="archive-section" aria-labelledby="care-title">
-        <h2 id="care-title" className="aw-h2">
-          Care
-        </h2>
-        <p className="aw-body">
-          {card.care.status === "verified"
-            ? card.care.instructions
-            : "Care instructions for this piece haven’t been confirmed yet."}
-        </p>
-      </section>
+      {card.care.status === "verified" ? (
+        <section className="archive-section" aria-labelledby="care-title">
+          <h2 id="care-title" className="aw-h2">
+            Care
+          </h2>
+          <p className="aw-body">{card.care.instructions}</p>
+        </section>
+      ) : null}
 
-      {card.extras.length > 0 ? (
+      {wallpapers.length > 0 ? (
         <section className="archive-section" aria-labelledby="wallpapers-title">
           <h2 id="wallpapers-title" className="aw-h2">
             Wallpapers
           </h2>
           <ul className="archive-panel-list">
-            {card.extras.map((x) =>
-              x.status === "published" ? (
-                <li key={x.format}>
-                  <a href={`/api/archive/assets/${x.id}`} className="aw-btn aw-btn-secondary">
-                    Download the {x.format} wallpaper ({x.width} x {x.height})
-                  </a>
-                </li>
-              ) : (
-                <li key={x.format} className="aw-body">
-                  {x.format === "phone" ? "Phone" : "Desktop"}: your wallpaper is being prepared. It
-                  will appear here when published.
-                </li>
-              ),
-            )}
+            {wallpapers.map((x) => (
+              <li key={x.format}>
+                <a href={`/api/archive/assets/${x.id}`} className="aw-btn aw-btn-secondary">
+                  Download the {x.format} wallpaper ({x.width} x {x.height})
+                </a>
+              </li>
+            ))}
           </ul>
         </section>
       ) : null}

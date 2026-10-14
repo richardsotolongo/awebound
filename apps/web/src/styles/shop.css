@@ -1,88 +1,28 @@
 /* Shop listing: the release header, toolbar, category tabs, filters, chips and the bag. */
 @layer components {
-  /* Collection selector and category tabs: two separate rows that combine. */
-  .shop-nav {
-    display: grid;
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
-  }
-  .shop-nav-label {
-    flex: none;
-    align-self: center;
-    min-width: 92px;
-    color: var(--ink-subtle);
-  }
-  .shop-collections,
-  .shop-tabs {
-    display: flex;
-    align-items: center;
-    gap: var(--space-6);
-    border-bottom: 1px solid var(--line);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .shop-collections a,
-  .shop-tabs a {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: var(--tap-min);
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-    text-decoration: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-  }
-  .shop-collections a:hover,
-  .shop-tabs a:hover {
-    color: var(--ink);
-  }
-  .shop-collections a[aria-current="page"] {
-    color: var(--ink);
-    border-bottom-color: var(--ink);
-  }
-  .shop-tabs a[aria-current="page"] {
-    color: var(--ink);
-    border-bottom-color: var(--primary);
-  }
-  .shop-tabs a[data-empty="true"]:not([aria-current="page"]) {
-    color: var(--ink-subtle);
-  }
-  .shop-nav .count {
-    color: var(--ink-subtle);
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0;
-  }
-  @media (max-width: 767px) {
-    .shop-nav-label {
-      display: none;
-    }
-    .shop-collections,
-    .shop-tabs {
-      gap: 20px;
-      margin-inline: calc(var(--gutter-mobile) * -1);
-      padding-inline: var(--gutter-mobile);
-    }
-  }
-
+  /* Search, then category, collection, sort and filters in one compact row that wraps. */
   .shop-toolbar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
     align-items: center;
     margin-bottom: var(--space-4);
   }
+  .shop-toolbar .shop-search {
+    flex: 1 1 280px;
+  }
+  /* Phones: search across, the selects side by side, then Filters across. */
   @media (max-width: 767px) {
     .shop-toolbar {
-      grid-template-columns: minmax(0, 1fr) auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .shop-toolbar .shop-search {
+    .shop-toolbar .shop-search,
+    .shop-toolbar .shop-filter-btn {
       grid-column: 1 / -1;
+    }
+    .shop-toolbar .aw-select {
+      width: 100%;
     }
   }
   .shop-search {
@@ -316,30 +256,6 @@
   @media (max-width: 767px) {
     .shop-head {
       padding-block: var(--space-8) var(--space-6);
-    }
-  }
-
-  /* /collections: a short introduction, then each release under its name with its wall. */
-  .collections {
-    padding-bottom: var(--space-24);
-  }
-  .collections-head {
-    display: grid;
-    gap: var(--space-4);
-    padding-block: var(--space-16) var(--space-8);
-  }
-  .release {
-    padding-top: var(--space-12);
-  }
-  .release .release-head {
-    margin-bottom: var(--space-12);
-  }
-  @media (max-width: 767px) {
-    .collections-head {
-      padding-block: var(--space-12) var(--space-6);
-    }
-    .release .release-head {
-      margin-bottom: var(--space-8);
     }
   }
 }

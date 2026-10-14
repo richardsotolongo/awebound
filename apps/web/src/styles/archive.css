@@ -1,14 +1,31 @@
 /* My Archive: the account area, its cards and the owner's admin tables. Layout only; colors are tokens. */
 @layer components {
+  /* My Archive as the red button, a rule, then the sections. On phones the links take their own
+     row and the rule goes. */
   .archive-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-6);
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
     padding: var(--space-6) 0;
     border-bottom: 1px solid var(--line);
     margin-bottom: var(--space-8);
   }
-  .archive-nav a {
+  .archive-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    padding-left: var(--space-6);
+    border-left: 1px solid var(--line-strong);
+  }
+  @media (max-width: 639px) {
+    .archive-nav-links {
+      flex-basis: 100%;
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+  .archive-nav-links a {
     min-height: var(--tap-min);
     display: inline-flex;
     align-items: center;
@@ -18,7 +35,7 @@
     text-decoration: none;
     border-bottom: 2px solid transparent;
   }
-  .archive-nav a[aria-current="page"] {
+  .archive-nav-links a[aria-current="page"] {
     color: var(--ink);
     border-bottom-color: var(--ink);
   }
@@ -32,6 +49,14 @@
   .archive-seal-mark {
     color: var(--accent-text);
     flex: none;
+  }
+  .archive-benefit-list {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding-left: 1.2em;
+    list-style: disc;
+    color: var(--ink-muted);
   }
   .archive-panel-list {
     display: grid;
@@ -92,7 +117,7 @@
     padding: var(--space-8);
     align-items: center;
   }
-  .archive-story-head img {
+  .archive-story-piece {
     display: block;
     width: 100%;
     max-width: 480px;
@@ -139,10 +164,36 @@
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
   }
+  /* Each line: the garment, then its name, cut, color and size, and the quantity. */
   .archive-order-lines {
+    display: grid;
+    gap: var(--space-4);
     margin: 0;
-    padding-left: 1.2em;
-    color: var(--ink-muted);
+    padding: 0;
+    list-style: none;
+  }
+  .archive-order-line {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: center;
+  }
+  .archive-order-line > img,
+  .archive-order-line > span {
+    width: 72px;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    background: var(--surface);
+  }
+  .archive-order-line p {
+    margin: 0;
+  }
+  .archive-order-line-name {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .archive-order-line-name a {
+    color: inherit;
   }
   .archive-benefits {
     display: grid;
@@ -344,5 +395,41 @@
     margin: 0;
     color: var(--ink);
     white-space: pre-line;
+  }
+}
+@layer components {
+  /* Save hearts (SaveHeart): on a product image's corner, and beside Add to bag. */
+  .save-heart {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .save-heart-card {
+    background: color-mix(in srgb, var(--brand-coal) 55%, transparent);
+    color: var(--brand-bone);
+    border: 0;
+  }
+  .save-heart-card:hover {
+    background: color-mix(in srgb, var(--brand-coal) 75%, transparent);
+  }
+  .save-heart-page {
+    flex: none;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .save-heart-page:hover {
+    border-color: var(--ink-muted);
+  }
+  .save-heart:disabled {
+    cursor: progress;
+  }
+  .save-heart-error {
+    flex-basis: 100%;
+    margin: 0;
   }
 }

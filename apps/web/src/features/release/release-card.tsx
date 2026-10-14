@@ -1,10 +1,12 @@
 import { ProductCard } from "@awebound/brand";
 import type { ProductSummary } from "@/shared";
+import { SaveHeart } from "@/features/archive/save-heart";
 import { toCardProps } from "@/features/catalog/query";
 
 /**
- * A piece in a grid: the whole garment, the name, its type and price, and its Scripture. `tile`
- * leaves the Scripture out, for the wall, where a column is too narrow to quote it in full.
+ * A piece in a grid: the whole garment with a save heart in its corner, the name, its type and
+ * price, and its Scripture. `tile` leaves the Scripture out, for the wall, where a column is too
+ * narrow to quote it in full.
  */
 export function ReleaseCard({
   product,
@@ -24,6 +26,7 @@ export function ReleaseCard({
       {...props}
       quote={tile ? undefined : props.quote}
       transitionWhen={nameOnLeave ? "leaving" : "always"}
+      action={<SaveHeart slug={product.slug} name={product.name} />}
     />
   );
 }
