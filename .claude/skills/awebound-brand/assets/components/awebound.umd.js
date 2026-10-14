@@ -608,6 +608,7 @@ var Awebound = (() => {
     transitionWhen = "always",
     priority,
     as: Heading = "h3",
+    action,
     className,
   }) {
     const [leaving, setLeaving] = (0, import_react3.useState)(false);
@@ -618,79 +619,87 @@ var Awebound = (() => {
       loading: priority ? "eager" : "lazy",
       decoding: "async",
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("article", {
+    return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("article", {
       className: cx("aw-card", className),
-      children: /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(BrandLink, {
-        href,
-        className: "aw-card-link",
-        onClick: () => setLeaving(true),
-        children: [
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", {
-            className: "aw-card-media",
-            style: plate ? { "--plate": plate } : void 0,
-            children: [
-              Morph
-                ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Morph, {
-                    name: named ? transitionName : void 0,
-                    share: "piece",
-                    default: "none",
-                    children: listing,
-                  })
-                : listing,
-              hoverImage
-                ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("img", {
-                    className: "aw-card-alt",
-                    src: hoverImage,
-                    alt: "",
-                    "aria-hidden": "true",
-                    loading: "lazy",
-                    decoding: "async",
-                  })
-                : null,
-            ],
-          }),
-          /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", {
-            className: "aw-card-meta",
-            children: [
-              /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Heading, {
-                className: "aw-card-name",
-                children: name,
-              }),
-              type || price
-                ? /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("p", {
-                    className: "aw-card-facts",
-                    children: [
-                      type
-                        ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { children: type })
-                        : null,
-                      price
-                        ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", {
-                            className: "aw-card-price",
-                            children: price,
-                          })
-                        : null,
-                    ],
-                  })
-                : null,
-              status
-                ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", {
-                    className: "aw-card-status",
-                    children: status,
-                  })
-                : null,
-              quote
-                ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(ScriptureQuote, {
-                    text: quote.text,
-                    reference: quote.reference,
-                    translation: quote.translation,
-                    excerpt: quote.excerpt,
-                    size: "sm",
-                  })
-                : null,
-            ],
-          }),
-        ],
-      }),
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(BrandLink, {
+          href,
+          className: "aw-card-link",
+          onClick: () => setLeaving(true),
+          children: [
+            /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", {
+              className: "aw-card-media",
+              style: plate ? { "--plate": plate } : void 0,
+              children: [
+                Morph
+                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Morph, {
+                      name: named ? transitionName : void 0,
+                      share: "piece",
+                      default: "none",
+                      children: listing,
+                    })
+                  : listing,
+                hoverImage
+                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("img", {
+                      className: "aw-card-alt",
+                      src: hoverImage,
+                      alt: "",
+                      "aria-hidden": "true",
+                      loading: "lazy",
+                      decoding: "async",
+                    })
+                  : null,
+              ],
+            }),
+            /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", {
+              className: "aw-card-meta",
+              children: [
+                /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Heading, {
+                  className: "aw-card-name",
+                  children: name,
+                }),
+                type || price
+                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("p", {
+                      className: "aw-card-facts",
+                      children: [
+                        type
+                          ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { children: type })
+                          : null,
+                        price
+                          ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", {
+                              className: "aw-card-price",
+                              children: price,
+                            })
+                          : null,
+                      ],
+                    })
+                  : null,
+                status
+                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", {
+                      className: "aw-card-status",
+                      children: status,
+                    })
+                  : null,
+                quote
+                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(ScriptureQuote, {
+                      text: quote.text,
+                      reference: quote.reference,
+                      translation: quote.translation,
+                      excerpt: quote.excerpt,
+                      size: "sm",
+                    })
+                  : null,
+              ],
+            }),
+          ],
+        }),
+        action
+          ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", {
+              className: "aw-card-action",
+              children: action,
+            })
+          : null,
+      ],
     });
   }
 

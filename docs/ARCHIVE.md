@@ -1,18 +1,18 @@
 # My Archive
 
-The account area at `/account`: a free home for saved pieces, remembered sizes and linked orders, and the full story, founder note and digital extras of every design a shopper has bought. Built in October 2026 from the owner's handoff. This file is the owner's guide, the setup list, the content status and the honest report of what is verified and what still waits on a service or a file.
+The account area at `/account`: a free home for saved pieces and linked orders, and the full story, founder note and digital extras of every design a shopper has bought. Built in October 2026 from the owner's handoff. This file is the owner's guide, the setup list, the content status and the honest report of what is verified and what still waits on a service or a file.
 
 ## What a visitor, a member and a buyer get
 
 | Who                   | Gets                                                                                                                                                                                                                                                                                                                                                                       |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Public visitor        | Everything the site showed before, plus a design's published public preview and "The passage in context" on its product page (`/shop/<slug>#story`).                                                                                                                                                                                                                       |
-| Verified free account | My Archive: Saved Pieces, Your Fit (one remembered size per garment style, with the shop's size guides), Settings (name, email change, sign out everywhere, deletion), order history and the collection view with honest empty states. No full stories, founder notes, wallpapers, PDFs or share images come with signup, and there is no free wallpaper library.          |
+| Verified free account | My Archive: Saved Pieces (saved with the heart on any piece), Settings (name, email change, sign out everywhere, deletion), order history and the collection view with honest empty states. No full stories, founder notes, wallpapers, PDFs or share images come with signup, and there is no free wallpaper library.                                                     |
 | Eligible buyer        | For each design bought in a paid, real order linked to the account: the full story, the imagery explanation, the note from Richard, the purchased variants, verified care (once confirmed), the published phone and desktop wallpapers, the design card PDF and the story images. One design never unlocks another. The purchaser owns the benefits, not a gift recipient. |
 | Guest buyer           | Checkout and order emails as before. After signing in with the email used at checkout the order links itself; a different email can be proved with a code sent to the address on the order. A guest order never earns the Founding seal.                                                                                                                                   |
 | Founding Member       | The first 50 unique buyers whose paid order was placed while signed in. An understated seal on the Archive overview; no rank, count or perks in public. Policy below.                                                                                                                                                                                                      |
 
-The wording the handoff fixed is used verbatim: the welcome line, "Your collection starts with your first piece.", "Own this design to unlock its full story and founder note.", "Your wallpaper is being prepared. It will appear here when published.", the sign-in benefits and the Founding sentence.
+The wording the handoff fixed is used verbatim, apart from what the owner removed in October 2026 (Your Fit, and any "being prepared" or "coming soon" line): the welcome line ("Your Archive is open. Save a piece and explore Behold. …"), "Your collection starts with your first piece.", "Own this design to unlock its full story and founder note.", the sign-in benefits and the Founding sentence. A wallpaper, a care note or a story shows once it is published or confirmed, and nothing stands in for it before then.
 
 ## Owner guide (`/account/admin`, admins only)
 
@@ -53,12 +53,12 @@ Expected: twenty design-specific PNGs (`behold-<slug>-phone.png` and `behold-<sl
   pnpm --filter @awebound/web archive:intake -- path/to/behold-torn-veil-phone.png --format phone --design torn-veil --publish
   ```
 
-- Delivery: a buyer's download is a 60-second signed link issued only after the server checks the entitlement; storage paths never appear in public markup or JSON. A missing file shows the "being prepared" line to owners and nothing to the public.
+- Delivery: a buyer's download is a 60-second signed link issued only after the server checks the entitlement; storage paths never appear in public markup or JSON. A design without a published file shows no Wallpapers section.
 - The two files Richard sent in chat on October 13 arrived as JPEG previews (472 x 1024 and 1024 x 640) and are kept intact in `assets/wallpapers/` (`brand-phone.jpg`, `brand-desktop.jpg`). They are not assigned to a design and not published. PNG masters at the intended resolution are still needed, committed under `assets/wallpapers/` or uploaded on the Assets page.
 
 ### Mappings
 
-The Mappings page lists, per design, the catalog code, slug, Fourthwall slug, the live Fourthwall id and state (once the products are public and the storefront token is set), the stored offer id, the size guide and the care status. Product-to-design mapping is explicit: an order line maps by Fourthwall offer id, else by Fourthwall slug (the first match stores the id). Guides are the owner's own: the Middleweight Oversized T-shirt (Thorns to Lilies, By His Hem, Stone in Motion), the Organic Oversized T-shirt (To Live Is Christ, Still the Storm), the Premium Relaxed Hoodie (the three hoodies), the Low-Profile Adjustable Cap (Lamb’s Mark) and the Mid-Profile Snapback Cap (Signature Cap). Caps remember a fit note, never an invented size range.
+The Mappings page lists, per design, the catalog code, slug, Fourthwall slug, the live Fourthwall id and state (once the products are public and the storefront token is set), the stored offer id, the size guide and the care status. Product-to-design mapping is explicit: an order line maps by Fourthwall offer id, else by Fourthwall slug (the first match stores the id). Guides are the owner's own: the Middleweight Oversized T-shirt (Thorns to Lilies, By His Hem, Stone in Motion), the Organic Oversized T-shirt (To Live Is Christ, Still the Storm), the Premium Relaxed Hoodie (the three hoodies), the Low-Profile Adjustable Cap (Lamb’s Mark) and the Mid-Profile Snapback Cap (Signature Cap).
 
 ### Orders
 
@@ -90,8 +90,6 @@ Constants: `FOUNDING_CAP = 50`, `FOUNDING_SETTLE_FROM = 45` in `apps/web/src/ser
 6. **Claims**: order number → a 6-digit code to the email on the order (Resend), 15 minutes, 5 attempts, stored as hashes; the response never says whether the order exists.
 
 ## Setup (owner actions; none performed here)
-
-The same steps on your own machine, with a local database and a made-up order to walk the purchase flow: [LOCAL-TESTING.md](LOCAL-TESTING.md).
 
 1. **Database**: `supabase db push` applies the seven new migrations (identity, free tools, content and assets, orders, founding, flags/email/audit, roles). Then `supabase config push` or paste the three templates (`supabase/templates/magic-link.html`, `confirmation.html`, `email-change.html`) into Authentication → Emails. The private bucket `archive-assets` is created by the migration; check it under Storage.
 2. **Fourthwall**: Settings → For developers → Webhooks: add `https://www.awebound.store/api/fourthwall/webhook` for `ORDER_PLACED` and `ORDER_UPDATED`, copy the secret into `FOURTHWALL_WEBHOOK_SECRET`. Open API → Create API user: `FOURTHWALL_API_USERNAME` and `FOURTHWALL_API_PASSWORD`.

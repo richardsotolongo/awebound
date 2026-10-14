@@ -12,7 +12,7 @@ Awebound sounds reverent, weighty and sure of itself: short sentences, concrete 
 
 A release (`collection` in code) is a small set of pieces drawn from one call in Scripture, numbered in order. Release 01 is **Behold**: "Clothes that ask you to look at Jesus, and keep looking." Each piece has a theme and a call that begins with Behold: Mercy · Behold His mercy; Power · Behold His power; Healing · Behold the One who heals.
 
-"Latest Drop" is the newest release with pieces on the site, worked out from the catalog. Say "Latest Drop", not "New Collection". Collections lists only releases that exist.
+"Latest Drop" is the newest release with pieces on the site, worked out from the catalog. Say "Latest drop", not "New Collection". While there is one release, Collections is the shop; never list a release that doesn't exist.
 
 ## What to say
 
@@ -38,7 +38,7 @@ Active voice, plain words, contractions where they're natural, short sentences, 
 
 ## Mechanics
 
-- Sentence case in copy and in button labels (buttons display caps through styling). Selector labels may be title case (Latest Drop, All Collections).
+- Sentence case in copy and in button labels (buttons display caps through styling). Selector options are sentence case too (All products, Latest drop, All collections).
 - No exclamation marks. Emoji only in social captions, at most one, never in place of a word.
 - Never hard-code a price in copy; prices come from Fourthwall (or the content file until a piece is published). List the base price with no “From”; a 2XL or 3XL upcharge is said under the sizes once chosen.
 - Only confirmed facts: no launch dates, delivery times or shipping rates until they're confirmed.
@@ -89,6 +89,6 @@ Richard’s own words, as he supplied them in October 2026, and nothing invented
 
 ## Calls to action
 
-View [piece] · See all [n] pieces · Shop [release] (on Collections) · Add to bag · Check out · Notify me · Read my story (under Richard’s note). A button says exactly where it goes. Avoid "Buy now" and countdown pressure.
+View [piece] · See all [n] pieces · Add to bag · Check out · Notify me · Read my story (under Richard’s note). A button says exactly where it goes. Avoid "Buy now" and countdown pressure.
 
 The site always reads as open for ordering: no release-status sentences, no “coming soon”, no preview notices and no “ordering isn’t open”. A piece says only “Sold out” or “Some sizes sold out”. A piece not yet published in Fourthwall looks like one on sale (Add to bag, Check out); only checkout can’t start, and the bag says “Checkout isn’t available right now. Your bag is saved, so please try again a little later.” Never name the supplier to customers: “our print and fulfillment partner”.

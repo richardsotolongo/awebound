@@ -314,6 +314,11 @@ export interface ProductCardProps {
   priority?: boolean;
   /** Heading level for the name; h3 under a section heading. */
   as?: "h2" | "h3";
+  /**
+   * A small control in the bottom right of the image, such as a save heart. It sits outside the
+   * card's link, so it can be a button of its own.
+   */
+  action?: ReactNode;
   className?: string;
 }
 /**
@@ -336,6 +341,7 @@ export declare function ProductCard({
   transitionWhen,
   priority,
   as: Heading,
+  action,
   className,
 }: ProductCardProps): React.JSX.Element;
 
