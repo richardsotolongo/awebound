@@ -1,5 +1,5 @@
 {
-  "$comment": "Each product's images in the Awebound Fourthwall shop (Fourthwall admin > Products > the product's images), in the shop's order: the site shows them in the same order, the first as the listing image. `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame; `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. fourthwall.py downloads them into fourthwall/ and compose.py builds apps/web/public/products/<slug>/<n>.webp; a piece missing here falls back to its approved mockup. Update the list whenever a product's images change in Fourthwall, then run fourthwall.py and compose.py.",
+  "$comment": "Each product's images in the Awebound Fourthwall shop, in the shop's order: the site shows them in the same order, the first as the listing image. `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame, and are kept only when that background matches the piece's own surface (compose.py reports any that doesn't; the caps' studio photos are left out for that reason); `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. An entry holds a file name under `photos` or `renders`, or a full address. fourthwall.py downloads them into fourthwall/ and compose.py builds apps/web/public/products/<slug>/<n>.webp; a piece missing here falls back to its approved mockup. When a product's images change in Fourthwall, run `fourthwall.py --sync <piece>` (it rewrites the piece's list from the shop and downloads it), check the views, then `compose.py <piece>`.",
   "photos": "https://cdn.fourthwall.com/offer/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "renders": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "products": {
@@ -175,18 +175,6 @@
       "fourthwallSlug": "lambs-mark-hat",
       "gallery": [
         {
-          "photo": "9aebb263-0a63-40ec-b6f4-7aa08c74734d.png",
-          "view": "front"
-        },
-        {
-          "photo": "653db654-372e-4c7c-a210-346fbbd18f82.png",
-          "view": "side"
-        },
-        {
-          "photo": "e959c497-ab29-4aa8-bf85-9470789a4e71.png",
-          "view": "back"
-        },
-        {
           "render": "dcffe98e-bb7f-409e-9ebf-0e21f3dcc7d3.webp",
           "view": "front"
         },
@@ -203,18 +191,6 @@
     "signature-cap": {
       "fourthwallSlug": "awebound-signature-cap",
       "gallery": [
-        {
-          "photo": "17a93c33-9861-4094-ae9b-9d2158db8c75.png",
-          "view": "front"
-        },
-        {
-          "photo": "b5b8eb9b-1e4c-4412-a1c8-b87943cf0582.png",
-          "view": "side"
-        },
-        {
-          "photo": "8bb04215-b81f-4ebc-89b6-c1b1bf07bf3f.png",
-          "view": "back"
-        },
         {
           "render": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
           "view": "front"

@@ -17,9 +17,13 @@ reads as one set. Each piece gets its own surface: a color drawn from its artwor
 spotlight, or a shaft of light). The garments, prints and colors are left exactly as they are in
 the renders and mockups.
 
-    python3 assets/mockups/compose.py
+    python3 assets/mockups/compose.py [piece ...]
 
-When a product's images change in Fourthwall, update fourthwall.json and run fourthwall.py first.
+When a product's images change in Fourthwall, refresh them first with
+`python3 assets/mockups/fourthwall.py --sync <piece ...>` (see fourthwall.py), then run this with
+the same pieces, so only their images are rewritten. A photo whose background is far from its
+piece's surface is reported: the gallery would not read as one set, so replace that photo in
+Fourthwall or take it out of fourthwall.json.
 """
 
 from pathlib import Path
@@ -362,8 +366,26 @@ def plates(slug: str) -> None:
     piece(slug).save(folder / "piece.webp", "WEBP", quality=80, method=6)
 
 
-def main() -> None:
-    for slug, spec in VIEWS.items():
+def check_photo(slug: str, name: str, img: Image.Image) -> None:
+    """Prints a photo whose edges differ clearly from the piece's own surface."""
+    band = 48
+
+    def edge(a: np.ndarray) -> np.ndarray:
+        return np.concatenate(
+            [a[:band].reshape(-1, 3), a[-band:].reshape(-1, 3), a[:, :band].reshape(-1, 3), a[:, -band:].reshape(-1, 3)]
+        ).mean(0)
+
+    photo_edge = edge(np.asarray(img, np.float32))
+    surface_edge = edge(np.asarray(to_image(backdrop(slug, W, H)), np.float32))
+    gap = float(np.linalg.norm(photo_edge - surface_edge))
+    if gap > 40:
+        rgb = lambda c: "(" + ", ".join(str(round(v)) for v in c) + ")"
+        print(f"photo {slug}/{name}: background {rgb(photo_edge)} vs surface {rgb(surface_edge)}, off by {gap:.0f}")
+
+
+def main(slugs: list[str]) -> None:
+    for slug in slugs:
+        spec = VIEWS[slug]
         folder = OUT / slug
         folder.mkdir(parents=True, exist_ok=True)
         for old in folder.glob("*.webp"):
@@ -378,6 +400,7 @@ def main() -> None:
                 source = RENDERS / f"{slug}-{n}.webp"
                 if "photo" in item:
                     img = photo(source)
+                    check_photo(slug, f"{n}.webp", img)
                 else:
                     img = place_garment(trimmed(Image.open(source).convert("RGBA")))
                 img.save(folder / f"{n}.webp", "WEBP", quality=86, method=6)
@@ -395,4 +418,11 @@ def main() -> None:
 if __name__ == "__main__":
     import sys
 
-    check_plates() if sys.argv[1:] == ["plates"] else main()
+    args = sys.argv[1:]
+    if args == ["plates"]:
+        check_plates()
+    else:
+        unknown = [a for a in args if a not in VIEWS]
+        if unknown:
+            sys.exit(f"Unknown piece: {', '.join(unknown)}")
+        main(args or list(VIEWS))
