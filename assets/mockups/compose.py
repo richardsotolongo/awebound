@@ -12,10 +12,12 @@ cut-out and large lettering on the plate; `python3 assets/mockups/compose.py pla
 contrast each plate gives bone and coal lettering.
 
 Every piece shares the canvas, margins, garment scale and a soft cast shadow, so the shop grid
-reads as one set. Each piece gets its own surface: a color drawn from its artwork, a texture
-(plaster, cloud, linen, speckled stone, paper) and a light (from the upper left, from above, a
-spotlight, or a shaft of light). The garments, prints and colors are left exactly as they are in
-the renders and mockups.
+reads as one set. Each piece gets its own surface: a color matched to the background of its
+photos in Fourthwall, a texture (plaster, cloud, linen, speckled stone, paper) and a light (from
+the upper left, from above, a spotlight, or a shaft of light). The garments, prints and colors are
+left exactly as they are in the photos, renders and mockups. The close-up and the cut-out garment
+come from Fourthwall's render of the current print (`cutouts` in fourthwall.json), or from
+cutouts/ when no render shows it.
 
     python3 assets/mockups/compose.py [piece ...]
 
@@ -36,6 +38,7 @@ from PIL import Image, ImageFilter
 HERE = Path(__file__).parent
 CUTOUTS = HERE / "cutouts"
 RENDERS = HERE / "fourthwall"
+CURRENT_RENDERS = RENDERS / "renders"
 MANIFEST = json.loads((HERE / "fourthwall.json").read_text())["products"]
 OUT = HERE.parent.parent / "apps" / "web" / "public" / "products"
 
@@ -49,35 +52,38 @@ PLATES = {
     "tall": ((900, 1400), (0.5, 0.7), (0.05, 0.03, 0.95, 0.44)),
 }
 
-# Surface per piece: color (sRGB), texture and light. `accent` adds a narrow band along the base.
+# Surface per piece: color (sRGB), texture and light. Each color is matched to the background of
+# the piece's photos in Fourthwall (October 15, 2026), so the photos, the renders placed on the
+# surface and the plates read as one set; check_photo reports a photo that drifts from it.
 STYLE = {
     # Black tee, storm at sea: deep storm slate, cloud-soft, light breaking from above.
-    "still-the-storm": {"color": (70, 84, 92), "texture": "cloud", "light": "top"},
+    "still-the-storm": {"color": (64, 82, 92), "texture": "cloud", "light": "top"},
     # Bone tee with rust splatter: muted sage plaster, the rust's complement.
-    "by-his-hem": {"color": (122, 131, 109), "texture": "plaster", "light": "upper-left"},
+    "by-his-hem": {"color": (118, 128, 105), "texture": "plaster", "light": "upper-left"},
     # White tee, red thorns and lilies: deep oxblood plaster under a spotlight.
-    "thorns-to-lilies": {"color": (96, 37, 43), "texture": "plaster", "light": "spot"},
-    # Black hoodie, the torn veil: warm parchment crossed by a shaft of light.
-    "torn-veil": {"color": (201, 186, 154), "texture": "paper", "light": "shaft"},
+    "thorns-to-lilies": {"color": (100, 35, 40), "texture": "plaster", "light": "spot"},
+    # Black hoodie, the torn veil: deep crimson plaster lit from above, the curtain's red.
+    "torn-veil": {"color": (131, 57, 58), "texture": "plaster", "light": "top"},
     # Sand tee with a cobalt swirl: dusty cornflower stone with a fine speckle.
-    "stone-in-motion": {"color": (104, 125, 152), "texture": "speckle", "light": "upper-left"},
+    "stone-in-motion": {"color": (109, 128, 154), "texture": "speckle", "light": "upper-left"},
     # Navy tee, bone lettering: warm ochre plaster lit from above.
-    "to-live-is-christ": {"color": (190, 154, 106), "texture": "plaster", "light": "top"},
-    # Olive hoodie, the valley at night: burnt terracotta plaster under a spotlight, the print's ember glow.
-    "the-passage": {"color": (150, 98, 70), "texture": "plaster", "light": "spot"},
+    "to-live-is-christ": {"color": (191, 152, 101), "texture": "plaster", "light": "top"},
+    # Olive hoodie, lettering of cracked stone: pale sandstone plaster from the upper left.
+    "the-passage": {"color": (221, 198, 173), "texture": "plaster", "light": "upper-left"},
     # Dusty blue hoodie, roses: soft dusty rose paper lit from above.
-    "wonderfully-made": {"color": (190, 154, 150), "texture": "paper", "light": "top"},
-    # Charcoal cap, white lamb: cool bone linen with an oxblood band at the base.
-    "lambs-mark": {"color": (208, 202, 191), "texture": "linen", "light": "upper-left", "accent": (96, 37, 43)},
-    # Black cap, red-edged wordmark: warm concrete with a fine speckle, lit from above.
-    "signature-cap": {"color": (150, 146, 140), "texture": "speckle", "light": "top"},
+    "wonderfully-made": {"color": (201, 171, 163), "texture": "paper", "light": "top"},
+    # Black cap, white lamb: warm linen, like the studio the cap's photos were taken in.
+    "lambs-mark": {"color": (209, 192, 175), "texture": "linen", "light": "upper-left"},
+    # Black cap, red-edged wordmark: warm sand concrete with a fine speckle, lit from above.
+    "signature-cap": {"color": (193, 175, 155), "texture": "speckle", "light": "top"},
 }
 
 CAPS = ("lambs-mark", "signature-cap")
 
 # `views`, for mockup-only products: views in display order (the first is the listing image and
 # always shows the whole garment). `detail`, for every product: a close crop of the main artwork,
-# (view, center x, center y, width) as fractions of the garment.
+# (view, center x, center y, width) as fractions of the garment; or ("photo:<n>", ...) as fractions
+# of the n-th gallery photo, for a print no render shows yet.
 VIEWS = {
     "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.5)},
@@ -87,7 +93,7 @@ VIEWS = {
     "torn-veil": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.4985, 0.415, 0.48)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
-    "the-passage": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
+    "the-passage": {"views": ["back", "front"], "detail": ("photo:3", 0.52, 0.6, 0.681)},
     "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.43, 0.54)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
@@ -99,8 +105,11 @@ def trimmed(img: Image.Image) -> Image.Image:
 
 
 def load_garment(slug: str, view: str) -> Image.Image:
-    """The first Fourthwall render of this view when there is one, else the mockup cutout;
-    cropped to the garment."""
+    """The garment in this view, cut out and cropped to it: Fourthwall's render of the current
+    print (`cutouts` in fourthwall.json), else a render in the gallery, else the cutout in cutouts/
+    (an approved mockup, or a photo cut out by hand when no render shows the current print)."""
+    if view in MANIFEST.get(slug, {}).get("cutouts", {}):
+        return trimmed(Image.open(CURRENT_RENDERS / f"{slug}-{view}.webp").convert("RGBA"))
     for n, item in enumerate(MANIFEST.get(slug, {}).get("gallery", []), start=1):
         if "render" in item and item["view"] == view:
             return trimmed(Image.open(RENDERS / f"{slug}-{n}.webp").convert("RGBA"))
@@ -206,9 +215,6 @@ def backdrop(slug: str, w: int, h: int) -> np.ndarray:
     style = STYLE[slug]
     rng = np.random.default_rng(sum(map(ord, slug)))
     base = np.ones((h, w, 3), np.float32) * srgb_to_linear(np.array(style["color"], np.float32) / 255)
-    if "accent" in style:
-        band = int(h * 0.075)
-        base[h - band :] = srgb_to_linear(np.array(style["accent"], np.float32) / 255)
     shade = texture(style["texture"], rng, h, w) * lighting(style["light"], h, w)
     # Texture and light are perceptual multipliers; apply them in a gamma-like space.
     return base * (shade**2.2)[..., None]
@@ -256,7 +262,7 @@ def detail(slug: str) -> None:
     (or the mockup cutout), downscaled and never enlarged, and laid on the piece's surface so any
     edge that shows matches."""
     view, cx, cy, frac = VIEWS[slug]["detail"]
-    cutout = load_garment(slug, view)
+    cutout = detail_source(slug, view)
     cw = round(cutout.width * frac)
     ch = round(cw * DETAIL_H / DETAIL_W)
     left = round(cutout.width * cx - cw / 2)
@@ -269,12 +275,19 @@ def detail(slug: str) -> None:
     img.save(OUT / slug / "detail.webp", "WEBP", quality=82, method=6)
 
 
+def detail_source(slug: str, view: str) -> Image.Image:
+    """What a close-up is cropped from: a gallery photo ("photo:<n>") or the cut-out garment."""
+    if view.startswith("photo:"):
+        return Image.open(RENDERS / f"{slug}-{view.split(':')[1]}.webp").convert("RGBA")
+    return load_garment(slug, view)
+
+
 def check_details() -> None:
     """Prints any close-up whose crop reaches past the garment (the surface would show at its
     edge) or would have to be enlarged. Both should be fixed in VIEWS."""
     for slug, spec in VIEWS.items():
         view, cx, cy, frac = spec["detail"]
-        alpha = np.asarray(load_garment(slug, view).getchannel("A"))
+        alpha = np.asarray(detail_source(slug, view).getchannel("A"))
         h, w = alpha.shape
         cw = round(w * frac)
         ch = round(cw * DETAIL_H / DETAIL_W)
@@ -291,7 +304,8 @@ def check_details() -> None:
 PLATE_SHADE = {
     "thorns-to-lilies": 0.86,
     "still-the-storm": 0.84,
-    "the-passage": 0.7,
+    "torn-veil": 0.86,
+    "the-passage": 1.06,
     "by-his-hem": 0.66,
     "stone-in-motion": 0.68,
     "to-live-is-christ": 1.05,
@@ -367,18 +381,17 @@ def plates(slug: str) -> None:
 
 
 def check_photo(slug: str, name: str, img: Image.Image) -> None:
-    """Prints a photo whose edges differ clearly from the piece's own surface."""
-    band = 48
+    """Prints a full-garment photo whose background differs clearly from the piece's own surface,
+    comparing the top and sides (the hem often reaches the bottom edge)."""
+    band = 40
 
-    def edge(a: np.ndarray) -> np.ndarray:
-        return np.concatenate(
-            [a[:band].reshape(-1, 3), a[-band:].reshape(-1, 3), a[:, :band].reshape(-1, 3), a[:, -band:].reshape(-1, 3)]
-        ).mean(0)
+    def border(a: np.ndarray) -> np.ndarray:
+        return np.median(np.concatenate([a[:band].reshape(-1, 3), a[:, :band].reshape(-1, 3), a[:, -band:].reshape(-1, 3)]), 0)
 
-    photo_edge = edge(np.asarray(img, np.float32))
-    surface_edge = edge(np.asarray(to_image(backdrop(slug, W, H)), np.float32))
+    photo_edge = border(np.asarray(img, np.float32))
+    surface_edge = border(np.asarray(to_image(backdrop(slug, W, H)), np.float32))
     gap = float(np.linalg.norm(photo_edge - surface_edge))
-    if gap > 40:
+    if gap > 30:
         rgb = lambda c: "(" + ", ".join(str(round(v)) for v in c) + ")"
         print(f"photo {slug}/{name}: background {rgb(photo_edge)} vs surface {rgb(surface_edge)}, off by {gap:.0f}")
 
@@ -396,11 +409,18 @@ def main(slugs: list[str]) -> None:
 
         gallery = MANIFEST.get(slug, {}).get("gallery")
         if gallery:
+            # Fourthwall lists a view's full-garment photo before its close-up; only the full
+            # views show enough background to compare with the surface.
+            first = {}
+            for n, item in enumerate(gallery, start=1):
+                if "photo" in item:
+                    first.setdefault(item["view"], n)
             for n, item in enumerate(gallery, start=1):
                 source = RENDERS / f"{slug}-{n}.webp"
                 if "photo" in item:
                     img = photo(source)
-                    check_photo(slug, f"{n}.webp", img)
+                    if first[item["view"]] == n:
+                        check_photo(slug, f"{n}.webp", img)
                 else:
                     img = place_garment(trimmed(Image.open(source).convert("RGBA")))
                 img.save(folder / f"{n}.webp", "WEBP", quality=86, method=6)

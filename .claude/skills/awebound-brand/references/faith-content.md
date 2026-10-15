@@ -27,15 +27,15 @@ Awebound quotes Scripture exactly, labels it honestly and lets the art carry the
 
 ## Depiction: symbols only
 
-| Allowed                                                                                                                               | Not allowed                                                          |
-| ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| The Thorn Cross; a simple, upright, whole cross in release art (on a horizon, in a wreath, in an hourglass, on a hill)                | Any depiction of Jesus: face, silhouette, hands, crucifix figure     |
-| A crown of thorns, thorn vines, thorns turning into lilies, roses around a cross                                                      | God the Father or the Holy Spirit as a person                        |
-| A stilled sea, storm clouds, the edge of His cloak                                                                                    | Gore, wounds, blood for shock                                        |
-| The torn temple veil, light breaking through clouds                                                                                   | Skulls, inverted crosses, occult or satanic symbols                  |
-| The empty tomb, the rolled stone, dawn light, an hourglass                                                                            | Broken, tilted or trampled crosses; budded crosses; four-point stars |
-| The Lamb of God, as a biblical symbol rather than a portrait                                                                          | Scripture as a joke, pun or unrelated slogan                         |
-| Human figures that aren't Christ: the woman's hand reaching for His cloak (By His Hem), the traveler walking the valley (The Passage) | Any figure that could be read as Christ                              |
-| Broken chains, arches, olive branches                                                                                                 |                                                                      |
+| Allowed                                                                                                                | Not allowed                                                          |
+| ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| The Thorn Cross; a simple, upright, whole cross in release art (on a horizon, in a wreath, in an hourglass, on a hill) | Any depiction of Jesus: face, silhouette, hands, crucifix figure     |
+| A crown of thorns, thorn vines, thorns turning into lilies, roses around a cross                                       | God the Father or the Holy Spirit as a person                        |
+| A stilled sea, storm clouds, the edge of His cloak                                                                     | Gore, wounds, blood for shock                                        |
+| The torn temple veil, light breaking through clouds                                                                    | Skulls, inverted crosses, occult or satanic symbols                  |
+| The empty tomb, the rolled stone, dawn light, an hourglass                                                             | Broken, tilted or trampled crosses; budded crosses; four-point stars |
+| The Lamb of God, as a biblical symbol rather than a portrait                                                           | Scripture as a joke, pun or unrelated slogan                         |
+| Human figures that aren't Christ: the woman's hand reaching for His cloak (By His Hem)                                 | Any figure that could be read as Christ                              |
+| Broken chains, arches, olive branches                                                                                  |                                                                      |
 
 Reverent and confident; never mock other believers or traditions, never sell with fear or guilt.

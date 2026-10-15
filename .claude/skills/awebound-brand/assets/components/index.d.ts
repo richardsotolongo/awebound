@@ -30,16 +30,16 @@ export declare const BRAND_HEX: {
 };
 /** Each piece's plate (`--plate-*` in tokens.css), for generated images. */
 export declare const PLATE_HEX: {
-  readonly "plate-oxblood": "#60252b";
-  readonly "plate-ochre": "#be9a6a";
-  readonly "plate-sage": "#7a836d";
-  readonly "plate-cornflower": "#687d98";
-  readonly "plate-slate": "#46545c";
-  readonly "plate-parchment": "#c9ba9a";
-  readonly "plate-terracotta": "#966246";
-  readonly "plate-rose": "#be9a96";
-  readonly "plate-linen": "#d0cabf";
-  readonly "plate-concrete": "#96928c";
+  readonly "plate-oxblood": "#642328";
+  readonly "plate-ochre": "#bf9865";
+  readonly "plate-sage": "#768069";
+  readonly "plate-cornflower": "#6d809a";
+  readonly "plate-slate": "#40525c";
+  readonly "plate-crimson": "#83393a";
+  readonly "plate-sandstone": "#ddc6ad";
+  readonly "plate-rose": "#c9aba3";
+  readonly "plate-linen": "#d1c0af";
+  readonly "plate-concrete": "#c1af9b";
 };
 /** The ink a plate's lettering takes (`plate.ink` in the content file). */
 export declare const INK_HEX: {

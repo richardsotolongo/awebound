@@ -1,5 +1,5 @@
 {
-  "$comment": "Each product's images in the Awebound Fourthwall shop, in the shop's order: the site shows them in the same order, the first as the listing image. `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame, and are kept only when that background matches the piece's own surface (compose.py reports any that doesn't; the caps' studio photos are left out for that reason); `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. An entry holds a file name under `photos` or `renders`, or a full address. fourthwall.py downloads them into fourthwall/ and compose.py builds apps/web/public/products/<slug>/<n>.webp; a piece missing here falls back to its approved mockup. When a product's images change in Fourthwall, run `fourthwall.py --sync <piece>` (it rewrites the piece's list from the shop and downloads it), check the views, then `compose.py <piece>`.",
+  "$comment": "Each product's images in the Awebound Fourthwall shop, in the shop's order: the site shows them in the same order, the first as the listing image. `gallery`: `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame (each piece's surface in compose.py is matched to its photos' background, and compose.py reports any photo that drifts from it); `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. An entry holds a file name under `photos` or `renders`, or a full address. `cutouts`: Fourthwall renders of the current print, by view, kept even when the shop no longer lists them; compose.py cuts the garment for the home page and the close-up from them. A view missing here (a print that changed since its render) falls back to `cutouts/<slug>-<view>.webp` in this folder. `holds`: Fourthwall images left out on purpose, and why. fourthwall.py downloads the gallery into fourthwall/ and the cutouts into fourthwall/renders/, and compose.py builds apps/web/public/products/<slug>/. When a product's images change in Fourthwall, run `fourthwall.py --sync <piece>` (public products only; for hidden ones, edit the list here from the shop's image list), check the views, then `fourthwall.py <piece>` and `compose.py <piece>`.",
   "photos": "https://cdn.fourthwall.com/offer/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "renders": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "products": {
@@ -15,14 +15,18 @@
           "view": "front"
         },
         {
-          "render": "576fe7bd-1c01-47bb-bd99-e26917395b18.webp",
+          "photo": "dafe3911-cf0e-4b8a-9b3c-d39e74fea172.png",
           "view": "back"
         },
         {
-          "render": "74dc4e07-5ce1-4145-b5a7-4b746101e351.webp",
+          "photo": "86926c81-9c29-4f17-8c8f-46fa89e1fde9.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {
+        "back": "576fe7bd-1c01-47bb-bd99-e26917395b18.webp",
+        "front": "74dc4e07-5ce1-4145-b5a7-4b746101e351.webp"
+      }
     },
     "to-live-is-christ": {
       "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
@@ -36,14 +40,18 @@
           "view": "back"
         },
         {
-          "render": "e5f29dad-7670-456c-b023-28ab61458a8f.webp",
+          "photo": "7500e46b-3dab-45b5-b609-fd962158c1a4.png",
           "view": "front"
         },
         {
-          "render": "ad06feb6-208f-4117-8fb0-571923f11a9b.webp",
+          "photo": "b689bb11-1a46-44e3-a2f6-fd6d5a303905.png",
           "view": "back"
         }
-      ]
+      ],
+      "cutouts": {
+        "front": "e5f29dad-7670-456c-b023-28ab61458a8f.webp",
+        "back": "ad06feb6-208f-4117-8fb0-571923f11a9b.webp"
+      }
     },
     "by-his-hem": {
       "fourthwallSlug": "by-his-hem-tee",
@@ -57,35 +65,42 @@
           "view": "front"
         },
         {
-          "render": "caa46133-9054-48f0-8349-757d5dea9670.webp",
+          "photo": "5b87c3fb-cab2-459a-91be-acdd3c138f0b.png",
           "view": "back"
         },
         {
-          "render": "8b130987-ed97-485c-8e65-64d2f24a30e6.webp",
+          "photo": "99f40b51-2133-491c-8b78-7d6d2eeadfdc.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {
+        "back": "caa46133-9054-48f0-8349-757d5dea9670.webp",
+        "front": "8b130987-ed97-485c-8e65-64d2f24a30e6.webp"
+      }
     },
     "stone-in-motion": {
       "fourthwallSlug": "stone-in-motion-tee",
       "gallery": [
         {
-          "photo": "e4150d55-8a27-4bf8-addb-e03d5d1bdd08.png",
+          "photo": "5e002aa9-f49e-42d7-8c72-808e72aeab26.png",
           "view": "back"
         },
         {
-          "photo": "b81dd7cc-3c61-45e5-a7b2-1cac6c715a76.png",
+          "photo": "1034e5e4-bcf5-454c-91e4-613f9b4e3587.png",
           "view": "front"
         },
         {
-          "render": "967c4263-fcf4-47f5-b5e4-d8fd16878300.webp",
+          "photo": "9af82a10-da51-43ac-833f-9ff452b21579.png",
           "view": "back"
         },
         {
-          "render": "f70b8f74-e443-46cf-a7e0-d22006829e71.webp",
+          "photo": "4d941042-ff23-4271-9ebd-bb04b5a8bf34.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {
+        "back": "967c4263-fcf4-47f5-b5e4-d8fd16878300.webp"
+      }
     },
     "still-the-storm": {
       "fourthwallSlug": "still-the-storm-tee",
@@ -99,111 +114,131 @@
           "view": "front"
         },
         {
-          "render": "6902d745-d167-4da4-a4b7-1570bd481446.webp",
+          "photo": "467d29ec-b300-43a6-b4f5-a9e82d48c4f9.png",
           "view": "back"
         },
         {
-          "render": "fbfc7515-f007-4c1a-b33f-25b28b339b12.webp",
+          "photo": "e5050faa-15e8-4659-81d9-28639b0a9786.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {
+        "back": "6902d745-d167-4da4-a4b7-1570bd481446.webp",
+        "front": "fbfc7515-f007-4c1a-b33f-25b28b339b12.webp"
+      }
     },
     "torn-veil": {
       "fourthwallSlug": "torn-veil-hoodie",
       "gallery": [
         {
-          "photo": "9c3859ce-64e5-4043-8dbd-0cd05fcb11bb.png",
+          "photo": "6c55c06f-b40a-4f7b-a959-4d1a075e05c5.png",
           "view": "back"
         },
         {
-          "photo": "d01d699f-b614-4008-82da-30aa5d9bc842.png",
+          "photo": "c63a2ba6-7dfe-45b3-a382-15e394ffe6ee.png",
           "view": "front"
         },
         {
-          "render": "d4ca206b-a509-4a25-a348-e45397592c17.webp",
+          "photo": "c81ce310-11a9-4431-991a-0286ba3ea727.png",
           "view": "back"
         },
         {
-          "render": "82d625b2-c6df-439c-9db1-798ccc39b5ca.webp",
+          "photo": "68eeec60-26d9-438a-bd8a-f734b1a898b1.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {
+        "back": "d4ca206b-a509-4a25-a348-e45397592c17.webp"
+      }
     },
     "the-passage": {
       "fourthwallSlug": "the-passage-hoodie",
       "gallery": [
         {
-          "photo": "3f4b6cf1-b7f5-4222-917a-d2be84e61463.png",
+          "photo": "a69b5caa-1f1b-494f-8f1b-d516552a6e1b.png",
           "view": "back"
         },
         {
-          "photo": "b7e340db-9e6f-4a09-8ee1-6c4c689ecabd.png",
+          "photo": "7bd863be-741e-46e4-9686-b65af645896d.png",
           "view": "front"
         },
         {
-          "render": "83d675a8-c278-4f84-a3c7-25361480f766.webp",
+          "photo": "0ed21cdf-3dfc-42af-a727-43e77383b3fc.png",
           "view": "back"
         },
         {
-          "render": "9171322d-0621-4efe-9828-0a603eb42c36.webp",
+          "photo": "2675bc07-98a9-4f51-90bb-b5640fd7fbc4.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {}
     },
     "wonderfully-made": {
       "fourthwallSlug": "wonderfully-made-hoodie",
       "gallery": [
         {
-          "photo": "45a94259-faf6-4c3b-970d-3a64ce66226a.png",
-          "view": "back"
-        },
-        {
-          "photo": "1f721a40-1f6a-42b0-babf-556b2d30d7f8.png",
-          "view": "front"
-        },
-        {
           "render": "873bb575-1273-463e-b413-6159588a81e9.webp",
           "view": "back"
         },
         {
-          "render": "4014158e-7a6d-442a-be68-62cfcf069110.webp",
+          "photo": "dbea4fe9-7f02-4e70-904f-7a7defccede5.png",
+          "view": "front"
+        },
+        {
+          "photo": "3fa1b751-f34a-4f10-8750-e318c0b3b9a0.png",
           "view": "front"
         }
-      ]
+      ],
+      "cutouts": {
+        "back": "873bb575-1273-463e-b413-6159588a81e9.webp"
+      }
     },
     "lambs-mark": {
       "fourthwallSlug": "lambs-mark-hat",
       "gallery": [
         {
-          "render": "dcffe98e-bb7f-409e-9ebf-0e21f3dcc7d3.webp",
+          "photo": "9aebb263-0a63-40ec-b6f4-7aa08c74734d.png",
           "view": "front"
         },
         {
-          "render": "dbba85c3-edcc-4c21-929c-25010b3caf3f.webp",
+          "photo": "653db654-372e-4c7c-a210-346fbbd18f82.png",
           "view": "side"
         },
         {
-          "render": "4ae317e2-bd34-412c-ac92-b2a9ab74c617.webp",
+          "photo": "e959c497-ab29-4aa8-bf85-9470789a4e71.png",
           "view": "back"
         }
-      ]
+      ],
+      "cutouts": {
+        "front": "dcffe98e-bb7f-409e-9ebf-0e21f3dcc7d3.webp",
+        "side": "dbba85c3-edcc-4c21-929c-25010b3caf3f.webp",
+        "back": "4ae317e2-bd34-412c-ac92-b2a9ab74c617.webp"
+      }
     },
     "signature-cap": {
       "fourthwallSlug": "awebound-signature-cap",
       "gallery": [
         {
-          "render": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
+          "photo": "17a93c33-9861-4094-ae9b-9d2158db8c75.png",
           "view": "front"
         },
         {
-          "render": "f0f9883c-f69c-467c-a28c-f1eee9ce9e94.webp",
+          "photo": "b5b8eb9b-1e4c-4412-a1c8-b87943cf0582.png",
           "view": "side"
         },
         {
-          "render": "d201fb9b-cec1-4b2d-8c64-d59ae4cec9a9.webp",
+          "photo": "8bb04215-b81f-4ebc-89b6-c1b1bf07bf3f.png",
           "view": "back"
         }
-      ]
+      ],
+      "cutouts": {
+        "front": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
+        "side": "f0f9883c-f69c-467c-a28c-f1eee9ce9e94.webp",
+        "back": "d201fb9b-cec1-4b2d-8c64-d59ae4cec9a9.webp"
+      }
     }
+  },
+  "holds": {
+    "wonderfully-made": "Fourthwall images 1 and 3 (44bf7834, e6183016) misspell the back print as “Wonderfuly”; the print file says “Wonderfully”. Left out of the gallery until they are replaced in Fourthwall."
   }
 }

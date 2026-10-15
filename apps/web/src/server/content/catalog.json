@@ -258,7 +258,10 @@
     {
       "code": "A3-B03",
       "slug": "thorns-to-lilies",
-      "plate": { "token": "plate-oxblood", "ink": "bone" },
+      "plate": {
+        "token": "plate-oxblood",
+        "ink": "bone"
+      },
       "fourthwallSlug": "thorns-to-lillies-tee",
       "sizeGuide": "middleweight-oversized-tee",
       "name": "Thorns to Lilies",
@@ -317,7 +320,10 @@
     {
       "code": "A3-B05",
       "slug": "to-live-is-christ",
-      "plate": { "token": "plate-ochre", "ink": "coal" },
+      "plate": {
+        "token": "plate-ochre",
+        "ink": "coal"
+      },
       "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
       "sizeGuide": "organic-oversized-tee",
       "name": "To Live Is Christ, To Die Is Gain",
@@ -375,7 +381,10 @@
     {
       "code": "A3-B07",
       "slug": "by-his-hem",
-      "plate": { "token": "plate-sage", "ink": "bone" },
+      "plate": {
+        "token": "plate-sage",
+        "ink": "bone"
+      },
       "fourthwallSlug": "by-his-hem-tee",
       "sizeGuide": "middleweight-oversized-tee",
       "name": "By His Hem",
@@ -434,7 +443,10 @@
     {
       "code": "A3-B04",
       "slug": "stone-in-motion",
-      "plate": { "token": "plate-cornflower", "ink": "bone" },
+      "plate": {
+        "token": "plate-cornflower",
+        "ink": "bone"
+      },
       "fourthwallSlug": "stone-in-motion-tee",
       "sizeGuide": "middleweight-oversized-tee",
       "name": "Stone in Motion",
@@ -460,7 +472,7 @@
         "call": "Behold, He is risen",
         "art": "The stone rolls away in a sweep of blue under the angel’s words.",
         "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, just as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
-        "front": "Small Awebound wordmark, center chest",
+        "front": "Awebound wordmark in black, center chest",
         "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
         "inks": "Black, cobalt blue",
         "fit": "Regular oversized · dropped shoulder, boxy body",
@@ -476,7 +488,7 @@
         {
           "view": "front",
           "url": "/products/stone-in-motion/2.webp",
-          "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
+          "alt": "Stone in Motion oversized tee, front: the Awebound wordmark in black, center chest"
         },
         {
           "view": "back",
@@ -486,14 +498,17 @@
         {
           "view": "front",
           "url": "/products/stone-in-motion/4.webp",
-          "alt": "Stone in Motion oversized tee, front: small wordmark, center chest"
+          "alt": "Stone in Motion oversized tee, front: the Awebound wordmark in black, center chest"
         }
       ]
     },
     {
       "code": "A3-B02",
       "slug": "still-the-storm",
-      "plate": { "token": "plate-slate", "ink": "bone" },
+      "plate": {
+        "token": "plate-slate",
+        "ink": "bone"
+      },
       "fourthwallSlug": "still-the-storm-tee",
       "sizeGuide": "organic-oversized-tee",
       "name": "Still the Storm",
@@ -551,7 +566,10 @@
     {
       "code": "A3-B06",
       "slug": "torn-veil",
-      "plate": { "token": "plate-parchment", "ink": "coal" },
+      "plate": {
+        "token": "plate-crimson",
+        "ink": "bone"
+      },
       "fourthwallSlug": "torn-veil-hoodie",
       "sizeGuide": "premium-relaxed-hoodie",
       "name": "Torn Veil",
@@ -576,8 +594,8 @@
         "theme": "Presence",
         "call": "Behold, the way is open",
         "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, over the words “The veil is torn.”",
-        "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front carries the wordmark and the Thorn Cross.",
-        "front": "Awebound wordmark in bone with red thorns, with the Thorn Cross below, center chest",
+        "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front carries the wordmark with red thorns.",
+        "front": "Awebound wordmark in bone with red thorns, center chest",
         "back": "A red curtain torn open, light breaking through over the clouds, above “The veil is torn” in heavy gothic capitals, with Matthew 27:51 below",
         "inks": "Bone, deep red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
@@ -593,7 +611,7 @@
         {
           "view": "front",
           "url": "/products/torn-veil/2.webp",
-          "alt": "Torn Veil hoodie, front: the wordmark with red thorns and the Thorn Cross, center chest"
+          "alt": "Torn Veil hoodie, front: the wordmark in bone with red thorns, center chest"
         },
         {
           "view": "back",
@@ -603,14 +621,17 @@
         {
           "view": "front",
           "url": "/products/torn-veil/4.webp",
-          "alt": "Torn Veil hoodie, front: the wordmark with red thorns and the Thorn Cross, center chest"
+          "alt": "Torn Veil hoodie, front: the wordmark in bone with red thorns, center chest"
         }
       ]
     },
     {
       "code": "A3-B08",
       "slug": "the-passage",
-      "plate": { "token": "plate-terracotta", "ink": "bone" },
+      "plate": {
+        "token": "plate-sandstone",
+        "ink": "coal"
+      },
       "fourthwallSlug": "the-passage-hoodie",
       "sizeGuide": "premium-relaxed-hoodie",
       "name": "The Passage",
@@ -634,11 +655,11 @@
       "story": {
         "theme": "Protection",
         "call": "Behold the Shepherd",
-        "art": "One traveler walks a narrow, lit path through a dark valley toward a cross on the hill under a full moon, above the words “I will fear no evil.”",
-        "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even in the darkest valley he won’t be afraid, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back shows one traveler on the path through the valley, walking toward the cross.",
-        "front": "Awebound wordmark and the Thorn Cross in bone, center chest",
-        "back": "A dark valley under a full moon, a lit path leading to a cross on the hill, above “I will fear no evil” in tall capitals, with Psalm 23:4 below",
-        "inks": "Bone, ember orange, charcoal, red",
+        "art": "“I will fear no evil” in tall letters of cracked stone, each one holding a mountain valley with pines and a winding path, with red cracks running through the last word.",
+        "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even in the darkest valley he won’t be afraid, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back carves David’s words in stone, with the valley and its winding path inside the letters.",
+        "front": "Awebound wordmark in bone, center chest",
+        "back": "“I will fear no evil” in tall cracked-stone capitals filled with a mountain valley, pines and a winding path, red cracks through “evil”, with Psalm 23:4 below",
+        "inks": "Bone, charcoal, red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
         "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
         "process": "printed"
@@ -647,29 +668,32 @@
         {
           "view": "back",
           "url": "/products/the-passage/1.webp",
-          "alt": "The Passage hoodie in cypress, back: a traveler on a path through a dark valley toward a cross, above “I will fear no evil,” Psalm 23:4"
+          "alt": "The Passage hoodie in cypress, back: “I will fear no evil” in letters of cracked stone holding a mountain valley, Psalm 23:4"
         },
         {
           "view": "front",
           "url": "/products/the-passage/2.webp",
-          "alt": "The Passage hoodie in cypress, front: the wordmark and the Thorn Cross, center chest"
+          "alt": "The Passage hoodie in cypress, front: the wordmark in bone, center chest"
         },
         {
           "view": "back",
           "url": "/products/the-passage/3.webp",
-          "alt": "The Passage hoodie in cypress, back: a traveler on a path through a dark valley toward a cross, above “I will fear no evil,” Psalm 23:4"
+          "alt": "The Passage hoodie in cypress, back: “I will fear no evil” in letters of cracked stone holding a mountain valley, Psalm 23:4"
         },
         {
           "view": "front",
           "url": "/products/the-passage/4.webp",
-          "alt": "The Passage hoodie in cypress, front: the wordmark and the Thorn Cross, center chest"
+          "alt": "The Passage hoodie in cypress, front: the wordmark in bone, center chest"
         }
       ]
     },
     {
       "code": "A3-B09",
       "slug": "wonderfully-made",
-      "plate": { "token": "plate-rose", "ink": "coal" },
+      "plate": {
+        "token": "plate-rose",
+        "ink": "coal"
+      },
       "fourthwallSlug": "wonderfully-made-hoodie",
       "sizeGuide": "premium-relaxed-hoodie",
       "name": "Wonderfully Made",
@@ -694,8 +718,8 @@
         "theme": "Creation",
         "call": "Behold the One who made you",
         "art": "Roses and red leaves wind around the words “Fearfully & wonderfully made” and a wooden cross.",
-        "meaning": "In Psalm 139, David is amazed at how completely God knows him: every thought, every word, every day of his life, written down before one of them came to be. God formed him in his mother’s womb, and David answers with praise, because he is fearfully and wonderfully made. The back sets those words among roses in bloom beside a wooden cross. The front carries the wordmark and the Thorn Cross in deep red.",
-        "front": "Awebound wordmark and the Thorn Cross in deep red, center chest",
+        "meaning": "In Psalm 139, David is amazed at how completely God knows him: every thought, every word, every day of his life, written down before one of them came to be. God formed him in his mother’s womb, and David answers with praise, because he is fearfully and wonderfully made. The back sets those words among roses in bloom beside a wooden cross. The front carries the wordmark in deep red.",
+        "front": "Awebound wordmark in deep red, center chest",
         "back": "“Fearfully & wonderfully made” in ornate red lettering among roses and leaves, beside a wooden cross, with Psalm 139:14 below",
         "inks": "Deep red, rose, cream, wood brown",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
@@ -711,24 +735,22 @@
         {
           "view": "front",
           "url": "/products/wonderfully-made/2.webp",
-          "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark and the Thorn Cross in deep red"
-        },
-        {
-          "view": "back",
-          "url": "/products/wonderfully-made/3.webp",
-          "alt": "Wonderfully Made hoodie in Carolina blue, back: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
+          "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark in deep red, center chest"
         },
         {
           "view": "front",
-          "url": "/products/wonderfully-made/4.webp",
-          "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark and the Thorn Cross in deep red"
+          "url": "/products/wonderfully-made/3.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, front up close: the wordmark in deep red"
         }
       ]
     },
     {
       "code": "A3-H01",
       "slug": "lambs-mark",
-      "plate": { "token": "plate-linen", "ink": "coal" },
+      "plate": {
+        "token": "plate-linen",
+        "ink": "coal"
+      },
       "fourthwallSlug": "lambs-mark-hat",
       "sizeGuide": "low-profile-adjustable-cap",
       "name": "Lamb’s Mark",
@@ -778,7 +800,10 @@
     {
       "code": "A3-H02",
       "slug": "signature-cap",
-      "plate": { "token": "plate-concrete", "ink": "coal" },
+      "plate": {
+        "token": "plate-concrete",
+        "ink": "coal"
+      },
       "fourthwallSlug": "awebound-signature-cap",
       "sizeGuide": "mid-profile-snapback-cap",
       "name": "Signature Cap",

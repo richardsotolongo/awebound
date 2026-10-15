@@ -6,7 +6,9 @@ renders are already cut out. compose.py turns them into the site's product image
     python3 assets/mockups/fourthwall.py [piece ...]
 
 When a product's images change in Fourthwall (a design edited, photos replaced), refresh its list
-from the shop, then rebuild its site images (on Windows, `py` instead of `python3`):
+from the shop, then rebuild its site images (on Windows, `py` instead of `python3`). The
+Storefront API returns public products only: for a hidden one, copy its image list from the shop
+into fourthwall.json by hand and run `fourthwall.py <piece>`.
 
     python3 assets/mockups/fourthwall.py --sync stone-in-motion the-passage
     python3 assets/mockups/compose.py stone-in-motion the-passage
@@ -16,7 +18,10 @@ shop's public products through the Storefront API, writes each named piece's ima
 fourthwall.json in the shop's order and downloads them. An image with transparent corners is a
 render (a cut-out); anything else is a photo. Views (front, back, side) carry over from the old list
 by kind and order; when a piece's list changed shape it says so, and its views need a look.
-Without piece names, both commands cover every piece in fourthwall.json.
+Without piece names, both commands cover every piece in fourthwall.json. Each piece's `cutouts`
+(Fourthwall renders of its current print, by view) are downloaded too, into fourthwall/renders/;
+compose.py cuts the home page's garment and the close-up from them. --sync leaves them as they are:
+after a print changes, remove that view from `cutouts` until a render of the new print is listed.
 """
 
 import io
@@ -77,6 +82,18 @@ def write(slug: str, images: list[tuple[bytes, str, str]]) -> None:
         print(f"{slug}-{n}: {kind}, {view}")
 
 
+def download_cutouts(manifest: dict, slug: str) -> None:
+    """The piece's renders of the current print, by view, into fourthwall/renders/<slug>-<view>.webp."""
+    folder = OUT / "renders"
+    folder.mkdir(parents=True, exist_ok=True)
+    for old in folder.glob(f"{slug}-*.webp"):
+        old.unlink()
+    for view, name in manifest["products"][slug].get("cutouts", {}).items():
+        url = name if name.startswith("http") else manifest["renders"] + name
+        save(folder / f"{slug}-{view}.webp", fetch(url), "render")
+        print(f"{slug}: {view} render")
+
+
 def download(manifest: dict, slugs: list[str]) -> None:
     for slug in slugs:
         images = []
@@ -84,6 +101,7 @@ def download(manifest: dict, slugs: list[str]) -> None:
             kind, url = source(manifest, item)
             images.append((fetch(url), kind, item["view"]))
         write(slug, images)
+        download_cutouts(manifest, slug)
 
 
 def read_token() -> str:
