@@ -738,8 +738,13 @@
           "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark in deep red, center chest"
         },
         {
-          "view": "front",
+          "view": "back",
           "url": "/products/wonderfully-made/3.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, back up close: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
+        },
+        {
+          "view": "front",
+          "url": "/products/wonderfully-made/4.webp",
           "alt": "Wonderfully Made hoodie in Carolina blue, front up close: the wordmark in deep red"
         }
       ]

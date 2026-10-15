@@ -3,7 +3,9 @@ Writes the site's product images to apps/web/public/products/<slug>/.
 
 A product listed in fourthwall.json gets one image per entry in its Fourthwall image list, in the
 same order (1.webp, 2.webp, ...; the first is the listing image): finished photos are cropped to
-the site's 4:5 frame, and Fourthwall's cut-out renders are placed on the piece's own surface. A
+the site's 4:5 frame (a photo framed tighter than the rest, with `frame` in fourthwall.json, is
+zoomed out to the set's scale by widen.py), and Fourthwall's cut-out renders are placed on the
+piece's own surface. A
 product not listed there falls back to its approved mockup (cutouts/, made by cutout.py) in the
 views below. Every product also gets detail.webp, a close-up of its artwork (not part of the
 product gallery), and its plate: the surface alone as a wide and a tall field (plate-wide.webp,
@@ -34,6 +36,8 @@ import json
 
 import numpy as np
 from PIL import Image, ImageFilter
+
+from widen import widen
 
 HERE = Path(__file__).parent
 CUTOUTS = HERE / "cutouts"
@@ -417,7 +421,12 @@ def main(slugs: list[str]) -> None:
                     first.setdefault(item["view"], n)
             for n, item in enumerate(gallery, start=1):
                 source = RENDERS / f"{slug}-{n}.webp"
-                if "photo" in item:
+                if "photo" in item and "frame" in item:
+                    # A photo framed tighter than the rest, zoomed out to the set's scale.
+                    img = widen(source, item["frame"]["height"], item["frame"]["top"], (W, H))
+                    if first[item["view"]] == n:
+                        check_photo(slug, f"{n}.webp", img)
+                elif "photo" in item:
                     img = photo(source)
                     if first[item["view"]] == n:
                         check_photo(slug, f"{n}.webp", img)

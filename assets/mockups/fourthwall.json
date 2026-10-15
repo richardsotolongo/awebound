@@ -1,5 +1,5 @@
 {
-  "$comment": "Each product's images in the Awebound Fourthwall shop, in the shop's order: the site shows them in the same order, the first as the listing image. `gallery`: `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame (each piece's surface in compose.py is matched to its photos' background, and compose.py reports any photo that drifts from it); `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. An entry holds a file name under `photos` or `renders`, or a full address. `cutouts`: Fourthwall renders of the current print, by view, kept even when the shop no longer lists them; compose.py cuts the garment for the home page and the close-up from them. A view missing here (a print that changed since its render) falls back to `cutouts/<slug>-<view>.webp` in this folder. `holds`: Fourthwall images left out on purpose, and why. fourthwall.py downloads the gallery into fourthwall/ and the cutouts into fourthwall/renders/, and compose.py builds apps/web/public/products/<slug>/. When a product's images change in Fourthwall, run `fourthwall.py --sync <piece>` (public products only; for hidden ones, edit the list here from the shop's image list), check the views, then `fourthwall.py <piece>` and `compose.py <piece>`.",
+  "$comment": "Each product's images in the Awebound Fourthwall shop, in the shop's order: the site shows them in the same order, the first as the listing image. `gallery`: `photo` entries are finished photos with their own background, cropped to the site's 4:5 frame (each piece's surface in compose.py is matched to its photos' background, and compose.py reports any photo that drifts from it); `render` entries are Fourthwall's cut-out renders, placed on the piece's own surface. `view` says what each shows. `frame` (on a photo framed tighter than the rest): the garment's height and top as fractions of the 4:5 frame, matching the other tees' full views; compose.py zooms the photo out to them with widen.py. An entry holds a file name under `photos` or `renders`, or a full address. `cutouts`: Fourthwall renders of the current print, by view, kept even when the shop no longer lists them; compose.py cuts the garment for the home page and the close-up from them. A view missing here (a print that changed since its render) falls back to `cutouts/<slug>-<view>.webp` in this folder. `holds` (when needed): Fourthwall images left out on purpose, and why. fourthwall.py downloads the gallery into fourthwall/ and the cutouts into fourthwall/renders/, and compose.py builds apps/web/public/products/<slug>/. When a product's images change in Fourthwall, run `fourthwall.py --sync <piece>` (public products only; for hidden ones, edit the list here from the shop's image list), check the views, then `fourthwall.py <piece>` and `compose.py <piece>`.",
   "photos": "https://cdn.fourthwall.com/offer/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "renders": "https://cdn.fourthwall.com/customizations/sh_28e479fe-42d7-4905-9cb7-411493973448/",
   "products": {
@@ -83,11 +83,19 @@
       "gallery": [
         {
           "photo": "5e002aa9-f49e-42d7-8c72-808e72aeab26.png",
-          "view": "back"
+          "view": "back",
+          "frame": {
+            "height": 0.569,
+            "top": 0.2175
+          }
         },
         {
           "photo": "1034e5e4-bcf5-454c-91e4-613f9b4e3587.png",
-          "view": "front"
+          "view": "front",
+          "frame": {
+            "height": 0.572,
+            "top": 0.2137
+          }
         },
         {
           "photo": "9af82a10-da51-43ac-833f-9ff452b21579.png",
@@ -177,12 +185,16 @@
       "fourthwallSlug": "wonderfully-made-hoodie",
       "gallery": [
         {
-          "render": "873bb575-1273-463e-b413-6159588a81e9.webp",
+          "photo": "3b1f6763-9ba5-4a61-86d0-039c1d5c80f3.png",
           "view": "back"
         },
         {
           "photo": "dbea4fe9-7f02-4e70-904f-7a7defccede5.png",
           "view": "front"
+        },
+        {
+          "photo": "b892528b-f4c4-4903-9fe2-24c839455537.png",
+          "view": "back"
         },
         {
           "photo": "3fa1b751-f34a-4f10-8750-e318c0b3b9a0.png",
@@ -237,8 +249,5 @@
         "back": "d201fb9b-cec1-4b2d-8c64-d59ae4cec9a9.webp"
       }
     }
-  },
-  "holds": {
-    "wonderfully-made": "Fourthwall images 1 and 3 (44bf7834, e6183016) misspell the back print as “Wonderfuly”; the print file says “Wonderfully”. Left out of the gallery until they are replaced in Fourthwall."
   }
 }
