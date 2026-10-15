@@ -89,9 +89,23 @@ export default async function Home() {
     getArchivePreview(),
     sessionUserId(),
   ]);
+  // The card previewed beside My Archive: a published one, or the lead piece's public fields
+  // (name, reference, what its art shows) until a design is published.
+  const card =
+    preview ??
+    (piece
+      ? {
+          designKey: "",
+          slug: piece.slug,
+          name: piece.name,
+          scriptureReference: piece.scripture.reference,
+          publicPreview: piece.story.art,
+          wallpapers: [],
+        }
+      : null);
   const previewPlate =
-    pieces.find((p) => p.slug === preview?.slug)?.plate ??
-    (preview ? (await withFallback(() => getProduct(preview.slug), null))?.plate : null);
+    pieces.find((p) => p.slug === card?.slug)?.plate ??
+    (card ? (await withFallback(() => getProduct(card.slug), null))?.plate : null);
   // The lead piece follows the plate: one entry per slide, in the same order. Without slides the
   // plate stands still on the one piece.
   const rotating = slides.length > 1;
@@ -103,8 +117,8 @@ export default async function Home() {
   const leadStart = rotating ? start : 0;
   // A member who owns the previewed design reads that it is open, not that it opens with a purchase.
   const ownsPreview =
-    userId && preview
-      ? Boolean(await withFallback(() => getEntitlement(userId, preview.designKey), null))
+    userId && card?.designKey
+      ? Boolean(await withFallback(() => getEntitlement(userId, card.designKey), null))
       : false;
 
   return (
@@ -138,7 +152,7 @@ export default async function Home() {
 
       <ArchiveIntro
         offer={offer}
-        preview={preview}
+        preview={card}
         plate={previewPlate ? plateCss(previewPlate) : null}
         signedIn={Boolean(userId)}
         owned={ownsPreview}

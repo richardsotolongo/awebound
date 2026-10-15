@@ -13,7 +13,7 @@ import { DesignContext } from "@/features/archive/design-context";
 import { productNote } from "@/features/archive/offer";
 import { ProductArchiveNote } from "@/features/archive/product-archive-note";
 import { getPublishedPublicCard } from "@/server/archive/content";
-import { getArchiveOffer, getDesignWallpapers } from "@/server/archive/offer";
+import { getArchiveOffer } from "@/server/archive/offer";
 import { ReleaseWall } from "@/features/release/release-wall";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
@@ -61,20 +61,13 @@ export default async function ProductPage({ params }: { params: Params }) {
   const next = at >= 0 && at < pieces.length - 1 ? pieces[at + 1] : undefined;
   const others = pieces.filter((p) => p.slug !== product.slug);
   const { scripture, story } = product;
-  // Only the published public fields of the Archive card reach this cached page, and the note
-  // names only the extras this design has (by kind, never a file).
+  // Only the published public fields of the Archive card reach this cached page.
   const [card, offer] = await Promise.all([
     withFallback(() => getPublishedPublicCard(product.slug), null),
     getArchiveOffer(),
   ]);
-  const note =
-    card && offer.stories
-      ? productNote(
-          offer,
-          product.name,
-          await withFallback(() => getDesignWallpapers(product.slug, offer), []),
-        )
-      : null;
+  // What buying the piece opens in My Archive, shown wherever accounts are open.
+  const note = offer.accounts ? productNote(product.name) : null;
 
   const url = `${siteUrl}/shop/${product.slug}`;
   const prices = product.variants.map((v) => v.priceCents);
@@ -157,7 +150,7 @@ export default async function ProductPage({ params }: { params: Params }) {
           </div>
 
           <StoryBand product={product} />
-          {card ? <DesignContext card={card} opens={offer.stories} /> : null}
+          {card ? <DesignContext card={card} opens={offer.accounts} /> : null}
 
           <section className="aw-container details" aria-labelledby="details-title">
             <h2 id="details-title" className="aw-h2">

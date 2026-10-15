@@ -6,9 +6,10 @@ import type { ArchivePreview } from "@/server/archive/offer";
 
 /**
  * My Archive on the home page, after the release wall: one paragraph on what the account keeps and
- * what a purchase opens, and one button, beside a preview of one design's card. The preview holds
- * only published public fields; its locked parts are named, never shown. Before any story can
- * open, a short form beside three of the release's pieces saved with the heart.
+ * what a purchase opens, and one button, beside a preview of one design's card: a published one,
+ * or the lead piece's public fields (its name, reference and what its art shows) until one is.
+ * Its locked parts are named, never shown. Without any piece to preview, three of the release's
+ * pieces saved with the heart.
  */
 export function ArchiveIntro({
   offer,
@@ -106,7 +107,7 @@ export function ArchiveIntro({
                   {owned ? "Open in your Archive" : "Opens when you buy the piece"}
                 </p>
                 <ul>
-                  {lockedRows(offer, card.wallpapers).map((row) => (
+                  {lockedRows(card.wallpapers).map((row) => (
                     <li key={row}>
                       {owned ? null : <LockIcon size={16} />}
                       {row}

@@ -194,10 +194,10 @@ function Tiles({
 
 /**
  * Sign-in: what My Archive holds, as tiles with pictures drawn from the release's own pieces, in
- * two groups kept apart: what is free with the account, and what each design bought with it
- * opens. Every tile comes from the offer, so only working features appear; the purchase group
- * waits until a purchase can open a story. Its parts are pictured, never shown: the note is
- * suggested by lines, and nothing of a design's protected content reaches the page.
+ * two groups kept apart: what the account includes, and what each design bought with it opens
+ * (the deeper story, Richard's note, the Scripture and biblical context, wallpapers and extras).
+ * Its parts are pictured, never shown: the note is suggested by lines, and nothing of a design's
+ * protected content reaches the page.
  */
 export function BenefitsList({
   offer,
@@ -223,8 +223,8 @@ export function BenefitsList({
         </p>
       </div>
       <div className="archive-benefit-group">
-        <h3 className="aw-h3">Free with your account</h3>
-        <Tiles tiles={free} pieces={pieces} quote={quote} label="Free with your account" />
+        <h3 className="aw-h3">Included with your account</h3>
+        <Tiles tiles={free} pieces={pieces} quote={quote} label="Included with your account" />
       </div>
       {purchase.length > 0 ? (
         <div className="archive-benefit-group">

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
-import { FOUNDING_LINE, hasExtras, type ArchiveOffer } from "@/features/archive/offer";
+import { FOUNDING_LINE, type ArchiveOffer } from "@/features/archive/offer";
 import { DELIVERY } from "@/lib/delivery";
 import { SITE, pageMeta } from "@/lib/site";
 import { getArchiveOffer } from "@/server/archive/offer";
@@ -40,20 +40,17 @@ function accountAnswer(o: ArchiveOffer): Faq {
   );
 }
 
-/** "Your Archive", from the offer: nothing is answered before it works. */
+/**
+ * "Your Archive", from the offer: what the Archive holds is described while accounts are open;
+ * how-to answers (linking an order, the Founding seal) wait until they work.
+ */
 function archiveGroup(o: ArchiveOffer): { title: string; items: Faq[] } | null {
   if (!o.accounts) return null;
   const items: Faq[] = [];
-  const orders = o.orders
-    ? " and keeps your orders in one place, including guest orders placed with the same email"
-    : "";
-  const stories = o.stories
-    ? ` Each design you buy opens its full story, a personal note from Richard${hasExtras(o) ? " and its published digital extras" : ""} in My Archive. Signing up on its own doesn’t open them.`
-    : "";
   items.push(
     plain(
       "What does an account give me?",
-      `An account is free. It saves the pieces you want to return to${orders}.${stories}`,
+      "An account is free. It saves the pieces you want to return to and keeps your orders in one place, including guest orders placed with the same email. Each design you buy opens its deeper story, a founder’s note from Richard and digital extras like phone and desktop wallpapers in My Archive, kept with its Scripture and biblical context. Signing up on its own doesn’t open them.",
     ),
   );
   if (o.orders) {

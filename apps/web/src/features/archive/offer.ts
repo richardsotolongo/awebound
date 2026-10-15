@@ -1,10 +1,15 @@
 import type { AssetFormat } from "@/shared";
 
 /**
- * What My Archive can promise today, and the words every surface uses for it (home page, product
- * page, sign-in, the overview, the collection, FAQ). The server builds the offer from the
- * Archive's readiness (server/archive/offer.ts), so a claim appears only once the feature behind
- * it works. It holds booleans only and is safe in public markup.
+ * What My Archive holds, and the words every surface uses for it (home page, product page,
+ * sign-in, the overview, the collection, FAQ). The server builds the offer from the Archive's
+ * readiness (server/archive/offer.ts); it holds booleans only and is safe in public markup.
+ *
+ * The explanation names everything the Archive holds (the deeper story, Richard's note, the
+ * Scripture and biblical context, the wallpapers and other extras) wherever accounts are open:
+ * the owner's choice (October 2026), so the site explains the whole Archive while its last
+ * back-end steps are finished. What a person actually gets (an owner's link to a card, a buyer's
+ * welcome, the collection's contents, the Founding seal) still follows what works today.
  */
 export interface ArchiveOffer {
   /** Free accounts: sign-in works and saved pieces can be stored. */
@@ -50,9 +55,8 @@ export interface ArchiveTile {
 }
 
 /**
- * The sign-in page's tiles, in two groups: what a free account holds, and what each design bought
- * with it opens. Each tile appears only once the feature behind it works, so the purchase group
- * waits until a purchase can open a story. Empty while accounts are off.
+ * The sign-in page's tiles, in two groups: what the account includes, and what each design bought
+ * with it opens. Empty while accounts are off.
  */
 export function archiveTiles(o: ArchiveOffer): { free: ArchiveTile[]; purchase: ArchiveTile[] } {
   if (!o.accounts) return { free: [], purchase: [] };
@@ -67,56 +71,45 @@ export function archiveTiles(o: ArchiveOffer): { free: ArchiveTile[]; purchase: 
       title: "On every device",
       body: "Sign in on your phone or your computer and your saved pieces are there.",
     },
-  ];
-  if (o.orders)
-    free.push({
+    {
       kind: "orders",
       title: "Your orders together",
       body: "Every order in one place, guest orders placed with the same email included.",
-    });
-  free.push({
-    kind: "open",
-    title: "Open to everyone",
-    body: "Scripture, biblical context and every piece’s story stay open, account or not. Guest checkout is always there.",
-  });
-  if (!o.stories) return { free, purchase: [] };
+    },
+    {
+      kind: "open",
+      title: "Open to everyone",
+      body: "Scripture, biblical context and every piece’s description stay open, account or not. Guest checkout is always there.",
+    },
+  ];
   const purchase: ArchiveTile[] = [
     {
       kind: "story",
-      title: "The deeper story",
+      title: "The deeper design story",
       body: "The story behind the design and what its imagery means.",
     },
     {
       kind: "note",
-      title: "A note from Richard",
+      title: "A founder’s note from Richard",
       body: "A personal note from Richard about the piece.",
     },
     {
       kind: "card",
-      title: "Its card in your collection",
-      body: "The design keeps its place in your Archive, with its Scripture.",
+      title: "Scripture and biblical context",
+      body: "The design’s card in your collection keeps its Scripture and the biblical context behind it.",
+    },
+    {
+      kind: "extras",
+      title: "Wallpapers and extras",
+      body: "Phone and desktop wallpapers, a design card PDF and story images to share.",
     },
   ];
-  const extras = [
-    o.wallpapers ? "phone and desktop wallpapers" : null,
-    o.pdf ? "a design card PDF" : null,
-    o.share ? "story images to share" : null,
-  ].filter((x): x is string => Boolean(x));
-  if (extras.length > 0)
-    purchase.push({
-      kind: "extras",
-      title: "Digital extras",
-      body: `Where the design has them: ${join(extras)}.`,
-    });
   return { free, purchase };
 }
 
 /** Under the purchase tiles: what opens them, and what doesn't. */
 export const PURCHASE_NOTE =
   "A purchase linked to your account opens them, guest orders with the same email included. Signing up alone doesn’t.";
-
-/** Whether a purchase brings digital extras on some design today. */
-export const hasExtras = (o: ArchiveOffer) => o.wallpapers || o.pdf || o.share;
 
 export const FOUNDING_LINE =
   "The first 50 qualifying buyers who use their Awebound account at checkout receive a Founding Member seal. Guest purchases don’t qualify, and signing up alone doesn’t earn it.";
@@ -134,17 +127,13 @@ export function extrasPhrase(o: ArchiveOffer, wallpapers: AssetFormat[]): string
   return items.length > 0 ? join(items) : null;
 }
 
-/**
- * The product page's note: what buying this piece opens, for this design only. Its extras are
- * mentioned only when this design has some today.
- */
-export function productNote(o: ArchiveOffer, name: string, wallpapers: AssetFormat[]) {
-  const opens = extrasPhrase(o, wallpapers)
-    ? "its deeper story, founder note and available digital extras"
-    : "its deeper story and founder note";
+/** The product page's note: what buying this piece opens in My Archive. */
+export function productNote(name: string) {
   return {
     title: "Your piece continues in My Archive.",
-    body: [`Purchase this design to unlock ${opens}.`],
+    body: [
+      "Purchase this design to unlock the deeper story behind it, a founder’s note from Richard and digital extras like phone and desktop wallpapers, kept with its Scripture and biblical context.",
+    ],
     owned: `${name} is in your Archive, with its story and a note from Richard.`,
   };
 }
@@ -168,16 +157,15 @@ export function emptyCollection(o: ArchiveOffer): string[] {
 }
 
 /** The parts of a design's card that open with a purchase, by name, for previews. */
-export function lockedRows(o: ArchiveOffer, wallpapers: AssetFormat[]): string[] {
-  const rows = ["The story behind the design", "The meaning of its imagery", "A note from Richard"];
-  if (wallpapers.length > 0) {
-    const noun = wallpaperNoun(wallpapers);
-    rows.push(noun[0]!.toUpperCase() + noun.slice(1));
-  }
-  if (o.pdf && o.share) rows.push("Design card and story images");
-  else if (o.pdf) rows.push("Design card (PDF)");
-  else if (o.share) rows.push("Story images");
-  return rows;
+export function lockedRows(wallpapers: AssetFormat[]): string[] {
+  const noun = wallpapers.length > 0 ? wallpaperNoun(wallpapers) : "phone and desktop wallpapers";
+  return [
+    "The story behind the design",
+    "The meaning of its imagery",
+    "A founder’s note from Richard",
+    noun[0]!.toUpperCase() + noun.slice(1),
+    "Design card PDF and story images",
+  ];
 }
 
 /** Remembers which welcome was dismissed: `free` still lets the buyer's welcome show later. */
@@ -223,9 +211,7 @@ export function welcomeFor(
   }
   if (dismissed) return null;
   const body = [
-    o.stories
-      ? "Save pieces with the heart, and each design you buy opens here with its deeper story and a note from Richard."
-      : "Use the heart on any piece to save it here.",
+    "Save pieces with the heart. Each design you buy opens here with its deeper story, a founder’s note from Richard and its wallpapers and extras.",
   ];
   return {
     kind: "free",
@@ -235,32 +221,18 @@ export function welcomeFor(
   };
 }
 
-/**
- * The home page's introduction: one paragraph and one button. The full form names what a purchase
- * opens, so it appears only once stories can open; before that, a short form about saving.
- */
+/** The home page's introduction: one paragraph and one button. */
 export function homeIntro(o: ArchiveOffer, signedIn: boolean) {
   const cta = signedIn
     ? { href: "/account", label: "Open My Archive" }
     : { href: "/sign-in?next=%2Faccount", label: "Create your free Archive" };
-  const space = "My Archive is your personal space for the Awebound pieces you love.";
   const save = signedIn
     ? "Save your favorites with the heart on any piece."
     : "Create a free account to save your favorites.";
-  if (!o.stories) {
-    const orders = o.orders ? " Your orders are kept there too." : "";
-    return {
-      full: false,
-      title: "Keep the pieces you love.",
-      body: `${space} ${save}${orders}`,
-      cta,
-    };
-  }
-  const extras = hasExtras(o) ? " and available digital extras" : "";
   return {
-    full: true,
+    full: o.accounts,
     title: "Wear the piece. Know its story.",
-    body: `${space} ${save} Each purchased design unlocks its deeper story, a personal note from Richard${extras}, bringing you closer to the Scripture and meaning behind what you wear.`,
+    body: `My Archive is your personal space for the Awebound pieces you love. ${save} Each design you buy unlocks its deeper story, a personal note from Richard and digital extras like phone and desktop wallpapers, all kept with its Scripture and biblical context, bringing you closer to the meaning behind what you wear.`,
     cta,
   };
 }

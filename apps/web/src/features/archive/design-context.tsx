@@ -4,7 +4,7 @@ import { BibleLink } from "./bible-link";
 /**
  * The published public part of a design's Archive card on its product page: the preview and the
  * passage in context. The full story and the founder note stay behind a purchase, which the last
- * line mentions only while a purchase can open them (`opens`).
+ * line mentions wherever accounts are open (`opens`).
  */
 export function DesignContext({ card, opens }: { card: PublicCard; opens: boolean }) {
   return (
