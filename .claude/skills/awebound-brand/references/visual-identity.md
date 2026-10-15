@@ -13,7 +13,7 @@ The A3 wordmark, the Thorn Cross, color, type and layout, as the live site uses 
 ## The Thorn Cross and marks
 
 - The Thorn Cross is the brand mark: a two-plank wooden cross with a braided thorn wreath tilted 45° around it, in front of the upper upright and right arm, behind the lower upright and left arm. Use `ThornCross` (`size="full"` at 96px+, `size="small"` below).
-- Crosses stay upright and whole, never broken, tilted or placed underfoot. Release artwork may carry its own simple cross (Still the Storm's horizon, Thorns to Lilies' wreath, the hourglass in To Live Is Christ, Wonderfully Made's wooden cross). The Thorn Cross may sit above or below the wordmark; it never replaces a letter.
+- Crosses stay upright and whole, never broken, tilted or placed underfoot. Release artwork may carry its own simple cross (Thorns to Lilies' wreath, the hourglass in To Live Is Christ, Wonderfully Made's wooden cross). The Thorn Cross may sit above or below the wordmark; it never replaces a letter.
 - Secondary marks: thorn wreath, thorn vine, lily (`Mark name="lily" | "thorn-vine" | "thorn-wreath"`). One ink each. Never stack more than two marks.
 
 ## Color

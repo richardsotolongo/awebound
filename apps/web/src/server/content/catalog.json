@@ -531,9 +531,9 @@
       "story": {
         "theme": "Power",
         "call": "Behold His power",
-        "art": "Storm clouds break over a heavy sea, and a cross stands on the horizon in the light.",
-        "meaning": "The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was. The front shows the storm breaking around a cross on the horizon. The back carries their question in full.",
-        "front": "Awebound wordmark over the storm, the waves and the cross on the horizon",
+        "art": "Storm waves break through the Awebound wordmark on the front, and the disciples’ question from Mark 4:41 rises above a breaking wave on the back.",
+        "meaning": "The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was. The front carries the storm in the wordmark itself, with waves breaking through its letters. The back carries their question in full.",
+        "front": "Awebound wordmark in bone with thorn branches, storm waves breaking through its letters, across the chest",
         "back": "Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
         "inks": "Bone",
         "fit": "Larger oversized · dropped shoulder, extra-boxy body",
@@ -542,24 +542,24 @@
       },
       "images": [
         {
-          "view": "back",
+          "view": "front",
           "url": "/products/still-the-storm/1.webp",
-          "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
-        },
-        {
-          "view": "front",
-          "url": "/products/still-the-storm/2.webp",
-          "alt": "Still the Storm oversized tee, front: the wordmark over a stormy sea with a cross on the horizon"
+          "alt": "Still the Storm oversized tee, front: the wordmark across the chest, with storm waves breaking through its letters"
         },
         {
           "view": "back",
-          "url": "/products/still-the-storm/3.webp",
+          "url": "/products/still-the-storm/2.webp",
           "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
         },
         {
           "view": "front",
+          "url": "/products/still-the-storm/3.webp",
+          "alt": "Still the Storm oversized tee, front up close: the wordmark across the chest, with storm waves breaking through its letters"
+        },
+        {
+          "view": "back",
           "url": "/products/still-the-storm/4.webp",
-          "alt": "Still the Storm oversized tee, front: the wordmark over a stormy sea with a cross on the horizon"
+          "alt": "Still the Storm oversized tee, back up close: the words of Mark 4:41 (King James wording) above a breaking wave"
         }
       ]
     },

@@ -33,11 +33,11 @@ export declare const PLATE_HEX: {
   readonly "plate-oxblood": "#642328";
   readonly "plate-ochre": "#bf9865";
   readonly "plate-sage": "#768069";
-  readonly "plate-cornflower": "#6d809a";
-  readonly "plate-slate": "#40525c";
-  readonly "plate-crimson": "#83393a";
-  readonly "plate-sandstone": "#ddc6ad";
-  readonly "plate-rose": "#c9aba3";
+  readonly "plate-cornflower": "#667b98";
+  readonly "plate-slate": "#3c4e5a";
+  readonly "plate-crimson": "#793434";
+  readonly "plate-sandstone": "#e1cbb4";
+  readonly "plate-rose": "#d6988d";
   readonly "plate-linen": "#d1c0af";
   readonly "plate-concrete": "#c1af9b";
 };

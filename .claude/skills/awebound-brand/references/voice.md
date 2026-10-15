@@ -26,7 +26,7 @@ A release (`collection` in code) is a small set of pieces drawn from one call in
 
 | Do                                                                                      | Don't                                     |
 | --------------------------------------------------------------------------------------- | ----------------------------------------- |
-| "Storm clouds break over a heavy sea, and a cross stands on the horizon."               | "Blessed vibes only!!"                    |
+| "Storm waves break through the wordmark, and the disciples ask who He is."              | "Blessed vibes only!!"                    |
 | Name the image: the stilled sea, the edge of His cloak, the rolled stone, the torn veil | Vague uplift: "faith-inspired positivity" |
 | Let the quote and reference speak                                                       | Preach or explain the verse at length     |
 | Talk about the garment plainly: weight, fabric, fit, print                              | Hype words: "insane", "fire", "drip"      |
@@ -64,9 +64,9 @@ Example, from the site:
 Still the Storm · Behold · Oversized tee · $40
 Scripture: “They were terrified and asked each other, ‘Who is this? Even the wind and the waves obey him!’” — Mark 4:41 — NIV
 Theme and call: Power · Behold His power
-Art: Storm clouds break over a heavy sea, and a cross stands on the horizon in the light.
+Art: Storm waves break through the Awebound wordmark on the front, and the disciples’ question from Mark 4:41 rises above a breaking wave on the back.
 Meaning: The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was.
-Front: Awebound wordmark over the storm, the waves and the cross on the horizon · Back: Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave
+Front: Awebound wordmark in bone with thorn branches, storm waves breaking through its letters, across the chest · Back: Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave
 Color: Black · Inks: Bone
 Fit: Larger oversized · dropped shoulder, extra-boxy body · Fabric: 100% organic combed ring-spun cotton (5.9 oz) · GOTS-certified organic
 ```

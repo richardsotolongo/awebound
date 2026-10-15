@@ -62,21 +62,21 @@ PLATES = {
 # surface and the plates read as one set; check_photo reports a photo that drifts from it.
 STYLE = {
     # Black tee, storm at sea: deep storm slate, cloud-soft, light breaking from above.
-    "still-the-storm": {"color": (64, 82, 92), "texture": "cloud", "light": "top"},
+    "still-the-storm": {"color": (60, 78, 90), "texture": "cloud", "light": "top"},
     # Bone tee with rust splatter: muted sage plaster, the rust's complement.
     "by-his-hem": {"color": (118, 128, 105), "texture": "plaster", "light": "upper-left"},
     # White tee, red thorns and lilies: deep oxblood plaster under a spotlight.
     "thorns-to-lilies": {"color": (100, 35, 40), "texture": "plaster", "light": "spot"},
     # Black hoodie, the torn veil: deep crimson plaster lit from above, the curtain's red.
-    "torn-veil": {"color": (131, 57, 58), "texture": "plaster", "light": "top"},
+    "torn-veil": {"color": (121, 52, 52), "texture": "plaster", "light": "top"},
     # Sand tee with a cobalt swirl: dusty cornflower stone with a fine speckle.
-    "stone-in-motion": {"color": (109, 128, 154), "texture": "speckle", "light": "upper-left"},
+    "stone-in-motion": {"color": (102, 123, 152), "texture": "speckle", "light": "upper-left"},
     # Navy tee, bone lettering: warm ochre plaster lit from above.
     "to-live-is-christ": {"color": (191, 152, 101), "texture": "plaster", "light": "top"},
     # Olive hoodie, lettering of cracked stone: pale sandstone plaster from the upper left.
-    "the-passage": {"color": (221, 198, 173), "texture": "plaster", "light": "upper-left"},
-    # Dusty blue hoodie, roses: soft dusty rose paper lit from above.
-    "wonderfully-made": {"color": (201, 171, 163), "texture": "paper", "light": "top"},
+    "the-passage": {"color": (225, 203, 180), "texture": "plaster", "light": "upper-left"},
+    # Dusty blue hoodie, roses: warm rose paper lit from above.
+    "wonderfully-made": {"color": (214, 152, 141), "texture": "paper", "light": "top"},
     # Black cap, white lamb: warm linen, like the studio the cap's photos were taken in.
     "lambs-mark": {"color": (209, 192, 175), "texture": "linen", "light": "upper-left"},
     # Black cap, red-edged wordmark: warm sand concrete with a fine speckle, lit from above.
@@ -92,7 +92,8 @@ HOODIES = ("torn-veil", "the-passage", "wonderfully-made")
 # (view, center x, center y, width) as fractions of the garment; or ("photo:<n>", ...) as fractions
 # of the n-th gallery photo, for a print no render shows yet.
 VIEWS = {
-    "still-the-storm": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
+    # Its close-up is the back (Mark 4:41 above a breaking wave): the front is now the wordmark.
+    "still-the-storm": {"views": ["front", "back"], "detail": ("back", 0.5, 0.45, 0.47)},
     "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.5)},
     # Every close-up frames the whole print and nothing else, and stays inside the garment:
     # a crop that reaches past its edge shows the surface beside it (check_details reports any).
@@ -101,7 +102,7 @@ VIEWS = {
     "stone-in-motion": {"views": ["back", "front"], "detail": ("back", 0.4985, 0.415, 0.48)},
     "to-live-is-christ": {"views": ["front", "back"], "detail": ("front", 0.5, 0.47, 0.5)},
     "the-passage": {"views": ["back", "front"], "detail": ("photo:3", 0.52, 0.6, 0.681)},
-    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.51, 0.5)},
+    "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.52, 0.52)},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.43, 0.54)},
     "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
 }

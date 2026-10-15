@@ -82,20 +82,12 @@
       "fourthwallSlug": "stone-in-motion-tee",
       "gallery": [
         {
-          "photo": "5e002aa9-f49e-42d7-8c72-808e72aeab26.png",
-          "view": "back",
-          "frame": {
-            "height": 0.569,
-            "top": 0.2175
-          }
+          "photo": "d7bc4aac-4c92-4561-ae8c-da4f85f09b57.png",
+          "view": "back"
         },
         {
-          "photo": "1034e5e4-bcf5-454c-91e4-613f9b4e3587.png",
-          "view": "front",
-          "frame": {
-            "height": 0.572,
-            "top": 0.2137
-          }
+          "photo": "a4f3d4ab-99f4-4cb4-b55a-aa6338763ca8.png",
+          "view": "front"
         },
         {
           "photo": "9af82a10-da51-43ac-833f-9ff452b21579.png",
@@ -114,36 +106,35 @@
       "fourthwallSlug": "still-the-storm-tee",
       "gallery": [
         {
+          "photo": "a2c2b24d-cc40-4ef4-8001-46f3cf040d60.png",
+          "view": "front"
+        },
+        {
           "photo": "30ca7043-3765-4027-a8dd-fd04e5307fed.png",
           "view": "back"
         },
         {
-          "photo": "fa740b65-13f1-4962-a961-452ee3c40d15.png",
+          "photo": "9fca4fe9-20ff-4848-9382-b63f94e2ac7d.png",
           "view": "front"
         },
         {
           "photo": "467d29ec-b300-43a6-b4f5-a9e82d48c4f9.png",
           "view": "back"
-        },
-        {
-          "photo": "e5050faa-15e8-4659-81d9-28639b0a9786.png",
-          "view": "front"
         }
       ],
       "cutouts": {
-        "back": "6902d745-d167-4da4-a4b7-1570bd481446.webp",
-        "front": "fbfc7515-f007-4c1a-b33f-25b28b339b12.webp"
+        "back": "6902d745-d167-4da4-a4b7-1570bd481446.webp"
       }
     },
     "torn-veil": {
       "fourthwallSlug": "torn-veil-hoodie",
       "gallery": [
         {
-          "photo": "6c55c06f-b40a-4f7b-a959-4d1a075e05c5.png",
+          "photo": "9694f8a5-620f-4f26-ba63-62cac6d7e0f4.png",
           "view": "back"
         },
         {
-          "photo": "c63a2ba6-7dfe-45b3-a382-15e394ffe6ee.png",
+          "photo": "345903e2-0ab6-430b-a185-16e2c8805d70.png",
           "view": "front"
         },
         {
@@ -163,11 +154,11 @@
       "fourthwallSlug": "the-passage-hoodie",
       "gallery": [
         {
-          "photo": "a69b5caa-1f1b-494f-8f1b-d516552a6e1b.png",
+          "photo": "b7073877-146f-4f19-9476-75b75ed3d30a.png",
           "view": "back"
         },
         {
-          "photo": "7bd863be-741e-46e4-9686-b65af645896d.png",
+          "photo": "0fc04308-1e77-45bc-aae7-377de625ce65.png",
           "view": "front"
         },
         {
@@ -185,11 +176,11 @@
       "fourthwallSlug": "wonderfully-made-hoodie",
       "gallery": [
         {
-          "photo": "3b1f6763-9ba5-4a61-86d0-039c1d5c80f3.png",
+          "photo": "38cb8211-5c4e-4f42-824f-dc16c314efce.png",
           "view": "back"
         },
         {
-          "photo": "dbea4fe9-7f02-4e70-904f-7a7defccede5.png",
+          "photo": "ef77f161-7a1b-4920-a75a-132f55e919f1.png",
           "view": "front"
         },
         {

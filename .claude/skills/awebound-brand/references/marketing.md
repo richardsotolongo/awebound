@@ -41,4 +41,4 @@ Lead with the product name, then one line of story, then the reference. At most 
 
 > Thorns to Lilies. A crown of thorns breaks into lilies around the wordmark, under a cross. Isaiah 1:18.
 
-> Still the Storm. Storm clouds break over a heavy sea, and a cross stands on the horizon in the light. Mark 4:41.
+> Still the Storm. Storm waves break through the wordmark, and the disciples ask who He is. Mark 4:41.
