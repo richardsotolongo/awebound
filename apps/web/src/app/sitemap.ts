@@ -6,17 +6,7 @@ import { ALL_COLLECTIONS } from "@/shared";
 
 export const revalidate = 3600;
 
-const PAGES = [
-  "",
-  "/shop",
-  "/collections",
-  "/about",
-  "/contact",
-  "/faq",
-  "/refunds",
-  "/privacy",
-  "/terms",
-];
+const PAGES = ["", "/shop", "/about", "/contact", "/faq", "/refunds", "/privacy", "/terms"];
 
 /** Every indexable address: the pages, each release, each category with pieces, each piece. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

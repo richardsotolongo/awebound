@@ -1,6 +1,5 @@
 import { Button } from "@awebound/brand";
 import { ALL_COLLECTIONS, LATEST_DROP, toSearchParams, type Release } from "@/shared";
-import Link from "next/link";
 import { getFacets, getReleases, searchProducts } from "@/server/catalog";
 import { ActiveFilters } from "./active-filters";
 import { CatalogStateProvider } from "./catalog-state";
@@ -57,9 +56,9 @@ export async function resolveCollection(searchParams: RawSearchParams): Promise<
 }
 
 /**
- * The shop: a collection selector (Latest Drop, All Collections, then each release by name) and
- * category tabs that combine with it, search, sort, a filter sheet, chips and the grid. Every
- * choice is a link, so filtered views are shareable and Back works.
+ * The shop: search, then compact selectors for category and (once there is more than one
+ * release) collection beside sort and the filter sheet, chips and the grid. Every choice is in the
+ * URL, so filtered views are shareable.
  */
 export async function CatalogView({
   searchParams,
@@ -67,7 +66,7 @@ export async function CatalogView({
   view,
 }: CatalogViewProps & { view: CollectionView }) {
   const query = parseCatalogQuery(searchParams);
-  const { choice, release, latest, releases } = view;
+  const { choice, release, releases } = view;
   const unknown = choice !== LATEST_DROP && choice !== ALL_COLLECTIONS && !release;
   // An unknown collection matches nothing, which shows the empty state with a reset.
   query.collection = release ? [release.slug] : unknown ? [choice] : undefined;
@@ -81,17 +80,12 @@ export async function CatalogView({
   const queryKey = toSearchParams(apiQuery).toString();
   const activeCategory = query.category?.length === 1 ? query.category[0] : undefined;
 
-  // Collection counts honour the chosen category and other filters; category counts honour the
-  // chosen collection. Categories with no pieces anywhere aren't offered.
-  const collectionCount = (slug: string) =>
-    facets.data.collections.find((c) => c.slug === slug)?.count ?? 0;
-  const allCount = facets.data.collections.reduce((n, c) => n + c.count, 0);
+  // Categories with no pieces anywhere aren't offered.
   const categories = facets.data.categories.filter(
     (c) =>
       activeCategory === c.slug ||
       (everything.data.categories.find((e) => e.slug === c.slug)?.count ?? 0) > 0,
   );
-  const categoryTotal = facets.data.categories.reduce((n, c) => n + c.count, 0);
 
   const collectionLabel =
     choice === ALL_COLLECTIONS ? "any collection" : (release?.name ?? "this collection");
@@ -105,59 +99,14 @@ export async function CatalogView({
 
   return (
     <CatalogStateProvider>
-      <div className="shop-nav">
-        <nav className="shop-collections" aria-label="Collections">
-          <span className="aw-label shop-nav-label" aria-hidden="true">
-            Collection
-          </span>
-          <Link
-            href={shopHref(basePath, searchParams, { collection: null })}
-            aria-current={choice === LATEST_DROP ? "page" : undefined}
-            title={latest ? `Currently ${latest.name}` : undefined}
-          >
-            Latest Drop <span className="count">{latest ? collectionCount(latest.slug) : 0}</span>
-          </Link>
-          <Link
-            href={shopHref(basePath, searchParams, { collection: ALL_COLLECTIONS })}
-            aria-current={choice === ALL_COLLECTIONS ? "page" : undefined}
-          >
-            All Collections <span className="count">{allCount}</span>
-          </Link>
-          {releases.map((r) => (
-            <Link
-              key={r.slug}
-              href={shopHref(basePath, searchParams, { collection: r.slug })}
-              aria-current={choice === r.slug ? "page" : undefined}
-            >
-              {r.name} <span className="count">{collectionCount(r.slug)}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <nav className="shop-tabs" aria-label="Categories">
-          <span className="aw-label shop-nav-label" aria-hidden="true">
-            Category
-          </span>
-          <Link
-            href={shopHref(basePath, searchParams, { category: null })}
-            aria-current={!activeCategory ? "page" : undefined}
-          >
-            All Products <span className="count">{categoryTotal}</span>
-          </Link>
-          {categories.map((c) => (
-            <Link
-              key={c.slug}
-              href={shopHref(basePath, searchParams, { category: c.slug })}
-              aria-current={activeCategory === c.slug ? "page" : undefined}
-              data-empty={c.count === 0}
-            >
-              {c.name} <span className="count">{c.count}</span>
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      <ShopToolbar facets={facets.data} total={list.data.total} />
+      <ShopToolbar
+        facets={facets.data}
+        total={list.data.total}
+        categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+        category={activeCategory ?? ""}
+        releases={releases.map((r) => ({ slug: r.slug, name: r.name }))}
+        collection={choice}
+      />
       <ActiveFilters total={list.data.total} />
 
       {list.failed ? (
@@ -176,7 +125,7 @@ export async function CatalogView({
           </p>
           <p className="aw-body">
             {unknown
-              ? "It may have been renamed. Every release is listed under Collections."
+              ? "It may have been renamed. Reset to see every piece."
               : "Try another category or collection, or start again from the latest drop."}
           </p>
           <div className="aw-btn-row">

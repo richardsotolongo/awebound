@@ -46,11 +46,6 @@ export function LegalPage({
             </Link>
           ))}
         </nav>
-        {process.env.NODE_ENV !== "production" ? (
-          <p className="notice aw-small" role="note">
-            Draft for review. Have this policy checked before launch; it is not legal advice.
-          </p>
-        ) : null}
       </PageHeader>
       <div className="legal-layout">
         <nav className="legal-toc" aria-label="On this page">

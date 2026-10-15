@@ -64,6 +64,6 @@ if (hasFlag("--publish")) {
     console.error("A file can only be published once it is assigned to a design.");
     process.exit(1);
   }
-  await publishAsset(row.id, "00000000-0000-0000-0000-000000000000");
+  await publishAsset(row.id, null);
   console.info("published.");
 }

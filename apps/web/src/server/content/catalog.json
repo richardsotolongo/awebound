@@ -771,21 +771,6 @@
         {
           "view": "back",
           "url": "/products/lambs-mark/3.webp",
-          "alt": "Lamb’s Mark distressed cap, back: the Awebound wordmark with red thorns above the strap"
-        },
-        {
-          "view": "front",
-          "url": "/products/lambs-mark/4.webp",
-          "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb inside a red crown of thorns"
-        },
-        {
-          "view": "side",
-          "url": "/products/lambs-mark/5.webp",
-          "alt": "Lamb’s Mark distressed cap, three-quarter view: the embroidered lamb and the frayed brim"
-        },
-        {
-          "view": "back",
-          "url": "/products/lambs-mark/6.webp",
           "alt": "Lamb’s Mark distressed cap, from behind at an angle: the Awebound wordmark with red thorns above the strap"
         }
       ]
@@ -836,21 +821,6 @@
         {
           "view": "back",
           "url": "/products/signature-cap/3.webp",
-          "alt": "Signature Cap in black, back: plain, with an adjustable snap strap"
-        },
-        {
-          "view": "front",
-          "url": "/products/signature-cap/4.webp",
-          "alt": "Signature Cap in black, front: the Awebound wordmark with red-edged thorns above the Thorn Cross"
-        },
-        {
-          "view": "side",
-          "url": "/products/signature-cap/5.webp",
-          "alt": "Signature Cap in black, three-quarter view: the printed wordmark and the curved brim"
-        },
-        {
-          "view": "back",
-          "url": "/products/signature-cap/6.webp",
           "alt": "Signature Cap in black, from behind at an angle: plain, with the adjustable snap strap"
         }
       ]

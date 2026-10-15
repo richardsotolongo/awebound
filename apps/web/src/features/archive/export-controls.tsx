@@ -74,7 +74,7 @@ export function ExportControls({
           <a
             href={`/api/archive/designs/${slug}/card.pdf`}
             download
-            className="aw-btn aw-btn-primary"
+            className="aw-btn aw-btn-secondary"
           >
             Download design card (PDF)
           </a>

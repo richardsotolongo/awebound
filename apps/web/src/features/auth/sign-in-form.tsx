@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
 import { GoogleMark } from "@/components/icons";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
@@ -10,7 +9,6 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Passwordless sign-in: Google, or a one-time link and code sent by email (Supabase Auth + Resend SMTP). */
 export function SignInForm({ next }: { next: string }) {
-  const router = useRouter();
   const id = useId();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -74,13 +72,14 @@ export function SignInForm({ next }: { next: string }) {
       token: code.trim(),
       type: "email",
     });
-    setBusy(false);
     if (err) {
+      setBusy(false);
       setError("That code didn’t work. Check it, or send a new one.");
       return;
     }
-    router.replace(next);
-    router.refresh();
+    // Still busy while the page changes. A full load, not router.replace: a link to the destination may have been prefetched while
+    // signed out (the proxy answered it with a redirect to sign-in), and the router would reuse it.
+    window.location.replace(next);
   }
 
   if (step === "code") {

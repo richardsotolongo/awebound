@@ -19,7 +19,6 @@ export type FlagKey = (typeof FLAG_KEYS)[number];
 
 export const ProductSlugSchema = z.string().regex(/^[a-z0-9-]{1,64}$/, "Unknown piece.");
 export const DesignKeySchema = z.string().regex(/^[a-z0-9-]+:[a-z0-9-]+$/, "Unknown design.");
-export const GuideIdSchema = z.string().regex(/^[a-z0-9-]{1,64}$/, "Unknown guide.");
 export const AssetFormatSchema = z.enum(["phone", "desktop"]);
 export type AssetFormat = z.infer<typeof AssetFormatSchema>;
 export const ShareFormatSchema = z.enum(["portrait", "square"]);
@@ -30,13 +29,8 @@ export type ConsentTopic = z.infer<typeof ConsentTopicSchema>;
 // Shopper actions
 export const SavePieceRequestSchema = z.object({ slug: ProductSlugSchema });
 export type SavePieceRequest = z.infer<typeof SavePieceRequestSchema>;
-export const FitPreferenceRequestSchema = z.object({
-  guideId: GuideIdSchema,
-  size: z.string().trim().max(16).nullable(),
-  note: z.string().trim().max(80, "Keep the note under 80 characters.").nullable(),
-});
-export type FitPreferenceRequest = z.infer<typeof FitPreferenceRequestSchema>;
-export const FitGuideRequestSchema = z.object({ guideId: GuideIdSchema });
+export const DesignAccessRequestSchema = z.object({ slug: ProductSlugSchema });
+export type DesignAccessRequest = z.infer<typeof DesignAccessRequestSchema>;
 export const ClaimStartRequestSchema = z.object({
   friendlyId: z
     .string()
@@ -200,17 +194,19 @@ export interface FitGuide {
   guide: SizeGuide;
 }
 
-export interface FitPreference {
-  guideId: string;
-  size: string | null;
-  note: string | null;
-  updatedAt: string;
-}
-
 export interface OrderSummary {
   id: string;
   friendlyId: string | null;
   placedAt: string | null;
   sync: "confirmed" | "pending" | "revoked";
-  lines: { name: string; color: string | null; size: string | null; quantity: number }[];
+  lines: {
+    slug: string | null;
+    name: string;
+    cut: string | null;
+    color: string | null;
+    size: string | null;
+    quantity: number;
+    /** The garment's listing image. */
+    image: string | null;
+  }[];
 }

@@ -1,5 +1,7 @@
-/* Home page: the tagline on the lead piece's plate, that piece up close, the founder's note, the
-   release as a wall, and the optional sign-up. Nothing here animates on load or on scroll. */
+/* Home page: the tagline on the pieces' plates (taking turns), the piece on the plate up close,
+   the founder's note, the release as a wall, My Archive, and the optional sign-up. Nothing
+   animates on load or on scroll; the opening plate's timed change is the one exception
+   (docs/BRAND.md, Motion). */
 @layer components {
   /* 1. The opening plate: lettering and two actions, the garment cut out beside them. */
   .campaign {
@@ -63,6 +65,73 @@
   }
   .campaign-framed img {
     object-fit: cover;
+  }
+  /* Pieces taking turns (HeroRotator): the next plate fades in whole over the last, which then
+     goes. The garment fades out first and the next one fades in after it, so two garments never
+     show at once; both finish within the plate's 600ms. */
+  .campaign-rotating .campaign-layer {
+    opacity: 0;
+    transition: opacity 0s linear 600ms;
+    z-index: -2;
+  }
+  .campaign-rotating .campaign-layer[data-on="true"] {
+    opacity: 1;
+    transition: opacity 600ms var(--ease-reverent);
+    z-index: -1;
+  }
+  .campaign-rotating .campaign-garment img {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+  }
+  .campaign-rotating .campaign-garment img[data-on="true"] {
+    opacity: 1;
+    transition: opacity 350ms var(--ease-reverent) 200ms;
+  }
+  .campaign-rotating .campaign-garment {
+    position: relative;
+  }
+  .campaign-rotating .campaign-garment img {
+    position: absolute;
+    inset: 0;
+  }
+  .campaign-rotating .campaign-garment img[data-on="true"] {
+    z-index: 1;
+  }
+  .campaign-rotating,
+  .campaign-rotating .aw-btn {
+    transition-property: color, background-color, border-color;
+    transition-duration: 600ms;
+  }
+  .campaign-controls {
+    display: flex;
+    gap: var(--space-2);
+  }
+  .campaign-control {
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    background: var(--plate-ink-on);
+    color: var(--plate-ink);
+    border: 1px solid var(--plate-ink);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .campaign-control:hover {
+    background: color-mix(in srgb, var(--plate-ink-on) 86%, var(--plate-ink));
+  }
+  /* Reduced motion: every change is instant (the [data-on] rules are named too, as they are
+     more specific). */
+  @media (prefers-reduced-motion: reduce) {
+    .campaign-rotating,
+    .campaign-rotating .aw-btn,
+    .campaign-rotating .campaign-layer,
+    .campaign-rotating .campaign-layer[data-on="true"],
+    .campaign-rotating .campaign-garment img,
+    .campaign-rotating .campaign-garment img[data-on="true"] {
+      transition: none;
+    }
   }
   /* One column: the words and actions first, so they are on the first screen; the garment
      follows and may run off the bottom of a short phone. */
@@ -269,7 +338,152 @@
     }
   }
 
-  /* 5. Release updates sign-up. */
+  /* 5. My Archive: the words and their link beside a preview of one design's card. The garment
+     sits on its plate as an image only; every word of the card is on raised coal. */
+  .archive-intro {
+    padding-block: var(--space-24);
+  }
+  .archive-intro-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-12) var(--space-16);
+    align-items: center;
+  }
+  .archive-intro[data-full="false"] .archive-intro-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .archive-intro-words {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+    max-width: 58ch;
+  }
+  .archive-intro-words > * {
+    margin: 0;
+  }
+  .archive-intro-lede {
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .archive-intro-points {
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--space-2);
+    list-style: disc;
+    color: var(--ink-muted);
+  }
+  .archive-intro-card {
+    margin: 0;
+    width: 100%;
+    max-width: 600px;
+    justify-self: end;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  /* As tall as the card's words beside it; the garment is contained, never cropped. */
+  .archive-intro-media {
+    position: relative;
+    min-height: 260px;
+    background: var(--plate, var(--surface));
+  }
+  .archive-intro-media img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .archive-intro-body {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: var(--space-6);
+  }
+  .archive-intro-body > p {
+    margin: 0;
+  }
+  .archive-intro-name {
+    font-weight: 800;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .archive-intro-preview {
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--ink);
+  }
+  .archive-intro-locked {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .archive-intro-locked p {
+    margin: 0;
+  }
+  .archive-intro-locked ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .archive-intro-locked li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--ink-muted);
+  }
+  .archive-intro-locked svg {
+    flex: none;
+    color: var(--accent-text);
+  }
+  .archive-intro-card figcaption {
+    grid-column: 1 / -1;
+    padding: var(--space-3) var(--space-6);
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted);
+  }
+  @media (max-width: 899px) {
+    .archive-intro {
+      padding-block: var(--space-16);
+    }
+    .archive-intro-in {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .archive-intro-card {
+      justify-self: start;
+    }
+  }
+  /* Phones: the words and their link first, then the card with the piece across its top. */
+  @media (max-width: 599px) {
+    .archive-intro {
+      padding-block: var(--space-12);
+    }
+    .archive-intro-card {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .archive-intro-media {
+      min-height: 0;
+      aspect-ratio: 5 / 4;
+    }
+    .archive-intro-body {
+      padding: var(--space-4);
+    }
+    .archive-intro-card figcaption {
+      padding: var(--space-3) var(--space-4);
+    }
+  }
+
+  /* 6. Release updates sign-up. */
   .updates {
     padding-block: var(--space-24);
     background: var(--surface);

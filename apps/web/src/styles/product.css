@@ -183,6 +183,17 @@
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
+  /* Add to bag (or the sold-out notice) with the save heart beside it. */
+  .buy-action {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .buy-action > .aw-btn,
+  .buy-action > .notice {
+    flex: 1;
+  }
   .buy-option {
     display: grid;
     gap: var(--space-3);
@@ -317,6 +328,23 @@
     gap: var(--space-4);
     padding-top: var(--space-6);
     border-top: 1px solid var(--line);
+  }
+  /* My Archive under delivery and returns: what buying this piece opens, and a link for its state. */
+  .buy-archive {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  .buy-archive > * {
+    margin: 0;
+  }
+  .buy-archive-title {
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 24px;
+    color: var(--ink);
   }
   .delivery-list {
     display: grid;

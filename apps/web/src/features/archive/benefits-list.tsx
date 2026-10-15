@@ -1,70 +1,55 @@
-import type { ArchiveReadiness } from "@/server/archive/readiness";
+import {
+  FOUNDING_LINE,
+  OPEN_TO_ALL,
+  SIGNUP_ALONE,
+  freeBenefits,
+  purchaseBenefits,
+  type ArchiveOffer,
+} from "./offer";
 
-/** The benefits an account brings, each claim shown only when it works today. */
-export function purchaseBenefits(r: ArchiveReadiness): string[] {
-  const out: string[] = [];
-  if (r.content) out.push("Read the full story and founder note behind each design you own.");
-  if (r.wallpapers && r.publishedAssets > 0)
-    out.push("Download its published phone and desktop wallpapers.");
-  if (r.pdf && r.share) out.push("Download a design card and create a branded story image.");
-  else if (r.pdf) out.push("Download a design card.");
-  else if (r.share) out.push("Create a branded story image.");
-  return out;
-}
-
-export function immediateBenefits(r: ArchiveReadiness): string[] {
-  const out = [
-    "Save the pieces you want to return to.",
-    "Remember your preferred sizes and view the right size guides.",
-  ];
-  if (r.orders) out.push("Keep your linked orders and purchased collection in one place.");
-  return out;
-}
-
-export function BenefitsList({
-  readiness,
-  headline = true,
-}: {
-  readiness: ArchiveReadiness;
-  headline?: boolean;
-}) {
-  const purchase = purchaseBenefits(readiness);
+/**
+ * What an account brings, in two groups kept apart: what is free with the account, and what each
+ * design bought with it opens. Every line comes from the offer, so only working features appear.
+ */
+export function BenefitsList({ offer }: { offer: ArchiveOffer }) {
+  const free = freeBenefits(offer);
+  const purchase = purchaseBenefits(offer);
+  if (free.length === 0) return null;
   return (
     <div className="archive-benefits">
-      {headline ? (
-        <>
-          <h2 className="aw-h2">Your pieces. Their meaning. One Archive.</h2>
-          <p className="aw-body">
-            Create a free Awebound account to save pieces, remember your fit, and keep your orders
-            together. Each purchased design unlocks its full story, a note from Richard, and its
-            published digital extras.
-          </p>
-        </>
-      ) : null}
-      <div>
-        <h3 className="aw-h3">Right away</h3>
+      <div className="archive-benefits-head">
+        <h2 className="aw-h2">Your pieces. Their meaning. One Archive.</h2>
+        <p className="aw-body">
+          My Archive brings your Awebound pieces and their meaning together.
+        </p>
+      </div>
+      <section className="archive-benefit-group" aria-labelledby="free-title">
+        <h3 id="free-title" className="aw-h3">
+          Free with your account
+        </h3>
         <ul>
-          {immediateBenefits(readiness).map((b) => (
+          {free.map((b) => (
             <li key={b}>{b}</li>
           ))}
         </ul>
-      </div>
+      </section>
       {purchase.length > 0 ? (
-        <div>
-          <h3 className="aw-h3">After a purchase</h3>
+        <section className="archive-benefit-group" aria-labelledby="purchase-title">
+          <h3 id="purchase-title" className="aw-h3">
+            With each design you buy
+          </h3>
           <ul>
             {purchase.map((b) => (
               <li key={b}>{b}</li>
             ))}
           </ul>
-        </div>
+          <p className="aw-small">{SIGNUP_ALONE}</p>
+        </section>
       ) : null}
-      {readiness.founding ? (
-        <p className="aw-small">
-          The first 50 qualifying buyers who use their Awebound account at checkout receive a
-          Founding Member seal. Guest purchases do not qualify.
-        </p>
-      ) : null}
+      <div className="archive-benefits-notes">
+        <p className="aw-small">{OPEN_TO_ALL}</p>
+        {offer.foundingOpen ? <p className="aw-small">{FOUNDING_LINE}</p> : null}
+      </div>
     </div>
   );
 }

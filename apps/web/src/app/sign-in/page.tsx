@@ -5,7 +5,7 @@ import { BenefitsList } from "@/features/archive/benefits-list";
 import { SignInForm } from "@/features/auth/sign-in-form";
 import { accountsEnabled } from "@/lib/env";
 import { safeNext } from "@/lib/supabase/server";
-import { getArchiveReadiness } from "@/server/archive/readiness";
+import { getArchiveOffer } from "@/server/archive/offer";
 import { getLatestRelease, withFallback } from "@/server/catalog";
 
 export const metadata: Metadata = {
@@ -29,9 +29,9 @@ export default async function SignInPage({
   const params = await searchParams;
   const next = safeNext(params.next);
   const error = params.error ? (ERRORS[params.error] ?? ERRORS.link) : null;
-  const [release, readiness] = await Promise.all([
+  const [release, offer] = await Promise.all([
     withFallback(getLatestRelease, null),
-    getArchiveReadiness(),
+    getArchiveOffer(),
   ]);
   const closed = accountsClosedCopy();
 
@@ -61,7 +61,7 @@ export default async function SignInPage({
             </div>
           )}
         </div>
-        <BenefitsList readiness={readiness} />
+        <BenefitsList offer={offer} />
       </div>
     </div>
   );

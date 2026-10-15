@@ -4,19 +4,18 @@ import {
   ClaimStartRequestSchema,
   ClaimVerifyRequestSchema,
   ConsentRequestSchema,
-  FitGuideRequestSchema,
-  FitPreferenceRequestSchema,
+  DesignAccessRequestSchema,
   SavePieceRequestSchema,
   type ClaimStartRequest,
   type ClaimVerifyRequest,
   type ConsentRequest,
-  type FitPreference,
-  type FitPreferenceRequest,
+  type DesignAccessRequest,
   type SavePieceRequest,
 } from "@/shared";
 import { startClaim, verifyClaim } from "./archive/claims";
 import { setConsent } from "./archive/consents";
-import { clearFitPreference, saveFitPreference } from "./archive/fit";
+import { getDesignBySlug } from "./archive/designs";
+import { getEntitlement } from "./archive/entitlements";
 import { getArchiveReadiness } from "./archive/readiness";
 import { reconcileOrders } from "./archive/reconcile";
 import { savePiece, savedSlugs, unsavePiece } from "./archive/saved";
@@ -55,22 +54,19 @@ export async function getSavedSlugsAction(): Promise<Result<string[]>> {
   return run(async () => savedSlugs((await requireUser()).id));
 }
 
-export async function saveFitPreferenceAction(
-  input: FitPreferenceRequest,
-): Promise<Result<FitPreference>> {
+/**
+ * The product page asks after mount whether the shopper owns this design, so its note can link to
+ * the card. Only a yes or no leaves the server; the design must be published.
+ */
+export async function designAccessAction(
+  input: DesignAccessRequest,
+): Promise<Result<{ owned: boolean }>> {
   return run(async () => {
     const user = await requireUser();
-    const { guideId, size, note } = parse(FitPreferenceRequestSchema, input);
-    return saveFitPreference(user.id, guideId, size, note);
-  });
-}
-
-export async function clearFitPreferenceAction(input: { guideId: string }): Promise<Result<null>> {
-  return run(async () => {
-    const user = await requireUser();
-    const { guideId } = parse(FitGuideRequestSchema, input);
-    await clearFitPreference(user.id, guideId);
-    return null;
+    const { slug } = parse(DesignAccessRequestSchema, input);
+    const design = await getDesignBySlug(slug);
+    if (!design?.published_content_id) return { owned: false };
+    return { owned: Boolean(await getEntitlement(user.id, design.design_key)) };
   });
 }
 

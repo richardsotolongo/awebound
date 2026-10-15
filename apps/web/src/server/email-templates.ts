@@ -186,12 +186,12 @@ export function accountDeleted(): RenderedEmail {
       eyebrow("Account deleted"),
       lead("Your Awebound account is deleted."),
       row(
-        "We removed your sign-in, your profile, your saved pieces, your fit and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.",
+        "We removed your sign-in, your profile, your saved pieces and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.",
       ),
       small("If you didn’t ask for this, reply to this email and we’ll look into it."),
     ],
   });
-  const text = `Your Awebound account is deleted.\n\nWe removed your sign-in, your profile, your saved pieces, your fit and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.\n\nIf you didn’t ask for this, reply to this email and we’ll look into it.`;
+  const text = `Your Awebound account is deleted.\n\nWe removed your sign-in, your profile, your saved pieces and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.\n\nIf you didn’t ask for this, reply to this email and we’ll look into it.`;
   return { subject, html, text };
 }
 
@@ -228,12 +228,12 @@ export function archiveWelcome(siteUrl: string): RenderedEmail {
     rows: [
       lead("Your Archive is open."),
       row(
-        "Save the pieces you want to return to, remember your preferred sizes, and keep your orders in one place. Each purchased design unlocks its full story and a note from Richard.",
+        "Save the pieces you want to return to and keep your orders in one place. Each purchased design unlocks its full story and a note from Richard.",
       ),
       button("Open My Archive", `${siteUrl}/account`),
     ],
   });
-  const text = `Your Archive is open.\n\nSave the pieces you want to return to, remember your preferred sizes, and keep your orders in one place. Each purchased design unlocks its full story and a note from Richard.\n\nOpen My Archive: ${siteUrl}/account`;
+  const text = `Your Archive is open.\n\nSave the pieces you want to return to and keep your orders in one place. Each purchased design unlocks its full story and a note from Richard.\n\nOpen My Archive: ${siteUrl}/account`;
   return { subject, html, text };
 }
 

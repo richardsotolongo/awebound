@@ -33,17 +33,22 @@ export default async function CollectionPage() {
         }
       />
       {designs.length === 0 ? (
-        <p className="aw-body">The ten Behold designs will appear here once they are published.</p>
+        <div className="aw-btn-row">
+          <Button variant="secondary" href="/shop">
+            Visit the shop
+          </Button>
+        </div>
       ) : (
         <ul className="archive-grid" style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {designs.map((d) => {
             const product = catalog?.findBySlug(d.product_slug) ?? null;
             const image = product?.image.url ?? `/products/${d.product_slug}/1.webp`;
             const has = owned.has(d.design_key);
+            const published = isPublished.has(d.design_key);
             return (
               <li key={d.design_key} className="archive-card">
                 <div className="archive-card-media">
-                  {has ? (
+                  {has && published ? (
                     <Link
                       href={`/account/collection/${d.product_slug}`}
                       aria-label={`${d.name}, owned`}
@@ -57,22 +62,18 @@ export default async function CollectionPage() {
                   )}
                 </div>
                 <p className="aw-product-name">{d.name}</p>
-                {has ? (
+                {has && published ? (
                   <Button variant="link" href={`/account/collection/${d.product_slug}`}>
                     Open its story
                   </Button>
-                ) : isPublished.has(d.design_key) ? (
-                  <>
-                    <p className="aw-small">
-                      Own this design to unlock its full story and founder note.
-                    </p>
-                    <Button variant="link" href={`/shop/${d.product_slug}`}>
-                      View the piece
-                    </Button>
-                  </>
                 ) : (
                   <>
-                    <p className="aw-small">Story coming soon.</p>
+                    {has ? <p className="aw-small">Owned</p> : null}
+                    {!has && published ? (
+                      <p className="aw-small">
+                        Own this design to unlock its full story and founder note.
+                      </p>
+                    ) : null}
                     <Button variant="link" href={`/shop/${d.product_slug}`}>
                       View the piece
                     </Button>

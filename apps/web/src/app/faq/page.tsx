@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
+import { FOUNDING_LINE, hasExtras, type ArchiveOffer } from "@/features/archive/offer";
 import { DELIVERY } from "@/lib/delivery";
 import { SITE, pageMeta } from "@/lib/site";
+import { getArchiveOffer } from "@/server/archive/offer";
 import { TRANSLATION, TRANSLATION_NAME, TRANSLATION_NOTICE } from "@/server/scripture";
 
 export const metadata = pageMeta({
@@ -20,9 +22,73 @@ interface Faq {
   text: string;
 }
 
+// The Archive answers follow what works today, re-read with the page once a minute.
+export const revalidate = 60;
+
 const mail = <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>;
 
-const GROUPS: { title: string; items: Faq[] }[] = [
+/** An answer that is one plain paragraph, the same in the page and in structured data. */
+const plain = (q: string, text: string): Faq => ({ q, text, a: <p>{text}</p> });
+
+function accountAnswer(o: ArchiveOffer): Faq {
+  if (!o.accounts)
+    return plain("Do I need an account to order?", "No. You can check out as a guest.");
+  const kept = o.orders ? "the pieces you save and your orders" : "the pieces you save";
+  return plain(
+    "Do I need an account to order?",
+    `No. You can check out as a guest. Accounts are free and optional. My Archive keeps ${kept} in one place, and you sign in with Google or a one-time email link, with no password.`,
+  );
+}
+
+/** "Your Archive", from the offer: nothing is answered before it works. */
+function archiveGroup(o: ArchiveOffer): { title: string; items: Faq[] } | null {
+  if (!o.accounts) return null;
+  const items: Faq[] = [];
+  const orders = o.orders
+    ? " and keeps your orders in one place, including guest orders placed with the same email"
+    : "";
+  const stories = o.stories
+    ? ` Each design you buy opens its full story, a personal note from Richard${hasExtras(o) ? " and its published digital extras" : ""} in My Archive. Signing up on its own doesn’t open them.`
+    : "";
+  items.push(
+    plain(
+      "What does an account give me?",
+      `An account is free. It saves the pieces you want to return to${orders}.${stories}`,
+    ),
+  );
+  if (o.orders) {
+    const linked =
+      "Sign in with the email address you used at checkout and the order links itself.";
+    items.push(
+      o.claims
+        ? plain(
+            "How do I link an order I placed as a guest?",
+            `${linked} If you used a different address, open Orders in My Archive, choose Link a past order, and enter the order number: a code goes to the email address on that order.`,
+          )
+        : {
+            q: "How do I link an order I placed as a guest?",
+            text: `${linked} If you used a different address, write to ${SITE.contactEmail} with your order number and we’ll help.`,
+            a: (
+              <p>
+                {linked} If you used a different address, write to {mail} with your order number and
+                we’ll help.
+              </p>
+            ),
+          },
+    );
+  }
+  if (o.foundingOpen) {
+    items.push(
+      plain(
+        "What is the Founding Member seal?",
+        `${FOUNDING_LINE} The seal is recognition on your Archive and carries no discount.`,
+      ),
+    );
+  }
+  return { title: "Your Archive", items };
+}
+
+const groups = (o: ArchiveOffer): { title: string; items: Faq[] }[] => [
   {
     title: "Ordering",
     items: [
@@ -37,17 +103,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
           </p>
         ),
       },
-      {
-        q: "Do I need an account to order?",
-        text: "No. You can check out as a guest. Accounts are free and optional: My Archive keeps your saved pieces, your fit and your orders in one place, and you sign in with Google or a one-time email link, with no password.",
-        a: (
-          <p>
-            No. You can check out as a guest. Accounts are free and optional: My Archive keeps your
-            saved pieces, your fit and your orders in one place, and you sign in with Google or a
-            one-time email link, with no password.
-          </p>
-        ),
-      },
+      accountAnswer(o),
       {
         q: "Can I change or cancel my order?",
         text: "Each piece is made to order, and production can start soon after you order. Email us right away: an order can be changed or canceled only until production starts or a shipping label is created.",
@@ -156,45 +212,7 @@ const GROUPS: { title: string; items: Faq[] }[] = [
       },
     ],
   },
-  {
-    title: "Your Archive",
-    items: [
-      {
-        q: "What does an account give me?",
-        text: "Right away: save the pieces you want to return to, remember your preferred sizes and view the right size guides, and keep your linked orders in one place. Each design you buy while signed in unlocks its full story, a note from Richard and its published digital extras in My Archive.",
-        a: (
-          <p>
-            Right away: save the pieces you want to return to, remember your preferred sizes and
-            view the right size guides, and keep your linked orders in one place. Each design you
-            buy while signed in unlocks its full story, a note from Richard and its published
-            digital extras in My Archive.
-          </p>
-        ),
-      },
-      {
-        q: "How do I link an order I placed as a guest?",
-        text: "Sign in with the email address you used at checkout and the order links itself. If you used a different address, open Orders in My Archive, choose Link a past order, and enter the order number: a code goes to the email address on that order.",
-        a: (
-          <p>
-            Sign in with the email address you used at checkout and the order links itself. If you
-            used a different address, open Orders in My Archive, choose Link a past order, and enter
-            the order number: a code goes to the email address on that order.
-          </p>
-        ),
-      },
-      {
-        q: "What is the Founding Member seal?",
-        text: "The first 50 qualifying buyers who use their Awebound account at checkout receive a Founding Member seal. Guest purchases do not qualify. It is recognition on your Archive, not a discount.",
-        a: (
-          <p>
-            The first 50 qualifying buyers who use their Awebound account at checkout receive a
-            Founding Member seal. Guest purchases do not qualify. It is recognition on your Archive,
-            not a discount.
-          </p>
-        ),
-      },
-    ],
-  },
+  ...[archiveGroup(o)].filter((g) => g !== null),
   {
     title: "The designs",
     items: [
@@ -238,7 +256,8 @@ const GROUPS: { title: string; items: Faq[] }[] = [
   },
 ];
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const GROUPS = groups(await getArchiveOffer());
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

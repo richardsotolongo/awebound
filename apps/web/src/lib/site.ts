@@ -51,14 +51,12 @@ export function pageMeta({
 
 export const MAIN_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
-  { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
 export const FOOTER_NAV: NavLink[] = [
   { label: "Shop", href: "/shop" },
-  { label: "Collections", href: "/collections" },
   { label: "About", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Returns", href: "/refunds" },

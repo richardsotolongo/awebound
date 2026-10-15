@@ -372,13 +372,18 @@ export async function listOrdersForUser(userId: string): Promise<OrderSummary[]>
         : o.payment_state === "revoked"
           ? "revoked"
           : "pending",
-    lines: o.lines.map((l) => ({
-      name:
-        (l.product_slug && catalog?.findBySlug(l.product_slug)?.name) || l.offer_name || "Piece",
-      color: l.color,
-      size: l.size,
-      quantity: l.quantity,
-    })),
+    lines: o.lines.map((l) => {
+      const product = l.product_slug ? catalog?.findBySlug(l.product_slug) : null;
+      return {
+        slug: l.product_slug,
+        name: product?.name || l.offer_name || "Piece",
+        cut: product?.category.cut ?? null,
+        color: l.color,
+        size: l.size,
+        quantity: l.quantity,
+        image: product?.image.url ?? (l.product_slug ? `/products/${l.product_slug}/1.webp` : null),
+      };
+    }),
   }));
 }
 
