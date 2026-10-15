@@ -10,7 +10,7 @@ src/
 │  ├─ page.tsx             home, rendered per visit: the tagline on the pieces' plates in turn (opening on the release's primary piece), the piece on the plate up close (it follows the plate), the founder's note, the release as a wall, My Archive's introduction
 │  ├─ shop/                (list)/ the listing (search, then collection, category and sort selects) with its loading state; [slug]/ product pages, cached for a minute
 │  ├─ collections/         /collections redirects to the shop while there is one release; /collections/<slug> opens the shop filtered to it
-│  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in (Join Awebound: the form beside what the account brings, free and with a purchase)
+│  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in (Join Awebound: the form first, then what the account brings, free and with a purchase)
 │  ├─ account/             My Archive (layout guards the session and shows the nav): overview, saved, collection, collection/[slug]
 │  │                       (the owned card), orders, orders/link (claim a past order), settings, admin/* (owner pages, role `admin`)
 │  ├─ api/                 fourthwall/webhook (signed order events), fourthwall/reconcile (cron), archive/assets/[id], archive/designs/[slug]/card.pdf and share.png

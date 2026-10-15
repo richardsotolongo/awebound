@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath, updateTag } from "next/cache";
 import {
   ApproveRequestSchema,
   AssetAssignRequestSchema,
@@ -24,6 +25,7 @@ import {
   retireAsset,
 } from "./archive/assets";
 import { approveDraft, publishContent, retireContent, saveDraft } from "./archive/content";
+import { ARCHIVE_PUBLIC_TAG } from "./archive/offer";
 import { mapOffer } from "./archive/designs";
 import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
@@ -35,6 +37,15 @@ import { parse, run, type Result } from "./errors";
 import { requireAdmin } from "./session";
 
 // Owner actions for My Archive. Each one checks the admin role from the session and is audited by the module it calls.
+
+/**
+ * After content goes live or comes down, the public pages show it now rather than within the
+ * minute their caches last: the Archive reads and every page's cached render.
+ */
+function refreshPublicPages() {
+  updateTag(ARCHIVE_PUBLIC_TAG);
+  revalidatePath("/", "layout");
+}
 
 export async function importDraftsAction(): Promise<Result<ImportReport>> {
   return run(async () => importDrafts((await requireAdmin()).id));
@@ -66,7 +77,9 @@ export async function publishContentAction(
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { designKeys } = parse(PublishRequestSchema, input);
-    return { published: await publishContent(designKeys, actor) };
+    const published = await publishContent(designKeys, actor);
+    refreshPublicPages();
+    return { published };
   });
 }
 
@@ -75,6 +88,7 @@ export async function retireContentAction(input: unknown): Promise<Result<null>>
     const actor = (await requireAdmin()).id;
     const { designKey } = parse(DesignKeyRequestSchema, input);
     await retireContent(designKey, actor);
+    refreshPublicPages();
     return null;
   });
 }

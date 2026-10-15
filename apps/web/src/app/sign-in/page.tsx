@@ -1,4 +1,3 @@
-import { ThornCross } from "@awebound/brand";
 import type { Metadata } from "next";
 import { AccountsClosedActions, accountsClosedCopy } from "@/features/account/accounts-closed";
 import { BenefitsList } from "@/features/archive/benefits-list";
@@ -21,7 +20,10 @@ const ERRORS: Record<string, string> = {
   oauth: "Google sign-in didn’t finish. Try again.",
 };
 
-/** Sign-in and sign-up are the same passwordless flow; the page says what the account brings. */
+/**
+ * Sign-in and sign-up are the same passwordless flow. The way in comes first, at the top of the
+ * page; what My Archive holds follows beneath it.
+ */
 export default async function SignInPage({
   searchParams,
 }: {
@@ -51,33 +53,28 @@ export default async function SignInPage({
   const closed = accountsClosedCopy();
 
   return (
-    <div className="aw-container section">
-      <div className="split split-even">
-        <div style={{ width: "100%", maxWidth: 440, display: "grid", gap: "var(--space-8)" }}>
-          <div style={{ display: "grid", gap: "var(--space-4)" }}>
-            <span style={{ color: "var(--line-strong)" }}>
-              <ThornCross size="small" height={48} title="" />
-            </span>
-            <h1 className="aw-h1">Join Awebound</h1>
-            <p className="aw-body">Accounts are free. Guest checkout is always available.</p>
-          </div>
-          {error ? (
-            <p className="notice aw-small" role="alert">
-              {error}
-            </p>
-          ) : null}
-          {accountsEnabled ? (
-            <SignInForm next={next} />
-          ) : (
-            <div className="notice" role="status">
-              <p className="aw-h3">{closed.title}</p>
-              <p className="aw-small">{closed.intro}</p>
-              <AccountsClosedActions release={release} />
-            </div>
-          )}
+    <div className="aw-container signin">
+      <div className="signin-form">
+        <div className="signin-head">
+          <h1 className="aw-h1">Join Awebound</h1>
+          <p className="aw-body">Accounts are free. Guest checkout is always available.</p>
         </div>
-        <BenefitsList offer={offer} pieces={pieces} quote={lead?.scripture ?? null} />
+        {error ? (
+          <p className="notice aw-small" role="alert">
+            {error}
+          </p>
+        ) : null}
+        {accountsEnabled ? (
+          <SignInForm next={next} />
+        ) : (
+          <div className="notice" role="status">
+            <p className="aw-h3">{closed.title}</p>
+            <p className="aw-small">{closed.intro}</p>
+            <AccountsClosedActions release={release} />
+          </div>
+        )}
       </div>
+      <BenefitsList offer={offer} pieces={pieces} quote={lead?.scripture ?? null} />
     </div>
   );
 }

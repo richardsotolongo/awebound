@@ -42,11 +42,14 @@ async function buildOffer(): Promise<ArchiveOffer> {
   };
 }
 
+/** The tag on the public Archive reads, refreshed when the owner publishes or retires content. */
+export const ARCHIVE_PUBLIC_TAG = "archive-public";
+
 /** What My Archive can promise right now. A failed read promises nothing. */
 export const getArchiveOffer = unstable_cache(
   () => buildOffer().catch(() => NO_OFFER),
   ["archive-offer"],
-  { revalidate: 60 },
+  { revalidate: 60, tags: [ARCHIVE_PUBLIC_TAG] },
 );
 
 /** A design's published wallpaper formats (never ids or file paths), when wallpapers are offered. */
@@ -71,14 +74,14 @@ export interface ArchivePreview {
   wallpapers: AssetFormat[];
 }
 
-/** By His Hem when it's published, else the first published design. */
+/** By His Hem when it's published, else the first published design (its public fields only). */
 const PREVIEW_SLUG = "by-his-hem";
 
 export const getArchivePreview = unstable_cache(
   async (): Promise<ArchivePreview | null> => {
     try {
       const offer = await getArchiveOffer();
-      if (!offer.stories) return null;
+      if (!offer.accounts) return null;
       const card =
         (await getPublishedPublicCard(PREVIEW_SLUG)) ?? (await listPublishedPublicCards())[0];
       if (!card) return null;
@@ -95,5 +98,5 @@ export const getArchivePreview = unstable_cache(
     }
   },
   ["archive-preview"],
-  { revalidate: 60 },
+  { revalidate: 60, tags: [ARCHIVE_PUBLIC_TAG] },
 );

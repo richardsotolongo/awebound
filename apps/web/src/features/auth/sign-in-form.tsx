@@ -133,7 +133,7 @@ export function SignInForm({ next }: { next: string }) {
   }
 
   return (
-    <div style={{ display: "grid", gap: "var(--space-8)" }}>
+    <div style={{ display: "grid", gap: "var(--space-4)" }}>
       <Button variant="secondary" block onClick={google} disabled={busy}>
         <GoogleMark /> Continue with Google
       </Button>
