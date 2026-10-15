@@ -49,6 +49,7 @@ export function toSummary(p: ProductDetail): ProductSummary {
     scripture: p.scripture,
     image: p.image,
     hoverImage: p.hoverImage,
+    gallery: p.gallery,
     plate: p.plate,
     featured: p.featured,
     releasedAt: p.releasedAt,

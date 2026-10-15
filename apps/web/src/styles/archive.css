@@ -209,28 +209,361 @@
   .archive-order-line-name a {
     color: inherit;
   }
-  /* Sign-in: what the account brings, free and with a purchase in groups set apart by a rule. */
+  /* Sign-in: what My Archive holds, as tiles with pictures, in two groups set apart by a rule. */
   .archive-benefits {
+    --tile-visual: 168px;
     display: grid;
     align-content: start;
     gap: var(--space-8);
+    container-type: inline-size;
   }
-  .archive-benefits-notes {
+  .archive-benefits-head {
     display: grid;
     gap: var(--space-3);
   }
   .archive-benefit-group {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
     padding-top: var(--space-6);
     border-top: 1px solid var(--line);
   }
   .archive-benefits h2,
+  .archive-benefits p,
   .archive-benefit-group > * {
     margin: 0;
   }
   .archive-benefits h3 {
     color: var(--ink);
+  }
+  .archive-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .archive-tile {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  /* An odd tile out runs the full width, its picture beside its words. */
+  .archive-tile:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+  .archive-tile:last-child:nth-child(odd) .archive-tile-visual {
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+  }
+  .archive-tile:last-child:nth-child(odd) .archive-tile-words {
+    align-content: center;
+  }
+  .archive-tile-words {
+    display: grid;
+    align-content: start;
+    gap: var(--space-1);
+    padding: var(--space-4);
+  }
+  .archive-tile-title {
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 22px;
+  }
+  .archive-tile-body {
+    color: var(--ink-muted);
+    font-size: 14px;
+    line-height: 20px;
+  }
+  /* Each picture: a fixed band at the top of its tile, drawn from the release's own pieces. */
+  .archive-tile-visual {
+    position: relative;
+    display: block;
+    height: var(--tile-visual);
+    overflow: hidden;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .archive-tile-visual img {
+    display: block;
+  }
+  .archive-tile-plate,
+  .archive-tile-detail {
+    background: var(--plate, var(--surface));
+  }
+  .archive-tile-garment,
+  .archive-tile-detail img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 94%;
+    width: auto;
+    translate: -50% -50%;
+  }
+  .archive-tile-detail img {
+    height: 84%;
+  }
+  .archive-tile-heart,
+  .archive-tile-badge {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--brand-coal) 55%, transparent);
+    color: var(--brand-bone);
+  }
+  .archive-tile-heart {
+    right: var(--space-2);
+    bottom: var(--space-2);
+    width: 32px;
+    height: 32px;
+  }
+  .archive-tile-badge {
+    left: var(--space-2);
+    bottom: var(--space-2);
+    width: 28px;
+    height: 28px;
+  }
+  /* Saved pieces on a laptop and a phone; a wallpaper and a design card for the extras. */
+  .archive-tile-devices {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+  .archive-device {
+    position: relative;
+    display: grid;
+    gap: 4px;
+    padding: 5px;
+    border: 2px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-page);
+  }
+  .archive-device-laptop {
+    width: 54%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 8px;
+  }
+  .archive-device-laptop::after {
+    content: "";
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -9px;
+    height: 5px;
+    background: var(--line-strong);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+  .archive-device-phone {
+    width: 17%;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+  .archive-device-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: var(--plate, var(--surface));
+  }
+  .archive-device-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .archive-device-wallpaper {
+    width: 22%;
+    aspect-ratio: 9 / 17;
+    padding: 0;
+    background: var(--plate, var(--surface));
+    overflow: hidden;
+  }
+  .archive-device-wallpaper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .archive-device-doc {
+    width: 28%;
+    aspect-ratio: 3 / 4;
+    align-content: start;
+    gap: 6px;
+    padding: 10px 8px;
+    background: var(--altar);
+    border-color: var(--altar);
+  }
+  .archive-device-doc span,
+  .archive-tile-lines span {
+    display: block;
+    height: 5px;
+    background: color-mix(in srgb, var(--on-altar-muted) 35%, transparent);
+  }
+  .archive-device-doc span:first-child {
+    height: 8px;
+    width: 70%;
+    background: color-mix(in srgb, var(--altar-mark) 70%, transparent);
+  }
+  .archive-device-doc span:last-child {
+    width: 55%;
+  }
+  /* Orders: two rows, each a garment and its lines. */
+  .archive-tile-orders {
+    display: grid;
+    align-content: center;
+    gap: var(--space-2);
+    padding: 0 12%;
+  }
+  .archive-tile-order {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: center;
+    padding: 6px;
+    border: 1px solid var(--line);
+    background: var(--surface-raised);
+  }
+  .archive-tile-thumb {
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: var(--plate, var(--surface));
+  }
+  .archive-tile-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .archive-tile-order .archive-tile-lines span {
+    background: var(--line);
+  }
+  .archive-tile-lines {
+    display: grid;
+    gap: 6px;
+  }
+  .archive-tile-lines span:nth-child(1) {
+    width: 72%;
+  }
+  .archive-tile-lines span:nth-child(2) {
+    width: 46%;
+  }
+  .archive-tile-lines span:nth-child(3) {
+    width: 84%;
+  }
+  .archive-tile-lines span:nth-child(4) {
+    width: 58%;
+  }
+  /* A verse: the words in full, so this picture grows with them instead of cutting them. */
+  .archive-tile-verse {
+    height: auto;
+    min-height: var(--tile-visual);
+    display: grid;
+    align-content: center;
+    padding: var(--space-4) var(--space-6);
+  }
+  .archive-tile-verse .aw-verse {
+    margin: 0;
+  }
+  /* Richard's note: his portrait on bone paper beside the lines of a letter, locked. */
+  .archive-tile-note {
+    display: grid;
+    grid-template-columns: 34% minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-4) var(--space-6);
+    background: var(--altar);
+  }
+  .archive-tile-note img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  .archive-tile-note .archive-tile-lines span:nth-child(1) {
+    background: color-mix(in srgb, var(--altar-mark) 60%, transparent);
+  }
+  /* Its card: the garment on its plate beside its name and reference. */
+  .archive-tile-mini {
+    display: grid;
+    grid-template-columns: 44% minmax(0, 1fr);
+  }
+  .archive-mini-plate {
+    position: relative;
+    display: block;
+    background: var(--plate, var(--surface));
+  }
+  .archive-mini-plate img {
+    position: absolute;
+    inset: 4% 0;
+    width: 100%;
+    height: 92%;
+    object-fit: contain;
+  }
+  .archive-mini-label {
+    display: grid;
+    align-content: center;
+    gap: var(--space-2);
+    padding: 0 var(--space-4);
+  }
+  .archive-mini-name {
+    color: var(--ink);
+    font-weight: 800;
+    font-size: 13px;
+    line-height: 17px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .archive-mini-ref {
+    color: var(--scripture);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  /* A narrow column (phones): smaller pictures and words, still two across. */
+  @container (max-width: 459px) {
+    .archive-tiles {
+      --tile-visual: 136px;
+      gap: var(--space-2);
+    }
+    .archive-tile-words {
+      padding: var(--space-3);
+    }
+    .archive-tile-title {
+      font-size: 14px;
+      line-height: 19px;
+    }
+    .archive-tile-body {
+      font-size: 13px;
+      line-height: 18px;
+    }
+    .archive-tile-verse,
+    .archive-tile-note {
+      padding: var(--space-3);
+    }
+    .archive-tile-verse .aw-quote p {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+    .archive-tile-orders {
+      padding: 0 8%;
+    }
+    .archive-tile-order {
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: var(--space-2);
+      padding: 4px;
+    }
+    .archive-mini-label {
+      padding: 0 var(--space-2);
+    }
+    .archive-mini-name {
+      font-size: 11px;
+      line-height: 14px;
+    }
+    .archive-tile-devices {
+      gap: var(--space-2);
+    }
   }
   /* The overview's first-visit welcome: words beside their two actions, set in the page. */
   .archive-welcome {

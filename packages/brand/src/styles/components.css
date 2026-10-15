@@ -687,6 +687,63 @@
   .aw-card-link:focus-visible .aw-card-alt {
     opacity: 1;
   }
+  /* The piece's images: with a mouse only the first shows (the hover image covers it); on a
+     touch screen they are a strip to swipe through, with dots in the bottom left. */
+  .aw-card-strip,
+  .aw-card-frame {
+    position: absolute;
+    inset: 0;
+  }
+  .aw-card-more,
+  .aw-card-dots {
+    display: none;
+  }
+  @media (hover: none) {
+    .aw-card-strip {
+      display: flex;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .aw-card-strip::-webkit-scrollbar {
+      display: none;
+    }
+    .aw-card-frame {
+      position: relative;
+      inset: auto;
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+    .aw-card-more {
+      display: block;
+    }
+    .aw-card-media .aw-card-alt {
+      display: none;
+    }
+    .aw-card-dots {
+      position: absolute;
+      left: var(--space-2);
+      bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 20px;
+      padding: 0 7px;
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, var(--brand-coal) 55%, transparent);
+      pointer-events: none;
+    }
+    .aw-card-dots span {
+      width: 5px;
+      height: 5px;
+      background: color-mix(in srgb, var(--brand-bone) 45%, transparent);
+    }
+    .aw-card-dots span[data-on="true"] {
+      background: var(--brand-bone);
+    }
+  }
   .aw-card-meta {
     min-width: 0;
     padding: var(--space-4) 0 var(--space-6);

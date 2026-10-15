@@ -6,7 +6,8 @@ import { SignInForm } from "@/features/auth/sign-in-form";
 import { accountsEnabled } from "@/lib/env";
 import { safeNext } from "@/lib/supabase/server";
 import { getArchiveOffer } from "@/server/archive/offer";
-import { getLatestRelease, withFallback } from "@/server/catalog";
+import { plateCss } from "@/shared";
+import { getLatestRelease, searchProducts, withFallback } from "@/server/catalog";
 
 export const metadata: Metadata = {
   title: "Join Awebound",
@@ -33,6 +34,20 @@ export default async function SignInPage({
     withFallback(getLatestRelease, null),
     getArchiveOffer(),
   ]);
+  // The tiles' pictures come from the release's own pieces, its lead (featured) piece first.
+  const listed = release
+    ? await withFallback(() => searchProducts({ collection: [release.slug], pageSize: 48 }), null)
+    : null;
+  const ordered = [...(listed?.items ?? [])].sort((a, b) => a.position - b.position);
+  const lead = ordered.find((p) => p.featured) ?? ordered[0];
+  const pieces = (lead ? [lead, ...ordered.filter((p) => p !== lead)] : [])
+    .filter((p) => p.plate)
+    .map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      plate: plateCss(p.plate),
+      reference: p.scripture.reference,
+    }));
   const closed = accountsClosedCopy();
 
   return (
@@ -61,7 +76,7 @@ export default async function SignInPage({
             </div>
           )}
         </div>
-        <BenefitsList offer={offer} />
+        <BenefitsList offer={offer} pieces={pieces} quote={lead?.scripture ?? null} />
       </div>
     </div>
   );

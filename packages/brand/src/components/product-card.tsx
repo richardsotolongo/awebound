@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode, type UIEvent } from "react";
 import { cx } from "../cx";
 import { BrandLink } from "../link";
 import { ScriptureQuote } from "./scripture-quote";
@@ -20,6 +20,11 @@ export interface ProductCardProps {
   imageAlt?: string;
   /** Shown on hover, usually the other side. */
   hoverImage?: string;
+  /**
+   * Every image of the piece in order, the first being `image`. On a touch screen the image is a
+   * strip to swipe through them without opening the piece, with dots for where you are.
+   */
+  gallery?: string[];
   href: string;
   price?: string;
   /** Said plainly under the price when it applies: "Sold out", "Some sizes sold out". */
@@ -52,7 +57,8 @@ export interface ProductCardProps {
 /**
  * A product tile: the whole garment, the name, its type and price, then (on shop cards) its
  * Scripture in italic with the reference. The name comes first: nothing sits above it as a
- * label. The whole card links to the product page.
+ * label. The whole card links to the product page. With a mouse, hovering shows the other side;
+ * on a touch screen a sideways swipe moves through the piece's images (a tap still opens it).
  */
 export function ProductCard({
   name,
@@ -61,6 +67,7 @@ export function ProductCard({
   image,
   imageAlt,
   hoverImage,
+  gallery,
   href,
   price,
   status,
@@ -73,7 +80,14 @@ export function ProductCard({
   className,
 }: ProductCardProps) {
   const [leaving, setLeaving] = useState(false);
-  const named = transitionWhen === "always" || leaving;
+  const [shown, setShown] = useState(0);
+  // The morph carries the listing image; once another image is swiped in, there is none to carry.
+  const named = (transitionWhen === "always" || leaving) && shown === 0;
+  const more = (gallery ?? []).filter((src) => src !== image);
+  const onScroll = (e: UIEvent<HTMLDivElement>) => {
+    const strip = e.currentTarget;
+    if (strip.clientWidth > 0) setShown(Math.round(strip.scrollLeft / strip.clientWidth));
+  };
   const listing = (
     <img
       src={image}
@@ -89,13 +103,29 @@ export function ProductCard({
           className="aw-card-media"
           style={plate ? ({ "--plate": plate } as CSSProperties) : undefined}
         >
-          {Morph ? (
-            <Morph name={named ? transitionName : undefined} share="piece" default="none">
-              {listing}
-            </Morph>
-          ) : (
-            listing
-          )}
+          <div className="aw-card-strip" onScroll={more.length > 0 ? onScroll : undefined}>
+            <div className="aw-card-frame">
+              {Morph ? (
+                <Morph name={named ? transitionName : undefined} share="piece" default="none">
+                  {listing}
+                </Morph>
+              ) : (
+                listing
+              )}
+            </div>
+            {more.map((src) => (
+              <div key={src} className="aw-card-frame aw-card-more" aria-hidden="true">
+                <img src={src} alt="" loading="lazy" decoding="async" draggable={false} />
+              </div>
+            ))}
+          </div>
+          {more.length > 0 ? (
+            <span className="aw-card-dots" aria-hidden="true">
+              {[image, ...more].map((src, i) => (
+                <span key={src} data-on={i === shown} />
+              ))}
+            </span>
+          ) : null}
           {hoverImage ? (
             <img
               className="aw-card-alt"

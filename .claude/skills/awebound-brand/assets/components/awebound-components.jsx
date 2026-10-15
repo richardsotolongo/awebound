@@ -438,6 +438,7 @@ function ProductCard({
   image,
   imageAlt,
   hoverImage,
+  gallery,
   href,
   price,
   status,
@@ -450,7 +451,13 @@ function ProductCard({
   className,
 }) {
   const [leaving, setLeaving] = useState(false);
-  const named = transitionWhen === "always" || leaving;
+  const [shown, setShown] = useState(0);
+  const named = (transitionWhen === "always" || leaving) && shown === 0;
+  const more = (gallery ?? []).filter((src) => src !== image);
+  const onScroll = (e) => {
+    const strip = e.currentTarget;
+    if (strip.clientWidth > 0) setShown(Math.round(strip.scrollLeft / strip.clientWidth));
+  };
   const listing = /* @__PURE__ */ jsx9("img", {
     src: image,
     alt: imageAlt ?? name,
@@ -469,14 +476,49 @@ function ProductCard({
             className: "aw-card-media",
             style: plate ? { "--plate": plate } : void 0,
             children: [
-              Morph
-                ? /* @__PURE__ */ jsx9(Morph, {
-                    name: named ? transitionName : void 0,
-                    share: "piece",
-                    default: "none",
-                    children: listing,
+              /* @__PURE__ */ jsxs6("div", {
+                className: "aw-card-strip",
+                onScroll: more.length > 0 ? onScroll : void 0,
+                children: [
+                  /* @__PURE__ */ jsx9("div", {
+                    className: "aw-card-frame",
+                    children: Morph
+                      ? /* @__PURE__ */ jsx9(Morph, {
+                          name: named ? transitionName : void 0,
+                          share: "piece",
+                          default: "none",
+                          children: listing,
+                        })
+                      : listing,
+                  }),
+                  more.map((src) =>
+                    /* @__PURE__ */ jsx9(
+                      "div",
+                      {
+                        className: "aw-card-frame aw-card-more",
+                        "aria-hidden": "true",
+                        children: /* @__PURE__ */ jsx9("img", {
+                          src,
+                          alt: "",
+                          loading: "lazy",
+                          decoding: "async",
+                          draggable: false,
+                        }),
+                      },
+                      src,
+                    ),
+                  ),
+                ],
+              }),
+              more.length > 0
+                ? /* @__PURE__ */ jsx9("span", {
+                    className: "aw-card-dots",
+                    "aria-hidden": "true",
+                    children: [image, ...more].map((src, i) =>
+                      /* @__PURE__ */ jsx9("span", { "data-on": i === shown }, src),
+                    ),
                   })
-                : listing,
+                : null,
               hoverImage
                 ? /* @__PURE__ */ jsx9("img", {
                     className: "aw-card-alt",

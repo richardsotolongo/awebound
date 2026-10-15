@@ -142,6 +142,7 @@ export default async function Home() {
         plate={previewPlate ? plateCss(previewPlate) : null}
         signedIn={Boolean(userId)}
         owned={ownsPreview}
+        saved={slides.slice(0, 3).map((s) => ({ slug: s.slug, plate: s.plate }))}
       />
 
       <JsonLd data={STORE} />

@@ -89,6 +89,7 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
     image: p.image.url,
     imageAlt: p.image.alt,
     hoverImage: p.hoverImage?.url,
+    gallery: p.gallery,
     plate: plateCss(p.plate),
     // The product page gives its first image the same name, so the picture travels between them.
     transitionName: `piece-${p.slug}`,

@@ -97,6 +97,19 @@
   .campaign-rotating .campaign-garment img[data-on="true"] {
     z-index: 1;
   }
+  /* A sideways swipe on a touch screen moves to the next piece; the plate leaves vertical
+     scrolling to the browser, and the garment follows the finger a little while it moves. */
+  .campaign-rotating {
+    touch-action: pan-y;
+  }
+  .campaign-rotating .campaign-garment img[data-on="true"] {
+    translate: var(--drag, 0px) 0;
+  }
+  .campaign-rotating:not([data-dragging]) .campaign-garment img[data-on="true"] {
+    transition:
+      opacity 350ms var(--ease-reverent) 200ms,
+      translate 260ms var(--ease-reverent);
+  }
   .campaign-rotating,
   .campaign-rotating .aw-btn {
     transition-property: color, background-color, border-color;
@@ -129,7 +142,8 @@
     .campaign-rotating .campaign-layer,
     .campaign-rotating .campaign-layer[data-on="true"],
     .campaign-rotating .campaign-garment img,
-    .campaign-rotating .campaign-garment img[data-on="true"] {
+    .campaign-rotating .campaign-garment img[data-on="true"],
+    .campaign-rotating:not([data-dragging]) .campaign-garment img[data-on="true"] {
       transition: none;
     }
   }
@@ -365,6 +379,39 @@
     color: var(--ink);
     text-wrap: pretty;
   }
+  /* The short form's picture: three of the release's pieces, each saved with the heart. */
+  .archive-intro-saved {
+    margin: 0;
+    width: 100%;
+    max-width: 600px;
+    justify-self: end;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .archive-intro-shelf {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+    padding: 2px;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .archive-intro-saved-piece {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: var(--plate, var(--surface));
+  }
+  .archive-intro-saved-piece img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .archive-intro-saved figcaption {
+    margin: 0;
+    color: var(--ink-subtle);
+  }
   .archive-intro-card {
     margin: 0;
     width: 100%;
@@ -452,7 +499,8 @@
     .archive-intro-in {
       grid-template-columns: minmax(0, 1fr);
     }
-    .archive-intro-card {
+    .archive-intro-card,
+    .archive-intro-saved {
       justify-self: start;
     }
   }

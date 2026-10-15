@@ -600,6 +600,7 @@ var Awebound = (() => {
     image,
     imageAlt,
     hoverImage,
+    gallery,
     href,
     price,
     status,
@@ -612,7 +613,13 @@ var Awebound = (() => {
     className,
   }) {
     const [leaving, setLeaving] = (0, import_react3.useState)(false);
-    const named = transitionWhen === "always" || leaving;
+    const [shown, setShown] = (0, import_react3.useState)(0);
+    const named = (transitionWhen === "always" || leaving) && shown === 0;
+    const more = (gallery != null ? gallery : []).filter((src) => src !== image);
+    const onScroll = (e) => {
+      const strip = e.currentTarget;
+      if (strip.clientWidth > 0) setShown(Math.round(strip.scrollLeft / strip.clientWidth));
+    };
     const listing = /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("img", {
       src: image,
       alt: imageAlt != null ? imageAlt : name,
@@ -631,14 +638,53 @@ var Awebound = (() => {
               className: "aw-card-media",
               style: plate ? { "--plate": plate } : void 0,
               children: [
-                Morph
-                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Morph, {
-                      name: named ? transitionName : void 0,
-                      share: "piece",
-                      default: "none",
-                      children: listing,
+                /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", {
+                  className: "aw-card-strip",
+                  onScroll: more.length > 0 ? onScroll : void 0,
+                  children: [
+                    /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("div", {
+                      className: "aw-card-frame",
+                      children: Morph
+                        ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(Morph, {
+                            name: named ? transitionName : void 0,
+                            share: "piece",
+                            default: "none",
+                            children: listing,
+                          })
+                        : listing,
+                    }),
+                    more.map((src) =>
+                      /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+                        "div",
+                        {
+                          className: "aw-card-frame aw-card-more",
+                          "aria-hidden": "true",
+                          children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("img", {
+                            src,
+                            alt: "",
+                            loading: "lazy",
+                            decoding: "async",
+                            draggable: false,
+                          }),
+                        },
+                        src,
+                      ),
+                    ),
+                  ],
+                }),
+                more.length > 0
+                  ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", {
+                      className: "aw-card-dots",
+                      "aria-hidden": "true",
+                      children: [image, ...more].map((src, i) =>
+                        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+                          "span",
+                          { "data-on": i === shown },
+                          src,
+                        ),
+                      ),
                     })
-                  : listing,
+                  : null,
                 hoverImage
                   ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("img", {
                       className: "aw-card-alt",

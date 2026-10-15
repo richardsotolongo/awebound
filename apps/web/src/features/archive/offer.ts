@@ -36,32 +36,90 @@ export const NO_OFFER: ArchiveOffer = {
   foundingOpen: false,
 };
 
-/** What a free account gives right away, in one sentence; null while accounts are off. */
-export function freeLine(o: ArchiveOffer): string | null {
-  if (!o.accounts) return null;
-  return o.orders
-    ? "Save the pieces you want to return to, and see your orders in one place, including guest orders placed with the same email."
-    : "Save the pieces you want to return to, on every device you sign in to.";
+const join = (items: string[]) =>
+  items.length < 2 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+
+/** What a tile on the sign-in page shows, so its picture can be drawn. */
+export type TileKind =
+  "save" | "devices" | "orders" | "open" | "story" | "note" | "card" | "extras";
+
+export interface ArchiveTile {
+  kind: TileKind;
+  title: string;
+  body: string;
 }
 
-/** What a verified purchase opens, in one sentence; null until a purchase can open a story. */
-export function purchaseLine(o: ArchiveOffer): string | null {
-  if (!o.stories) return null;
-  const extras = hasExtras(o) ? " and its available digital extras" : "";
-  return `Each design you buy opens its deeper story, a personal note from Richard${extras} in your collection. Signing up alone doesn’t open them.`;
+/**
+ * The sign-in page's tiles, in two groups: what a free account holds, and what each design bought
+ * with it opens. Each tile appears only once the feature behind it works, so the purchase group
+ * waits until a purchase can open a story. Empty while accounts are off.
+ */
+export function archiveTiles(o: ArchiveOffer): { free: ArchiveTile[]; purchase: ArchiveTile[] } {
+  if (!o.accounts) return { free: [], purchase: [] };
+  const free: ArchiveTile[] = [
+    {
+      kind: "save",
+      title: "Save with the heart",
+      body: "Tap the heart on any piece and it waits for you in My Archive.",
+    },
+    {
+      kind: "devices",
+      title: "On every device",
+      body: "Sign in on your phone or your computer and your saved pieces are there.",
+    },
+  ];
+  if (o.orders)
+    free.push({
+      kind: "orders",
+      title: "Your orders together",
+      body: "Every order in one place, guest orders placed with the same email included.",
+    });
+  free.push({
+    kind: "open",
+    title: "Open to everyone",
+    body: "Scripture, biblical context and every piece’s story stay open, account or not. Guest checkout is always there.",
+  });
+  if (!o.stories) return { free, purchase: [] };
+  const purchase: ArchiveTile[] = [
+    {
+      kind: "story",
+      title: "The deeper story",
+      body: "The story behind the design and what its imagery means.",
+    },
+    {
+      kind: "note",
+      title: "A note from Richard",
+      body: "A personal note from Richard about the piece.",
+    },
+    {
+      kind: "card",
+      title: "Its card in your collection",
+      body: "The design keeps its place in your Archive, with its Scripture.",
+    },
+  ];
+  const extras = [
+    o.wallpapers ? "phone and desktop wallpapers" : null,
+    o.pdf ? "a design card PDF" : null,
+    o.share ? "story images to share" : null,
+  ].filter((x): x is string => Boolean(x));
+  if (extras.length > 0)
+    purchase.push({
+      kind: "extras",
+      title: "Digital extras",
+      body: `Where the design has them: ${join(extras)}.`,
+    });
+  return { free, purchase };
 }
+
+/** Under the purchase tiles: what opens them, and what doesn't. */
+export const PURCHASE_NOTE =
+  "A purchase linked to your account opens them, guest orders with the same email included. Signing up alone doesn’t.";
 
 /** Whether a purchase brings digital extras on some design today. */
 export const hasExtras = (o: ArchiveOffer) => o.wallpapers || o.pdf || o.share;
 
-export const OPEN_TO_ALL =
-  "Scripture, biblical context and product descriptions stay open to everyone, with or without an account.";
-
 export const FOUNDING_LINE =
   "The first 50 qualifying buyers who use their Awebound account at checkout receive a Founding Member seal. Guest purchases don’t qualify, and signing up alone doesn’t earn it.";
-
-const join = (items: string[]) =>
-  items.length < 2 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
 
 const wallpaperNoun = (formats: AssetFormat[]) =>
   formats.length > 1 ? "phone and desktop wallpapers" : `${formats[0]} wallpaper`;

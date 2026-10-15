@@ -157,6 +157,8 @@ export const ProductSummarySchema = z.object({
   scripture: ScriptureQuoteSchema,
   image: ProductImageSchema,
   hoverImage: ProductImageSchema.nullable(),
+  /** Every image's address in order (the first is `image`), to swipe through on a card. */
+  gallery: z.array(z.string()),
   /** Null for a piece with no plate images: it shows on coal. */
   plate: PlateSchema.nullable(),
   featured: z.boolean(),

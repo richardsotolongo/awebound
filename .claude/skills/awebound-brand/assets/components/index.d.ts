@@ -293,6 +293,11 @@ export interface ProductCardProps {
   imageAlt?: string;
   /** Shown on hover, usually the other side. */
   hoverImage?: string;
+  /**
+   * Every image of the piece in order, the first being `image`. On a touch screen the image is a
+   * strip to swipe through them without opening the piece, with dots for where you are.
+   */
+  gallery?: string[];
   href: string;
   price?: string;
   /** Said plainly under the price when it applies: "Sold out", "Some sizes sold out". */
@@ -324,7 +329,8 @@ export interface ProductCardProps {
 /**
  * A product tile: the whole garment, the name, its type and price, then (on shop cards) its
  * Scripture in italic with the reference. The name comes first: nothing sits above it as a
- * label. The whole card links to the product page.
+ * label. The whole card links to the product page. With a mouse, hovering shows the other side;
+ * on a touch screen a sideways swipe moves through the piece's images (a tap still opens it).
  */
 export declare function ProductCard({
   name,
@@ -333,6 +339,7 @@ export declare function ProductCard({
   image,
   imageAlt,
   hoverImage,
+  gallery,
   href,
   price,
   status,

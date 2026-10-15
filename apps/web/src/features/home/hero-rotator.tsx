@@ -12,6 +12,7 @@ import {
   type FocusEvent,
 } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, PauseIcon, PlayIcon } from "@/components/icons";
+import { useSwipe } from "@/lib/use-swipe";
 import { useHeroPiece } from "./hero-piece";
 
 export interface HeroSlide {
@@ -57,8 +58,10 @@ function preload(slug: string): Promise<unknown> {
  * visit and moves to the next every few seconds (the plate cross-fades; the garment fades out
  * before the next fades in), only while it is on screen and no pointer rests on its buttons or
  * garment or on the lead piece below, and no focus is inside them. Previous, Pause and Next sit
- * under the actions; with reduced motion it never moves on its own. Inside `HeroPieceProvider`
- * the piece is shared, so the lead piece follows it.
+ * under the actions; with reduced motion it never moves on its own. On a touch screen a sideways
+ * swipe across the plate moves to the next or previous piece (the garment follows the finger a
+ * little while it moves). Inside `HeroPieceProvider` the piece is shared, so the lead piece
+ * follows it.
  */
 export function HeroRotator({
   slides,
@@ -99,6 +102,25 @@ export function HeroRotator({
     },
     [slides, setIndex],
   );
+
+  // A sideways swipe: next or previous piece. The garment follows the finger a little (never far
+  // enough to leave the plate), and not at all with reduced motion.
+  const swipe = useCallback((direction: 1 | -1) => void go(index + direction), [go, index]);
+  const drag = useCallback(
+    (dx: number | null) => {
+      const el = ref.current;
+      if (!el) return;
+      if (dx === null || reduced) {
+        el.removeAttribute("data-dragging");
+        el.style.removeProperty("--drag");
+        return;
+      }
+      el.setAttribute("data-dragging", "");
+      el.style.setProperty("--drag", `${Math.max(-40, Math.min(40, dx * 0.35))}px`);
+    },
+    [reduced],
+  );
+  useSwipe(ref, swipe, drag);
 
   useEffect(() => {
     const el = ref.current;

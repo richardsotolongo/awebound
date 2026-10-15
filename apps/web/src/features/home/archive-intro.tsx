@@ -1,6 +1,6 @@
 import { Button, ScriptureRef } from "@awebound/brand";
 import type { CSSProperties } from "react";
-import { LockIcon } from "@/components/icons";
+import { HeartIcon, LockIcon } from "@/components/icons";
 import { homeIntro, lockedRows, type ArchiveOffer } from "@/features/archive/offer";
 import type { ArchivePreview } from "@/server/archive/offer";
 
@@ -8,7 +8,7 @@ import type { ArchivePreview } from "@/server/archive/offer";
  * My Archive on the home page, after the release wall: one paragraph on what the account keeps and
  * what a purchase opens, and one button, beside a preview of one design's card. The preview holds
  * only published public fields; its locked parts are named, never shown. Before any story can
- * open, a short form with no card.
+ * open, a short form beside three of the release's pieces saved with the heart.
  */
 export function ArchiveIntro({
   offer,
@@ -16,6 +16,7 @@ export function ArchiveIntro({
   plate,
   signedIn,
   owned,
+  saved,
 }: {
   offer: ArchiveOffer;
   preview: ArchivePreview | null;
@@ -24,16 +25,19 @@ export function ArchiveIntro({
   signedIn: boolean;
   /** The signed-in member owns the previewed design: its parts are open, not locked. */
   owned: boolean;
+  /** Pieces to picture as saved in the short form: the release's first three with plates. */
+  saved: { slug: string; plate: string }[];
 }) {
   if (!offer.accounts) return null;
   const copy = homeIntro(offer, signedIn);
   const card = copy.full ? preview : null;
+  const shelf = card || saved.length < 3 ? [] : saved.slice(0, 3);
 
   return (
     <section
       id="archive"
       className="archive-intro"
-      data-full={Boolean(card)}
+      data-full={Boolean(card) || shelf.length > 0}
       aria-labelledby="archive-intro-title"
     >
       <div className="aw-container archive-intro-in">
@@ -48,6 +52,34 @@ export function ArchiveIntro({
             </Button>
           </div>
         </div>
+
+        {shelf.length > 0 ? (
+          <figure className="archive-intro-saved">
+            <div className="archive-intro-shelf">
+              {shelf.map((p) => (
+                <span
+                  key={p.slug}
+                  className="archive-intro-saved-piece"
+                  style={{ "--plate": p.plate } as CSSProperties}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py */}
+                  <img
+                    src={`/products/${p.slug}/piece.webp`}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <span className="archive-tile-heart">
+                    <HeartIcon size={18} filled />
+                  </span>
+                </span>
+              ))}
+            </div>
+            <figcaption className="aw-small">
+              Saved with the heart, there on every device you sign in to.
+            </figcaption>
+          </figure>
+        ) : null}
 
         {card ? (
           <figure className="archive-intro-card">
