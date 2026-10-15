@@ -199,8 +199,11 @@ export async function assignAsset(id: string, designKey: string, actor: string) 
   await audit(actor, "asset.assign", "asset", id, { designKey: asset.design_key }, { designKey });
 }
 
-/** Makes a file the live wallpaper for its design and format; the previous one retires. */
-export async function publishAsset(id: string, actor: string) {
+/**
+ * Makes a file the live wallpaper for its design and format; the previous one retires. `actor` is
+ * the owner's account, or null from the command line (archive:intake).
+ */
+export async function publishAsset(id: string, actor: string | null) {
   const asset = await getAsset(id);
   if (!asset) throw new UserError("Unknown file.");
   if (!asset.design_key) throw new UserError("Assign the file to a design first.");
