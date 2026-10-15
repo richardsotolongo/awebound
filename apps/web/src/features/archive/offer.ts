@@ -2,9 +2,9 @@ import type { AssetFormat } from "@/shared";
 
 /**
  * What My Archive can promise today, and the words every surface uses for it (home page, product
- * page, sign-in, the overview, FAQ). The server builds the offer from the Archive's readiness
- * (server/archive/offer.ts), so a claim appears only once the feature behind it works. It holds
- * booleans only and is safe in public markup.
+ * page, sign-in, the overview, the collection, FAQ). The server builds the offer from the
+ * Archive's readiness (server/archive/offer.ts), so a claim appears only once the feature behind
+ * it works. It holds booleans only and is safe in public markup.
  */
 export interface ArchiveOffer {
   /** Free accounts: sign-in works and saved pieces can be stored. */
@@ -36,36 +36,23 @@ export const NO_OFFER: ArchiveOffer = {
   foundingOpen: false,
 };
 
-/** What an account gives right away. */
-export function freeBenefits(o: ArchiveOffer): string[] {
-  if (!o.accounts) return [];
-  const out = ["Save the pieces you want to return to."];
-  if (o.orders)
-    out.push("See your orders in one place, including guest orders with the same email.");
-  return out;
+/** What a free account gives right away, in one sentence; null while accounts are off. */
+export function freeLine(o: ArchiveOffer): string | null {
+  if (!o.accounts) return null;
+  return o.orders
+    ? "Save the pieces you want to return to, and see your orders in one place, including guest orders placed with the same email."
+    : "Save the pieces you want to return to, on every device you sign in to.";
 }
 
-/** What each design bought with the account opens in My Archive. */
-export function purchaseBenefits(o: ArchiveOffer): string[] {
-  if (!o.stories) return [];
-  const out = [
-    "Read the story behind the design and the meaning of its imagery.",
-    "Read a personal note from Richard.",
-    "Keep the design’s card in your collection.",
-  ];
-  if (o.wallpapers) out.push("Download its published phone and desktop wallpapers.");
-  if (o.pdf && o.share)
-    out.push("Download its design card as a PDF and make story images to share.");
-  else if (o.pdf) out.push("Download its design card as a PDF.");
-  else if (o.share) out.push("Make story images to share.");
-  return out;
+/** What a verified purchase opens, in one sentence; null until a purchase can open a story. */
+export function purchaseLine(o: ArchiveOffer): string | null {
+  if (!o.stories) return null;
+  const extras = hasExtras(o) ? " and its available digital extras" : "";
+  return `Each design you buy opens its deeper story, a personal note from Richard${extras} in your collection. Signing up alone doesn’t open them.`;
 }
 
 /** Whether a purchase brings digital extras on some design today. */
 export const hasExtras = (o: ArchiveOffer) => o.wallpapers || o.pdf || o.share;
-
-export const SIGNUP_ALONE =
-  "Signing up on its own doesn’t open a design’s story or extras. A paid order linked to your account does, and a guest order counts once it’s linked.";
 
 export const OPEN_TO_ALL =
   "Scripture, biblical context and product descriptions stay open to everyone, with or without an account.";
@@ -89,19 +76,37 @@ export function extrasPhrase(o: ArchiveOffer, wallpapers: AssetFormat[]): string
   return items.length > 0 ? join(items) : null;
 }
 
-/** The product page's note: what buying this piece opens, for this design only. */
+/**
+ * The product page's note: what buying this piece opens, for this design only. Its extras are
+ * mentioned only when this design has some today.
+ */
 export function productNote(o: ArchiveOffer, name: string, wallpapers: AssetFormat[]) {
-  const extras = extrasPhrase(o, wallpapers);
-  const body = [
-    `Buy ${name} while signed in and its card opens in My Archive, with the story behind the design, the meaning of its imagery and a note from Richard.`,
-  ];
-  if (extras) body.push(`You’ll also find ${extras}.`);
-  if (o.orders) body.push("A guest order opens it too, once you join with the same email.");
+  const opens = extrasPhrase(o, wallpapers)
+    ? "its deeper story, founder note and available digital extras"
+    : "its deeper story and founder note";
   return {
     title: "Your piece continues in My Archive.",
-    body,
+    body: [`Purchase this design to unlock ${opens}.`],
     owned: `${name} is in your Archive, with its story and a note from Richard.`,
   };
+}
+
+/**
+ * Why the collection is empty and what fills it, in words that match what works today: before
+ * orders reach accounts, it says so plainly instead of promising a card.
+ */
+export function emptyCollection(o: ArchiveOffer): string[] {
+  if (!o.orders)
+    return [
+      "Your collection is for the designs you buy.",
+      "Purchases don’t link to accounts yet, so it’s empty for now. Order confirmations and tracking still come by email.",
+    ];
+  return [
+    o.stories
+      ? "Each design you buy is kept here, with its deeper story and a personal note from Richard."
+      : "Each design you buy is kept here.",
+    "It’s empty because no order is linked to this account yet. Orders placed with your account’s email are added on their own, guest checkout included.",
+  ];
 }
 
 /** The parts of a design's card that open with a purchase, by name, for previews. */
@@ -159,11 +164,11 @@ export function welcomeFor(
         };
   }
   if (dismissed) return null;
-  const body = ["Use the heart on any piece to save it here, and explore Behold."];
-  if (o.stories)
-    body.push(
-      "When you buy a piece while signed in, its full story and a note from Richard open here.",
-    );
+  const body = [
+    o.stories
+      ? "Save pieces with the heart, and each design you buy opens here with its deeper story and a note from Richard."
+      : "Use the heart on any piece to save it here.",
+  ];
   return {
     kind: "free",
     title: "Welcome to your Archive.",
@@ -172,38 +177,32 @@ export function welcomeFor(
   };
 }
 
-/** The home page's introduction: the full form once stories open, a short one before. */
+/**
+ * The home page's introduction: one paragraph and one button. The full form names what a purchase
+ * opens, so it appears only once stories can open; before that, a short form about saving.
+ */
 export function homeIntro(o: ArchiveOffer, signedIn: boolean) {
   const cta = signedIn
     ? { href: "/account", label: "Open My Archive" }
     : { href: "/sign-in?next=%2Faccount", label: "Create your free Archive" };
-  const kept = o.orders ? "the pieces you save and your orders" : "the pieces you save";
-  if (!o.stories) {
-    return {
-      full: false,
-      title: "Keep the pieces you love.",
-      body: signedIn
-        ? `My Archive keeps ${kept} in one place. Use the heart on any piece to save it.`
-        : `Create a free Awebound account and My Archive keeps ${kept} in one place.`,
-      points: [] as string[],
-      cta,
-    };
-  }
+  const space = "My Archive is your personal space for the Awebound pieces you love.";
   const save = signedIn
     ? "Save your favorites with the heart on any piece."
     : "Create a free account to save your favorites.";
-  const extras = hasExtras(o) ? " and its published digital extras" : "";
+  if (!o.stories) {
+    const orders = o.orders ? " Your orders are kept there too." : "";
+    return {
+      full: false,
+      title: "Keep the pieces you love.",
+      body: `${space} ${save}${orders}`,
+      cta,
+    };
+  }
+  const extras = hasExtras(o) ? " and available digital extras" : "";
   return {
     full: true,
     title: "Wear the piece. Know its story.",
-    body: `My Archive brings your Awebound pieces and their meaning together. ${save} Each design you buy opens a deeper look at the Scripture and imagery behind it, a personal note from Richard${extras}.`,
-    points: signedIn
-      ? []
-      : [
-          "Free to join, and never needed to order.",
-          ...(o.orders ? ["Guest orders with the same email link to your account."] : []),
-          "Scripture and its context stay open to everyone.",
-        ],
+    body: `${space} ${save} Each purchased design unlocks its deeper story, a personal note from Richard${extras}, bringing you closer to the Scripture and meaning behind what you wear.`,
     cta,
   };
 }

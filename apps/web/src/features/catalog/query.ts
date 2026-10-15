@@ -1,5 +1,5 @@
 import {
-  LATEST_DROP,
+  ALL_COLLECTIONS,
   ProductQuerySchema,
   type CatalogFacets,
   type CollectionSlug,
@@ -100,13 +100,13 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
 }
 
 /**
- * The collection selector's value from the URL: no value (or "latest") is the Latest Drop,
- * "all" is every collection, anything else a release slug.
+ * The collection selector's value from the URL: no value (or "all") is every collection, "latest"
+ * the Latest Drop (kept for old links), anything else a release slug.
  */
 export function collectionChoice(raw: RawSearchParams): string {
   const value = Array.isArray(raw.collection) ? raw.collection[0] : raw.collection;
   const clean = value?.trim().toLowerCase();
-  return clean && /^[a-z0-9-]+$/.test(clean) ? clean : LATEST_DROP;
+  return clean && /^[a-z0-9-]+$/.test(clean) ? clean : ALL_COLLECTIONS;
 }
 
 /** A shop URL with some params changed; `null` removes one. Always starts from page one. */
@@ -129,9 +129,11 @@ export function shopHref(
 }
 
 /**
- * The one address search engines index for a shop view: a release (or "all") and a category, in
- * that order. The page's canonical, the sitemap and structured data all build it here.
+ * The one address search engines index for a shop view: a release (every collection is the plain
+ * /shop) and a category, in that order. The page's canonical, the sitemap and structured data all
+ * build it here.
  */
 export function shopCanonical(collection?: string | null, category?: string | null): string {
-  return shopHref("/shop", {}, { collection: collection ?? null, category: category ?? null });
+  const release = collection && collection !== ALL_COLLECTIONS ? collection : null;
+  return shopHref("/shop", {}, { collection: release, category: category ?? null });
 }

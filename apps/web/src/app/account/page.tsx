@@ -5,7 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArchiveWelcome } from "@/features/archive/archive-welcome";
 import { FoundingSeal } from "@/features/archive/founding-seal";
-import { WELCOME_COOKIE, purchaseBenefits, welcomeFor } from "@/features/archive/offer";
+import { WELCOME_COOKIE, welcomeFor } from "@/features/archive/offer";
 import { listDesigns } from "@/server/archive/designs";
 import { listEntitlements } from "@/server/archive/entitlements";
 import { getFoundingForUser } from "@/server/archive/founding";
@@ -49,7 +49,6 @@ export default async function ArchivePage() {
   // Only a published design has a card to open.
   const opened = owned.filter((d) => d.published_content_id);
   const latest = readiness.orders ? orders[0] : undefined;
-  const benefits = purchaseBenefits(offer);
   const welcome = welcomeFor(
     offer,
     jar.get(WELCOME_COOKIE)?.value,
@@ -127,8 +126,8 @@ export default async function ArchivePage() {
             <p className="aw-body">Your collection starts with your first piece.</p>
           )}
           <div className="account-panel-foot">
-            <Button variant="link" href={owned.length > 0 ? "/account/collection" : "/shop"}>
-              {owned.length > 0 ? "Open your collection" : "Explore Behold"}
+            <Button variant="link" href="/account/collection">
+              Open your collection
             </Button>
           </div>
         </section>
@@ -176,19 +175,6 @@ export default async function ArchivePage() {
           </div>
         </section>
       </div>
-
-      {owned.length === 0 && benefits.length > 0 ? (
-        <section className="account-panel account-after" aria-labelledby="after-title">
-          <h2 id="after-title" className="aw-h3">
-            With each design you buy
-          </h2>
-          <ul className="archive-benefit-list">
-            {benefits.map((b) => (
-              <li key={b}>{b}</li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
     </>
   );
 }

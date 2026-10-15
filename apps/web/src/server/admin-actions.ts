@@ -6,7 +6,6 @@ import {
   AssetIdRequestSchema,
   AssetRegisterRequestSchema,
   AssetUploadRequestSchema,
-  CareRequestSchema,
   DesignKeyRequestSchema,
   FlagRequestSchema,
   FoundingCorrectionRequestSchema,
@@ -24,13 +23,7 @@ import {
   registerAsset,
   retireAsset,
 } from "./archive/assets";
-import {
-  approveDraft,
-  publishContent,
-  retireContent,
-  saveDraft,
-  verifyCare,
-} from "./archive/content";
+import { approveDraft, publishContent, retireContent, saveDraft } from "./archive/content";
 import { mapOffer } from "./archive/designs";
 import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
@@ -82,15 +75,6 @@ export async function retireContentAction(input: unknown): Promise<Result<null>>
     const actor = (await requireAdmin()).id;
     const { designKey } = parse(DesignKeyRequestSchema, input);
     await retireContent(designKey, actor);
-    return null;
-  });
-}
-
-export async function verifyCareAction(input: unknown): Promise<Result<null>> {
-  return run(async () => {
-    const actor = (await requireAdmin()).id;
-    const { designKey, instructions, source } = parse(CareRequestSchema, input);
-    await verifyCare(designKey, instructions, source, actor);
     return null;
   });
 }

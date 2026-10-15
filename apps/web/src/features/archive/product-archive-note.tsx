@@ -8,9 +8,10 @@ import { designAccessAction } from "@/server/archive-actions";
 type Access = "unknown" | "signed-out" | "member" | "owner";
 
 /**
- * Under the buying controls: what buying this piece opens in My Archive. Product pages are cached
- * for everyone, so the shopper's state is asked after mount: signed out, a link to join; an owner
- * of the design, a link to its card instead of the explanation; anyone else, the words alone.
+ * Under the buying controls, below Add to bag: what buying this piece opens in My Archive, with one
+ * quiet link. Product pages are cached for everyone, so the shopper's state is asked after mount:
+ * signed out, a link to create the free Archive; a member, a link to open it; an owner of the
+ * design, a link straight to its card in place of the explanation.
  */
 export function ProductArchiveNote({
   slug,
@@ -70,7 +71,11 @@ export function ProductArchiveNote({
         </Button>
       ) : access === "signed-out" ? (
         <Button variant="link" href={`/sign-in?next=${encodeURIComponent(`/shop/${slug}`)}`}>
-          Join Awebound
+          Create your free Archive
+        </Button>
+      ) : access === "member" ? (
+        <Button variant="link" href="/account">
+          Open My Archive
         </Button>
       ) : null}
     </section>

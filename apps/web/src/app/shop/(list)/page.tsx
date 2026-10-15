@@ -22,14 +22,15 @@ const SHOP = pageMeta({
 
 /**
  * A release, a category, or both get their own listing in search; search, color, size, price and
- * sort point back to the view they filter. Latest Drop with a category is listed under the
- * release's own name, so each set of pieces has one address. A view with no pieces isn't indexed.
+ * sort point back to the view they filter. Every collection is the plain /shop, and an old Latest
+ * Drop link is listed under the release's own name, so each set of pieces has one address. A view
+ * with no pieces isn't indexed.
  */
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
   const choice = collectionChoice(params);
   const picked = parseCatalogQuery(params).category ?? [];
-  if (choice === LATEST_DROP && picked.length !== 1) return SHOP;
+  if (choice === ALL_COLLECTIONS && picked.length !== 1) return SHOP;
   try {
     const releases = await getReleases();
     const all = choice === ALL_COLLECTIONS;

@@ -204,10 +204,6 @@ export async function renderDesignCardPdf(
   paragraph(content.founder_note, sans, 10.5, 15);
   y -= 2;
   paragraph("Richard, founder of Awebound", sansBold, 9, 13, COLOR.muted);
-  if (content.care_status === "verified" && content.care_instructions) {
-    heading("Care");
-    paragraph(content.care_instructions, sans, 10.5, 15);
-  }
   heading("The piece");
   paragraph(`${product.category.cut}. ${product.story.art}`, sans, 10.5, 15);
   y -= 16;

@@ -38,7 +38,7 @@ Active voice, plain words, contractions where they're natural, short sentences, 
 
 ## Mechanics
 
-- Sentence case in copy and in button labels (buttons display caps through styling). Selector options are sentence case too (All products, Latest drop, All collections).
+- Sentence case in copy and in button labels (buttons display caps through styling). Selector options are sentence case too (All products, All collections).
 - No exclamation marks. Emoji only in social captions, at most one, never in place of a word.
 - Never hard-code a price in copy; prices come from Fourthwall (or the content file until a piece is published). List the base price with no “From”; a 2XL or 3XL upcharge is said under the sizes once chosen.
 - Only confirmed facts: no launch dates, delivery times or shipping rates until they're confirmed.

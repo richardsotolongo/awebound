@@ -164,15 +164,6 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
         </dl>
       </section>
 
-      {card.care.status === "verified" ? (
-        <section className="archive-section" aria-labelledby="care-title">
-          <h2 id="care-title" className="aw-h2">
-            Care
-          </h2>
-          <p className="aw-body">{card.care.instructions}</p>
-        </section>
-      ) : null}
-
       {wallpapers.length > 0 ? (
         <section className="archive-section" aria-labelledby="wallpapers-title">
           <h2 id="wallpapers-title" className="aw-h2">

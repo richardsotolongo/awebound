@@ -1,13 +1,15 @@
 import { ScriptureRef } from "@awebound/brand";
 import { FitName } from "@/components/fit-name";
+import { ALL_COLLECTIONS } from "@/shared";
 import type { CollectionView } from "./catalog-view";
 
 /**
- * The shop's title block for the collection on screen: the release's name across the width and
- * its call. All Collections gets a plain title.
+ * The shop's title block: the chosen release's name across the width and its call. On All
+ * Collections (the default) it promotes the latest drop the same way; without releases, a plain
+ * title.
  */
 export function ShopHeader({ view }: { view: CollectionView }) {
-  const { release } = view;
+  const release = view.release ?? (view.choice === ALL_COLLECTIONS ? view.latest : null);
   if (!release) {
     return (
       <header className="release-head shop-head">

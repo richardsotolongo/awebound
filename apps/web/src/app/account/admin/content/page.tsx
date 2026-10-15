@@ -36,7 +36,6 @@ export default async function ContentPage() {
               <th>Version</th>
               <th>Approved</th>
               <th>Published</th>
-              <th>Care</th>
               <th>Founder note</th>
               <th>Draft check</th>
             </tr>
@@ -50,7 +49,6 @@ export default async function ContentPage() {
                 <td>{latest ? `v${latest.version} ${latest.status}` : "none"}</td>
                 <td>{when(latest?.approved_at)}</td>
                 <td>{when(published?.published_at)}</td>
-                <td>{latest?.care_status ?? "–"}</td>
                 <td>{latest ? (latest.founder_note_proposed ? "Proposed" : "Reviewed") : "–"}</td>
                 <td>{check(design.design_key)}</td>
               </tr>

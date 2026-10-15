@@ -3,6 +3,7 @@
 What's left before launch, grouped by who has to act. Check items off as they land and keep this file current.
 
 ## Decisions for the owner
+
 - [ ] **Legal details**: business entity name and the state whose law governs (`LEGAL` in `apps/web/src/lib/site.ts`).
 - [ ] **Social links** (Instagram, TikTok) for the footer.
 
@@ -38,7 +39,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 ## Engineering follow-ups
 
 - [ ] **Internal design codes in page source.** Nothing visible shows them, and titles, descriptions, structured data, the sitemap and `llms.txt` are clean, but the data Next sends with the shop and product pages still carries `code` (and preview SKUs built from it) inside client-component props; the home page no longer does. Strip `code` before a product reaches a Client Component (`ProductGrid`, `ProductPurchase`) and give previews SKUs that don't contain it.
-- [ ] **When Fourthwall is unreachable** the home page falls back to the headline, the founder's note and the sign-up, but a product page shows the error page titled “Not found”, `/collections/behold` returns 404, and a page regenerated during the outage can be cached for a minute. Consider a content-only fallback.
+- [ ] **When Fourthwall is unreachable** the home page falls back to the headline and the founder's note, but a product page shows the error page titled “Not found”, `/collections/behold` returns 404, and a page regenerated during the outage can be cached for a minute. Consider a content-only fallback.
 - [ ] **After a purchase** the bag isn't cleared and there's no return page from Fourthwall's checkout. Notify sign-ups don't record whether someone asked about “ordering opens” or “back in stock”, and nothing sends either email yet.
 - [ ] **Latest Drop follows the content's release date**, so adding a Release 02 that is still in preview would replace a Release 01 that can be ordered on the home page. Decide the rule before the second release.
 - [ ] Vercel Firewall rate-limit rule on Server Action POSTs (contact, subscribe, checkout). The in-app limits are per server instance.

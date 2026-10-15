@@ -535,9 +535,6 @@
   .account-panel-foot {
     margin-top: auto;
   }
-  .account-after {
-    margin-top: var(--space-6);
-  }
   /* The overview's header: the nav above already names the page. */
   .account-head {
     padding-block: 0 var(--space-8);

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
-import { CareForm } from "@/features/archive/admin/care-form";
 import { DraftEditor } from "@/features/archive/admin/draft-editor";
 import { when } from "@/features/archive/admin/format";
 import { getOpenDraft, listContentVersions } from "@/server/archive/content";
@@ -70,10 +69,6 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
       ?.find((p) => p.slug === design.fourthwall_slug)
       ?.description?.replace(/<[^>]+>/g, " ")
       .trim() || null;
-  const care =
-    working?.care_status === "verified"
-      ? `Verified from ${working.care_source ?? "an unnamed source"} on ${when(working.care_verified_at)}.`
-      : "Unconfirmed.";
 
   return (
     <>
@@ -99,21 +94,12 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
         />
       </section>
 
-      <section className="admin-section">
-        <h2 className="aw-h3">Care</h2>
-        <p className="aw-body">{care}</p>
-        <CareForm
-          designKey={design.design_key}
-          initialInstructions={working?.care_instructions ?? ""}
-          initialSource={working?.care_source ?? ""}
-        />
-        {providerDescription ? (
-          <>
-            <h3 className="aw-h3">Provider description</h3>
-            <p className="aw-small">{providerDescription}</p>
-          </>
-        ) : null}
-      </section>
+      {providerDescription ? (
+        <section className="admin-section">
+          <h2 className="aw-h3">Provider description</h2>
+          <p className="aw-small">{providerDescription}</p>
+        </section>
+      ) : null}
 
       <section className="admin-section">
         <h2 className="aw-h3">What the public sees</h2>

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ALL_COLLECTIONS,
-  LATEST_DROP,
-  SORT_LABELS,
-  SORT_OPTIONS,
-  type CatalogFacets,
-} from "@/shared";
+import { ALL_COLLECTIONS, SORT_LABELS, SORT_OPTIONS, type CatalogFacets } from "@/shared";
 import { useId, useRef, useState } from "react";
 import { CloseIcon, FilterIcon, SearchIcon } from "@/components/icons";
 import { Sheet } from "@/components/sheet";
@@ -25,13 +19,13 @@ interface ShopToolbarProps {
   /** The chosen category's slug; "" for all products. */
   category: string;
   releases: Choice[];
-  /** The collection choice: a release slug, LATEST_DROP or ALL_COLLECTIONS. */
+  /** The collection choice: a release slug or ALL_COLLECTIONS. */
   collection: string;
 }
 
 /**
- * Search, then one compact row: category (and collection, once there is more than one release),
- * sort, and the sheet with color, size and price filters.
+ * A search box, then one compact row: collection (All collections, then each release), category
+ * and sort, and the sheet with color, size and price filters.
  */
 export function ShopToolbar({
   facets,
@@ -106,29 +100,28 @@ export function ShopToolbar({
         ) : null}
       </form>
 
-      {releases.length > 1 ? (
-        <div>
-          <label htmlFor={collectionId} className="visually-hidden">
-            Collection
-          </label>
-          <select
-            id={collectionId}
-            className="aw-select"
-            value={collection}
-            onChange={(e) =>
-              state.update({ collection: e.target.value === LATEST_DROP ? null : e.target.value })
-            }
-          >
-            <option value={LATEST_DROP}>Latest drop</option>
-            <option value={ALL_COLLECTIONS}>All collections</option>
-            {releases.map((r) => (
-              <option key={r.slug} value={r.slug}>
-                {r.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      ) : null}
+      <div>
+        <label htmlFor={collectionId} className="visually-hidden">
+          Collection
+        </label>
+        <select
+          id={collectionId}
+          className="aw-select"
+          value={collection}
+          onChange={(e) =>
+            state.update({
+              collection: e.target.value === ALL_COLLECTIONS ? null : e.target.value,
+            })
+          }
+        >
+          <option value={ALL_COLLECTIONS}>All collections</option>
+          {releases.map((r) => (
+            <option key={r.slug} value={r.slug}>
+              {r.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div>
         <label htmlFor={categoryId} className="visually-hidden">

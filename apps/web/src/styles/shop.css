@@ -8,18 +8,27 @@
     align-items: center;
     margin-bottom: var(--space-4);
   }
+  /* A compact search box, then collection, category and sort, with Filters at the end. */
   .shop-toolbar .shop-search {
-    flex: 1 1 280px;
+    flex: 0 1 320px;
+    min-width: 220px;
   }
-  /* Phones: search across, the selects side by side, then Filters across. */
+  .shop-toolbar .shop-filter-btn {
+    margin-left: auto;
+  }
+  /* Phones: search across, then collection and category, then sort and Filters. */
   @media (max-width: 767px) {
     .shop-toolbar {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .shop-toolbar .shop-search,
-    .shop-toolbar .shop-filter-btn {
+    .shop-toolbar .shop-search {
       grid-column: 1 / -1;
+      min-width: 0;
+    }
+    .shop-toolbar .shop-filter-btn {
+      margin-left: 0;
+      justify-content: center;
     }
     .shop-toolbar .aw-select {
       width: 100%;

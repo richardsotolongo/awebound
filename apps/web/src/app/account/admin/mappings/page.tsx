@@ -40,12 +40,11 @@ export default async function MappingsPage() {
               <th>Live product</th>
               <th>Stored offer id</th>
               <th>Size guide</th>
-              <th>Care</th>
               <th>Draft check</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ design, latest }) => {
+            {rows.map(({ design }) => {
               const product = brandContent.products.find((p) => p.slug === design.product_slug);
               const guide = fitGuideForSlug(design.product_slug);
               return (
@@ -68,7 +67,6 @@ export default async function MappingsPage() {
                     />
                   </td>
                   <td>{guide ? `${guide.id}: ${guide.name}` : "none"}</td>
-                  <td>{latest?.care_status ?? "–"}</td>
                   <td>{check(design.design_key)}</td>
                 </tr>
               );

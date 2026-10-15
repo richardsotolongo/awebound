@@ -1,7 +1,6 @@
 import { ScriptureRef } from "@awebound/brand";
 import { FitName } from "@/components/fit-name";
 import { JsonLd } from "@/components/json-ld";
-import { NotifyForm } from "@/features/bag/notify-form";
 import { EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
 import { ArchiveIntro } from "@/features/home/archive-intro";
 import { Campaign } from "@/features/home/campaign";
@@ -21,11 +20,9 @@ import { plateCss } from "@/shared";
 
 export const metadata = pageMeta({ path: "/" });
 
-// Rendered per visit so each one opens on a different piece; the catalog is still cached for a
+// Rendered per visit for the signed-in state of My Archive; the catalog is still cached for a
 // minute (server/fourthwall.ts).
 export const dynamic = "force-dynamic";
-
-const pickStart = (count: number) => Math.floor(Math.random() * count);
 
 /** Who Awebound is, for search engines and AI assistants. Add `sameAs` once social links exist. */
 const STORE = {
@@ -51,10 +48,10 @@ const STORE = {
 };
 
 /**
- * The home page, in order: the tagline and the ways into the shop on the pieces' plates, taking
- * turns from a random one, the piece on the plate up close (it follows the plate), Richard's note,
- * the latest release as a wall of its pieces, My Archive with a preview of one design's card, and
- * the optional sign-up for release updates.
+ * The home page, in order: the tagline and the ways into the shop on the pieces' plates, opening
+ * on the release's primary piece and then taking turns, the piece on the plate up close (it
+ * follows the plate), Richard's note, the latest release as a wall of its pieces, and My Archive
+ * with a preview of one design's card.
  */
 export default async function Home() {
   const release = await withFallback(getLatestRelease, null);
@@ -78,12 +75,14 @@ export default async function Home() {
         ]
       : [],
   );
-  const start = pickStart(slides.length);
-  // The page opens on a random piece with a plate; without plates, on the first featured piece.
-  const lead =
-    pieces.find((p) => p.slug === slides[start]?.slug) ??
-    pieces.find((p) => p.featured) ??
-    pieces[0];
+  // Every visit opens on the release's primary piece: its first featured piece in release order
+  // (Thorns to Lilies in Behold), or its first piece. The others follow in release order.
+  const primary = pieces.find((p) => p.featured) ?? pieces[0];
+  const start = Math.max(
+    0,
+    slides.findIndex((s) => s.slug === primary?.slug),
+  );
+  const lead = pieces.find((p) => p.slug === slides[start]?.slug) ?? primary;
   const [piece, offer, preview, userId] = await Promise.all([
     lead ? withFallback(() => getProduct(lead.slug), null) : null,
     getArchiveOffer(),
@@ -107,11 +106,6 @@ export default async function Home() {
     userId && preview
       ? Boolean(await withFallback(() => getEntitlement(userId, preview.designKey), null))
       : false;
-
-  const updates = {
-    title: "Hear about the next release",
-    body: "Leave your email and we’ll tell you when the next release is ready.",
-  };
 
   return (
     <>
@@ -149,18 +143,6 @@ export default async function Home() {
         signedIn={Boolean(userId)}
         owned={ownsPreview}
       />
-
-      <section id="updates" className="updates" aria-labelledby="updates-title">
-        <div className="aw-container updates-in">
-          <div>
-            <h2 id="updates-title" className="aw-h1">
-              {updates.title}
-            </h2>
-            <p className="aw-body">{updates.body}</p>
-          </div>
-          <NotifyForm source="footer" label="Your email" />
-        </div>
-      </section>
 
       <JsonLd data={STORE} />
     </>

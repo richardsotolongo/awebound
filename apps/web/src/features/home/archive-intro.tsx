@@ -5,9 +5,10 @@ import { homeIntro, lockedRows, type ArchiveOffer } from "@/features/archive/off
 import type { ArchivePreview } from "@/server/archive/offer";
 
 /**
- * My Archive on the home page, after the release wall: what the account keeps and what a purchase
- * opens, beside a preview of one design's card. The preview holds only published public fields;
- * its locked parts are named, never shown. Before any story can open, a short form with no card.
+ * My Archive on the home page, after the release wall: one paragraph on what the account keeps and
+ * what a purchase opens, and one button, beside a preview of one design's card. The preview holds
+ * only published public fields; its locked parts are named, never shown. Before any story can
+ * open, a short form with no card.
  */
 export function ArchiveIntro({
   offer,
@@ -41,13 +42,6 @@ export function ArchiveIntro({
             {copy.title}
           </h2>
           <p className="aw-body archive-intro-lede">{copy.body}</p>
-          {copy.points.length > 0 ? (
-            <ul className="archive-intro-points">
-              {copy.points.map((p) => (
-                <li key={p}>{p}</li>
-              ))}
-            </ul>
-          ) : null}
           <div className="aw-btn-row">
             <Button variant="secondary" href={copy.cta.href}>
               {copy.cta.label}

@@ -9,7 +9,6 @@ import {
   EMPTY_LIST,
   collectionChoice,
   parseCatalogQuery,
-  shopHref,
   toApiQuery,
   type RawSearchParams,
 } from "./query";
@@ -36,8 +35,9 @@ async function read<T>(load: () => Promise<T>, fallback: T): Promise<{ data: T; 
 /** What the collection selector is showing, resolved against the releases that exist. */
 export interface CollectionView {
   choice: string;
-  /** The release on screen; null for All Collections or an unknown slug. */
+  /** The release chosen; null for All Collections (the default) or an unknown slug. */
   release: Release | null;
+  /** The newest release, which the shop's header promotes on All Collections. */
   latest: Release | null;
   releases: Release[];
 }
@@ -56,9 +56,9 @@ export async function resolveCollection(searchParams: RawSearchParams): Promise<
 }
 
 /**
- * The shop: search, then compact selectors for category and (once there is more than one
- * release) collection beside sort and the filter sheet, chips and the grid. Every choice is in the
- * URL, so filtered views are shareable.
+ * The shop: a search box, then three compact selectors (collection, category, sort) and the filter
+ * sheet, chips and the grid. All Collections is the default, newest release first; every choice is
+ * in the URL, so filtered views are shareable.
  */
 export async function CatalogView({
   searchParams,
@@ -105,7 +105,7 @@ export async function CatalogView({
         categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
         category={activeCategory ?? ""}
         releases={releases.map((r) => ({ slug: r.slug, name: r.name }))}
-        collection={choice}
+        collection={choice === LATEST_DROP ? (view.latest?.slug ?? ALL_COLLECTIONS) : choice}
       />
       <ActiveFilters total={list.data.total} />
 
@@ -126,17 +126,12 @@ export async function CatalogView({
           <p className="aw-body">
             {unknown
               ? "It may have been renamed. Reset to see every piece."
-              : "Try another category or collection, or start again from the latest drop."}
+              : "Try another category or collection, or start again from every piece."}
           </p>
           <div className="aw-btn-row">
             <Button variant="secondary" href={basePath}>
-              Reset filters
+              See every piece
             </Button>
-            {choice !== ALL_COLLECTIONS ? (
-              <Button variant="link" href={shopHref(basePath, {}, { collection: ALL_COLLECTIONS })}>
-                See all collections
-              </Button>
-            ) : null}
           </div>
         </div>
       ) : (

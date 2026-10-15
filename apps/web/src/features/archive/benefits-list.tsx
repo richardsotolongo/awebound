@@ -1,49 +1,31 @@
-import {
-  FOUNDING_LINE,
-  OPEN_TO_ALL,
-  SIGNUP_ALONE,
-  freeBenefits,
-  purchaseBenefits,
-  type ArchiveOffer,
-} from "./offer";
+import { FOUNDING_LINE, OPEN_TO_ALL, freeLine, purchaseLine, type ArchiveOffer } from "./offer";
 
 /**
- * What an account brings, in two groups kept apart: what is free with the account, and what each
- * design bought with it opens. Every line comes from the offer, so only working features appear.
+ * Sign-in: what the account brings, as two brief distinctions kept apart: what is free with the
+ * account, and what a verified purchase opens for its design. Every line comes from the offer, so
+ * only working features appear; the purchase line waits until a purchase can open a story.
  */
 export function BenefitsList({ offer }: { offer: ArchiveOffer }) {
-  const free = freeBenefits(offer);
-  const purchase = purchaseBenefits(offer);
-  if (free.length === 0) return null;
+  const free = freeLine(offer);
+  const purchase = purchaseLine(offer);
+  if (!free) return null;
   return (
     <div className="archive-benefits">
-      <div className="archive-benefits-head">
-        <h2 className="aw-h2">Your pieces. Their meaning. One Archive.</h2>
-        <p className="aw-body">
-          My Archive brings your Awebound pieces and their meaning together.
-        </p>
-      </div>
+      <h2 className="aw-h2">
+        {purchase ? "Wear the piece. Know its story." : "Keep the pieces you love."}
+      </h2>
       <section className="archive-benefit-group" aria-labelledby="free-title">
         <h3 id="free-title" className="aw-h3">
           Free with your account
         </h3>
-        <ul>
-          {free.map((b) => (
-            <li key={b}>{b}</li>
-          ))}
-        </ul>
+        <p className="aw-body">{free}</p>
       </section>
-      {purchase.length > 0 ? (
+      {purchase ? (
         <section className="archive-benefit-group" aria-labelledby="purchase-title">
           <h3 id="purchase-title" className="aw-h3">
             With each design you buy
           </h3>
-          <ul>
-            {purchase.map((b) => (
-              <li key={b}>{b}</li>
-            ))}
-          </ul>
-          <p className="aw-small">{SIGNUP_ALONE}</p>
+          <p className="aw-body">{purchase}</p>
         </section>
       ) : null}
       <div className="archive-benefits-notes">

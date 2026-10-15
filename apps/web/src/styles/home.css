@@ -365,13 +365,6 @@
     color: var(--ink);
     text-wrap: pretty;
   }
-  .archive-intro-points {
-    padding-left: 1.2em;
-    display: grid;
-    gap: var(--space-2);
-    list-style: disc;
-    color: var(--ink-muted);
-  }
   .archive-intro-card {
     margin: 0;
     width: 100%;
@@ -480,30 +473,6 @@
     }
     .archive-intro-card figcaption {
       padding: var(--space-3) var(--space-4);
-    }
-  }
-
-  /* 6. Release updates sign-up. */
-  .updates {
-    padding-block: var(--space-24);
-    background: var(--surface);
-  }
-  .updates-in {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    gap: var(--space-8) var(--space-16);
-    align-items: end;
-  }
-  .updates-in > div {
-    display: grid;
-    gap: var(--space-4);
-  }
-  @media (max-width: 899px) {
-    .updates {
-      padding-block: var(--space-16);
-    }
-    .updates-in {
-      grid-template-columns: minmax(0, 1fr);
     }
   }
 }

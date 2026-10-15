@@ -4,7 +4,7 @@ Context for coding agents working in this repo. Read this first, then the `AGENT
 
 ## What this is
 
-Awebound is an independent Christian apparel brand (tees, oversized tees, hoodies, caps), founded by Richard out of his faith and reverence for Jesus Christ. The store welcomes everyone: someone who doesn’t share that faith should still find the clothes beautiful, understand where they come from and buy comfortably. This repo is its website: one Next.js app with a home page that opens on the pieces’ own color plates in turn (a different one each visit), then that piece up close, the founder’s note and the release as a wall of its pieces, a shop with compact category and collection selectors, About, Contact, FAQ and policy pages, and passwordless sign-in with an account area, My Archive.
+Awebound is an independent Christian apparel brand (tees, oversized tees, hoodies, caps), founded by Richard out of his faith and reverence for Jesus Christ. The store welcomes everyone: someone who doesn’t share that faith should still find the clothes beautiful, understand where they come from and buy comfortably. This repo is its website: one Next.js app with a home page that opens on the pieces’ own color plates in turn (starting from the release's primary piece), then that piece up close, the founder’s note and the release as a wall of its pieces, a shop with compact collection, category and sort selectors, About, Contact, FAQ and policy pages, and passwordless sign-in with an account area, My Archive.
 
 Releases are the unit (`collection` in code), numbered in order. The first is **Release 01, Behold**: five oversized tees, three hoodies and two caps, in `position` order (Thorns to Lilies, To Live Is Christ, By His Hem, Stone in Motion, Still the Storm, then the Torn Veil, The Passage and Wonderfully Made hoodies, then the Lamb’s Mark and Signature caps). "Latest Drop" is computed from the catalog (the newest release with pieces), so a new release needs content, not code.
 
@@ -35,7 +35,7 @@ pnpm lint             # every package
 pnpm build            # every package
 ```
 
-Copy `apps/web/.env.example` to `apps/web/.env.local`; it lists every variable. The catalog and checkout need `FOURTHWALL_STOREFRONT_TOKEN`. Without Supabase keys accounts show "open soon" and contact messages and sign-ups aren't stored; without `RESEND_API_KEY` emails print to the terminal in development.
+Copy `apps/web/.env.example` to `apps/web/.env.local`; it lists every variable. The catalog and checkout need `FOURTHWALL_STOREFRONT_TOKEN`. Without Supabase keys accounts show "open soon" and contact messages and back-in-stock requests aren't stored; without `RESEND_API_KEY` emails print to the terminal in development.
 
 Deployment is one Vercel project (Root Directory `apps/web`); see `docs/DEPLOYMENT.md`.
 

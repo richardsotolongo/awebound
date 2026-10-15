@@ -50,14 +50,6 @@
     color: var(--accent-text);
     flex: none;
   }
-  .archive-benefit-list {
-    display: grid;
-    gap: var(--space-2);
-    margin: 0;
-    padding-left: 1.2em;
-    list-style: disc;
-    color: var(--ink-muted);
-  }
   .archive-panel-list {
     display: grid;
     gap: var(--space-3);
@@ -87,12 +79,24 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: var(--space-6);
   }
+  /* Owned designs: the image, the name, then the card's link, which sits at the foot of every card
+     in a row so a two-line name never pushes one out of line. */
   .archive-card {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-3);
-    align-content: start;
+  }
+  .archive-card-foot {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+    margin-top: auto;
+  }
+  .archive-card-foot > * {
+    margin: 0;
   }
   .archive-card-media {
+    display: block;
     aspect-ratio: 4 / 5;
     background: var(--surface-raised);
     overflow: hidden;
@@ -105,6 +109,16 @@
   }
   .archive-card .aw-product-name {
     margin: 0;
+  }
+  /* An empty collection: why it is empty, then one next step. */
+  .collection-empty > p {
+    margin: 0;
+    max-width: 60ch;
+  }
+  .collection-empty a {
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   .archive-story {
     display: grid;
@@ -201,7 +215,6 @@
     align-content: start;
     gap: var(--space-8);
   }
-  .archive-benefits-head,
   .archive-benefits-notes {
     display: grid;
     gap: var(--space-3);
@@ -212,13 +225,9 @@
     padding-top: var(--space-6);
     border-top: 1px solid var(--line);
   }
-  .archive-benefits ul {
+  .archive-benefits h2,
+  .archive-benefit-group > * {
     margin: 0;
-    padding-left: 1.2em;
-    display: grid;
-    gap: var(--space-2);
-    list-style: disc;
-    color: var(--ink-muted);
   }
   .archive-benefits h3 {
     color: var(--ink);
