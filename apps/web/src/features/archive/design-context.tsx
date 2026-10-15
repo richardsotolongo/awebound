@@ -3,9 +3,10 @@ import { BibleLink } from "./bible-link";
 
 /**
  * The published public part of a design's Archive card on its product page: the preview and the
- * passage in context. The full story and the founder note stay behind a purchase.
+ * passage in context. The full story and the founder note stay behind a purchase, which the last
+ * line mentions only while a purchase can open them (`opens`).
  */
-export function DesignContext({ card }: { card: PublicCard }) {
+export function DesignContext({ card, opens }: { card: PublicCard; opens: boolean }) {
   return (
     <section id="story" className="aw-container details" aria-labelledby="story-title">
       <h2 id="story-title" className="aw-h2">
@@ -19,9 +20,11 @@ export function DesignContext({ card }: { card: PublicCard }) {
         {card.contextReference && card.bibleUrl ? (
           <BibleLink href={card.bibleUrl} reference={card.contextReference} />
         ) : null}
-        <p className="aw-small">
-          The full story and a note from Richard unlock in My Archive after purchase.
-        </p>
+        {opens ? (
+          <p className="aw-small">
+            The full story and a note from Richard open in My Archive when you buy the piece.
+          </p>
+        ) : null}
       </div>
     </section>
   );

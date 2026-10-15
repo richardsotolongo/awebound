@@ -29,6 +29,8 @@ export type ConsentTopic = z.infer<typeof ConsentTopicSchema>;
 // Shopper actions
 export const SavePieceRequestSchema = z.object({ slug: ProductSlugSchema });
 export type SavePieceRequest = z.infer<typeof SavePieceRequestSchema>;
+export const DesignAccessRequestSchema = z.object({ slug: ProductSlugSchema });
+export type DesignAccessRequest = z.infer<typeof DesignAccessRequestSchema>;
 export const ClaimStartRequestSchema = z.object({
   friendlyId: z
     .string()

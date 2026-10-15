@@ -13,6 +13,22 @@ export const currentUser = cache(async (): Promise<User | null> => {
   return (await supabase?.auth.getUser())?.data.user ?? null;
 });
 
+/**
+ * The signed-in user's id from the session token, for pages that only personalize a link or a
+ * line (the home page). getClaims checks the token without a round trip when the project signs
+ * with asymmetric keys. Anything that changes data uses requireUser.
+ */
+export const sessionUserId = cache(async (): Promise<string | null> => {
+  const supabase = await getServerSupabase();
+  if (!supabase) return null;
+  try {
+    const { data } = await supabase.auth.getClaims();
+    return data?.claims?.sub ?? null;
+  } catch {
+    return null;
+  }
+});
+
 export async function requireUser(message = "Sign in again to continue."): Promise<User> {
   const user = await currentUser();
   if (!user) throw new UserError(message);

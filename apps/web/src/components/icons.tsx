@@ -71,6 +71,14 @@ export const PlayIcon = (p: IconProps) => (
   </Icon>
 );
 
+/** Marks a part of an Archive card that opens with a purchase. */
+export const LockIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M8 11V7.5a4 4 0 0 1 8 0V11" />
+    <path d="M5 11h14v10H5z" />
+  </Icon>
+);
+
 /** Outlined, or filled once the piece is saved. */
 export const HeartIcon = ({ filled, ...p }: IconProps & { filled?: boolean }) => (
   <Icon {...p} fill={filled ? "currentColor" : "none"} strokeLinejoin="round">

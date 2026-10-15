@@ -330,7 +330,152 @@
     }
   }
 
-  /* 5. Release updates sign-up. */
+  /* 5. My Archive: the words and their link beside a preview of one design's card. The garment
+     sits on its plate as an image only; every word of the card is on raised coal. */
+  .archive-intro {
+    padding-block: var(--space-24);
+  }
+  .archive-intro-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-12) var(--space-16);
+    align-items: center;
+  }
+  .archive-intro[data-full="false"] .archive-intro-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .archive-intro-words {
+    display: grid;
+    gap: var(--space-6);
+    justify-items: start;
+    max-width: 58ch;
+  }
+  .archive-intro-words > * {
+    margin: 0;
+  }
+  .archive-intro-lede {
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .archive-intro-points {
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--space-2);
+    list-style: disc;
+    color: var(--ink-muted);
+  }
+  .archive-intro-card {
+    margin: 0;
+    width: 100%;
+    max-width: 600px;
+    justify-self: end;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  /* As tall as the card's words beside it; the garment is contained, never cropped. */
+  .archive-intro-media {
+    position: relative;
+    min-height: 260px;
+    background: var(--plate, var(--surface));
+  }
+  .archive-intro-media img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .archive-intro-body {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: var(--space-6);
+  }
+  .archive-intro-body > p {
+    margin: 0;
+  }
+  .archive-intro-name {
+    font-weight: 800;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .archive-intro-preview {
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--ink);
+  }
+  .archive-intro-locked {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .archive-intro-locked p {
+    margin: 0;
+  }
+  .archive-intro-locked ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .archive-intro-locked li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--ink-muted);
+  }
+  .archive-intro-locked svg {
+    flex: none;
+    color: var(--accent-text);
+  }
+  .archive-intro-card figcaption {
+    grid-column: 1 / -1;
+    padding: var(--space-3) var(--space-6);
+    border-top: 1px solid var(--line);
+    color: var(--ink-muted);
+  }
+  @media (max-width: 899px) {
+    .archive-intro {
+      padding-block: var(--space-16);
+    }
+    .archive-intro-in {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .archive-intro-card {
+      justify-self: start;
+    }
+  }
+  /* Phones: the words and their link first, then the card with the piece across its top. */
+  @media (max-width: 599px) {
+    .archive-intro {
+      padding-block: var(--space-12);
+    }
+    .archive-intro-card {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .archive-intro-media {
+      min-height: 0;
+      aspect-ratio: 5 / 4;
+    }
+    .archive-intro-body {
+      padding: var(--space-4);
+    }
+    .archive-intro-card figcaption {
+      padding: var(--space-3) var(--space-4);
+    }
+  }
+
+  /* 6. Release updates sign-up. */
   .updates {
     padding-block: var(--space-24);
     background: var(--surface);

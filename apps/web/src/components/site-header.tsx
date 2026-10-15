@@ -19,7 +19,10 @@ function currentLabel(pathname: string, account: NavLink | undefined): string | 
   return MAIN_NAV.find((l) => l.href !== "/" && pathname.startsWith(l.href))?.label;
 }
 
-/** "Sign in" (back to this page afterwards) or "Account"; nothing while accounts are off. */
+/**
+ * "Sign in" (back to this page afterwards) or "Account"; nothing while accounts are off. The phone
+ * menu offers the same link as "Join Awebound" to someone signed out.
+ */
 function accountLink(signedIn: boolean, pathname: string): NavLink | undefined {
   if (!accountsEnabled) return undefined;
   if (signedIn) return { label: "Account", href: "/account" };
@@ -65,10 +68,10 @@ export function SiteHeader() {
         {account ? (
           <div className="mobile-account">
             <Link href={account.href} className="aw-btn aw-btn-secondary aw-btn-block">
-              {account.label}
+              {signedIn ? account.label : "Join Awebound"}
             </Link>
             {signedIn ? null : (
-              <p className="aw-small">Optional. You never need an account to order.</p>
+              <p className="aw-small">Free, and never needed to order. Members sign in here too.</p>
             )}
           </div>
         ) : null}

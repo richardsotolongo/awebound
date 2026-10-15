@@ -1,13 +1,16 @@
 import { Button } from "@awebound/brand";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { purchaseBenefits } from "@/features/archive/benefits-list";
+import { ArchiveWelcome } from "@/features/archive/archive-welcome";
 import { FoundingSeal } from "@/features/archive/founding-seal";
+import { WELCOME_COOKIE, purchaseBenefits, welcomeFor } from "@/features/archive/offer";
 import { listDesigns } from "@/server/archive/designs";
 import { listEntitlements } from "@/server/archive/entitlements";
 import { getFoundingForUser } from "@/server/archive/founding";
 import { queueWelcomeIfNew } from "@/server/archive/email-outbox";
+import { getArchiveOffer, getDesignWallpapers } from "@/server/archive/offer";
 import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
 import { listSavedPieces } from "@/server/archive/saved";
@@ -28,35 +31,43 @@ export default async function ArchivePage() {
     autoLinkByEmail(user).catch(() => 0),
     queueWelcomeIfNew(user).catch(() => undefined),
   ]);
-  const [readiness, saved, entitlements, designs, orders, founding] = await Promise.all([
-    getArchiveReadiness(),
-    listSavedPieces(user.id),
-    listEntitlements(user.id),
-    listDesigns(),
-    listOrdersForUser(user.id),
-    getFoundingForUser(user.id),
-  ]);
+  const [readiness, offer, saved, entitlements, designs, orders, founding, jar] = await Promise.all(
+    [
+      getArchiveReadiness(),
+      getArchiveOffer(),
+      listSavedPieces(user.id),
+      listEntitlements(user.id),
+      listDesigns(),
+      listOrdersForUser(user.id),
+      getFoundingForUser(user.id),
+      cookies(),
+    ],
+  );
   const owned = designs.filter((d) =>
     entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
   );
-  const empty = saved.length === 0 && orders.length === 0 && owned.length === 0;
+  // Only a published design has a card to open.
+  const opened = owned.filter((d) => d.published_content_id);
   const latest = readiness.orders ? orders[0] : undefined;
-  const benefits = purchaseBenefits(readiness);
+  const benefits = purchaseBenefits(offer);
+  const welcome = welcomeFor(
+    offer,
+    jar.get(WELCOME_COOKIE)?.value,
+    opened.map((d) => ({ slug: d.product_slug, name: d.name })),
+    opened[0] ? await getDesignWallpapers(opened[0].product_slug, offer) : [],
+  );
 
   return (
     <>
       <header className="page-header account-head">
-        <h1 className="visually-hidden">My Archive</h1>
+        <h1 id="archive-title" className="visually-hidden" tabIndex={-1}>
+          My Archive
+        </h1>
         <p className="aw-small">
           Signed in as <span className="account-email">{user.email}</span>
         </p>
-        {empty ? (
-          <p className="aw-body">
-            Your Archive is open. Save a piece and explore Behold. The full stories and extras for
-            your purchased designs will appear here after payment is confirmed.
-          </p>
-        ) : null}
       </header>
+      {welcome ? <ArchiveWelcome {...welcome} /> : null}
       {founding && readiness.founding ? <FoundingSeal /> : null}
 
       <div className="account-panels account-tiles">
@@ -104,7 +115,11 @@ export default async function ArchivePage() {
             <ul className="archive-panel-list">
               {owned.map((d) => (
                 <li key={d.design_key}>
-                  <Link href={`/account/collection/${d.product_slug}`}>{d.name}</Link>
+                  {d.published_content_id ? (
+                    <Link href={`/account/collection/${d.product_slug}`}>{d.name}</Link>
+                  ) : (
+                    d.name
+                  )}
                 </li>
               ))}
             </ul>
@@ -165,7 +180,7 @@ export default async function ArchivePage() {
       {owned.length === 0 && benefits.length > 0 ? (
         <section className="account-panel account-after" aria-labelledby="after-title">
           <h2 id="after-title" className="aw-h3">
-            After a purchase
+            With each design you buy
           </h2>
           <ul className="archive-benefit-list">
             {benefits.map((b) => (

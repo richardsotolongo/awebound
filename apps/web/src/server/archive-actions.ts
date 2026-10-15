@@ -4,14 +4,18 @@ import {
   ClaimStartRequestSchema,
   ClaimVerifyRequestSchema,
   ConsentRequestSchema,
+  DesignAccessRequestSchema,
   SavePieceRequestSchema,
   type ClaimStartRequest,
   type ClaimVerifyRequest,
   type ConsentRequest,
+  type DesignAccessRequest,
   type SavePieceRequest,
 } from "@/shared";
 import { startClaim, verifyClaim } from "./archive/claims";
 import { setConsent } from "./archive/consents";
+import { getDesignBySlug } from "./archive/designs";
+import { getEntitlement } from "./archive/entitlements";
 import { getArchiveReadiness } from "./archive/readiness";
 import { reconcileOrders } from "./archive/reconcile";
 import { savePiece, savedSlugs, unsavePiece } from "./archive/saved";
@@ -48,6 +52,22 @@ export async function unsavePieceAction(
 /** The product page asks after mount whether this piece is saved (pages are cached per piece, not per shopper). */
 export async function getSavedSlugsAction(): Promise<Result<string[]>> {
   return run(async () => savedSlugs((await requireUser()).id));
+}
+
+/**
+ * The product page asks after mount whether the shopper owns this design, so its note can link to
+ * the card. Only a yes or no leaves the server; the design must be published.
+ */
+export async function designAccessAction(
+  input: DesignAccessRequest,
+): Promise<Result<{ owned: boolean }>> {
+  return run(async () => {
+    const user = await requireUser();
+    const { slug } = parse(DesignAccessRequestSchema, input);
+    const design = await getDesignBySlug(slug);
+    if (!design?.published_content_id) return { owned: false };
+    return { owned: Boolean(await getEntitlement(user.id, design.design_key)) };
+  });
 }
 
 export async function startOrderClaim(

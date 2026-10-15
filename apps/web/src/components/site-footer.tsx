@@ -2,9 +2,13 @@
 
 import { Footer } from "@awebound/brand";
 import type { ReactNode } from "react";
+import { accountsEnabled } from "@/lib/env";
 import { usePath } from "@/lib/pathname";
 import { FOOTER_NAV, SITE } from "@/lib/site";
 import { subscribe } from "@/server/actions";
+
+// My Archive is listed only while accounts are on.
+const LINKS = accountsEnabled ? FOOTER_NAV : FOOTER_NAV.filter((l) => l.href !== "/account");
 
 /** `notice` is the Scripture translation notice, resolved on the server. */
 export function SiteFooter({ notice, children }: { notice?: string; children?: ReactNode }) {
@@ -12,7 +16,7 @@ export function SiteFooter({ notice, children }: { notice?: string; children?: R
   const home = usePath() === "/";
   return (
     <Footer
-      links={FOOTER_NAV}
+      links={LINKS}
       tagline={SITE.tagline}
       notice={notice}
       signup={!home}

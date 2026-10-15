@@ -195,13 +195,25 @@
   .archive-order-line-name a {
     color: inherit;
   }
+  /* Sign-in: what the account brings, free and with a purchase in groups set apart by a rule. */
   .archive-benefits {
     display: grid;
     align-content: start;
-    gap: var(--space-6);
+    gap: var(--space-8);
+  }
+  .archive-benefits-head,
+  .archive-benefits-notes {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .archive-benefit-group {
+    display: grid;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--line);
   }
   .archive-benefits ul {
-    margin: var(--space-3) 0 0;
+    margin: 0;
     padding-left: 1.2em;
     display: grid;
     gap: var(--space-2);
@@ -210,6 +222,51 @@
   }
   .archive-benefits h3 {
     color: var(--ink);
+  }
+  /* The overview's first-visit welcome: words beside their two actions, set in the page. */
+  .archive-welcome {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6) var(--space-12);
+    padding: var(--space-6) var(--space-8);
+    margin-bottom: var(--space-6);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent-text);
+  }
+  .archive-welcome-words {
+    display: grid;
+    gap: var(--space-2);
+    flex: 1 1 32ch;
+    max-width: 68ch;
+  }
+  .archive-welcome-words h2 {
+    color: var(--ink);
+  }
+  .archive-welcome-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-6);
+  }
+  @media (max-width: 599px) {
+    .archive-welcome {
+      padding: var(--space-6);
+    }
+  }
+  /* A text-height link button keeps its underline at the words; an invisible band gives it a
+     44px tap area (the welcome's Dismiss, the product page's Archive link). */
+  .archive-welcome .aw-btn-link,
+  .buy-archive .aw-btn-link {
+    position: relative;
+  }
+  .archive-welcome .aw-btn-link::before,
+  .buy-archive .aw-btn-link::before {
+    content: "";
+    position: absolute;
+    inset: calc((100% - var(--tap-min)) / 2) 0;
   }
   .archive-saved-remove {
     justify-self: end;
