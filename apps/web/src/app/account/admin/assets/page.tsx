@@ -85,7 +85,7 @@ export default async function AssetsPage() {
                             <AssetActions assetId={published.id} publishable={false} />
                           </>
                         ) : (
-                          "Coming soon"
+                          "Not published yet"
                         )}
                       </td>
                       <td>

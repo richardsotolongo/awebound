@@ -5,6 +5,7 @@ import { DraftEditor } from "@/features/archive/admin/draft-editor";
 import { when } from "@/features/archive/admin/format";
 import { getOpenDraft, listContentVersions } from "@/server/archive/content";
 import { listDesigns } from "@/server/archive/designs";
+import { suggestionFor } from "@/server/archive/suggestions";
 import type { ContentRow } from "@/server/archive/types";
 import { listProducts } from "@/server/fourthwall";
 import type { DraftFields } from "@/shared";
@@ -91,6 +92,7 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
           initial={working ? toFields(working) : EMPTY}
           openStatus={open ? (open.status === "approved" ? "approved" : "draft") : null}
           hasPublished={Boolean(published)}
+          suggestion={suggestionFor(design.design_key)}
         />
       </section>
 

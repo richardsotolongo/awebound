@@ -5,14 +5,14 @@ import { usePath } from "@/lib/pathname";
 
 const LINKS = [
   { label: "Saved", href: "/account/saved" },
-  { label: "Collection", href: "/account/collection" },
   { label: "Orders", href: "/account/orders" },
   { label: "Settings", href: "/account/settings" },
 ];
 
 /**
- * The account's sections: My Archive (the overview) as the red button, a rule, then plain links;
- * the current one is underlined.
+ * The account's sections. My Archive (the overview) and Your collection, where each bought
+ * design's story, Richard's note and extras live, are the red buttons; a rule, then plain links.
+ * The current one is marked.
  */
 export function ArchiveNav({ admin }: { admin: boolean }) {
   const pathname = usePath();
@@ -20,13 +20,22 @@ export function ArchiveNav({ admin }: { admin: boolean }) {
   const current = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   return (
     <nav aria-label="Account" className="archive-nav">
-      <Link
-        href="/account"
-        className="aw-btn aw-btn-primary archive-nav-home"
-        aria-current={pathname === "/account" ? "page" : undefined}
-      >
-        My Archive
-      </Link>
+      <div className="archive-nav-main">
+        <Link
+          href="/account"
+          className="aw-btn aw-btn-primary"
+          aria-current={pathname === "/account" ? "page" : undefined}
+        >
+          My Archive
+        </Link>
+        <Link
+          href="/account/collection"
+          className="aw-btn aw-btn-primary"
+          aria-current={current("/account/collection") ? "page" : undefined}
+        >
+          Your collection
+        </Link>
+      </div>
       <div className="archive-nav-links">
         {links.map((l) => (
           <Link key={l.href} href={l.href} aria-current={current(l.href) ? "page" : undefined}>

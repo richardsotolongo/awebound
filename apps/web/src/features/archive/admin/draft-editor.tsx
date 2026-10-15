@@ -14,6 +14,14 @@ import { Outcome, useOwnerAction } from "./owner-action";
 
 type Key = keyof DraftFields;
 
+/** Suggested wording for some fields (server/archive/suggestions.ts). */
+export interface Suggestion {
+  preparedOn: string;
+  fields: Partial<
+    Record<"biblicalContext" | "designStory" | "imageryMeaning" | "shareCopy", string>
+  >;
+}
+
 const FIELDS: { key: Key; label: string; max?: number; input?: boolean; lines?: boolean }[] = [
   { key: "publicPreview", label: "Public preview", max: 300 },
   { key: "biblicalContext", label: "Biblical context", max: 1500 },
@@ -44,11 +52,13 @@ export function DraftEditor({
   initial,
   openStatus,
   hasPublished,
+  suggestion,
 }: {
   designKey: string;
   initial: DraftFields;
   openStatus: "draft" | "approved" | null;
   hasPublished: boolean;
+  suggestion: Suggestion | null;
 }) {
   const id = useId();
   const [text, setText] = useState<Record<Key, string>>({
@@ -56,6 +66,8 @@ export function DraftEditor({
     additionalBibleUrls: initial.additionalBibleUrls.join("\n"),
   });
   const [reviewed, setReviewed] = useState(false);
+  // The text as it was before the suggested wording went in, so it can be put back.
+  const [before, setBefore] = useState<Record<Key, string> | null>(null);
   const { busy, message, failed, run } = useOwnerAction();
   const fields = (): DraftFields => ({
     ...text,
@@ -94,8 +106,62 @@ export function DraftEditor({
   }
   const canPublish = !busy && (reviewed || (openStatus === "approved" && !dirty));
 
+  // The suggested fields that differ from what is in the boxes.
+  const suggested = (Object.entries(suggestion?.fields ?? {}) as [Key, string][]).filter(
+    ([k, v]) => v && text[k] !== v,
+  );
+  const label = (k: Key) => FIELDS.find((f) => f.key === k)?.label ?? k;
+  function applySuggestion() {
+    setBefore(text);
+    setText((t) => ({ ...t, ...Object.fromEntries(suggested) }));
+  }
+
   return (
     <form onSubmit={save} className="admin-editor" noValidate>
+      {suggested.length > 0 ? (
+        <div className="admin-suggestion">
+          <p className="aw-h3">Suggested wording</p>
+          <p className="field-help">
+            Your {suggested.map(([k]) => label(k).toLowerCase()).join(", ")}, rewritten to read more
+            like a person talking (prepared {suggestion?.preparedOn}). Read it here first. Using it
+            fills the boxes below; nothing is saved until you press Save, Approve or Publish.
+          </p>
+          <details>
+            <summary>Read the suggested wording</summary>
+            {suggested.map(([k, v]) => (
+              <div key={k} className="admin-suggestion-field">
+                <p className="aw-label">{label(k)}</p>
+                <p className="aw-small">{v}</p>
+              </div>
+            ))}
+          </details>
+          <div className="admin-inline">
+            <Button variant="secondary" disabled={busy} onClick={applySuggestion}>
+              Use the suggested wording
+            </Button>
+          </div>
+        </div>
+      ) : null}
+      {before ? (
+        <div className="admin-suggestion">
+          <p className="field-help">
+            The suggested wording is in the boxes below. Read it, change anything you like, then
+            tick the review box and Publish.
+          </p>
+          <div className="admin-inline">
+            <Button
+              variant="link"
+              disabled={busy}
+              onClick={() => {
+                setText(before);
+                setBefore(null);
+              }}
+            >
+              Put my wording back
+            </Button>
+          </div>
+        </div>
+      ) : null}
       {FIELDS.map((f) => {
         const value = text[f.key];
         const used = f.lines ? lines(value).length : value.length;

@@ -11,6 +11,7 @@ import { getArchiveOffer } from "@/server/archive/offer";
 import { autoLinkByEmail } from "@/server/archive/orders";
 import { getCatalog, getLatestRelease, withFallback } from "@/server/catalog";
 import { currentUser } from "@/server/session";
+import { collectionHref, pieceHref } from "@/shared";
 
 export const metadata: Metadata = { title: "Your collection" };
 
@@ -37,16 +38,19 @@ export default async function CollectionPage() {
   const isPublished = new Set(published.map((c) => c.designKey));
 
   if (owned.length === 0) {
+    const empty = emptyCollection(offer);
     return (
       <>
         <PageHeader title="Your collection" />
         <div className="shop-empty collection-empty" role="status">
           <p className="aw-h3">Your collection starts with your first piece.</p>
-          {emptyCollection(offer).map((p) => (
-            <p key={p} className="aw-body">
-              {p}
-            </p>
-          ))}
+          <p className="aw-body">{empty.lead}</p>
+          <ul className="collection-holds aw-body">
+            {empty.holds.map((h) => (
+              <li key={h}>{h}</li>
+            ))}
+          </ul>
+          <p className="aw-body">{empty.why}</p>
           {offer.claims ? (
             <p className="aw-small">
               Bought with a different email?{" "}
@@ -78,7 +82,7 @@ export default async function CollectionPage() {
           const product = catalog?.findBySlug(d.product_slug) ?? null;
           const image = product?.image.url ?? `/products/${d.product_slug}/1.webp`;
           const open = isPublished.has(d.design_key);
-          const href = open ? `/account/collection/${d.product_slug}` : `/shop/${d.product_slug}`;
+          const href = open ? collectionHref(d.product_slug) : pieceHref(d.product_slug);
           return (
             <li key={d.design_key} className="archive-card">
               <Link href={href} className="archive-card-media" aria-hidden="true" tabIndex={-1}>

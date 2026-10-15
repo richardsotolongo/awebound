@@ -1,7 +1,7 @@
 /* My Archive: the account area, its cards and the owner's admin tables. Layout only; colors are tokens. */
 @layer components {
-  /* My Archive as the red button, a rule, then the sections. On phones the links take their own
-     row and the rule goes. */
+  /* My Archive and Your collection as the red buttons, a rule, then the other sections. On phones
+     the two buttons share the first row, the links take their own and the rule goes. */
   .archive-nav {
     display: flex;
     flex-wrap: wrap;
@@ -11,6 +11,14 @@
     border-bottom: 1px solid var(--line);
     margin-bottom: var(--space-8);
   }
+  .archive-nav-main {
+    display: flex;
+    gap: var(--space-3);
+  }
+  /* The current section's button carries a bone rule along its foot. */
+  .archive-nav-main .aw-btn[aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--on-primary);
+  }
   .archive-nav-links {
     display: flex;
     flex-wrap: wrap;
@@ -19,6 +27,13 @@
     border-left: 1px solid var(--line-strong);
   }
   @media (max-width: 639px) {
+    .archive-nav-main {
+      flex-basis: 100%;
+    }
+    .archive-nav-main .aw-btn {
+      flex: 1 1 0;
+      padding-inline: var(--space-3);
+    }
     .archive-nav-links {
       flex-basis: 100%;
       padding-left: 0;
@@ -110,10 +125,32 @@
   .archive-card .aw-product-name {
     margin: 0;
   }
-  /* An empty collection: why it is empty, then one next step. */
+  /* An empty collection: what each design brings to it, why it is empty, then one next step. */
   .collection-empty > p {
     margin: 0;
     max-width: 60ch;
+  }
+  .collection-holds {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--ink);
+  }
+  .collection-holds li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .collection-holds li::before {
+    content: "";
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-text);
+    transform: translateY(-2px);
   }
   .collection-empty a {
     color: var(--accent-text);
@@ -720,6 +757,85 @@
   }
   .admin-editor textarea {
     min-height: 120px;
+  }
+  /* Suggested wording above the editor's boxes, set apart on raised coal. */
+  .admin-suggestion {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .admin-suggestion > p {
+    margin: 0;
+  }
+  .admin-suggestion summary {
+    cursor: pointer;
+    font-weight: 700;
+    min-height: var(--tap-min);
+    display: flex;
+    align-items: center;
+  }
+  .admin-suggestion-field {
+    display: grid;
+    gap: var(--space-1);
+    padding-top: var(--space-3);
+  }
+  .admin-suggestion-field p {
+    margin: 0;
+    white-space: pre-line;
+  }
+  /* The wallpaper file: a plain button to choose it, or drop it anywhere in the dashed box. */
+  .asset-drop {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-sm);
+  }
+  .asset-drop[data-over] {
+    border-color: var(--ink);
+    background: var(--surface-raised);
+  }
+  .asset-file {
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .asset-file::file-selector-button {
+    min-height: var(--tap-min);
+    margin-right: var(--space-4);
+    padding: 0 var(--space-6);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .asset-file:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .asset-chosen {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .asset-chosen img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .asset-chosen p {
+    margin: 0;
+    overflow-wrap: anywhere;
   }
   .admin-inline {
     display: flex;

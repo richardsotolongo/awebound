@@ -1,4 +1,4 @@
-import type { AssetFormat } from "@/shared";
+import { collectionHref, type AssetFormat } from "@/shared";
 
 /**
  * What My Archive holds, and the words every surface uses for it (home page, product page,
@@ -138,22 +138,29 @@ export function productNote(name: string) {
   };
 }
 
+/** What each design bought brings to the collection, listed under the empty collection's heading. */
+export const COLLECTION_HOLDS = [
+  "The deeper story behind the design",
+  "The meaning of its imagery",
+  "A founder’s note from Richard",
+  "Its Scripture and biblical context",
+  "Phone and desktop wallpapers",
+  "A design card PDF and story images to share",
+];
+
 /**
- * Why the collection is empty and what fills it, in words that match what works today: before
- * orders reach accounts, it says so plainly instead of promising a card.
+ * The empty collection: what each design bought brings to it (the whole Archive, as every
+ * explanation names it), then why it is empty in words that match what works today. Before orders
+ * reach accounts, it says so plainly.
  */
-export function emptyCollection(o: ArchiveOffer): string[] {
-  if (!o.orders)
-    return [
-      "Your collection is for the designs you buy.",
-      "Purchases don’t link to accounts yet, so it’s empty for now. Order confirmations and tracking still come by email.",
-    ];
-  return [
-    o.stories
-      ? "Each design you buy is kept here, with its deeper story and a personal note from Richard."
-      : "Each design you buy is kept here.",
-    "It’s empty because no order is linked to this account yet. Orders placed with your account’s email are added on their own, guest checkout included.",
-  ];
+export function emptyCollection(o: ArchiveOffer): { lead: string; holds: string[]; why: string } {
+  return {
+    lead: "Each design you buy is kept here, with:",
+    holds: COLLECTION_HOLDS,
+    why: o.orders
+      ? "It’s empty because no order is linked to this account yet. Orders placed with your account’s email are added on their own, guest checkout included."
+      : "Purchases don’t link to accounts yet, so it’s empty for now. Order confirmations and tracking still come by email.",
+  };
 }
 
 /** The parts of a design's card that open with a purchase, by name, for previews. */
@@ -206,7 +213,7 @@ export function welcomeFor(
           body: [
             `Its full story and a note from Richard are open.${extras ? ` You’ll also find ${extras}.` : ""}`,
           ],
-          action: { href: `/account/collection/${first.slug}`, label: `Open ${first.name}` },
+          action: { href: collectionHref(first.slug), label: `Open ${first.name}` },
         };
   }
   if (dismissed) return null;
