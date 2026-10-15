@@ -1,16 +1,36 @@
+"use client";
+
 import { ScriptureQuote } from "@awebound/brand";
-import type { ProductDetail } from "@/shared";
 import Link from "next/link";
-import { pieceStatus, priceLabel } from "@/features/catalog/query";
+import { useRef, type FocusEvent } from "react";
+import { useHeroPiece } from "./hero-piece";
+import type { LeadSlide } from "./lead-slide";
 
 /**
- * Under the opening plate, on coal: what Awebound makes, then the lead piece up close: its
- * print, name, price and Scripture.
+ * Under the opening plate, on coal: what Awebound makes, then the piece on the plate up close:
+ * its print, name, price and Scripture. It follows the plate as the pieces take turns (`leads`
+ * has one entry per slide, in order), and a pointer or focus resting here holds the plate still,
+ * so the name never changes under the hand.
  */
-export function LeadPiece({ piece }: { piece: ProductDetail | null }) {
-  const status = piece ? pieceStatus(piece) : undefined;
+export function LeadPiece({ leads, start }: { leads: (LeadSlide | null)[]; start: number }) {
+  const shared = useHeroPiece();
+  const piece = leads[shared?.index ?? start] ?? null;
+  const rest = useRef({ pointer: false, focus: false });
+  const hold = (change: Partial<typeof rest.current>) => {
+    rest.current = { ...rest.current, ...change };
+    shared?.setHeld(rest.current.pointer || rest.current.focus);
+  };
+
   return (
-    <section className="lead">
+    <section
+      className="lead"
+      onPointerEnter={() => hold({ pointer: true })}
+      onPointerLeave={() => hold({ pointer: false })}
+      onFocus={() => hold({ focus: true })}
+      onBlur={(e: FocusEvent<HTMLElement>) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) hold({ focus: false });
+      }}
+    >
       <div className="aw-container lead-in">
         <div className="lead-about">
           <p className="lead-lede">
@@ -32,17 +52,17 @@ export function LeadPiece({ piece }: { piece: ProductDetail | null }) {
                 loading="lazy"
                 decoding="async"
               />
-              <figcaption>{piece.story.art}</figcaption>
+              <figcaption>{piece.art}</figcaption>
             </figure>
             <div className="lead-facts">
               <h2 className="aw-product-name">
                 <Link href={`/shop/${piece.slug}`}>{piece.name}</Link>
               </h2>
               <p className="lead-row">
-                <span>{piece.category.cut}</span>
-                <span className="lead-price">{priceLabel(piece)}</span>
+                <span>{piece.cut}</span>
+                <span className="lead-price">{piece.price}</span>
               </p>
-              {status ? <p className="lead-piece-status">{status}</p> : null}
+              {piece.status ? <p className="lead-piece-status">{piece.status}</p> : null}
               <ScriptureQuote
                 text={piece.scripture.text}
                 reference={piece.scripture.reference}

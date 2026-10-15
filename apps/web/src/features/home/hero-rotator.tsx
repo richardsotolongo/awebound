@@ -12,6 +12,7 @@ import {
   type FocusEvent,
 } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, PauseIcon, PlayIcon } from "@/components/icons";
+import { useHeroPiece } from "./hero-piece";
 
 export interface HeroSlide {
   slug: string;
@@ -32,25 +33,32 @@ function subscribeReduced(onChange: () => void) {
   return () => query.removeEventListener("change", onChange);
 }
 
-/** The surface this screen shows and the garment, decoded before a slide appears. */
+/**
+ * The surface this screen shows, the garment and its close-up in the lead piece below, decoded
+ * before a slide appears, so the plate and the lead piece change together.
+ */
 function preload(slug: string): Promise<unknown> {
   const wide = window.matchMedia("(min-width: 900px)").matches;
   return Promise.all(
-    [`${files(slug)}/plate-${wide ? "wide" : "tall"}.webp`, `${files(slug)}/piece.webp`].map(
-      (src) => {
-        const img = new Image();
-        img.src = src;
-        return img.decode().catch(() => undefined);
-      },
-    ),
+    [
+      `${files(slug)}/plate-${wide ? "wide" : "tall"}.webp`,
+      `${files(slug)}/piece.webp`,
+      `${files(slug)}/detail.webp`,
+    ].map((src) => {
+      const img = new Image();
+      img.src = src;
+      return img.decode().catch(() => undefined);
+    }),
   );
 }
 
 /**
  * The opening plate, one piece at a time: it starts on the piece the server picked for this
- * visit and moves to the next every few seconds with a short cross-fade, only while it is on
- * screen and no pointer rests on its buttons or garment and no focus is inside it. Previous,
- * Pause and Next sit under the actions; with reduced motion it never moves on its own.
+ * visit and moves to the next every few seconds (the plate cross-fades; the garment fades out
+ * before the next fades in), only while it is on screen and no pointer rests on its buttons or
+ * garment or on the lead piece below, and no focus is inside them. Previous, Pause and Next sit
+ * under the actions; with reduced motion it never moves on its own. Inside `HeroPieceProvider`
+ * the piece is shared, so the lead piece follows it.
  */
 export function HeroRotator({
   slides,
@@ -61,7 +69,10 @@ export function HeroRotator({
   start: number;
   all: { href: string; label: string } | null;
 }) {
-  const [index, setIndex] = useState(start);
+  const shared = useHeroPiece();
+  const [ownIndex, setOwnIndex] = useState(start);
+  const index = shared ? shared.index : ownIndex;
+  const setIndex = shared ? shared.setIndex : setOwnIndex;
   // Slides whose images are in the page: the first, then each one as it is about to show.
   const [mounted, setMounted] = useState([start]);
   const [paused, setPaused] = useState(false);
@@ -86,7 +97,7 @@ export function HeroRotator({
       await preload(slides[next]!.slug);
       setIndex(next);
     },
-    [slides],
+    [slides, setIndex],
   );
 
   useEffect(() => {
@@ -105,7 +116,8 @@ export function HeroRotator({
     };
   }, []);
 
-  const running = !reduced && !paused && !pointerHeld && !focusHeld && onScreen && tabVisible;
+  const running =
+    !reduced && !paused && !pointerHeld && !focusHeld && !shared?.held && onScreen && tabVisible;
   const hold = {
     onPointerEnter: () => setPointerHeld(true),
     onPointerLeave: () => setPointerHeld(false),

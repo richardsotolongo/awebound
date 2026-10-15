@@ -6,8 +6,10 @@ import { EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
 import { ArchiveIntro } from "@/features/home/archive-intro";
 import { Campaign } from "@/features/home/campaign";
 import { Founder } from "@/features/home/founder";
+import { HeroPieceProvider } from "@/features/home/hero-piece";
 import type { HeroSlide } from "@/features/home/hero-rotator";
 import { LeadPiece } from "@/features/home/lead-piece";
+import { toLeadSlide } from "@/features/home/lead-slide";
 import { ReleaseWall } from "@/features/release/release-wall";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
@@ -50,9 +52,9 @@ const STORE = {
 
 /**
  * The home page, in order: the tagline and the ways into the shop on the pieces' plates, taking
- * turns from a random one, that piece up close, Richard's note, the latest release as a wall of its
- * pieces, My Archive with a preview of one design's card, and the optional sign-up for release
- * updates.
+ * turns from a random one, the piece on the plate up close (it follows the plate), Richard's note,
+ * the latest release as a wall of its pieces, My Archive with a preview of one design's card, and
+ * the optional sign-up for release updates.
  */
 export default async function Home() {
   const release = await withFallback(getLatestRelease, null);
@@ -91,6 +93,15 @@ export default async function Home() {
   const previewPlate =
     pieces.find((p) => p.slug === preview?.slug)?.plate ??
     (preview ? (await withFallback(() => getProduct(preview.slug), null))?.plate : null);
+  // The lead piece follows the plate: one entry per slide, in the same order. Without slides the
+  // plate stands still on the one piece.
+  const rotating = slides.length > 1;
+  const leads = rotating
+    ? (await Promise.all(slides.map((s) => withFallback(() => getProduct(s.slug), null)))).map(
+        (p) => (p ? toLeadSlide(p) : null),
+      )
+    : [piece ? toLeadSlide(piece) : null];
+  const leadStart = rotating ? start : 0;
   // A member who owns the previewed design reads that it is open, not that it opens with a purchase.
   const ownsPreview =
     userId && preview
@@ -104,8 +115,10 @@ export default async function Home() {
 
   return (
     <>
-      <Campaign release={release} piece={piece} slides={slides} start={start} />
-      <LeadPiece piece={piece} />
+      <HeroPieceProvider start={leadStart}>
+        <Campaign release={release} piece={piece} slides={slides} start={start} />
+        <LeadPiece leads={leads} start={leadStart} />
+      </HeroPieceProvider>
 
       <Founder />
 

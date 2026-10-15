@@ -1,6 +1,7 @@
-/* Home page: the tagline on the pieces' plates (taking turns), that piece up close, the
-   founder's note, the release as a wall, and the optional sign-up. Nothing animates on load or on
-   scroll; the opening plate's timed cross-fade is the one exception (docs/BRAND.md, Motion). */
+/* Home page: the tagline on the pieces' plates (taking turns), the piece on the plate up close,
+   the founder's note, the release as a wall, My Archive, and the optional sign-up. Nothing
+   animates on load or on scroll; the opening plate's timed change is the one exception
+   (docs/BRAND.md, Motion). */
 @layer components {
   /* 1. The opening plate: lettering and two actions, the garment cut out beside them. */
   .campaign {
@@ -65,23 +66,26 @@
   .campaign-framed img {
     object-fit: cover;
   }
-  /* Pieces taking turns (HeroRotator): the next plate and garment fade in whole over the last,
-     which then goes, so every frame shows a complete garment. */
-  .campaign-rotating .campaign-layer,
-  .campaign-rotating .campaign-garment img {
+  /* Pieces taking turns (HeroRotator): the next plate fades in whole over the last, which then
+     goes. The garment fades out first and the next one fades in after it, so two garments never
+     show at once; both finish within the plate's 600ms. */
+  .campaign-rotating .campaign-layer {
     opacity: 0;
     transition: opacity 0s linear 600ms;
-  }
-  .campaign-rotating .campaign-layer {
     z-index: -2;
   }
-  .campaign-rotating .campaign-layer[data-on="true"],
-  .campaign-rotating .campaign-garment img[data-on="true"] {
+  .campaign-rotating .campaign-layer[data-on="true"] {
     opacity: 1;
     transition: opacity 600ms var(--ease-reverent);
-  }
-  .campaign-rotating .campaign-layer[data-on="true"] {
     z-index: -1;
+  }
+  .campaign-rotating .campaign-garment img {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+  }
+  .campaign-rotating .campaign-garment img[data-on="true"] {
+    opacity: 1;
+    transition: opacity 350ms var(--ease-reverent) 200ms;
   }
   .campaign-rotating .campaign-garment {
     position: relative;
@@ -117,11 +121,15 @@
   .campaign-control:hover {
     background: color-mix(in srgb, var(--plate-ink-on) 86%, var(--plate-ink));
   }
+  /* Reduced motion: every change is instant (the [data-on] rules are named too, as they are
+     more specific). */
   @media (prefers-reduced-motion: reduce) {
     .campaign-rotating,
     .campaign-rotating .aw-btn,
     .campaign-rotating .campaign-layer,
-    .campaign-rotating .campaign-garment img {
+    .campaign-rotating .campaign-layer[data-on="true"],
+    .campaign-rotating .campaign-garment img,
+    .campaign-rotating .campaign-garment img[data-on="true"] {
       transition: none;
     }
   }
