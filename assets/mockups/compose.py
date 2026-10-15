@@ -37,6 +37,7 @@ import json
 import numpy as np
 from PIL import Image, ImageFilter
 
+from photo_cutout import cutout, to_rgba
 from widen import widen
 
 HERE = Path(__file__).parent
@@ -83,6 +84,8 @@ STYLE = {
 }
 
 CAPS = ("lambs-mark", "signature-cap")
+# Long sleeves that run off a photo's edge fade out in the cut-out; a tee's are completed.
+HOODIES = ("torn-veil", "the-passage", "wonderfully-made")
 
 # `views`, for mockup-only products: views in display order (the first is the listing image and
 # always shows the whole garment). `detail`, for every product: a close crop of the main artwork,
@@ -347,8 +350,25 @@ def listing_view(slug: str) -> str:
 
 
 def piece(slug: str) -> Image.Image:
-    """The listing view cut out, with the shadow it casts, transparent elsewhere."""
+    """The listing view cut out, with the shadow it casts, transparent elsewhere. When the listing
+    image is a photo, the garment is cut from that photo with the photo's own shadow, so the home
+    page shows exactly the shop's first image; otherwise from the render or mockup."""
     w, h = PIECE_W, PIECE_H
+    gallery = MANIFEST.get(slug, {}).get("gallery")
+    if gallery and "photo" in gallery[0]:
+        rgb, alpha, shade, _, _ = cutout(RENDERS / f"{slug}-1.webp", "fade" if slug in HOODIES else "complete")
+        cut = to_rgba(rgb, alpha, shade)
+        ys, xs = np.where(alpha > 0.5)
+        box = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1)
+        scale = min(w * 0.92 / (box[2] - box[0]), h * 0.86 / (box[3] - box[1]))
+        cut = cut.resize((round(cut.width * scale), round(cut.height * scale)), Image.LANCZOS)
+        cx, cy = (box[0] + box[2]) / 2 * scale, (box[1] + box[3]) / 2 * scale
+        x, y = round(w / 2 - cx), round(h * 0.49 - cy)
+        # What falls inside the frame (a faded sleeve or a shadow may reach past it).
+        src = cut.crop((max(0, -x), max(0, -y), min(cut.width, w - x), min(cut.height, h - y)))
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        img.alpha_composite(src, (max(0, x), max(0, y)))
+        return img
     garment, at = place(load_garment(slug, listing_view(slug)), w, h, 0.92, 0.86, 0.49)
     dx = {"top": 0, "spot": 0, "shaft": -14}.get(STYLE[slug]["light"], 16)
     cast = shadow(garment.getchannel("A"), w, h, at, w / W, dx)
