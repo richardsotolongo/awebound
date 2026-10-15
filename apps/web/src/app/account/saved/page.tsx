@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/page-header";
 import { RemoveSavedButton } from "@/features/archive/remove-saved-button";
 import { listSavedPieces } from "@/server/archive/saved";
 import { currentUser } from "@/server/session";
+import { pieceHref } from "@/shared";
 
 export const metadata: Metadata = { title: "Saved pieces" };
 
@@ -46,7 +47,7 @@ export default async function SavedPage() {
               <div className="archive-row-words">
                 {s.piece ? (
                   <>
-                    <Link href={`/shop/${s.slug}`}>{s.piece.name}</Link>
+                    <Link href={pieceHref(s.slug)}>{s.piece.name}</Link>
                     <span className="aw-small">
                       {s.piece.cut}, {s.piece.color}
                     </span>

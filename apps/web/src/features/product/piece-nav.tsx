@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { plateCss, type ProductSummary } from "@/shared";
+import { plateCss, pieceHref, type ProductSummary } from "@/shared";
 import { ArrowRightIcon } from "@/components/icons";
 
 /**
@@ -12,7 +12,7 @@ export function PieceNav({ prev, next }: { prev?: ProductSummary; next?: Product
   if (!prev && !next) return null;
   const tile = (piece: ProductSummary, direction: "prev" | "next") => (
     <Link
-      href={`/shop/${piece.slug}`}
+      href={pieceHref(piece.slug)}
       rel={direction}
       className="piece-nav-link"
       data-direction={direction}

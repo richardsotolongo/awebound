@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@awebound/brand";
-import { formatPrice, type BagIssue } from "@/shared";
+import { formatPrice, pieceHref, type BagIssue } from "@/shared";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { accountsEnabled } from "@/lib/env";
@@ -84,7 +84,7 @@ export function BagLines({ onNavigate }: { onNavigate?: () => void }) {
           <img src={snapshot.image.url} alt="" />
           <div>
             <p className="bag-line-name">
-              <Link href={`/shop/${snapshot.productSlug}`} onClick={onNavigate}>
+              <Link href={pieceHref(snapshot.productSlug)} onClick={onNavigate}>
                 {snapshot.name}
               </Link>
             </p>

@@ -5,7 +5,7 @@ import { INK_HEX, PLATE_HEX } from "@awebound/brand/hex";
 import { WORDMARK } from "@awebound/brand/marks";
 import { ImageResponse } from "next/og";
 import sharp from "sharp";
-import type { ProductDetail, ShareFormat } from "@/shared";
+import { pieceHref, type ProductDetail, type ShareFormat } from "@/shared";
 import { loadFonts } from "./fonts";
 import type { ContentRow, DesignRow } from "./types";
 
@@ -91,7 +91,7 @@ export async function renderShareImage(
       }}
     >
       <span>Bound in awe. Worn without shame.</span>
-      <span style={{ fontWeight: 700 }}>awebound.store/shop/{design.product_slug}</span>
+      <span style={{ fontWeight: 700 }}>awebound.store{pieceHref(design.product_slug)}</span>
     </div>
   );
   const picture = art ? (

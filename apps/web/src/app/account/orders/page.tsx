@@ -7,6 +7,7 @@ import { RefreshOrdersButton } from "@/features/archive/refresh-orders-button";
 import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
 import { currentUser } from "@/server/session";
+import { pieceHref } from "@/shared";
 
 export const metadata: Metadata = { title: "Orders" };
 
@@ -69,7 +70,7 @@ export default async function OrdersPage() {
                       )}
                       <div>
                         <p className="archive-order-line-name">
-                          {l.slug ? <Link href={`/shop/${l.slug}`}>{l.name}</Link> : l.name}
+                          {l.slug ? <Link href={pieceHref(l.slug)}>{l.name}</Link> : l.name}
                         </p>
                         <p className="aw-small">
                           {[

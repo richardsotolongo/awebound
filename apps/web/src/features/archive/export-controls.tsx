@@ -2,6 +2,7 @@
 
 import { Button } from "@awebound/brand";
 import { useId, useState } from "react";
+import { pieceHref } from "@/shared";
 
 /**
  * Share the Story: the public link anyone can open, and for the owner the design card PDF and
@@ -21,7 +22,7 @@ export function ExportControls({
   siteUrl: string;
 }) {
   const id = useId();
-  const link = `${siteUrl}/shop/${slug}#story`;
+  const link = `${siteUrl}${pieceHref(slug)}#story`;
   const [images, setImages] = useState<{ portrait: string; square: string } | null>(null);
   const [state, setState] = useState<"idle" | "making" | "error">("idle");
   const [copied, setCopied] = useState<"idle" | "copied" | "manual">("idle");

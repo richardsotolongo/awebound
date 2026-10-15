@@ -14,6 +14,7 @@ import {
 import { ArrowLeftIcon, ArrowRightIcon, PauseIcon, PlayIcon } from "@/components/icons";
 import { useSwipe } from "@/lib/use-swipe";
 import { useHeroPiece } from "./hero-piece";
+import { pieceHref } from "@/shared";
 
 export interface HeroSlide {
   slug: string;
@@ -150,7 +151,7 @@ export function HeroRotator({
     return () => clearTimeout(timer);
   }, [running, index, go]);
 
-  const href = `/shop/${slide.slug}`;
+  const href = pieceHref(slide.slug);
   return (
     <section
       ref={ref}

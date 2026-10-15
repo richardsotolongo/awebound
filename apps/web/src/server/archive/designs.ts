@@ -8,6 +8,15 @@ import type { DesignRow } from "./types";
 export const designKeyFor = (collectionSlug: string, productSlug: string) =>
   `${collectionSlug}:${productSlug}`;
 
+/**
+ * The catalog names a piece. A row made before a rename (The Passage, now Fear Not) shows the new
+ * name until the owner's next import refreshes it.
+ */
+function named(row: DesignRow): DesignRow {
+  const name = brandContent.products.find((p) => p.slug === row.product_slug)?.name;
+  return name && name !== row.name ? { ...row, name } : row;
+}
+
 function admin() {
   if (!supabaseAdmin) throw new Error("database not configured");
   return supabaseAdmin;
@@ -17,7 +26,7 @@ export async function listDesigns(): Promise<DesignRow[]> {
   if (!supabaseAdmin) return [];
   const { data, error } = await supabaseAdmin.from("archive_designs").select("*").order("position");
   if (error) throw new Error(`designs read failed: ${error.message}`);
-  return (data ?? []) as DesignRow[];
+  return ((data ?? []) as DesignRow[]).map(named);
 }
 
 export async function getDesignBySlug(slug: string): Promise<DesignRow | null> {
@@ -27,7 +36,7 @@ export async function getDesignBySlug(slug: string): Promise<DesignRow | null> {
     .select("*")
     .eq("product_slug", slug)
     .maybeSingle();
-  return (data as DesignRow | null) ?? null;
+  return data ? named(data as DesignRow) : null;
 }
 
 export async function getDesign(designKey: string): Promise<DesignRow | null> {
@@ -37,7 +46,7 @@ export async function getDesign(designKey: string): Promise<DesignRow | null> {
     .select("*")
     .eq("design_key", designKey)
     .maybeSingle();
-  return (data as DesignRow | null) ?? null;
+  return data ? named(data as DesignRow) : null;
 }
 
 /**

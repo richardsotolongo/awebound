@@ -1,5 +1,5 @@
 import { Button, Plate } from "@awebound/brand";
-import { plateCss, type ProductDetail, type Release } from "@/shared";
+import { plateCss, pieceHref, type ProductDetail, type Release } from "@/shared";
 import Link from "next/link";
 import { shopCanonical } from "@/features/catalog/query";
 import { HeroRotator, type HeroSlide } from "./hero-rotator";
@@ -25,7 +25,7 @@ export function Campaign({ release, piece, slides, start }: CampaignProps) {
       : null;
   if (slides.length > 1) return <HeroRotator slides={slides} start={start} all={all} />;
 
-  const href = piece ? `/shop/${piece.slug}` : "/shop";
+  const href = piece ? pieceHref(piece.slug) : "/shop";
   const words = (
     <div className="campaign-text">
       <h1 id="campaign-title" className="aw-poster campaign-title">

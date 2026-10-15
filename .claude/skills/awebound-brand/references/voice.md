@@ -84,7 +84,7 @@ Richard’s own words, as he supplied them in October 2026, and nothing invented
 ## Naming
 
 - Releases: one word or short call from Scripture, numbered (Release 01 — Behold).
-- Product names: two to four words from the art or the verse (Thorns to Lilies, By His Hem, Still the Storm, The Passage).
+- Product names: two to four words from the art or the verse (Thorns to Lilies, By His Hem, Still the Storm, Fear Not).
 - Internal design codes (A3-B01 for apparel, A3-H01 for hats) live in records, SKUs, assets and orders only. Never show them to customers: not on cards, headings, badges, related pieces, search, bag lines, alt text or metadata.
 
 ## Calls to action

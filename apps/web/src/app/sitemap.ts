@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { EMPTY_FACETS, EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
 import { getFacets, getReleases, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
-import { ALL_COLLECTIONS } from "@/shared";
+import { ALL_COLLECTIONS, pieceHref } from "@/shared";
 
 export const revalidate = 3600;
 
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Next writes the address into the XML as it is, so the "&" between two params is escaped here.
     ...paths.map((path) => ({ url: `${siteUrl}${path}`.replace(/&/g, "&amp;") })),
     ...products.items.map((p) => ({
-      url: `${siteUrl}/shop/${p.slug}`,
+      url: `${siteUrl}${pieceHref(p.slug)}`,
       lastModified: p.releasedAt,
       images: [p.image, p.hoverImage].flatMap((i) =>
         i ? [new URL(i.url, siteUrl).toString()] : [],

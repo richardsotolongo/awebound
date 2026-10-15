@@ -1,4 +1,4 @@
-import { CONTACT_TOPIC_LABELS, type ContactTopic } from "@/shared";
+import { collectionHref, CONTACT_TOPIC_LABELS, type ContactTopic } from "@/shared";
 
 /**
  * Transactional email templates. Every email uses `layout` (the Supabase sign-in templates in
@@ -247,7 +247,7 @@ export function designUnlocked({
   siteUrl: string;
 }): RenderedEmail {
   const subject = `${name} is in your Archive`;
-  const href = `${siteUrl}/account/collection/${slug}`;
+  const href = `${siteUrl}${collectionHref(slug)}`;
   const html = layout({
     title: subject,
     logoSrc: LOGO,

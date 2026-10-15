@@ -69,6 +69,25 @@ export const CollectionSchema = z.object({
 export type Collection = z.infer<typeof CollectionSchema>;
 
 /** Collection filter values beside real release slugs. No value means the latest drop. */
+/**
+ * A piece renamed after its records were made keeps its slug (it keys the piece's Archive records,
+ * saved hearts, orders and image folder) and takes a new address in the shop that matches its
+ * name: The Passage became Fear Not in October 2026. The old address redirects to the new one.
+ */
+const SHOP_ADDRESSES: Readonly<Record<string, string>> = { "the-passage": "fear-not" };
+
+/** The address a piece is reached at in the shop and in My Archive. */
+export const shopSlug = (slug: string) => SHOP_ADDRESSES[slug] ?? slug;
+export const pieceHref = (slug: string) => `/shop/${shopSlug(slug)}`;
+export const collectionHref = (slug: string) => `/account/collection/${shopSlug(slug)}`;
+
+/** The slug behind an address, and whether the address is an old one that should redirect. */
+export function slugAtAddress(address: string): { slug: string; moved: boolean } {
+  if (SHOP_ADDRESSES[address]) return { slug: address, moved: true };
+  const renamed = Object.keys(SHOP_ADDRESSES).find((slug) => SHOP_ADDRESSES[slug] === address);
+  return { slug: renamed ?? address, moved: false };
+}
+
 export const LATEST_DROP = "latest";
 export const ALL_COLLECTIONS = "all";
 

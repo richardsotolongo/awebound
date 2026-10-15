@@ -15,6 +15,7 @@ import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
 import { listSavedPieces } from "@/server/archive/saved";
 import { currentUser } from "@/server/session";
+import { collectionHref, pieceHref } from "@/shared";
 
 export const metadata: Metadata = { title: "My Archive" };
 
@@ -80,7 +81,7 @@ export default async function ArchivePage() {
               <div className="archive-thumbs">
                 {saved.slice(0, 4).map((s) =>
                   s.piece ? (
-                    <Link key={s.slug} href={`/shop/${s.slug}`} aria-label={s.piece.name}>
+                    <Link key={s.slug} href={pieceHref(s.slug)} aria-label={s.piece.name}>
                       {/* eslint-disable-next-line @next/next/no-img-element -- site image, plain img like the shop */}
                       <img src={s.piece.image.url} alt="" />
                     </Link>
@@ -115,7 +116,7 @@ export default async function ArchivePage() {
               {owned.map((d) => (
                 <li key={d.design_key}>
                   {d.published_content_id ? (
-                    <Link href={`/account/collection/${d.product_slug}`}>{d.name}</Link>
+                    <Link href={collectionHref(d.product_slug)}>{d.name}</Link>
                   ) : (
                     d.name
                   )}
@@ -150,7 +151,7 @@ export default async function ArchivePage() {
               <div className="archive-thumbs">
                 {latest.lines.slice(0, 4).map((l, i) =>
                   l.image && l.slug ? (
-                    <Link key={i} href={`/shop/${l.slug}`} aria-label={l.name}>
+                    <Link key={i} href={pieceHref(l.slug)} aria-label={l.name}>
                       {/* eslint-disable-next-line @next/next/no-img-element -- site image, plain img like the shop */}
                       <img src={l.image} alt="" />
                     </Link>

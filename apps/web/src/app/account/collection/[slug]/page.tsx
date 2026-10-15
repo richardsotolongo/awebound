@@ -1,6 +1,6 @@
 import { Button, Plate, ScriptureQuote } from "@awebound/brand";
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { BibleLink } from "@/features/archive/bible-link";
 import { ExportControls } from "@/features/archive/export-controls";
@@ -8,12 +8,19 @@ import { siteUrl } from "@/lib/env";
 import { getOwnedCard, getPublishedPublicCard } from "@/server/archive/content";
 import { getProduct } from "@/server/catalog";
 import { currentUser } from "@/server/session";
-import { ProductSlugSchema, plateCss, type PublicCard } from "@/shared";
+import {
+  collectionHref,
+  pieceHref,
+  plateCss,
+  ProductSlugSchema,
+  slugAtAddress,
+  type PublicCard,
+} from "@/shared";
 
 type Params = Promise<{ slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug } = slugAtAddress((await params).slug);
   const card = await getPublishedPublicCard(slug).catch(() => null);
   return { title: card ? `${card.name} in your Archive` : "Your collection" };
 }
@@ -35,7 +42,7 @@ function Locked({ card }: { card: PublicCard }) {
         ) : null}
         <p className="aw-body">Own this design to unlock its full story and founder note.</p>
         <div className="aw-btn-row">
-          <Button variant="secondary" href={`/shop/${card.slug}`}>
+          <Button variant="secondary" href={pieceHref(card.slug)}>
             View the piece
           </Button>
         </div>
@@ -46,8 +53,9 @@ function Locked({ card }: { card: PublicCard }) {
 
 export default async function OwnedCardPage({ params }: { params: Params }) {
   const user = await currentUser();
-  const { slug } = await params;
-  if (!user) redirect(`/sign-in?next=${encodeURIComponent(`/account/collection/${slug}`)}`);
+  const { slug, moved } = slugAtAddress((await params).slug);
+  if (moved) permanentRedirect(collectionHref(slug));
+  if (!user) redirect(`/sign-in?next=${encodeURIComponent(collectionHref(slug))}`);
   if (!ProductSlugSchema.safeParse(slug).success) notFound();
   const [card, product] = await Promise.all([
     getOwnedCard(user.id, slug),

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef, type FocusEvent } from "react";
 import { useHeroPiece } from "./hero-piece";
 import type { LeadSlide } from "./lead-slide";
+import { pieceHref } from "@/shared";
 
 /**
  * Under the opening plate, on coal: what Awebound makes, then the piece on the plate up close:
@@ -56,7 +57,7 @@ export function LeadPiece({ leads, start }: { leads: (LeadSlide | null)[]; start
             </figure>
             <div className="lead-facts">
               <h2 className="aw-product-name">
-                <Link href={`/shop/${piece.slug}`}>{piece.name}</Link>
+                <Link href={pieceHref(piece.slug)}>{piece.name}</Link>
               </h2>
               <p className="lead-row">
                 <span>{piece.cut}</span>

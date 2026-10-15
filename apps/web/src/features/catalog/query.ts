@@ -1,5 +1,6 @@
 import {
   ALL_COLLECTIONS,
+  pieceHref,
   ProductQuerySchema,
   type CatalogFacets,
   type CollectionSlug,
@@ -93,7 +94,7 @@ export function toCardProps(p: ProductSummary, priority = false): ProductCardPro
     plate: plateCss(p.plate),
     // The product page gives its first image the same name, so the picture travels between them.
     transitionName: `piece-${p.slug}`,
-    href: `/shop/${p.slug}`,
+    href: pieceHref(p.slug),
     price: priceLabel(p),
     status: pieceStatus(p),
     priority,

@@ -4,6 +4,7 @@ import { Button } from "@awebound/brand";
 import { useEffect, useState } from "react";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import { designAccessAction } from "@/server/archive-actions";
+import { collectionHref, pieceHref } from "@/shared";
 
 type Access = "unknown" | "signed-out" | "member" | "owner";
 
@@ -66,11 +67,11 @@ export function ProductArchiveNote({
         </p>
       ))}
       {owner ? (
-        <Button variant="link" href={`/account/collection/${slug}`}>
+        <Button variant="link" href={collectionHref(slug)}>
           View this piece in My Archive
         </Button>
       ) : access === "signed-out" ? (
-        <Button variant="link" href={`/sign-in?next=${encodeURIComponent(`/shop/${slug}`)}`}>
+        <Button variant="link" href={`/sign-in?next=${encodeURIComponent(pieceHref(slug))}`}>
           Create your free Archive
         </Button>
       ) : access === "member" ? (

@@ -3,7 +3,7 @@ import { DELIVERY } from "@/lib/delivery";
 import { siteUrl } from "@/lib/env";
 import { SITE } from "@/lib/site";
 import { getFacets, getProduct, getReleases, searchProducts, withFallback } from "@/server/catalog";
-import { ALL_COLLECTIONS } from "@/shared";
+import { ALL_COLLECTIONS, pieceHref } from "@/shared";
 
 export const revalidate = 3600;
 
@@ -51,7 +51,7 @@ export async function GET() {
         .map((p) =>
           link(
             p.name,
-            `/shop/${p.slug}`,
+            pieceHref(p.slug),
             `${p.category.cut}, ${priceLabel(p)}. ${p.scripture.reference}. ${p.story.art}`,
           ),
         ),

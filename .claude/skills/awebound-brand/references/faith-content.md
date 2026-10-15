@@ -17,7 +17,7 @@ Awebound quotes Scripture exactly, labels it honestly and lets the art carry the
 
 ## Printed garments
 
-- **Garment artwork keeps its approved lettering.** Some prints use King James wording (Still the Storm's back, Stone in Motion's back); By His Hem's back prints NIV wording. The Passage ("I will fear no evil") and Wonderfully Made ("Fearfully & wonderfully made") print wording the KJV shares.
+- **Garment artwork keeps its approved lettering.** Some prints use King James wording (Still the Storm's back, Stone in Motion's back); By His Hem's back prints NIV wording. Fear Not ("I will fear no evil") and Wonderfully Made ("Fearfully & wonderfully made") print wording the KJV shares.
 - Never translate, regenerate or relabel printed art as NIV. Describe printed text accurately ("Mark 4:41 in the King James wording"), and keep image descriptions and alt text true to what the image shows.
 
 ## Permission and notice

@@ -1,7 +1,7 @@
 import { ScriptureQuote, quoted } from "@awebound/brand";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ViewTransition } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { shopCanonical } from "@/features/catalog/query";
@@ -18,7 +18,7 @@ import { ReleaseWall } from "@/features/release/release-wall";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
-import { plateCss } from "@/shared";
+import { pieceHref, plateCss, slugAtAddress } from "@/shared";
 
 type Params = Promise<{ slug: string }>;
 
@@ -34,12 +34,12 @@ export function generateStaticParams() {
 const SLIDE = { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const product = await getProduct((await params).slug).catch(() => null);
+  const product = await getProduct(slugAtAddress((await params).slug).slug).catch(() => null);
   if (!product) return { title: "Not found" };
   const { scripture } = product;
   const cut = product.category.cut.toLowerCase();
   return pageMeta({
-    path: `/shop/${product.slug}`,
+    path: pieceHref(product.slug),
     title: `${product.name} ${cut} · ${product.collection.name}`,
     description: `${product.name}, ${cut} from ${product.collection.name}. ${quoted(scripture.text)} ${scripture.reference} (${scripture.translation}). ${product.story.art}`,
     image: { url: product.image.url, alt: product.image.alt },
@@ -47,7 +47,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export default async function ProductPage({ params }: { params: Params }) {
-  const { slug } = await params;
+  // A renamed piece's old address moves to its new one (Fear Not was The Passage).
+  const { slug, moved } = slugAtAddress((await params).slug);
+  if (moved) permanentRedirect(pieceHref(slug));
   const product = await getProduct(slug);
   if (!product) notFound();
 
@@ -69,7 +71,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   // What buying the piece opens in My Archive, shown wherever accounts are open.
   const note = offer.accounts ? productNote(product.name) : null;
 
-  const url = `${siteUrl}/shop/${product.slug}`;
+  const url = `${siteUrl}${pieceHref(product.slug)}`;
   const prices = product.variants.map((v) => v.priceCents);
   const [low, high] = [Math.min(...prices), Math.max(...prices)].map((c) => (c / 100).toFixed(2));
   // No sku: preview SKUs carry the internal design code. No offer for a preview either: it can't
