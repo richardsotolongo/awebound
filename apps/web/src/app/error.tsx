@@ -2,6 +2,7 @@
 
 import { Button } from "@awebound/brand";
 import { useEffect } from "react";
+import { captureError } from "@/lib/analytics";
 
 export default function ErrorPage({
   error,
@@ -12,6 +13,7 @@ export default function ErrorPage({
 }) {
   useEffect(() => {
     console.error(error);
+    captureError(error);
   }, [error]);
 
   return (

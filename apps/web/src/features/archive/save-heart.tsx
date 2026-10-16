@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { HeartIcon } from "@/components/icons";
+import { track } from "@/lib/analytics";
 import { accountsEnabled } from "@/lib/env";
 import { usePath } from "@/lib/pathname";
 import { useSavedPieces } from "./saved-store";
@@ -38,6 +39,12 @@ export function SaveHeart({
     );
   }
   const saved = slugs?.has(slug) ?? false;
+
+  async function toggleSaved() {
+    if (await toggle(slug))
+      track(saved ? "saved_piece_removed" : "piece_saved", { product_slug: slug });
+  }
+
   return (
     <>
       <button
@@ -46,7 +53,7 @@ export function SaveHeart({
         aria-label={`Save ${name}`}
         aria-pressed={saved}
         disabled={slugs === null}
-        onClick={() => void toggle(slug)}
+        onClick={() => void toggleSaved()}
       >
         <HeartIcon size={size} filled={saved} />
       </button>

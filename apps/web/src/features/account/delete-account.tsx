@@ -2,6 +2,7 @@
 
 import { Button } from "@awebound/brand";
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import { deleteAccount } from "@/server/actions";
 
@@ -15,6 +16,8 @@ export function DeleteAccount({ email }: { email: string }) {
     setError("");
     const result = await deleteAccount().catch(() => null);
     if (result?.ok) {
+      // Sent now: signing out next resets the visitor.
+      track("account_deletion_completed", undefined, { send_instantly: true });
       // The server cleared its cookies; this updates the header to "Sign in".
       await getBrowserSupabase()?.auth.signOut({ scope: "local" });
       setState("deleted");

@@ -4,6 +4,7 @@ import { Button } from "@awebound/brand";
 import { formatPrice, pieceHref, type BagIssue } from "@/shared";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { track } from "@/lib/analytics";
 import { accountsEnabled } from "@/lib/env";
 import { useSignedIn } from "@/lib/supabase/browser";
 import { startCheckout, validateBag } from "@/server/actions";
@@ -144,9 +145,19 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
     setState("loading");
     setError("");
     const result = await startCheckout({ lines: open.map(toLineInput) }).catch(() => null);
+    const attempt = {
+      item_count: open.reduce((count, line) => count + line.quantity, 0),
+      subtotal_cents: subtotal,
+    };
     if (result?.ok) {
+      // Sent now: the page is about to leave for the hosted checkout.
+      track("checkout_started", attempt, { send_instantly: true });
       window.location.assign(result.data.url);
     } else {
+      track("checkout_failed", {
+        ...attempt,
+        preview_in_bag: open.some((line) => line.snapshot.preview),
+      });
       setState("error");
       setError(result?.error ?? "Checkout didn’t start. Try again in a moment.");
     }

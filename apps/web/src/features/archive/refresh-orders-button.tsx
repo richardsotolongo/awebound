@@ -3,6 +3,7 @@
 import { Button } from "@awebound/brand";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 import { refreshMyOrders } from "@/server/archive-actions";
 
 export function RefreshOrdersButton() {
@@ -13,6 +14,7 @@ export function RefreshOrdersButton() {
     setState("busy");
     const result = await refreshMyOrders().catch(() => null);
     if (result?.ok) {
+      track("orders_refreshed", { changed_order_count: result.data.changed });
       setState("done");
       setMessage(
         result.data.changed > 0

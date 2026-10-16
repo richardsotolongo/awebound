@@ -2,6 +2,7 @@
 
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,6 +38,7 @@ export function EmailChangeForm({ current }: { current: string }) {
       );
       return;
     }
+    track("email_change_requested");
     setState("sent");
   }
 

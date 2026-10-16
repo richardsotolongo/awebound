@@ -17,6 +17,7 @@ flowchart LR
   FW[Fourthwall<br/>catalog + hosted checkout]
   SB[(Supabase<br/>Postgres + Auth)]
   RS[Resend]
+  PH[PostHog<br/>analytics]
 
   B -- pages --> P --> RSC --> S
   B -- form posts, bag --> SA --> S
@@ -27,12 +28,14 @@ flowchart LR
   AR -- exchange code / verify token --> SB
   B -- redirect to checkout --> FW
   SB -- auth emails via SMTP --> RS
+  B -- analytics events --> PH
 ```
 
 - **One Next.js app** does everything. Server Components read the catalog directly from server code. The browser reaches the server only through Server Actions. There is no separate API.
 - **Fourthwall** supplies live products, prices, stock and photos, and runs checkout, payment and fulfillment.
 - **Supabase** runs authentication and stores profiles, contact messages and drop-note sign-ups.
 - **Resend** delivers all email: auth emails (via Supabase's SMTP setting) and the site's transactional mail.
+- **PostHog** receives the browser's analytics events (see Analytics). Nothing is sent while its token is unset.
 
 ## Workspace
 
@@ -172,6 +175,14 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 - **Search and AI discovery**: every indexable page builds its metadata with `pageMeta` (`lib/site.ts`): a canonical address and a complete share card. The shop gives each release and each category its own listing (`shopCanonical` in `features/catalog/query.ts`); search, color, size, price and sort point back to the view they filter, and a view with no pieces is `noindex`. Structured data (`components/json-ld.tsx`): the store and website on the home page, product and breadcrumbs on product pages (an offer only once a piece can be ordered; never a SKU, which would expose the internal code), and the FAQ. `sitemap.xml` lists pages, releases, categories and pieces with their images; `robots.txt` allows every crawler; `/llms.txt` is a plain summary for AI assistants, generated from the catalog. The footer's "Ask AI about Awebound" links open an assistant with a question that names `/llms.txt`.
 - **The current path** comes from `usePath` (`lib/pathname.ts`), not `usePathname`: Vercel renders the prerendered home page as `/index`, which made the server's header and footer differ from the browser's.
 
+## Analytics
+
+- **PostHog** starts in `src/instrumentation-client.ts` once `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` is set. It records pageviews and page leaves, clicks (autocapture, which never records typed values), heatmaps, web vitals and uncaught exceptions. Session replay is off in code (`disable_session_recording`) until it has had a legal review. With Do Not Track or Global Privacy Control on, PostHog doesn't start at all: no cookie, no requests.
+- **Named events** are declared in `src/lib/analytics-events.json`, a JSON Schema whose `$defs` are the events and their properties. Features send them only through `track()` in `src/lib/analytics.ts`, which takes its types from that file: an undeclared event, a missing or extra property fails `pnpm typecheck`. Properties never carry an email, a name, an address or other personal details, and nothing typed except the shop search. The same events are registered in PostHog (Data management → Events) with their descriptions.
+- **Identity**: `Providers` passes every Supabase auth change to `identify()`, which links the visitor to the account by the Supabase user id alone (no person properties), and starts a new anonymous visitor on sign-out, on a signed-out page load after "Sign out everywhere", or on an account switch.
+- **Errors**: `app/error.tsx` and `app/global-error.tsx` send what they catch with `captureError()`.
+- The Privacy page describes all of this; change it with any change to what is collected.
+
 ## Security
 
 - Secret keys (`FOURTHWALL_STOREFRONT_TOKEN`, `SUPABASE_SECRET_KEY`, `RESEND_API_KEY`) are read only in `src/server` and `src/lib/supabase/admin.ts`, which import `server-only`. The browser gets only `NEXT_PUBLIC_*` values.
@@ -186,19 +197,20 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 
 All live in `apps/web` (`.env.local` locally, the Vercel project in production); `apps/web/.env.example` lists them.
 
-| Variable                                                           | Purpose                                                               |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`                                             | Canonicals, sitemap, llms.txt, share images, links in email           |
-| `FOURTHWALL_STOREFRONT_TOKEN`                                      | Fourthwall catalog and checkout (required)                            |
-| `FOURTHWALL_CHECKOUT_DOMAIN`                                       | Optional; defaults to `awebound-store-shop.fourthwall.com`            |
-| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Sign-in (public)                                                      |
-| `SUPABASE_SECRET_KEY`                                              | Profiles, contact messages and sign-ups (server only)                 |
-| `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | Email. The key is required in production; the other two have defaults |
-| `SCRIPTURE_TRANSLATION`                                            | Website Scripture: `NIV` (default) or `KJV`                           |
-| `FOURTHWALL_WEBHOOK_SECRET`                                        | Signs Fourthwall's order webhooks (My Archive orders)                 |
-| `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`               | Fourthwall Open API user: order sync, claims, Founding settlement     |
-| `CRON_SECRET`                                                      | Bearer for the daily reconcile cron                                   |
-| `ARCHIVE_STORAGE_BUCKET`                                           | Optional; private wallpaper bucket, defaults to `archive-assets`      |
+| Variable                                                           | Purpose                                                                           |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                                             | Canonicals, sitemap, llms.txt, share images, links in email                       |
+| `FOURTHWALL_STOREFRONT_TOKEN`                                      | Fourthwall catalog and checkout (required)                                        |
+| `FOURTHWALL_CHECKOUT_DOMAIN`                                       | Optional; defaults to `awebound-store-shop.fourthwall.com`                        |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Sign-in (public)                                                                  |
+| `SUPABASE_SECRET_KEY`                                              | Profiles, contact messages and sign-ups (server only)                             |
+| `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | Email. The key is required in production; the other two have defaults             |
+| `SCRIPTURE_TRANSLATION`                                            | Website Scripture: `NIV` (default) or `KJV`                                       |
+| `FOURTHWALL_WEBHOOK_SECRET`                                        | Signs Fourthwall's order webhooks (My Archive orders)                             |
+| `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`               | Fourthwall Open API user: order sync, claims, Founding settlement                 |
+| `CRON_SECRET`                                                      | Bearer for the daily reconcile cron                                               |
+| `ARCHIVE_STORAGE_BUCKET`                                           | Optional; private wallpaper bucket, defaults to `archive-assets`                  |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`, `NEXT_PUBLIC_POSTHOG_HOST`    | Analytics (public). No token, nothing sent; the host defaults to PostHog US Cloud |
 
 ## Deployment
 

@@ -10,7 +10,7 @@ interface SavedState {
   /** The shopper's saved pieces; null until they have loaded. */
   slugs: ReadonlySet<string> | null;
   error: string;
-  toggle: (slug: string) => Promise<void>;
+  toggle: (slug: string) => Promise<boolean>;
 }
 
 const toggled = (slugs: ReadonlySet<string> | null, slug: string, on: boolean) => {
@@ -37,7 +37,9 @@ export const useSaved = create<SavedState>()((set, get) => ({
         slugs: toggled(get().slugs, slug, !on),
         error: result?.error ?? "That didn’t work. Try again.",
       });
+      return false;
     }
+    return true;
   },
 }));
 

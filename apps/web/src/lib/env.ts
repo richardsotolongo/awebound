@@ -7,6 +7,11 @@ const PublicEnvSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.preprocess(emptyToUndefined, z.url().default("http://localhost:3000")),
   NEXT_PUBLIC_SUPABASE_URL: z.preprocess(emptyToUndefined, z.url().optional()),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.preprocess(emptyToUndefined, z.string().optional()),
+  NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: z.preprocess(emptyToUndefined, z.string().optional()),
+  NEXT_PUBLIC_POSTHOG_HOST: z.preprocess(
+    emptyToUndefined,
+    z.url().default("https://us.i.posthog.com"),
+  ),
 });
 
 // Each variable is referenced by name so Next can inline it into the browser bundle.
@@ -14,6 +19,8 @@ export const publicEnv = PublicEnvSchema.parse({
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN,
+  NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
 });
 
 export const siteUrl = publicEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");

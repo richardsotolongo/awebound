@@ -15,11 +15,17 @@ const sections: LegalSection[] = [
     id: "who",
     title: "Who we are",
     body: (
-      <p>
-        {LEGAL.businessName} (“Awebound”, “we”) runs this website and store. This policy explains
-        what personal information we collect, how we use it and the choices you have. Questions go
-        to {mail}.
-      </p>
+      <>
+        <p>
+          {LEGAL.businessName} (“Awebound”, “we”) runs this website and store. This policy explains
+          what personal information we collect, how we use it and the choices you have. Questions go
+          to {mail}.
+        </p>
+        <p>
+          Looking for shipping information? See{" "}
+          <Link href="/terms#shipping-costs">Shipping costs in our terms</Link>.
+        </p>
+      </>
     ),
   },
   {
@@ -52,9 +58,18 @@ const sections: LegalSection[] = [
         <h3>Information collected automatically</h3>
         <ul>
           <li>
-            <strong>Essential cookies</strong> that keep you signed in. We don’t use advertising
-            cookies or cross-site trackers.
+            <strong>Essential cookies</strong> that keep you signed in.
           </li>
+          <li>
+            <strong>Site analytics:</strong> PostHog sets a cookie for this site only and records
+            the pages you visit, what you click, what you search for in the shop, your device and
+            browser, and your approximate location from your IP address, so we can see how the site
+            is used and improve it. When you’re signed in, this is linked to your account by a
+            random ID, never your name or email. Beyond shop searches, we don’t record what you
+            type, and we never record your screen. If your browser sends Do Not Track or Global
+            Privacy Control, we collect no analytics at all.
+          </li>
+          <li>We don’t use advertising cookies or cross-site trackers.</li>
           <li>
             <strong>Your bag</strong> is saved in your own browser’s local storage so it’s there
             when you return.
@@ -76,6 +91,7 @@ const sections: LegalSection[] = [
         <li>To send drop notes and the notices you asked for. You can stop them at any time.</li>
         <li>To run your account and to make, ship and support your orders.</li>
         <li>To keep the store secure, prevent fraud and spam, and fix problems.</li>
+        <li>To understand how the site is used and improve it.</li>
         <li>To meet legal, tax and accounting obligations.</li>
       </ul>
     ),
@@ -92,6 +108,7 @@ const sections: LegalSection[] = [
         <ul>
           <li>Supabase, for our database and sign-in.</li>
           <li>Resend, to deliver email.</li>
+          <li>PostHog, for site analytics.</li>
           <li>Google, if you choose to sign in with Google.</li>
           <li>Our website and server hosting providers.</li>
           <li>

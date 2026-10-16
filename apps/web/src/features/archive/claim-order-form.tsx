@@ -2,6 +2,7 @@
 
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics";
 import { startOrderClaim, verifyOrderClaim } from "@/server/archive-actions";
 
 /** Two steps: the order number, then the code sent to the email address on that order. */
@@ -20,8 +21,10 @@ export function ClaimOrderForm() {
     setError("");
     const result = await startOrderClaim({ friendlyId }).catch(() => null);
     setBusy(false);
-    if (result?.ok) setClaimId(result.data.claimId);
-    else setError(result?.error ?? "That didn’t work. Try again in a moment.");
+    if (result?.ok) {
+      track("order_claim_started");
+      setClaimId(result.data.claimId);
+    } else setError(result?.error ?? "That didn’t work. Try again in a moment.");
   }
 
   async function verify(e: FormEvent) {
@@ -31,8 +34,10 @@ export function ClaimOrderForm() {
     setError("");
     const result = await verifyOrderClaim({ claimId, code }).catch(() => null);
     setBusy(false);
-    if (result?.ok) setLinked(result.data.friendlyId);
-    else setError(result?.error ?? "That code didn’t work. Check it, or start again.");
+    if (result?.ok) {
+      track("order_claim_completed");
+      setLinked(result.data.friendlyId);
+    } else setError(result?.error ?? "That code didn’t work. Check it, or start again.");
   }
 
   if (linked) {

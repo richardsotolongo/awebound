@@ -32,7 +32,7 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 
 - [ ] **Photos of the clothes being worn.** The site has none yet: the portrait (`apps/web/public/about/richard-*.webp`) is captioned with Richard's name only and isn't a product photo. When samples arrive, photograph them worn (Richard and people he knows, with their consent; daylight; whole garment, back print and close-ups of the print), then replace the portrait and, if wanted, the home page's opening image.
 - [ ] **Product photography** of real samples, uploaded to each Fourthwall product. Whenever a product's images change in Fourthwall, update its list in `assets/mockups/fourthwall.json` (same order as Fourthwall) and run `fourthwall.py` and `compose.py`; the site follows that order, the first as the listing image.
-- [ ] **Legal review** of `/privacy`, `/terms` and `/refunds`. They are drafts written for this setup, not legal advice. Update `LEGAL.lastUpdated` when they change.
+- [ ] **Legal review** of `/privacy`, `/terms` and `/refunds`, including the analytics paragraph in `/privacy`. They are drafts written for this setup, not legal advice. Update `LEGAL.lastUpdated` when they change.
 - [ ] **Wordmark cleanup** by a designer before large back prints; physical test of the proposed minimum print (1.75 in) and embroidery (2.25 in) sizes.
 - [ ] **Unsubscribe link** in drop-note emails before the first marketing send (today people unsubscribe by replying).
 
@@ -47,6 +47,11 @@ Use a Fourthwall shop that belongs to Awebound (not another brand's shop).
 - [ ] **View transitions in Safari and Firefox.** The morph and the neighbour slide were checked in Chrome only. Both browsers support same-document view transitions (Safari 18, Firefox 144); without support navigation is simply instant.
 - [ ] **Shared JavaScript.** The Supabase browser client (about 66 KB gzip) loads on every page through the header and the bag; load it only where an account is used. The wordmark's path is also inlined two or three times per page.
 - [ ] **Lamb's Mark cut-out** (`piece.webp`) is 154 KB: its distressed twill doesn't compress. It only loads if that cap leads the home page.
-- [ ] Error monitoring (for example Sentry).
-- [ ] Privacy-friendly analytics, and a matching update to the privacy policy.
+- [x] Analytics and error monitoring: PostHog, with the Privacy page updated (`docs/ARCHITECTURE.md`, Analytics).
+- [ ] **Session replay** stays off (`disable_session_recording`) until it has had a legal review; turning it on also needs a Privacy page update.
+- [ ] **EU and UK visitors**: the analytics cookie is set without a banner. If that traffic matters, ask for consent first (PostHog's `cookieless_mode: "on_reject"` counts the visitors who decline without a cookie).
+- [ ] **PostHog person data**: PostHog gets only the Supabase user id. If an email or name is ever added, deleting an account must also delete the PostHog person.
+- [ ] **Purchases in analytics**: the funnel ends at `checkout_started` because payment happens on Fourthwall. An `order_placed` event from the Fourthwall webhook (server side) would close it.
+- [ ] **Readable production stack traces**: upload source maps to PostHog error tracking.
+- [ ] **PostHog data warehouse**: the setup wizard started Supabase and Resend connections and they were left unfinished. Finishing them copies account and email data into PostHog, which the Privacy page would have to say.
 - [ ] Accessibility pass with real screen readers (VoiceOver, NVDA) on the journey, filters and bag.

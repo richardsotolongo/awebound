@@ -32,7 +32,10 @@ const sections: LegalSection[] = [
           email. If an item was listed at the wrong price or is unavailable, we’ll tell you and you
           can cancel for a full refund.
         </p>
-        <p>Taxes and shipping are calculated at checkout.</p>
+        <p>
+          Taxes and shipping are calculated at checkout (see{" "}
+          <a href="#shipping-costs">Shipping costs</a>).
+        </p>
       </>
     ),
   },
@@ -51,10 +54,29 @@ const sections: LegalSection[] = [
     id: "shipping-refunds",
     title: "Shipping, refunds and replacements",
     body: (
-      <p>
-        Delivery estimates are shown at checkout and in the <Link href="/faq">FAQ</Link>.
-        Replacements and refunds follow our <Link href="/refunds">returns and refunds policy</Link>.
-      </p>
+      <>
+        <p>
+          Delivery estimates are shown at checkout and in the <Link href="/faq">FAQ</Link>.
+          Replacements and refunds follow our{" "}
+          <Link href="/refunds">returns and refunds policy</Link>.
+        </p>
+        <h3 id="shipping-costs">Shipping costs</h3>
+        <p>
+          Shipping charges are calculated through our current fulfillment setup and displayed at
+          checkout before payment. Shipping may increase with each additional item, so multi-item
+          orders can cost more to ship than you might expect.
+        </p>
+        <p>
+          Please review your final shipping total before placing your order. If the total feels too
+          high, you may prefer to purchase just one piece for now.
+        </p>
+        <p>
+          We are reviewing shipping options with our production partners and exploring alternative
+          fulfillment arrangements to improve this experience. We cannot promise a particular
+          reduction or timeline.
+        </p>
+        <p>Thank you for supporting Awebound.</p>
+      </>
     ),
   },
   {
