@@ -11,6 +11,7 @@ import {
   DesignKeyRequestSchema,
   FlagRequestSchema,
   FoundingCorrectionRequestSchema,
+  IdeaReviewRequestSchema,
   MapOfferRequestSchema,
   OrderAdjustRequestSchema,
   OrderIdRequestSchema,
@@ -33,6 +34,7 @@ import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
 import { setFlag } from "./archive/flags";
 import { foundingCorrection, settleFounding } from "./archive/founding";
+import { reviewIdea } from "./archive/ideas";
 import { adjustOrderLines, markOrderReviewed, relinkOrder } from "./archive/orders";
 import { reconcileOrders, type ReconcileReport } from "./archive/reconcile";
 import { parse, run, type Result } from "./errors";
@@ -229,5 +231,15 @@ export async function sendQueuedEmailsAction(): Promise<Result<{ sent: number }>
   return run(async () => {
     await requireAdmin();
     return { sent: await sendQueued() };
+  });
+}
+
+/** Sets an idea submission's status and the owner's private note. */
+export async function reviewIdeaAction(input: unknown): Promise<Result<null>> {
+  return run(async () => {
+    const actor = (await requireAdmin()).id;
+    const { id, status, note } = parse(IdeaReviewRequestSchema, input);
+    await reviewIdea(id, status, note, actor);
+    return null;
   });
 }

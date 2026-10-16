@@ -50,6 +50,12 @@ const sections: LegalSection[] = [
             open its full story and extras for you.
           </li>
           <li>
+            <strong>Idea Submissions:</strong> if you send a design idea from My Archive, the image
+            and the words you give us (your idea, the verse and its context), with your name and
+            email from your account so we can reply. They are stored privately, seen only by
+            Awebound, and deleted with your account.
+          </li>
+          <li>
             <strong>Orders:</strong> your name, shipping address, email, phone if given, and what
             you ordered. Payment details are handled by our payment provider; we never see or store
             full card numbers.
@@ -90,6 +96,7 @@ const sections: LegalSection[] = [
         <li>To answer your messages and provide customer support.</li>
         <li>To send drop notes and the notices you asked for. You can stop them at any time.</li>
         <li>To run your account and to make, ship and support your orders.</li>
+        <li>To review the design ideas you send and reply to you about them.</li>
         <li>To keep the store secure, prevent fraud and spam, and fix problems.</li>
         <li>To understand how the site is used and improve it.</li>
         <li>To meet legal, tax and accounting obligations.</li>

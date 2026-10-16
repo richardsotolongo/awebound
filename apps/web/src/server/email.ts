@@ -14,7 +14,12 @@ const logo = readFileSync(join(process.cwd(), "public/email/wordmark-oxblood.png
  * Sends through Resend (the awebound.store domain must be verified there). Without a key, development
  * prints the email instead and production fails, so a message is never silently dropped.
  */
-export async function sendEmail(to: string, email: RenderedEmail, replyTo?: string) {
+export async function sendEmail(
+  to: string,
+  email: RenderedEmail,
+  replyTo?: string,
+  files: { filename: string; content: Buffer }[] = [],
+) {
   if (!resend) {
     if (process.env.NODE_ENV === "production") throw new Error("RESEND_API_KEY is not set");
     console.info(`\n--- email: ${email.subject} ---\n${email.text}\n--- end ---\n`);
@@ -27,7 +32,7 @@ export async function sendEmail(to: string, email: RenderedEmail, replyTo?: stri
     subject: email.subject,
     html: email.html,
     text: email.text,
-    attachments: [{ filename: "awebound.png", content: logo, contentId: LOGO_CID }],
+    attachments: [{ filename: "awebound.png", content: logo, contentId: LOGO_CID }, ...files],
   });
   if (error) throw new Error(`Resend: ${error.name}: ${error.message}`);
 }

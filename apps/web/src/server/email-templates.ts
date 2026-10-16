@@ -285,3 +285,57 @@ export function collectionUpdate({
   const text = `${leadText}\n\n${body}\n\nSee the pieces: ${siteUrl}/shop\n\nYou asked for these in your Archive settings. Change that here: ${siteUrl}/account/settings#email`;
   return { subject, html, text };
 }
+
+export interface IdeaSubmissionEmail {
+  id: string;
+  name: string | null;
+  email: string;
+  idea: string | null;
+  verse: string | null;
+  context: string | null;
+  /** The attached image's file name, when there is one. */
+  imageName: string | null;
+  purchases: number | null;
+  inboxUrl: string;
+}
+
+/** To the store inbox: a new idea, with the image attached. Replying answers the person who sent it. */
+export function ideaSubmissionNotification(s: IdeaSubmissionEmail): RenderedEmail {
+  const who = s.name?.trim() || s.email;
+  const subject = `Idea submission — ${who}`;
+  const label = (text: string) => row(text, { size: 12, color: C.muted, gap: 4, caps: true });
+  const parts: [string, string | null][] = [
+    ["Their idea", s.idea],
+    ["The verse", s.verse],
+    ["The biblical context", s.context],
+  ];
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      eyebrow("Idea submission"),
+      lead(`${escapeHtml(who)} sent a design idea.`),
+      row(
+        `${escapeHtml(s.email)}${s.purchases === null ? " · owner test" : ` · ${s.purchases} purchases`}`,
+        { size: 14, color: C.muted },
+      ),
+      ...parts.flatMap(([title, text]) => (text ? [label(title), quote(text)] : [])),
+      s.imageName
+        ? row(`Their image is attached: ${escapeHtml(s.imageName)}.`, { size: 15 })
+        : row("No image was attached.", { size: 15 }),
+      button("Open the inbox", s.inboxUrl),
+      small(
+        `Reply to this email to answer ${escapeHtml(who)} directly. Reference ${escapeHtml(s.id)}.`,
+      ),
+    ],
+  });
+  const text = [
+    `New idea submission from ${who} <${s.email}>`,
+    s.purchases === null ? "Owner test" : `${s.purchases} purchases`,
+    ...parts.flatMap(([title, t]) => (t ? [`${title}:\n${t}`] : [])),
+    s.imageName ? `Image attached: ${s.imageName}` : "No image attached.",
+    `Open the inbox: ${s.inboxUrl}`,
+    `Reply to this email to answer directly. Reference ${s.id}.`,
+  ].join("\n\n");
+  return { subject, html, text };
+}

@@ -1014,4 +1014,442 @@
     flex-basis: 100%;
     margin: 0;
   }
+
+  /* Idea Submissions: the fourth tile, centred beneath the other three and half as wide again as
+     one of them, in the feature color with a gold rule so it reads as the one apart. The locked
+     reason takes the place of the tile's words in the same grid cell, so nothing moves. */
+  .idea-tile-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+  /* The owner's switch between the open tile and the locked one customers see. */
+  .idea-owner-view {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2) var(--space-3);
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+  @media (max-width: 639px) {
+    .idea-owner-view > span {
+      flex-basis: 100%;
+      text-align: center;
+    }
+    .idea-owner-view-page > span {
+      text-align: left;
+    }
+  }
+  .idea-owner-view-page {
+    justify-content: flex-start;
+    margin-bottom: var(--space-8);
+  }
+  .idea-owner-view a,
+  .idea-owner-view button {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .idea-owner-view a[aria-current="page"],
+  .idea-owner-view button[aria-pressed="true"] {
+    background: var(--scripture);
+    border-color: var(--scripture);
+    color: var(--brand-coal);
+  }
+  .idea-owner-view a:focus-visible,
+  .idea-owner-view button:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .idea-tile {
+    --focus-ring: var(--on-feature);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    width: calc((100% - 2 * var(--space-6)) / 2);
+    min-width: 0;
+    padding: var(--space-8);
+    background: var(--panel-feature);
+    color: var(--on-feature);
+    border: 1px solid color-mix(in srgb, var(--scripture) 45%, transparent);
+    border-top: 3px solid var(--scripture);
+    border-radius: var(--radius-sm);
+  }
+  .idea-tile[data-locked] {
+    cursor: pointer;
+  }
+  .idea-tile .aw-h3,
+  .idea-tile .aw-body {
+    margin: 0;
+    color: var(--on-feature);
+  }
+  .idea-tile-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-4);
+  }
+  .idea-lock {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    border: 1px solid var(--scripture);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--surface-page) 30%, transparent);
+    color: var(--on-feature);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .idea-lock svg {
+    color: var(--scripture);
+  }
+  .idea-lock[aria-expanded="true"] {
+    background: var(--scripture);
+    color: var(--brand-coal);
+  }
+  .idea-lock[aria-expanded="true"] svg {
+    color: var(--brand-coal);
+  }
+  .idea-lock:focus-visible,
+  .idea-close:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .idea-tile-stack {
+    display: grid;
+    flex: 1;
+  }
+  .idea-tile-face,
+  .idea-tile-why {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+  .idea-tile-stack > [data-hidden] {
+    visibility: hidden;
+  }
+  /* The reason is often the taller of the two; the progress then sits at the tile's foot. */
+  .idea-tile-face > .idea-progress {
+    margin-top: auto;
+  }
+  .idea-tile-why p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--on-feature);
+  }
+  .idea-tile-why .idea-fine {
+    font-size: 14px;
+    color: var(--on-feature-muted);
+  }
+  .idea-status {
+    margin: 0;
+    font-weight: 700;
+    color: var(--on-feature);
+  }
+  .idea-close {
+    align-self: flex-start;
+    min-height: var(--tap-min);
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--on-feature);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+  /* Five marks, filled in gold as the purchases come. */
+  .idea-progress {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+  .idea-pips {
+    display: flex;
+    gap: 6px;
+  }
+  .idea-pips span {
+    width: 24px;
+    height: 8px;
+    border: 1px solid var(--scripture);
+  }
+  .idea-pips span[data-on] {
+    background: var(--scripture);
+  }
+  .idea-progress-text {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 1023px) {
+    .idea-tile {
+      width: 100%;
+    }
+  }
+  @media (max-width: 767px) {
+    .idea-tile {
+      padding: var(--space-6);
+    }
+  }
+
+  /* The Ideas page: the form, or why it's locked, then the account's own ideas. */
+  .idea-page-section {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 760px;
+    margin-bottom: var(--space-16);
+  }
+  .idea-page-section > .aw-h3,
+  .idea-page-section > p {
+    margin: 0;
+  }
+  .idea-reason {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 62ch;
+  }
+  .idea-reason p {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+  .idea-reason .idea-fine {
+    font-size: 14px;
+    color: var(--ink-subtle);
+  }
+  .idea-form {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .idea-form > p {
+    margin: 0;
+  }
+  .idea-chosen {
+    flex-wrap: wrap;
+  }
+  .idea-chosen img {
+    width: 120px;
+    height: 150px;
+  }
+  .idea-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .idea-check input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 2px 0 0;
+    accent-color: var(--primary);
+  }
+  .idea-form-foot {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+  .idea-mine {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .idea-mine-item {
+    display: flex;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .idea-mine-image {
+    flex: none;
+    width: 112px;
+    aspect-ratio: 4 / 5;
+    object-fit: contain;
+    background: var(--surface);
+  }
+  .idea-mine-words {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+  .idea-mine-words p {
+    margin: 0;
+  }
+  .idea-mine-verse {
+    font-weight: 700;
+    color: var(--scripture);
+  }
+  .idea-text {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .idea-state {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .idea-state[data-status="selected"] {
+    color: var(--accent-text);
+  }
+  @media (max-width: 639px) {
+    .idea-mine-item {
+      flex-direction: column;
+      padding: var(--space-4);
+    }
+  }
+
+  /* Owner → Ideas: a filter row, then one card per submission (the image beside its words). */
+  .admin-nav-count {
+    color: var(--scripture);
+  }
+  .admin-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+  }
+  .admin-filter a {
+    min-height: var(--tap-min);
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-muted);
+    border-bottom: 2px solid transparent;
+  }
+  .admin-filter a[aria-current="page"] {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+  .admin-ideas {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .admin-idea {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: var(--space-6);
+    padding: var(--space-6);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .admin-idea[data-status="new"] {
+    border-left: 3px solid var(--scripture);
+  }
+  .admin-idea-image {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+  }
+  .admin-idea-image img,
+  .admin-idea-noimage {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: contain;
+    background: var(--surface);
+  }
+  .admin-idea-noimage {
+    display: grid;
+    place-items: center;
+    color: var(--ink-subtle);
+    border: 1px dashed var(--line);
+  }
+  .admin-idea-image p {
+    margin: 0;
+  }
+  .admin-idea-body {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+  .admin-idea-head {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .admin-idea-head .aw-h3 {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .admin-idea-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+    font-size: 14px;
+    color: var(--ink-muted);
+    overflow-wrap: anywhere;
+  }
+  .admin-idea-part h3 {
+    margin: 0 0 var(--space-1);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+  }
+  .admin-idea-part p {
+    margin: 0;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+  .admin-idea-review {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .admin-idea-note {
+    min-height: 72px;
+  }
+  .admin-idea-save {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+  }
+  @media (max-width: 767px) {
+    .admin-idea,
+    .admin-idea-review {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .admin-idea-image {
+      max-width: 240px;
+    }
+  }
 }

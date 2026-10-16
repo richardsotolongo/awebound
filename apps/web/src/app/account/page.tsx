@@ -5,10 +5,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArchiveWelcome } from "@/features/archive/archive-welcome";
 import { FoundingSeal } from "@/features/archive/founding-seal";
+import { IdeaTile } from "@/features/archive/idea-tile";
 import { WELCOME_COOKIE, welcomeFor } from "@/features/archive/offer";
 import { listDesigns } from "@/server/archive/designs";
 import { listEntitlements } from "@/server/archive/entitlements";
 import { getFoundingForUser } from "@/server/archive/founding";
+import { getIdeaAllowance } from "@/server/archive/ideas";
 import { queueWelcomeIfNew } from "@/server/archive/email-outbox";
 import { getArchiveOffer, getDesignWallpapers } from "@/server/archive/offer";
 import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
@@ -24,7 +26,10 @@ const date = (iso: string | null) =>
     ? new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     : null;
 
-/** The overview: three tiles of the same size (saved pieces, the collection, orders). */
+/**
+ * The overview: three tiles of the same size (saved pieces, the collection, orders), then Idea
+ * Submissions beneath them, wider and in the feature color.
+ */
 export default async function ArchivePage() {
   const user = await currentUser();
   if (!user) redirect("/sign-in?next=%2Faccount");
@@ -32,8 +37,8 @@ export default async function ArchivePage() {
     autoLinkByEmail(user).catch(() => 0),
     queueWelcomeIfNew(user).catch(() => undefined),
   ]);
-  const [readiness, offer, saved, entitlements, designs, orders, founding, jar] = await Promise.all(
-    [
+  const [readiness, offer, saved, entitlements, designs, orders, founding, ideas, jar] =
+    await Promise.all([
       getArchiveReadiness(),
       getArchiveOffer(),
       listSavedPieces(user.id),
@@ -41,9 +46,9 @@ export default async function ArchivePage() {
       listDesigns(),
       listOrdersForUser(user.id),
       getFoundingForUser(user.id),
+      getIdeaAllowance(user).catch(() => null),
       cookies(),
-    ],
-  );
+    ]);
   const owned = designs.filter((d) =>
     entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
   );
@@ -176,6 +181,7 @@ export default async function ArchivePage() {
           </div>
         </section>
       </div>
+      {ideas ? <IdeaTile allowance={ideas} /> : null}
     </>
   );
 }

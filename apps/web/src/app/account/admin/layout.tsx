@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { AdminNav } from "@/features/archive/admin/admin-nav";
+import { ideaCounts } from "@/server/archive/ideas";
 import { currentUser, hasRole } from "@/server/session";
 
 export const dynamic = "force-dynamic";
@@ -11,9 +12,10 @@ export const metadata: Metadata = { robots: { index: false } };
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const user = await currentUser();
   if (!user || !(await hasRole(user, "admin"))) notFound();
+  const ideas = await ideaCounts().catch(() => null);
   return (
     <>
-      <AdminNav />
+      <AdminNav newIdeas={ideas?.new ?? 0} />
       {children}
     </>
   );

@@ -102,7 +102,7 @@ erDiagram
 - **My Archive** adds server-only tables (RLS on, no policies, `service_role` grants): `saved_pieces`, `fit_preferences` (no longer used: Your Fit was removed in October 2026; the table stays until a migration drops it), `archive_designs` + `archive_design_content` (versioned content; the public preview and context are the only fields public pages read), `archive_assets` (wallpapers in the private `archive-assets` bucket), `checkout_sessions` (the cart id of every checkout and who was signed in), `provider_orders` + `provider_order_lines` (Fourthwall's orders as the canonical record), `webhook_events`, `reconciliation_runs`, `order_claims`, the `archive_entitlements` view (paid, real, ordinary orders by design), `founding_members` + `founding_candidates` with `archive_award_founding()`, `feature_flags`, `email_consents`, `email_outbox`, `owner_audit_log`, `user_roles`. `indexnow_pages` (server-only too) records each page's fingerprint when IndexNow was last told about it. `profiles` follows `auth.users` (email and `email_verified_at` by trigger) and a user may update `full_name` only.
 - **Row-level security** is on for every table. Profiles are readable and writable only by their owner (the account page reads with the user's session). `contact_messages` and `subscribers` have no policies at all, so only the server's secret key can touch them.
 - **Profiles** are created by the `on_auth_user_created` trigger (name and avatar from Google when present). `updateProfile` upserts, so a user without a row still works.
-- **Deleting an account** (`/account`) deletes the auth user, which cascades to `profiles` and sets `contact_messages.user_id` to null (messages stay as support history), and removes the `subscribers` row with the same email.
+- **Deleting an account** (`/account`) deletes the auth user, which cascades to `profiles` and `idea_submissions` (their images are removed from the `idea-submissions` bucket first) and sets `contact_messages.user_id` to null (messages stay as support history), and removes the `subscribers` row with the same email.
 
 ## Auth
 
@@ -141,6 +141,7 @@ sequenceDiagram
 | Contact acknowledgement                                             | Server → Resend                   | same                                     |
 | Drop-notes welcome                                                  | Server → Resend                   | same                                     |
 | Account deleted                                                     | Server → Resend                   | same                                     |
+| Idea submission to `aweboundstore@gmail.com` (image attached)       | Server → Resend                   | same                                     |
 
 Every email shares one table layout (`layout` in `email-templates.ts`; the two Supabase files copy its markup): the oxblood wordmark on warm bone, a paper card, inline hex colors (email clients ignore CSS variables and strip SVG), and only widely supported CSS (no styles on `<body>`, no margins, no rounded corners). The site attaches the wordmark inline (`cid:wordmark`), so it shows without loading a hosted image; Supabase emails load `{{ .SiteURL }}/email/wordmark-oxblood.png`. Check changes with Mailpit's HTML check (`supabase start`, then http://localhost:54324).
 

@@ -3,6 +3,7 @@
 import { Button } from "@awebound/brand";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useState, type DragEvent, type FormEvent } from "react";
+import { mb, prepareImage, type PreparedImage } from "@/lib/prepare-image";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import { createAssetUploadAction, registerAssetAction } from "@/server/admin-actions";
 import type { AssetFormat } from "@/shared";
@@ -15,78 +16,6 @@ const TITLES: Record<AssetFormat, string> = {
 /** The storage bucket's limit (supabase/migrations: archive-assets). */
 const MAX_BYTES = 50 * 1024 * 1024;
 
-interface Ready {
-  blob: Blob;
-  type: "image/png" | "image/jpeg";
-  name: string;
-  width: number;
-  height: number;
-  /** The file's own format when it was converted to PNG in the browser. */
-  convertedFrom: string | null;
-}
-
-const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-
-/** PNG or JPEG by the file's first bytes, whatever its name or reported type says. */
-async function sniff(file: Blob): Promise<"image/png" | "image/jpeg" | null> {
-  const b = new Uint8Array(await file.slice(0, 8).arrayBuffer());
-  const png = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
-  if (png.every((v, i) => b[i] === v)) return "image/png";
-  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
-  return null;
-}
-
-/** Decodes any image the browser can read (an <img> reads more formats than createImageBitmap in Safari). */
-function decode(file: Blob): Promise<HTMLImageElement> {
-  const url = URL.createObjectURL(file);
-  return new Promise<HTMLImageElement>((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("unreadable"));
-    img.src = url;
-  }).finally(() => URL.revokeObjectURL(url));
-}
-
-/**
- * Gets a chosen file ready for the bucket, which takes PNG and JPEG only: those go as they are;
- * anything else the browser can open (WebP, HEIC in Safari, AVIF, GIF) is redrawn as a PNG.
- */
-async function prepare(file: File): Promise<Ready> {
-  const base = file.name.replace(/\.[^.]+$/, "").replace(/[^\w.-]+/g, "-") || "wallpaper";
-  const type = await sniff(file);
-  const img = await decode(file).catch(() => null);
-  if (type) {
-    return {
-      blob: file,
-      type,
-      name: `${base}.${type === "image/png" ? "png" : "jpg"}`,
-      width: img?.naturalWidth ?? 0,
-      height: img?.naturalHeight ?? 0,
-      convertedFrom: null,
-    };
-  }
-  const from = (file.type.split("/")[1] || file.name.split(".").pop() || "image").toUpperCase();
-  if (!img) {
-    throw new Error(
-      `This browser can’t open ${from} files. Export the wallpaper as a PNG and choose it again.`,
-    );
-  }
-  const canvas = document.createElement("canvas");
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  canvas.getContext("2d")?.drawImage(img, 0, 0);
-  const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/png"));
-  if (!blob) throw new Error("That image couldn’t be converted. Export it as a PNG and try again.");
-  return {
-    blob,
-    type: "image/png",
-    name: `${base}.png`,
-    width: img.naturalWidth,
-    height: img.naturalHeight,
-    convertedFrom: from,
-  };
-}
-
 /**
  * Choose or drop a wallpaper, then Upload: the file goes straight to Storage with a one-time
  * signed URL and is registered from its real bytes. Every image file can be chosen (a picker
@@ -98,7 +27,7 @@ export function AssetUploader({ designs }: { designs: { key: string; name: strin
   const [designKey, setDesignKey] = useState("");
   const [format, setFormat] = useState<AssetFormat>("phone");
   const [title, setTitle] = useState(TITLES.phone);
-  const [ready, setReady] = useState<Ready | null>(null);
+  const [ready, setReady] = useState<PreparedImage | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [round, setRound] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -130,7 +59,7 @@ export function AssetUploader({ designs }: { designs: { key: string; name: strin
     }
     setBusy(true);
     try {
-      const next = await prepare(file);
+      const next = await prepareImage(file, { fallbackName: "wallpaper", maxBytes: MAX_BYTES });
       if (next.blob.size > MAX_BYTES)
         throw new Error("Converted, it is over 50 MB. Export a smaller PNG.");
       setReady(next);
@@ -280,7 +209,9 @@ export function AssetUploader({ designs }: { designs: { key: string; name: strin
             <p className="aw-small">
               {ready.name}
               {ready.width ? `, ${ready.width} x ${ready.height}` : ""}, {mb(ready.blob.size)}
-              {ready.convertedFrom ? ` (converted from ${ready.convertedFrom} to PNG)` : ""}
+              {ready.convertedFrom
+                ? ` (converted from ${ready.convertedFrom} to ${ready.type === "image/png" ? "PNG" : "JPEG"})`
+                : ""}
             </p>
           </div>
         ) : null}

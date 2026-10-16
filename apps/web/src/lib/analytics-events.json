@@ -173,6 +173,18 @@
       },
       "required": ["changed_order_count"],
       "additionalProperties": false
+    },
+    "idea_submitted": {
+      "description": "A signed-in shopper sent an Idea Submission from My Archive.",
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "boolean",
+          "description": "Whether the submission included an image."
+        }
+      },
+      "required": ["image"],
+      "additionalProperties": false
     }
   }
 }

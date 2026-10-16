@@ -5,17 +5,22 @@ import {
   ClaimVerifyRequestSchema,
   ConsentRequestSchema,
   DesignAccessRequestSchema,
+  IdeaSubmitRequestSchema,
+  IdeaUploadRequestSchema,
   SavePieceRequestSchema,
   type ClaimStartRequest,
   type ClaimVerifyRequest,
   type ConsentRequest,
   type DesignAccessRequest,
+  type IdeaSubmitRequest,
+  type IdeaUploadRequest,
   type SavePieceRequest,
 } from "@/shared";
 import { startClaim, verifyClaim } from "./archive/claims";
 import { setConsent } from "./archive/consents";
 import { getDesignBySlug } from "./archive/designs";
 import { getEntitlement } from "./archive/entitlements";
+import { createIdeaUploadTarget, submitIdea } from "./archive/ideas";
 import { getArchiveReadiness } from "./archive/readiness";
 import { reconcileOrders } from "./archive/reconcile";
 import { savePiece, savedSlugs, unsavePiece } from "./archive/saved";
@@ -116,5 +121,28 @@ export async function setEmailConsent(
       throw new UserError("Email preferences aren’t available yet.");
     const row = await setConsent(user.id, topic, consented, "settings");
     return { consented: row.consented };
+  });
+}
+
+/** A one-time upload target for an Idea Submission's image, once the account has a submission open. */
+export async function startIdeaUploadAction(
+  input: IdeaUploadRequest,
+): Promise<Result<{ bucket: string; path: string; token: string }>> {
+  return run(async () => {
+    const user = await requireUser();
+    const { fileName } = parse(IdeaUploadRequestSchema, input);
+    await limit("idea-upload", 10, 30, user.id);
+    return createIdeaUploadTarget(user, fileName);
+  });
+}
+
+/** Sends an Idea Submission. The purchase count and the submissions left are checked again here. */
+export async function submitIdeaAction(input: IdeaSubmitRequest): Promise<Result<{ id: string }>> {
+  return run(async () => {
+    const user = await requireUser();
+    const { idea, verse, context, imagePath, website } = parse(IdeaSubmitRequestSchema, input);
+    if (website) throw new UserError("That didn’t go through.");
+    await limit("idea-submit", 3, 30, user.id);
+    return submitIdea(user, { idea, verse, context, imagePath });
   });
 }

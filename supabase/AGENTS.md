@@ -16,6 +16,7 @@ Postgres schema and auth email templates for the Awebound store. Used by the Sup
 - `contact_messages`, `subscribers` — written only by the server with the secret key; RLS on with no policies.
 - My Archive (`2026101300*`): `saved_pieces`, `fit_preferences` (unused since Your Fit was removed); `archive_designs`, `archive_design_content` (versioned, draft → approved → published), `archive_assets` (wallpapers in the private `archive-assets` bucket); `checkout_sessions`, `provider_orders`, `provider_order_lines`, `webhook_events`, `reconciliation_runs`, `order_claims` and the `archive_entitlements` view; `founding_members`, `founding_candidates` and `archive_award_founding()`; `feature_flags`, `email_consents`, `email_outbox`, `owner_audit_log`; `user_roles`. All server-only (RLS on, no policies, `service_role` grants). `profiles` now follows `auth.users` (email, `email_verified_at`) and `authenticated` may update `full_name` only.
 - `indexnow_pages` — each indexable page's fingerprint when IndexNow was last told about it (server-only, like the Archive tables).
+- `idea_submissions` — Idea Submissions from My Archive (image path and size, idea, verse, context, purchases when sent, the owner's status and note); images in the private `idea-submissions` bucket (PNG or JPEG, 10 MB). Server-only.
 
 ## Rules
 

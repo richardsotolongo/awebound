@@ -13,8 +13,7 @@ import { UserError } from "./errors";
 
 /**
  * Stores a contact message and emails it to the store inbox, CONTACT_EMAIL (reply-to the sender),
- * then sends the
- * sender an acknowledgement. Succeeds if the message was either stored or emailed, so one outage
+ * then sends the sender an acknowledgement. Succeeds if the message was either stored or emailed, so one outage
  * never loses a message silently.
  */
 export async function submitContactMessage(
