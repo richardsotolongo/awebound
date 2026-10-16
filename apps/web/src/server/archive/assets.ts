@@ -1,7 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import type { AssetFormat, OwnedExtra } from "@/shared";
+import { shopSlug, type AssetFormat, type OwnedExtra } from "@/shared";
 import { serverEnv } from "../env";
 import { UserError } from "../errors";
 import { audit } from "./audit";
@@ -262,6 +262,23 @@ export async function assetsForOwnedCard(designKey: string): Promise<OwnedExtra[
   });
 }
 
+/** Ten-minute links to the files themselves, for the owner's Assets page to show what each one is. */
+export async function previewUrls(assets: AssetRow[]): Promise<Record<string, string>> {
+  if (!supabaseAdmin || assets.length === 0) return {};
+  const bucket = serverEnv.ARCHIVE_STORAGE_BUCKET;
+  const mine = assets.filter((a) => a.storage_bucket === bucket);
+  const { data } = await supabaseAdmin.storage.from(bucket).createSignedUrls(
+    mine.map((a) => a.storage_path),
+    600,
+  );
+  const urls: Record<string, string> = {};
+  for (const [i, item] of (data ?? []).entries()) {
+    const asset = mine[i];
+    if (asset && item.signedUrl) urls[asset.id] = item.signedUrl;
+  }
+  return urls;
+}
+
 /** A short-lived download link, only for a published file of a design the account owns. */
 export async function signedAssetUrl(assetId: string, userId: string): Promise<string | null> {
   const asset = await getAsset(assetId);
@@ -272,7 +289,7 @@ export async function signedAssetUrl(assetId: string, userId: string): Promise<s
   const { data, error } = await admin()
     .storage.from(asset.storage_bucket)
     .createSignedUrl(asset.storage_path, 60, {
-      download: `behold-${design.product_slug}-${asset.format}.${ext}`,
+      download: `behold-${shopSlug(design.product_slug)}-${asset.format}.${ext}`,
     });
   if (error || !data) return null;
   return data.signedUrl;

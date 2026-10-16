@@ -758,6 +758,25 @@
   .admin-editor textarea {
     min-height: 120px;
   }
+  /* A wallpaper on the owner's Assets page: its picture beside its details. */
+  .admin-file {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+  .admin-file-preview {
+    flex: none;
+    display: block;
+    border: 1px solid var(--line);
+    background: var(--surface-raised);
+  }
+  .admin-file-preview img {
+    display: block;
+    width: auto;
+    height: 72px;
+    max-width: 128px;
+    object-fit: contain;
+  }
   /* Suggested wording above the editor's boxes, set apart on raised coal. */
   .admin-suggestion {
     display: grid;
