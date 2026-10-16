@@ -134,13 +134,13 @@ sequenceDiagram
 
 ## Email
 
-| Email                                                              | Sent by                           | Template                                 |
-| ------------------------------------------------------------------ | --------------------------------- | ---------------------------------------- |
-| Sign-in link and code, confirm email                               | Supabase Auth through Resend SMTP | `supabase/templates/*.html`              |
-| Contact notification to `contact@awebound.store` (reply-to sender) | Server → Resend                   | `apps/web/src/server/email-templates.ts` |
-| Contact acknowledgement                                            | Server → Resend                   | same                                     |
-| Drop-notes welcome                                                 | Server → Resend                   | same                                     |
-| Account deleted                                                    | Server → Resend                   | same                                     |
+| Email                                                               | Sent by                           | Template                                 |
+| ------------------------------------------------------------------- | --------------------------------- | ---------------------------------------- |
+| Sign-in link and code, confirm email                                | Supabase Auth through Resend SMTP | `supabase/templates/*.html`              |
+| Contact notification to `aweboundstore@gmail.com` (reply-to sender) | Server → Resend                   | `apps/web/src/server/email-templates.ts` |
+| Contact acknowledgement                                             | Server → Resend                   | same                                     |
+| Drop-notes welcome                                                  | Server → Resend                   | same                                     |
+| Account deleted                                                     | Server → Resend                   | same                                     |
 
 Every email shares one table layout (`layout` in `email-templates.ts`; the two Supabase files copy its markup): the oxblood wordmark on warm bone, a paper card, inline hex colors (email clients ignore CSS variables and strip SVG), and only widely supported CSS (no styles on `<body>`, no margins, no rounded corners). The site attaches the wordmark inline (`cid:wordmark`), so it shows without loading a hosted image; Supabase emails load `{{ .SiteURL }}/email/wordmark-oxblood.png`. Check changes with Mailpit's HTML check (`supabase start`, then http://localhost:54324).
 
@@ -209,7 +209,7 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 | `FOURTHWALL_CHECKOUT_DOMAIN`                                       | Optional; defaults to `awebound-store-shop.fourthwall.com`                           |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Sign-in (public)                                                                     |
 | `SUPABASE_SECRET_KEY`                                              | Profiles, contact messages and sign-ups (server only)                                |
-| `RESEND_API_KEY`, `EMAIL_FROM`, `CONTACT_INBOX`                    | Email. The key is required in production; the other two have defaults                |
+| `RESEND_API_KEY`, `EMAIL_FROM`                                     | Email. The key is required in production; the sender has a default                   |
 | `FOURTHWALL_WEBHOOK_SECRET`                                        | Signs Fourthwall's order webhooks (My Archive orders)                                |
 | `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`               | Fourthwall Open API user: order sync, claims, Founding settlement                    |
 | `CRON_SECRET`                                                      | Bearer for the daily crons and the IndexNow deploy workflow (also a GitHub secret)   |

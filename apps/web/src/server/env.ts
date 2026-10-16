@@ -37,6 +37,5 @@ export const serverEnv = z
     ARCHIVE_STORAGE_BUCKET: optional.transform((v) => v ?? "archive-assets"),
     RESEND_API_KEY: optional,
     EMAIL_FROM: optional.transform((v) => v ?? "Awebound <noreply@awebound.store>"),
-    CONTACT_INBOX: optional.transform((v) => v ?? "contact@awebound.store"),
   })
   .parse(process.env);

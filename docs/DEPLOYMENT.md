@@ -32,7 +32,6 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<same page>
 SUPABASE_SECRET_KEY=<same page, secret key>
 RESEND_API_KEY=<Resend → API keys>
 EMAIL_FROM=Awebound <noreply@awebound.store>
-CONTACT_INBOX=contact@awebound.store
 FOURTHWALL_WEBHOOK_SECRET=<Fourthwall admin → Settings → For developers → Webhooks>
 FOURTHWALL_API_USERNAME=<same page → Open API → Create API user>
 FOURTHWALL_API_PASSWORD=<same>
@@ -45,7 +44,7 @@ INDEXNOW_KEY=<openssl rand -hex 16; Production only>
 - `NEXT_PUBLIC_SITE_URL` is the one address search engines and AI assistants are told about: every canonical link, the sitemap, `llms.txt`, share images and the links in emails are built from it. It must be the live host exactly (`https://www.awebound.store`, with `www`). A production build fails while it is unset or localhost, so a deploy can't publish `localhost` addresses.
 - `FOURTHWALL_STOREFRONT_TOKEN` connects the shop to Fourthwall. Without it (or for pieces not yet created in Fourthwall) the Behold pieces still look ready to order (the site's prices and images, Add to bag), but Check out shows a try-again message. After adding it or new Fourthwall products, the home page picks them up within a minute; redeploy if you want it immediately.
 - The shop lists only products that are public in Fourthwall and match the brand content by slug (see `docs/TODOS.md` → Fourthwall).
-- `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox.
+- `RESEND_API_KEY` is required in production; without it the contact form can't email the inbox. Contact messages always go to `aweboundstore@gmail.com` (`CONTACT_EMAIL` in `apps/web/src/shared/messages.ts`, the address shown everywhere on the site); `CONTACT_INBOX` is no longer read, so delete it from Vercel if it was set. Emails are sent from `EMAIL_FROM` (`noreply@awebound.store`), with replies going to the sender of a contact message or to `aweboundstore@gmail.com`.
 - `FOURTHWALL_CHECKOUT_DOMAIN` is optional (default `awebound-store-shop.fourthwall.com`); set it if you connect a custom shop domain in Fourthwall.
 - Scripture on the website is always the King James Version (`TRANSLATION` in `apps/web/src/server/scripture.ts`, the owner's decision of October 16, 2026). `SCRIPTURE_TRANSLATION` is no longer read: delete it from Vercel if it was set.
 - `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` turns on analytics. Set it for **Production only**, so preview deploys don't count as visits; without it nothing is sent. `NEXT_PUBLIC_POSTHOG_HOST` is optional (PostHog US Cloud by default). Session replay stays off in code whatever the PostHog project says.

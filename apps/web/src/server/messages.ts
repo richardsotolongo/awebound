@@ -1,5 +1,5 @@
 import "server-only";
-import type { ContactRequest, SubscribeRequest } from "@/shared";
+import { CONTACT_EMAIL, type ContactRequest, type SubscribeRequest } from "@/shared";
 import { siteUrl } from "@/lib/env";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { sendEmail } from "./email";
@@ -9,11 +9,11 @@ import {
   subscriberWelcome,
   type ContactMessage,
 } from "./email-templates";
-import { serverEnv } from "./env";
 import { UserError } from "./errors";
 
 /**
- * Stores a contact message and emails it to the store inbox (reply-to the sender), then sends the
+ * Stores a contact message and emails it to the store inbox, CONTACT_EMAIL (reply-to the sender),
+ * then sends the
  * sender an acknowledgement. Succeeds if the message was either stored or emailed, so one outage
  * never loses a message silently.
  */
@@ -35,7 +35,7 @@ export async function submitContactMessage(
 
   let emailed = false;
   try {
-    await sendEmail(serverEnv.CONTACT_INBOX, contactNotification(message), input.email);
+    await sendEmail(CONTACT_EMAIL, contactNotification(message), input.email);
     emailed = true;
     if (id && supabaseAdmin) {
       await supabaseAdmin
@@ -47,12 +47,10 @@ export async function submitContactMessage(
     console.error("[contact] notification failed:", err);
   }
   if (!id && !emailed) {
-    throw new UserError(
-      `Your message didn’t go through. Email us directly at ${serverEnv.CONTACT_INBOX}.`,
-    );
+    throw new UserError(`Your message didn’t go through. Email us directly at ${CONTACT_EMAIL}.`);
   }
 
-  await sendEmail(input.email, contactAcknowledgement(message), serverEnv.CONTACT_INBOX).catch(
+  await sendEmail(input.email, contactAcknowledgement(message), CONTACT_EMAIL).catch(
     (err: unknown) => console.warn("[contact] acknowledgement failed:", err),
   );
 }
@@ -69,7 +67,7 @@ export async function subscribeToDropNotes(input: SubscribeRequest): Promise<voi
     if (error?.code === "23505") return;
     if (error) throw new Error(`subscribers insert failed: ${error.message}`);
   }
-  await sendEmail(input.email, subscriberWelcome(siteUrl), serverEnv.CONTACT_INBOX).catch(
-    (err: unknown) => console.warn("[subscribe] welcome email failed:", err),
+  await sendEmail(input.email, subscriberWelcome(siteUrl), CONTACT_EMAIL).catch((err: unknown) =>
+    console.warn("[subscribe] welcome email failed:", err),
   );
 }
