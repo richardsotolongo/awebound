@@ -11,6 +11,21 @@ export const SITE = {
   contactEmail: CONTACT_EMAIL,
 } as const;
 
+/** Awebound's own profiles: the footer's icons and the home page's store data (`sameAs`). */
+export const SOCIAL = [
+  {
+    name: "Instagram",
+    handle: "@awebound.store",
+    href: "https://www.instagram.com/awebound.store/",
+  },
+  { name: "TikTok", handle: "@aweboundstore", href: "https://www.tiktok.com/@aweboundstore" },
+  {
+    name: "Facebook",
+    handle: "Awebound",
+    href: "https://www.facebook.com/profile.php?id=61595167444851",
+  },
+] as const;
+
 export const SHARE_IMAGE = {
   url: "/og.png",
   width: 1200,

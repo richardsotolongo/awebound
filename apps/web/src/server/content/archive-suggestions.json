@@ -1,6 +1,6 @@
 {
-  "prepared_on": "2026-10-15",
-  "based_on": "The owner's approved version 1 of each design, read from the database on 2026-10-15.",
+  "prepared_on": "2026-10-16",
+  "based_on": "The owner's approved text for each design, read from the database (Signature Cap's design story and imagery meaning on 2026-10-16, the rest on 2026-10-15).",
   "note": "Suggested wording only, rewritten with the awebound-brand voice (Sound like a person). The owner's content editor offers it; nothing is saved until the owner saves, approves or publishes. Server-only: never import into client code.",
   "designs": {
     "behold:thorns-to-lilies": {
@@ -44,7 +44,8 @@
     },
     "behold:signature-cap": {
       "biblicalContext": "Ephesians 1 opens with Paul praising God for every spiritual blessing His people have in Christ. In the middle of that praise, he says they have redemption through Jesus’ blood and the forgiveness of sins, given out of the riches of God’s grace. Those gifts belong to a bigger story of being adopted into God’s family, and of His plan to bring everything in heaven and on earth together under Christ.\n\nRedemption means being bought back at a cost. Paul grounds it in what Jesus did, and he turns the thanks toward the grace God gave freely.\n\nEphesians 2 shows what that grace produces. Salvation comes by grace through faith, as God’s gift, and the people He makes alive in Christ are created to do the good works He prepared for them in advance.",
-      "designStory": "The Signature Cap is Awebound’s name in its own lettering, with thorns and the Thorn Cross. Together they give the name a shape people can recognize and tie it to the sacrifice and redemption in its Scripture.\n\nThe thorns recall what Christ suffered, and the cross keeps the name anchored in Him.\n\nThe tagline says why the cap exists. Bound in awe is reverence for Jesus. Worn without shame is being willing to be known as His. The cap takes the name into ordinary places, and what it means there depends on the faith and the life of the person wearing it."
+      "designStory": "The Signature Cap is Awebound’s name in its own lettering, with red thorns reaching out from both sides. Crimson runs through the ivory letters, so the meaning of the thorns carries right into the name.\n\nThe thorns recall the crown Christ wore. The red is for the blood He shed to redeem us, and it keeps the name rooted in His sacrifice.\n\nThe tagline says why the cap exists. Bound in awe is reverence for Jesus. Worn without shame is being willing to be known as His. The cap goes wherever the person wearing it goes, as a reminder to reflect Him in how they speak and how they treat people.",
+      "imageryMeaning": "The red thorn branches recall the crown Christ wore, and the crimson running through the ivory letters is a reminder of His sacrifice. They tie Awebound’s name to what Behold is about, looking to Jesus and the redemption found in Him."
     }
   }
 }

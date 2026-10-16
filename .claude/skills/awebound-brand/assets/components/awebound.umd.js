@@ -135,7 +135,7 @@ var Awebound = (() => {
     "plate-sandstone": "#e1cbb4",
     "plate-rose": "#d6988d",
     "plate-linen": "#d1c0af",
-    "plate-concrete": "#c1af9b",
+    "plate-concrete": "#e3ccb4",
   };
   var INK_HEX = { bone: "#F0E6D2", coal: "#151413" };
 

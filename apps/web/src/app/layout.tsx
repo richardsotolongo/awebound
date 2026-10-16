@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { AskAi } from "@/components/ask-ai";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
+import { SocialLinks } from "@/components/social-links";
 import { SiteHeader } from "@/components/site-header";
 import { BagDrawer } from "@/features/bag/bag-drawer";
 import { siteUrl } from "@/lib/env";
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteHeader />
           <main id="main">{children}</main>
           <SiteFooter notice={TRANSLATION_NOTICE}>
+            <SocialLinks />
             <AskAi />
           </SiteFooter>
           <BagDrawer />

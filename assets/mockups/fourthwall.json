@@ -222,11 +222,11 @@
       "fourthwallSlug": "awebound-signature-cap",
       "gallery": [
         {
-          "photo": "17a93c33-9861-4094-ae9b-9d2158db8c75.png",
+          "photo": "b4b3ba3d-6680-47a2-861e-d36e317ceb7e.png",
           "view": "front"
         },
         {
-          "photo": "b5b8eb9b-1e4c-4412-a1c8-b87943cf0582.png",
+          "photo": "edca078e-dfea-40ea-9521-2c504110b565.png",
           "view": "side"
         },
         {
@@ -235,8 +235,6 @@
         }
       ],
       "cutouts": {
-        "front": "91faaa24-172e-4ba8-97c5-efc400c7c520.webp",
-        "side": "f0f9883c-f69c-467c-a28c-f1eee9ce9e94.webp",
         "back": "d201fb9b-cec1-4b2d-8c64-d59ae4cec9a9.webp"
       }
     }

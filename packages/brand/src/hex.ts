@@ -25,7 +25,7 @@ export const PLATE_HEX = {
   "plate-sandstone": "#e1cbb4",
   "plate-rose": "#d6988d",
   "plate-linen": "#d1c0af",
-  "plate-concrete": "#c1af9b",
+  "plate-concrete": "#e3ccb4",
 } as const;
 
 /** The ink a plate's lettering takes (`plate.ink` in the content file). */

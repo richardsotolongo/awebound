@@ -39,7 +39,7 @@ export declare const PLATE_HEX: {
   readonly "plate-sandstone": "#e1cbb4";
   readonly "plate-rose": "#d6988d";
   readonly "plate-linen": "#d1c0af";
-  readonly "plate-concrete": "#c1af9b";
+  readonly "plate-concrete": "#e3ccb4";
 };
 /** The ink a plate's lettering takes (`plate.ink` in the content file). */
 export declare const INK_HEX: {

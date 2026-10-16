@@ -11,7 +11,7 @@ import { LeadPiece } from "@/features/home/lead-piece";
 import { toLeadSlide } from "@/features/home/lead-slide";
 import { ReleaseWall } from "@/features/release/release-wall";
 import { siteUrl } from "@/lib/env";
-import { SITE, pageMeta } from "@/lib/site";
+import { SITE, SOCIAL, pageMeta } from "@/lib/site";
 import { getEntitlement } from "@/server/archive/entitlements";
 import { getArchiveOffer, getArchivePreview } from "@/server/archive/offer";
 import { getLatestRelease, getProduct, searchProducts, withFallback } from "@/server/catalog";
@@ -24,7 +24,7 @@ export const metadata = pageMeta({ path: "/" });
 // minute (server/fourthwall.ts).
 export const dynamic = "force-dynamic";
 
-/** Who Awebound is, for search engines and AI assistants. Add `sameAs` once social links exist. */
+/** Who Awebound is, for search engines and AI assistants, with its own profiles as `sameAs`. */
 const STORE = {
   "@context": "https://schema.org",
   "@graph": [
@@ -37,6 +37,7 @@ const STORE = {
       description: SITE.description,
       slogan: SITE.tagline,
       email: SITE.contactEmail,
+      sameAs: SOCIAL.map((s) => s.href),
     },
     {
       "@type": "WebSite",

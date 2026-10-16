@@ -80,7 +80,7 @@ STYLE = {
     # Black cap, white lamb: warm linen, like the studio the cap's photos were taken in.
     "lambs-mark": {"color": (209, 192, 175), "texture": "linen", "light": "upper-left"},
     # Black cap, red-edged wordmark: warm sand concrete with a fine speckle, lit from above.
-    "signature-cap": {"color": (193, 175, 155), "texture": "speckle", "light": "top"},
+    "signature-cap": {"color": (227, 204, 180), "texture": "speckle", "light": "top"},
 }
 
 CAPS = ("lambs-mark", "signature-cap")
@@ -104,7 +104,8 @@ VIEWS = {
     "the-passage": {"views": ["back", "front"], "detail": ("photo:3", 0.52, 0.6, 0.681)},
     "wonderfully-made": {"views": ["back", "front"], "detail": ("back", 0.5, 0.52, 0.52)},
     "lambs-mark": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.43, 0.54)},
-    "signature-cap": {"views": ["front", "side", "back"], "detail": ("front", 0.5, 0.42, 0.52)},
+    # Its front print changed in October 2026 and no render shows it yet: the close-up is the photo.
+    "signature-cap": {"views": ["front", "side", "back"], "detail": ("photo:1", 0.5, 0.49, 0.6)},
 }
 
 

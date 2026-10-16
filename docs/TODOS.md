@@ -5,14 +5,12 @@ What's left before launch, grouped by who has to act. Check items off as they la
 ## Decisions for the owner
 
 - [ ] **Legal details**: business entity name and the state whose law governs (`LEGAL` in `apps/web/src/lib/site.ts`).
-- [ ] **Social links** (Instagram, TikTok) for the footer.
 
 ## Search and AI discovery
 
 - [ ] **Bing Webmaster Tools**: import the site from Search Console and submit the sitemap. Bing's index feeds ChatGPT search and Copilot.
 - [ ] **IndexNow**: set `INDEXNOW_KEY` in Vercel (Production only, `openssl rand -hex 16`), run `supabase db push` for the `indexnow_pages` table, and add `CRON_SECRET` as a GitHub Actions repository secret so each production deploy sends its changes. After the first deploy, check the IndexNow run in GitHub Actions and Bing Webmaster Tools → IndexNow (steps in `docs/DEPLOYMENT.md`).
 - [ ] **Guides**: the unlisted pages under `/christian-apparel` name pieces in their copy (`apps/web/src/features/guides/guides.ts`). Review them when a release adds or retires a piece, and add symbol labels for new pieces.
-- [ ] **Social profiles**: once Instagram and TikTok exist, add them to the footer and as `sameAs` in the home page's store data (`apps/web/src/app/page.tsx`).
 - [ ] **Shipping and returns in product data**: after delivery times and the refund policy are confirmed, add them to the product structured data (`apps/web/src/app/shop/[slug]/page.tsx`).
 - [ ] **After the products are published in Fourthwall**: check a product page in Google's Rich Results Test, and consider Google Merchant Center free listings. Until then Search Console reports "missing offers" on product pages, which is expected: a preview carries no offer.
 
