@@ -22,6 +22,7 @@ There is no separate backend. Pages read data in Server Components; the browser 
 | `supabase`          | SQL migrations, auth email templates                                                                                                            | `supabase/AGENTS.md`                                                                |
 | `assets/mockups`    | Fourthwall product images (`fourthwall.json`, `fourthwall.py`), source mockups (kept intact), cutout, zoom-out (`widen.py`) and styling scripts | regenerate site images, close-ups and plates with `fourthwall.py` then `compose.py` |
 | `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`, `BRAND.md`                                                                                      | keep them current when you change structure                                         |
+| `.github/workflows` | `indexnow.yml`: runs IndexNow right after each production deploy                                                                                | needs the `CRON_SECRET` repository secret                                           |
 
 `packages/brand` is consumed as TypeScript source (no build step); Next transpiles it via `transpilePackages`.
 

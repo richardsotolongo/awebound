@@ -81,6 +81,12 @@ export const shopSlug = (slug: string) => SHOP_ADDRESSES[slug] ?? slug;
 export const pieceHref = (slug: string) => `/shop/${shopSlug(slug)}`;
 export const collectionHref = (slug: string) => `/account/collection/${shopSlug(slug)}`;
 
+/** A piece's name with its cut, as titles say it: "Fear Not hoodie", but "Signature Cap". */
+export function nameWithCut(p: { name: string; category: { cut: string } }): string {
+  const cut = p.category.cut.toLowerCase();
+  return p.name.toLowerCase().endsWith(cut) ? p.name : `${p.name} ${cut}`;
+}
+
 /** The slug behind an address, and whether the address is an old one that should redirect. */
 export function slugAtAddress(address: string): { slug: string; moved: boolean } {
   if (SHOP_ADDRESSES[address]) return { slug: address, moved: true };

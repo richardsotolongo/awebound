@@ -18,7 +18,7 @@ import { ReleaseWall } from "@/features/release/release-wall";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
-import { pieceHref, plateCss, slugAtAddress } from "@/shared";
+import { nameWithCut, pieceHref, plateCss, slugAtAddress } from "@/shared";
 
 type Params = Promise<{ slug: string }>;
 
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const cut = product.category.cut.toLowerCase();
   return pageMeta({
     path: pieceHref(product.slug),
-    title: `${product.name} ${cut} · ${product.collection.name}`,
+    title: `${nameWithCut(product)} · ${scripture.reference}`,
     description: `${product.name}, ${cut} from ${product.collection.name}. ${quoted(scripture.text)} ${scripture.reference} (${scripture.translation}). ${product.story.art}`,
     image: { url: product.image.url, alt: product.image.alt },
   });

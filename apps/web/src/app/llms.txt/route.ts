@@ -1,4 +1,5 @@
 import { EMPTY_FACETS, EMPTY_LIST, priceLabel, shopCanonical } from "@/features/catalog/query";
+import { GUIDES, GUIDES_PATH, guideHref } from "@/features/guides/guides";
 import { DELIVERY } from "@/lib/delivery";
 import { siteUrl } from "@/lib/env";
 import { SITE } from "@/lib/site";
@@ -62,6 +63,11 @@ export async function GET() {
     ...facets.categories
       .filter((c) => c.count > 0)
       .map((c) => link(c.name, shopCanonical(ALL_COLLECTIONS, c.slug))),
+    "",
+    "## Guides",
+    "",
+    link("Christian apparel", GUIDES_PATH, "what Awebound makes, with every guide and piece"),
+    ...GUIDES.map((g) => link(g.heading, guideHref(g.slug), g.description)),
     "",
     "## About",
     "",

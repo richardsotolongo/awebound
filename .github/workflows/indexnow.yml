@@ -1,0 +1,36 @@
+# After each production deploy, tell IndexNow which pages are new, changed or gone, so Bing and
+# the other engines that take it crawl them now instead of waiting for the daily cron. Vercel's
+# GitHub integration reports each deployment to GitHub, which starts this workflow. It needs the
+# CRON_SECRET repository secret (Settings → Secrets and variables → Actions), the same value as
+# in Vercel; without it the run only prints a notice. Run it by hand from the Actions tab too.
+name: IndexNow
+
+on:
+  deployment_status:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  submit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+      startsWith(github.event.deployment.environment, 'Production'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send changed pages to IndexNow
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.awebound.store' }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::notice::Add the CRON_SECRET repository secret to send pages to IndexNow after each deploy."
+            exit 0
+          fi
+          # Give the production domain a moment to move to the new deployment. No retries: a run
+          # that fails is picked up by the daily cron, and a retry would resend refused pages.
+          sleep 30
+          curl --fail-with-body --silent --show-error \
+            -H "Authorization: Bearer $CRON_SECRET" "$SITE_URL/api/indexnow"

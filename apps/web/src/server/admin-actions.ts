@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath, updateTag } from "next/cache";
+import { after } from "next/server";
 import {
   ApproveRequestSchema,
   AssetAssignRequestSchema,
@@ -34,17 +35,20 @@ import { foundingCorrection, settleFounding } from "./archive/founding";
 import { adjustOrderLines, markOrderReviewed, relinkOrder } from "./archive/orders";
 import { reconcileOrders, type ReconcileReport } from "./archive/reconcile";
 import { parse, run, type Result } from "./errors";
+import { syncIndexNow } from "./indexnow";
 import { requireAdmin } from "./session";
 
 // Owner actions for My Archive. Each one checks the admin role from the session and is audited by the module it calls.
 
 /**
  * After content goes live or comes down, the public pages show it now rather than within the
- * minute their caches last: the Archive reads and every page's cached render.
+ * minute their caches last: the Archive reads and every page's cached render. Once the answer is
+ * sent, IndexNow hears about the pages that changed.
  */
 function refreshPublicPages() {
   updateTag(ARCHIVE_PUBLIC_TAG);
   revalidatePath("/", "layout");
+  after(() => syncIndexNow().catch((err) => console.error("[indexnow]", err)));
 }
 
 export async function importDraftsAction(): Promise<Result<ImportReport>> {
