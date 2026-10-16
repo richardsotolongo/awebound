@@ -35,7 +35,7 @@ pnpm lint             # every package
 pnpm build            # every package
 ```
 
-Copy `apps/web/.env.example` to `apps/web/.env.local`; it lists every variable. The catalog and checkout need `FOURTHWALL_STOREFRONT_TOKEN`. Without Supabase keys accounts show "open soon" and contact messages and back-in-stock requests aren't stored; without `RESEND_API_KEY` emails print to the terminal in development.
+Copy `apps/web/.env.example` to `apps/web/.env.local`; it lists every variable. The catalog and checkout need `FOURTHWALL_STOREFRONT_TOKEN`. Without Supabase keys accounts show "open soon" and contact messages and back-in-stock requests aren't stored; without `RESEND_API_KEY` emails print to the terminal in development; without `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` no analytics are sent.
 
 Deployment is one Vercel project (Root Directory `apps/web`); see `docs/DEPLOYMENT.md`.
 
