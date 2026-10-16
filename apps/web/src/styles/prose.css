@@ -4,7 +4,8 @@
     max-width: 68ch;
     color: var(--ink-muted);
   }
-  .prose > * + * {
+  .prose > * + *,
+  .prose > section > * + * {
     margin-top: var(--space-4);
   }
   .prose h2 {

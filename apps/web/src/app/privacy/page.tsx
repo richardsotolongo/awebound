@@ -15,11 +15,17 @@ const sections: LegalSection[] = [
     id: "who",
     title: "Who we are",
     body: (
-      <p>
-        {LEGAL.businessName} (“Awebound”, “we”) runs this website and store. This policy explains
-        what personal information we collect, how we use it and the choices you have. Questions go
-        to {mail}.
-      </p>
+      <>
+        <p>
+          {LEGAL.businessName} (“Awebound”, “we”) runs this website and store. This policy explains
+          what personal information we collect, how we use it and the choices you have. Questions go
+          to {mail}.
+        </p>
+        <p>
+          Looking for shipping information? See{" "}
+          <Link href="/terms#shipping-costs">Shipping costs in our terms</Link>.
+        </p>
+      </>
     ),
   },
   {
