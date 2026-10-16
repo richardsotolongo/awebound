@@ -132,7 +132,7 @@ Constants: `FOUNDING_CAP = 50`, `FOUNDING_SETTLE_FROM = 45` in `apps/web/src/ser
 
 ## Setup (owner actions; none performed here)
 
-1. **Database**: `supabase db push` applies the seven new migrations (identity, free tools, content and assets, orders, founding, flags/email/audit, roles). Then `supabase config push` or paste the three templates (`supabase/templates/magic-link.html`, `confirmation.html`, `email-change.html`) into Authentication → Emails. The private bucket `archive-assets` is created by the migration; check it under Storage.
+1. **Database**: `supabase db push` applies the seven new migrations (identity, free tools, content and assets, orders, founding, flags/email/audit, roles). Then `supabase config push` or paste the three templates (`supabase/templates/magic-link.html`, `confirmation.html`, `email-change.html`) into Authentication → Emails. The private bucket `archive-assets` is created by the migration; check it under Storage. `20261016000000_trigger_functions_not_callable.sql` (October 16, 2026) closes Supabase's two security-advisor warnings: the sign-up trigger functions were callable through the API.
 2. **Fourthwall**: Settings → For developers → Webhooks: add `https://www.awebound.store/api/fourthwall/webhook` for `ORDER_PLACED` and `ORDER_UPDATED`, copy the secret into `FOURTHWALL_WEBHOOK_SECRET`. Open API → Create API user: `FOURTHWALL_API_USERNAME` and `FOURTHWALL_API_PASSWORD`.
 3. **Vercel**: add the variables from `apps/web/.env.example` (the five new ones plus the existing keys), a long random `CRON_SECRET`; the cron in `vercel.json` registers on deploy.
 4. **First admin**: sign in once, then `pnpm --filter @awebound/web grant:admin <email>`.
