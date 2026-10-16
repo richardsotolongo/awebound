@@ -1,5 +1,5 @@
 {
-  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows one translation (SCRIPTURE_TRANSLATION, NIV by default) everywhere the piece appears. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest. `sizeGuides` holds each blank's garment measurements, copied exactly from the owner's size guide images (every garment and both caps) (apps/web/public/size-guides, sources in assets/size-guides) and Fourthwall's product details; `blank` names the supplier product for our records and is never shown. A product's `sizeGuide` picks its guide, and the guide's sizes are the sizes a preview offers. `sizePriceCents` holds Fourthwall's per-size prices (2XL and up cost more) for previews.",
+  "$comment": "Brand content for the catalog: what Fourthwall doesn't hold (internal design code, release, position, category, Scripture, copy). When a product's slug (or fourthwallSlug) matches a public Fourthwall product, Fourthwall supplies its variants, prices and stock. Until then the product shows as a preview with the price and sizes here, and ordering not yet open. `images` are always the site's own (apps/web/public/products): Fourthwall's product renders, or the approved mockup, on each piece's styled surface, made by assets/mockups. `scripture` is each piece's shared Scripture record: the website shows the King James text (`kjv`) everywhere the piece appears; `niv` is kept for a possible later switch. `code` is internal and never shown to customers. `colors` maps garment color names to brand swatch tokens. `images` are listed in display order: listing image (the whole garment), hover image, then the rest. `sizeGuides` holds each blank's garment measurements, copied exactly from the owner's size guide images (every garment and both caps) (apps/web/public/size-guides, sources in assets/size-guides) and Fourthwall's product details; `blank` names the supplier product for our records and is never shown. A product's `sizeGuide` picks its guide, and the guide's sizes are the sizes a preview offers. `sizePriceCents` holds Fourthwall's per-size prices (2XL and up cost more) for previews.",
   "categories": [
     {
       "slug": "tees",
@@ -32,7 +32,7 @@
       "name": "Behold",
       "number": "01",
       "tagline": "Clothes that ask you to look at Jesus, and keep looking.",
-      "story": "“Behold” is an old word for look, and keep looking. It’s the word older English Bibles use when John the Baptist sees Jesus walking toward him and points Him out to the crowd: “Behold the Lamb of God.” Each piece in this release points to who Jesus is and what He has done. He makes scarlet sins white as snow. He gives a life worth living. He healed the woman who touched His cloak. On the third day the stone was rolled away. He calmed the storm, and His death tore the temple veil. He walks with us through the darkest valley, He made us with care, and He is the Lamb who takes away the sin of the world.",
+      "story": "“Behold” is an old word for look, and keep looking. It’s the word older English Bibles use when John the Baptist sees Jesus walking toward him and points Him out to the crowd: “Behold the Lamb of God.” Each piece in this release points to who Jesus is and what He has done. He makes scarlet sins white as snow. He gives a life worth living. He healed the woman who touched the hem of His garment. On the third day the stone was rolled away. He calmed the storm, and His death tore the temple veil. He walks with us through the valley of the shadow of death, He made us with care, and He is the Lamb who takes away the sin of the world.",
       "scriptureRef": "John 1:29"
     }
   ],
@@ -286,7 +286,7 @@
         "theme": "Mercy",
         "call": "Behold His mercy",
         "art": "A crown of thorns breaks into lilies around the wordmark, under a cross.",
-        "meaning": "Through Isaiah, God invites His people to come and settle things with Him, and promises that sins red as scarlet will be made white as snow. The crown of thorns is what that mercy cost. The lilies are what grows from it. The print is deep red on a pale ecru shirt, the scarlet and the snow of the verse.",
+        "meaning": "Through Isaiah, God invites His people to come and reason together with Him, and promises that sins red as scarlet will be made white as snow. The crown of thorns is what that mercy cost. The lilies are what grows from it. The print is deep red on a pale ecru shirt, the scarlet and the snow of the verse.",
         "front": "Large Awebound wordmark across the chest in deep red",
         "back": "A crown of thorns blooming into lilies around the wordmark, with Isaiah 1:18",
         "inks": "Deep red, gray",
@@ -408,10 +408,10 @@
       "story": {
         "theme": "Healing",
         "call": "Behold the One who heals",
-        "art": "A woman’s hand reaches through a spray of rust to take hold of the edge of a cloak, beside the words she said to herself.",
-        "meaning": "She had been bleeding for twelve years, and nothing had helped. She didn’t ask Jesus for anything. She came up behind Him in the crowd and touched the edge of His cloak, sure that would be enough. Jesus turned, saw her, and told her that her faith had healed her. The back shows her hand closing on the cloak, with her words above it.",
+        "art": "A woman’s hand reaches through a spray of rust to take hold of His garment, beside the words she said within herself.",
+        "meaning": "She had been bleeding for twelve years, and nothing had helped. She didn’t ask Jesus for anything. She came up behind Him in the crowd and touched the hem of His garment, sure that would be enough. Jesus turned, saw her, and told her that her faith had made her whole. The back shows her hand closing on His garment, with her words above it in the King James wording.",
         "front": "Small Awebound wordmark in black, center chest",
-        "back": "“If I only touch his cloak, I will be healed.” with Matthew 9:21, beside a hand grasping the cloak in a spray of rust",
+        "back": "“If I may but touch his garment, I shall be whole.” with Matthew 9:21, in the King James wording, beside a hand grasping the garment in a spray of rust",
         "inks": "Black, rust",
         "fit": "Regular oversized · dropped shoulder, boxy body",
         "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
@@ -421,7 +421,7 @@
         {
           "view": "back",
           "url": "/products/by-his-hem/1.webp",
-          "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
+          "alt": "By His Hem oversized tee, back: “If I may but touch his garment, I shall be whole,” Matthew 9:21, beside a hand grasping a garment in a spray of rust"
         },
         {
           "view": "front",
@@ -431,7 +431,7 @@
         {
           "view": "back",
           "url": "/products/by-his-hem/3.webp",
-          "alt": "By His Hem oversized tee, back: “If I only touch his cloak, I will be healed,” Matthew 9:21, beside a hand grasping a cloak in a spray of rust"
+          "alt": "By His Hem oversized tee, back up close: “If I may but touch his garment, I shall be whole,” Matthew 9:21, beside a hand grasping a garment in a spray of rust"
         },
         {
           "view": "front",
@@ -471,7 +471,7 @@
         "theme": "Resurrection",
         "call": "Behold, He is risen",
         "art": "The stone rolls away in a sweep of blue under the angel’s words.",
-        "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, just as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
+        "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
         "front": "Awebound wordmark in black, center chest",
         "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
         "inks": "Black, cobalt blue",
@@ -593,10 +593,10 @@
       "story": {
         "theme": "Presence",
         "call": "Behold, the way is open",
-        "art": "A red temple curtain torn from top to bottom, with light pouring through above the clouds, over the words “The veil is torn.”",
-        "meaning": "When Jesus died on the cross, the curtain in the temple that closed off the Most Holy Place tore in two, from top to bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the curtain torn wide with light coming through. The front carries the wordmark with red thorns.",
+        "art": "A red temple veil torn from top to bottom, with light pouring through above the clouds, over the words “The veil is torn.”",
+        "meaning": "When Jesus died on the cross, the veil of the temple that closed off the holiest place was rent in twain, from the top to the bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the veil torn wide with light coming through. The front carries the wordmark with red thorns.",
         "front": "Awebound wordmark in bone with red thorns, center chest",
-        "back": "A red curtain torn open, light breaking through over the clouds, above “The veil is torn” in heavy gothic capitals, with Matthew 27:51 below",
+        "back": "A red veil torn open, light breaking through over the clouds, above “The veil is torn” in heavy gothic capitals, with Matthew 27:51 below",
         "inks": "Bone, deep red",
         "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
         "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
@@ -606,7 +606,7 @@
         {
           "view": "back",
           "url": "/products/torn-veil/1.webp",
-          "alt": "Torn Veil hoodie, back: a red curtain torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
+          "alt": "Torn Veil hoodie, back: a red veil torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
         },
         {
           "view": "front",
@@ -616,7 +616,7 @@
         {
           "view": "back",
           "url": "/products/torn-veil/3.webp",
-          "alt": "Torn Veil hoodie, back: a red curtain torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
+          "alt": "Torn Veil hoodie, back: a red veil torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
         },
         {
           "view": "front",
@@ -656,7 +656,7 @@
         "theme": "Protection",
         "call": "Behold the Shepherd",
         "art": "“I will fear no evil” in tall letters of cracked stone, each one holding a mountain valley with pines and a winding path, with red cracks running through the last word.",
-        "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even in the darkest valley he won’t be afraid, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back carves David’s words in stone, with the valley and its winding path inside the letters.",
+        "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even walking through the valley of the shadow of death he will fear no evil, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back carves David’s words in stone, with the valley and its winding path inside the letters.",
         "front": "Awebound wordmark in bone, center chest",
         "back": "“I will fear no evil” in tall cracked-stone capitals filled with a mountain valley, pines and a winding path, red cracks through “evil”, with Psalm 23:4 below",
         "inks": "Bone, charcoal, red",
@@ -776,7 +776,7 @@
         "theme": "Sacrifice",
         "call": "Behold the Lamb",
         "art": "The Lamb of God in white thread inside a red crown of thorns, with one mark of red on the lamb.",
-        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. Older English Bibles begin John’s words with “Behold,” and this release takes its name from them. The lamb is stitched in white inside a red crown of thorns, with a single mark of red. The wordmark sits on the back.",
+        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. The King James Bible gives his words as “Behold the Lamb of God,” and this release takes its name from them. The lamb is stitched in white inside a red crown of thorns, with a single mark of red. The wordmark sits on the back.",
         "front": "Embroidered lamb in white thread inside a red crown of thorns",
         "back": "Awebound wordmark in white with red thorns, above the strap",
         "inks": "White and red thread",

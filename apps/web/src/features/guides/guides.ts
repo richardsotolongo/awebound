@@ -123,11 +123,11 @@ export const GUIDES: Guide[] = [
         labels: {
           "thorns-to-lilies": "Thorns and lilies",
           "to-live-is-christ": "The hourglass",
-          "by-his-hem": "The edge of His cloak",
+          "by-his-hem": "The hem of His garment",
           "stone-in-motion": "The stone rolled away",
           "still-the-storm": "The wind and the waves",
           "torn-veil": "The torn veil",
-          "the-passage": "The darkest valley",
+          "the-passage": "The valley of the shadow of death",
           "wonderfully-made": "Roses around a cross",
           "lambs-mark": "The Lamb of God",
           "signature-cap": "Red thorns",
@@ -140,7 +140,7 @@ export const GUIDES: Guide[] = [
     title: "Easter shirts and hoodies: He is risen",
     heading: "Easter: the cross and the empty tomb",
     description:
-      "Awebound pieces drawn from Easter: the curtain torn when Jesus died, the stone rolled away and the Lamb of God, each with its passage of Scripture.",
+      "Awebound pieces drawn from Easter: the veil torn when Jesus died, the stone rolled away and the Lamb of God, each with its passage of Scripture.",
     intro:
       "At Easter, Christians remember the death of Jesus on the cross and His resurrection on the third day. These pieces carry that story in their art.",
     pieces: {

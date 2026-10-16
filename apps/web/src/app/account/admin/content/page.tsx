@@ -3,15 +3,17 @@ import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { when } from "@/features/archive/admin/format";
 import { ImportDraftsButton } from "@/features/archive/admin/owner-buttons";
+import { ApplySuggestions } from "@/features/archive/admin/apply-suggestions";
 import { PublishApprovedButton } from "@/features/archive/admin/publish-approved-button";
 import { listContentStatus } from "@/server/archive/content";
 import { validateDraftsAgainstCatalog } from "@/server/archive/drafts";
+import { pendingSuggestions } from "@/server/archive/suggestions";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Content", robots: { index: false } };
 
 export default async function ContentPage() {
-  const rows = await listContentStatus();
+  const [rows, pending] = await Promise.all([listContentStatus(), pendingSuggestions()]);
   const checks = validateDraftsAgainstCatalog();
   const check = (designKey: string) => {
     const c = checks.find((x) => x.designKey === designKey);
@@ -28,6 +30,7 @@ export default async function ContentPage() {
         title="Content"
         intro="Each design’s story moves from draft to approved to published. Approval needs the founder note read as your own words."
       />
+      <ApplySuggestions pending={pending} />
       <div className="admin-wrap">
         <table className="admin-table">
           <thead>

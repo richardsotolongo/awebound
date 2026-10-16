@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import type { DraftFields, OwnedCard, PublicCard } from "@/shared";
 import { brandContent } from "../content";
 import { UserError } from "../errors";
+import { bibleLink } from "../scripture";
 import { assetsForOwnedCard } from "./assets";
 import { audit } from "./audit";
 import { getDesign, getDesignBySlug, listDesigns } from "./designs";
@@ -43,8 +44,8 @@ function toPublicCard(design: DesignRow, content: ContentRow): PublicCard {
     collection: { slug: design.collection_slug, name: collectionName(design.collection_slug) },
     scriptureReference: design.scripture_reference,
     contextReference: content.context_reference,
-    bibleUrl: content.bible_url,
-    additionalBibleUrls: content.additional_bible_urls,
+    bibleUrl: bibleLink(content.bible_url),
+    additionalBibleUrls: content.additional_bible_urls.map(bibleLink),
     publicPreview: content.public_preview,
     biblicalContext: content.biblical_context,
     publishedAt: content.published_at ?? content.updated_at,
@@ -153,6 +154,20 @@ export async function getOpenDraft(designKey: string): Promise<ContentRow | null
     .maybeSingle();
   return (data as ContentRow | null) ?? null;
 }
+
+/** A stored version as the editor's fields. */
+export const rowToFields = (row: ContentRow): DraftFields => ({
+  publicPreview: row.public_preview,
+  biblicalContext: row.biblical_context,
+  contextReference: row.context_reference,
+  bibleUrl: row.bible_url,
+  additionalBibleUrls: row.additional_bible_urls,
+  designStory: row.design_story,
+  imageryMeaning: row.imagery_meaning,
+  founderNote: row.founder_note,
+  shareCopy: row.share_copy,
+  notes: row.notes ?? "",
+});
 
 const fieldColumns = (f: DraftFields) => ({
   public_preview: f.publicPreview,

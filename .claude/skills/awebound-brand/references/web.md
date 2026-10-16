@@ -82,8 +82,8 @@ Buttons for actions: one oxblood primary per screen, outlined secondary, and a c
 
 A Scripture quotation: the words in Cormorant Garamond Italic, the reference beneath in upright type with the translation.
 
-- Props: `text` (exact wording, without surrounding quotes), `reference`, `translation` (`"NIV"` on the site, from the Scripture record), `excerpt` (part of the verse), `size` (`"sm"` in cards, `"md"` beside a product name, `"lg"` for a featured verse), `align` (`"start"` default or `"center"`).
-- Wraps the text in curly double quotes and turns inner double quotes into single ones (`quoted()` does the same for plain strings). The label reads "Mark 4:41 — NIV" or "Matthew 9:21 — NIV, excerpt".
+- Props: `text` (exact wording, without surrounding quotes), `reference`, `translation` (`"KJV"` on the site, from the Scripture record), `excerpt` (part of the verse), `size` (`"sm"` in cards, `"md"` beside a product name, `"lg"` for a featured verse), `align` (`"start"` default or `"center"`).
+- Wraps the text in curly double quotes and turns inner double quotes into single ones (`quoted()` does the same for plain strings). The label reads "Mark 4:41 — KJV" or "Matthew 9:21 — KJV, excerpt".
 - Quotes always wrap in full: never truncate, clamp or shrink them to equalize heights.
 
 ### ScriptureRef

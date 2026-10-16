@@ -28,6 +28,7 @@ import {
 import { approveDraft, publishContent, retireContent, saveDraft } from "./archive/content";
 import { ARCHIVE_PUBLIC_TAG } from "./archive/offer";
 import { mapOffer } from "./archive/designs";
+import { applySuggestions } from "./archive/suggestions";
 import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
 import { setFlag } from "./archive/flags";
@@ -83,6 +84,16 @@ export async function publishContentAction(
     const { designKeys } = parse(PublishRequestSchema, input);
     const published = await publishContent(designKeys, actor);
     refreshPublicPages();
+    return { published };
+  });
+}
+
+/** Saves, approves and publishes the suggested wording for every design that has some. */
+export async function applySuggestionsAction(): Promise<Result<{ published: string[] }>> {
+  return run(async () => {
+    const actor = (await requireAdmin()).id;
+    const published = await applySuggestions(actor);
+    if (published.length > 0) refreshPublicPages();
     return { published };
   });
 }

@@ -1,5 +1,5 @@
 {
-  "$comment": "Scripture quoted on the website outside the product pages. Each record holds the exact wording in every translation the site can show (SCRIPTURE_TRANSLATION picks one). Excerpts end where the quoted part ends, without added punctuation.",
+  "$comment": "Scripture quoted on the website outside the product pages. Each record holds the exact King James wording the site shows (`kjv`), with the NIV kept for a possible later switch. Excerpts end where the quoted part ends, without added punctuation.",
   "notAshamed": {
     "reference": "Romans 1:16",
     "excerpt": true,

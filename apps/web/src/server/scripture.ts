@@ -1,7 +1,6 @@
 import "server-only";
 import { z } from "zod";
 import type { ScriptureQuote, Translation } from "@/shared";
-import { serverEnv } from "./env";
 import verses from "./content/verses.json";
 
 /**
@@ -19,10 +18,12 @@ export const ScriptureRecordSchema = z.object({
 export type ScriptureRecord = z.infer<typeof ScriptureRecordSchema>;
 
 /**
- * The translation the website quotes. NIV by default; set SCRIPTURE_TRANSLATION=KJV to switch
- * every quotation and translation statement back (for example, while NIV permission is pending).
+ * The translation the website quotes: the King James Version, the owner's decision on October 16,
+ * 2026 (it is in the public domain in the United States, so no permission or notice is needed).
+ * Every quotation, translation statement and Bible link follows this one line. Quoting the NIV
+ * again needs Biblica's written permission first; the records keep its text for that day.
  */
-export const TRANSLATION: Translation = serverEnv.SCRIPTURE_TRANSLATION;
+export const TRANSLATION = "KJV" as Translation;
 
 export function quote(record: ScriptureRecord): ScriptureQuote {
   return {
@@ -43,6 +44,20 @@ export const VERSES = {
   /** 1 Corinthians 3:6: the seed that is planted. */
   planted: quote(site.planted),
 };
+
+/** bible.com's version ids: 1 is the King James Version, 111 the NIV. */
+const BIBLE_COM: Record<Translation, string> = { KJV: "1", NIV: "111" };
+
+/**
+ * A bible.com passage link in the website's translation, whatever translation it was saved in
+ * (the Archive's links were first written for the NIV). Other links pass through unchanged.
+ */
+export function bibleLink(url: string): string {
+  const m = url.match(
+    /^https:\/\/www\.bible\.com\/bible\/\d+\/([1-3]?[A-Z]{2,3}(?:\.\d+){1,2})\.[A-Z0-9]+$/i,
+  );
+  return m ? `https://www.bible.com/bible/${BIBLE_COM[TRANSLATION]}/${m[1]}.${TRANSLATION}` : url;
+}
 
 export const TRANSLATION_NAME =
   TRANSLATION === "NIV" ? "New International Version (NIV)" : "King James Version (KJV)";

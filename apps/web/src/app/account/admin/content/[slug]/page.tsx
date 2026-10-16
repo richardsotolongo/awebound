@@ -3,10 +3,9 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { DraftEditor } from "@/features/archive/admin/draft-editor";
 import { when } from "@/features/archive/admin/format";
-import { getOpenDraft, listContentVersions } from "@/server/archive/content";
+import { getOpenDraft, listContentVersions, rowToFields } from "@/server/archive/content";
 import { listDesigns } from "@/server/archive/designs";
 import { suggestionFor } from "@/server/archive/suggestions";
-import type { ContentRow } from "@/server/archive/types";
 import { listProducts } from "@/server/fourthwall";
 import type { DraftFields } from "@/shared";
 
@@ -27,19 +26,6 @@ const EMPTY: DraftFields = {
   shareCopy: "",
   notes: "",
 };
-
-const toFields = (row: ContentRow): DraftFields => ({
-  publicPreview: row.public_preview,
-  biblicalContext: row.biblical_context,
-  contextReference: row.context_reference,
-  bibleUrl: row.bible_url,
-  additionalBibleUrls: row.additional_bible_urls,
-  designStory: row.design_story,
-  imageryMeaning: row.imagery_meaning,
-  founderNote: row.founder_note,
-  shareCopy: row.share_copy,
-  notes: row.notes ?? "",
-});
 
 function Copy({ items }: { items: [string, string][] }) {
   return (
@@ -89,10 +75,10 @@ export default async function ContentDesignPage({ params }: { params: Params }) 
         </p>
         <DraftEditor
           designKey={design.design_key}
-          initial={working ? toFields(working) : EMPTY}
+          initial={working ? rowToFields(working) : EMPTY}
           openStatus={open ? (open.status === "approved" ? "approved" : "draft") : null}
           hasPublished={Boolean(published)}
-          suggestion={suggestionFor(design.design_key)}
+          suggestion={suggestionFor(design.design_key, working ? rowToFields(working) : null)}
         />
       </section>
 

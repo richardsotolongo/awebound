@@ -795,6 +795,17 @@
     display: flex;
     align-items: center;
   }
+  .admin-suggestion-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .admin-suggestion-list a {
+    color: var(--accent-text);
+  }
   .admin-suggestion-field {
     display: grid;
     gap: var(--space-1);

@@ -152,12 +152,12 @@ export interface ScriptureRefProps {
   reference: string;
   /** The translation, only when its words are quoted beside the reference. */
   translation?: string;
-  /** The quote is part of the verse: "Matthew 9:21 — NIV, excerpt". */
+  /** The quote is part of the verse: "Matthew 9:21 — KJV, excerpt". */
   excerpt?: boolean;
   align?: "center" | "start";
   className?: string;
 }
-/** A Scripture reference in upright type: "Mark 4:41 — NIV". */
+/** A Scripture reference in upright type: "Mark 4:41 — KJV". */
 export declare function ScriptureRef({
   reference,
   translation,

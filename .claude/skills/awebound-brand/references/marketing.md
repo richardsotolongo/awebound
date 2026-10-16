@@ -1,6 +1,6 @@
 # Marketing formats
 
-Every post uses one piece or symbol, one line of copy and one Scripture reference. A quote is optional; when you use one, it's the piece's exact NIV wording from its Scripture record, labeled like the site ("Isaiah 1:18 — NIV, excerpt"). Type follows the site: Manrope for labels, names and references, Cormorant Garamond Italic for the quote only, Grenze Gotisch only for a release name or the tagline set large. Sizes follow Instagram's guidance as of January 2026.
+Every post uses one piece or symbol, one line of copy and one Scripture reference. A quote is optional; when you use one, it's the piece's exact KJV wording from its Scripture record, labeled like the site ("Isaiah 1:18 — KJV, excerpt"). Type follows the site: Manrope for labels, names and references, Cormorant Garamond Italic for the quote only, Grenze Gotisch only for a release name or the tagline set large. Sizes follow Instagram's guidance as of January 2026.
 
 | Format            | Size (px)          | Layout rule                                                                                                                                                                                                                                                                                                                                                       |
 | ----------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -24,10 +24,10 @@ A three-post rhythm per release: a detail teaser (print texture, no name), the r
 | `eyebrow`     | Label line, for example "Release 01 · Behold"                                                    |
 | `name`        | Product name (Manrope 800 caps)                                                                  |
 | `line`        | One line of copy in the brand voice, usually from the piece's `story.art`                        |
-| `quote`       | Optional: exact NIV wording, without surrounding quotes. Leave empty to show the reference alone |
+| `quote`       | Optional: exact KJV wording, without surrounding quotes. Leave empty to show the reference alone |
 | `scripture`   | Full reference, for example "Isaiah 1:18"                                                        |
 | `excerpt`     | `true` when the quote is part of the verse                                                       |
-| `translation` | `"NIV"`; shown only beside a quote                                                               |
+| `translation` | `"KJV"`; shown only beside a quote                                                               |
 | `image`       | Path or URL of the listing image (whole garment, back print first for tees and hoodies)          |
 | `theme`       | `"coal"` (default) or `"altar"` for the warm-bone signature version                              |
 

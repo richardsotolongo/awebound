@@ -17,9 +17,8 @@ type Key = keyof DraftFields;
 /** Suggested wording for some fields (server/archive/suggestions.ts). */
 export interface Suggestion {
   preparedOn: string;
-  fields: Partial<
-    Record<"biblicalContext" | "designStory" | "imageryMeaning" | "shareCopy", string>
-  >;
+  /** Only the fields that would change; the extra Bible links one per line, as the box holds them. */
+  fields: Partial<Record<Key, string>>;
 }
 
 const FIELDS: { key: Key; label: string; max?: number; input?: boolean; lines?: boolean }[] = [

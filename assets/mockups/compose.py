@@ -94,7 +94,8 @@ HOODIES = ("torn-veil", "the-passage", "wonderfully-made")
 VIEWS = {
     # Its close-up is the back (Mark 4:41 above a breaking wave): the front is now the wordmark.
     "still-the-storm": {"views": ["front", "back"], "detail": ("back", 0.5, 0.45, 0.47)},
-    "by-his-hem": {"views": ["back", "front"], "detail": ("back", 0.5, 0.45, 0.5)},
+    # Its back print changed in October 2026 (now the King James wording) and no render shows it yet.
+    "by-his-hem": {"views": ["back", "front"], "detail": ("photo:3", 0.52, 0.53, 0.78)},
     # Every close-up frames the whole print and nothing else, and stays inside the garment:
     # a crop that reaches past its edge shows the surface beside it (check_details reports any).
     "thorns-to-lilies": {"views": ["back", "front"], "detail": ("back", 0.5, 0.41, 0.48)},
