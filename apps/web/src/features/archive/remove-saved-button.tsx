@@ -3,6 +3,7 @@
 import { Button } from "@awebound/brand";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 import { unsavePieceAction } from "@/server/archive-actions";
 
 export function RemoveSavedButton({ slug }: { slug: string }) {
@@ -13,8 +14,10 @@ export function RemoveSavedButton({ slug }: { slug: string }) {
     setBusy(true);
     setError("");
     const result = await unsavePieceAction({ slug }).catch(() => null);
-    if (result?.ok) router.refresh();
-    else {
+    if (result?.ok) {
+      track("saved_piece_removed", { product_slug: slug });
+      router.refresh();
+    } else {
       setBusy(false);
       setError(result?.error ?? "That didn’t work. Try again.");
     }

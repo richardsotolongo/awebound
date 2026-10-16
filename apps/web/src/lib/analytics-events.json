@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.awebound.store/analytics-events.schema.json",
+  "title": "Awebound analytics events",
+  "description": "Every custom event the site sends to PostHog, keyed by event name under $defs. track() in src/lib/analytics.ts accepts only these names and exactly these properties, so a change starts here. Properties never carry an email, a name, an address or anything else that identifies a person, and nothing a visitor typed except the shop search (shop_filtered.search), which the Privacy page names. PostHog's own events ($pageview, $pageleave, $autocapture, $exception, $identify, $web_vitals) are not listed.",
+  "$defs": {
+    "product_added_to_bag": {
+      "description": "A shopper adds a piece to the bag from its product page.",
+      "type": "object",
+      "properties": {
+        "product_slug": { "type": "string", "description": "The piece's slug." },
+        "product_category": {
+          "type": "string",
+          "description": "The piece's category slug, as in the shop's category filter."
+        },
+        "color": { "type": "string", "description": "The chosen color." },
+        "size": { "type": "string", "description": "The chosen size." },
+        "price_cents": {
+          "type": "integer",
+          "description": "The unit price for that size, in US cents."
+        }
+      },
+      "required": ["product_slug", "product_category", "color", "size", "price_cents"],
+      "additionalProperties": false
+    },
+    "checkout_started": {
+      "description": "The bag was handed to the hosted checkout; the browser is about to leave the site. Payment happens there and is not tracked here.",
+      "type": "object",
+      "properties": {
+        "item_count": { "type": "integer", "description": "Pieces sent to checkout." },
+        "subtotal_cents": {
+          "type": "integer",
+          "description": "Their subtotal before shipping and tax, in US cents."
+        }
+      },
+      "required": ["item_count", "subtotal_cents"],
+      "additionalProperties": false
+    },
+    "checkout_failed": {
+      "description": "Check out was pressed but checkout didn't start: a piece in the bag isn't published yet, or the checkout partner is unavailable.",
+      "type": "object",
+      "properties": {
+        "item_count": { "type": "integer", "description": "Pieces in the attempt." },
+        "subtotal_cents": { "type": "integer", "description": "Their subtotal, in US cents." },
+        "preview_in_bag": {
+          "type": "boolean",
+          "description": "Whether the bag held a piece that isn't published in Fourthwall yet."
+        }
+      },
+      "required": ["item_count", "subtotal_cents", "preview_in_bag"],
+      "additionalProperties": false
+    },
+    "shop_filtered": {
+      "description": "The shop's search, collection, category, sort or filters changed. Each property is the URL value after the change, or null when unset.",
+      "type": "object",
+      "properties": {
+        "collection": { "type": ["string", "null"], "description": "Collection slug." },
+        "category": { "type": ["string", "null"], "description": "Category slug." },
+        "sort": { "type": ["string", "null"], "description": "Sort order; null is Featured." },
+        "color": { "type": ["string", "null"], "description": "Chosen colors, comma separated." },
+        "size": { "type": ["string", "null"], "description": "Chosen sizes, comma separated." },
+        "min_price": { "type": ["string", "null"], "description": "Minimum price filter." },
+        "max_price": { "type": ["string", "null"], "description": "Maximum price filter." },
+        "search": { "type": ["string", "null"], "description": "The search box text." }
+      },
+      "required": [
+        "collection",
+        "category",
+        "sort",
+        "color",
+        "size",
+        "min_price",
+        "max_price",
+        "search"
+      ],
+      "additionalProperties": false
+    },
+    "piece_saved": {
+      "description": "A signed-in shopper saves a piece to My Archive with its heart.",
+      "type": "object",
+      "properties": {
+        "product_slug": { "type": "string", "description": "The piece's slug." }
+      },
+      "required": ["product_slug"],
+      "additionalProperties": false
+    },
+    "saved_piece_removed": {
+      "description": "A signed-in shopper removes a saved piece, from its heart or from My Archive's saved list.",
+      "type": "object",
+      "properties": {
+        "product_slug": { "type": "string", "description": "The piece's slug." }
+      },
+      "required": ["product_slug"],
+      "additionalProperties": false
+    },
+    "sign_in_google_started": {
+      "description": "A visitor chose Continue with Google; the browser is about to leave for Google.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "sign_in_link_requested": {
+      "description": "A visitor asked for an email sign-in link and code, and it was sent.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "back_in_stock_notification_requested": {
+      "description": "A shopper asked to be emailed when a sold-out size comes back.",
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["footer", "product"],
+          "description": "Where the form was."
+        },
+        "product_slug": { "type": ["string", "null"], "description": "The piece, if any." }
+      },
+      "required": ["source", "product_slug"],
+      "additionalProperties": false
+    },
+    "contact_message_sent": {
+      "description": "A visitor sent a message with the contact form.",
+      "type": "object",
+      "properties": {
+        "topic": {
+          "type": "string",
+          "enum": ["order", "sizing", "returns", "wholesale", "press", "other"],
+          "description": "The topic chosen in the form."
+        }
+      },
+      "required": ["topic"],
+      "additionalProperties": false
+    },
+    "profile_updated": {
+      "description": "A signed-in shopper saved a new display name in Settings.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "email_change_requested": {
+      "description": "A signed-in shopper asked to change their email address; confirmation links were sent.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "account_deletion_completed": {
+      "description": "A shopper deleted their account.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "order_claim_started": {
+      "description": "A signed-in shopper entered a past order's number and a code was sent to the email on that order.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "order_claim_completed": {
+      "description": "The code was accepted and the order is now linked to the shopper's account.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "orders_refreshed": {
+      "description": "A signed-in shopper refreshed their orders from the checkout partner.",
+      "type": "object",
+      "properties": {
+        "changed_order_count": {
+          "type": "integer",
+          "description": "Orders that were new or changed."
+        }
+      },
+      "required": ["changed_order_count"],
+      "additionalProperties": false
+    }
+  }
+}

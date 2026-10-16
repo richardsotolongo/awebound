@@ -3,6 +3,7 @@
 import { Button } from "@awebound/brand";
 import type { SubscribeRequest } from "@/shared";
 import { useId, useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics";
 import { subscribe } from "@/server/actions";
 
 interface NotifyFormProps {
@@ -24,6 +25,7 @@ export function NotifyForm({ source, productSlug, label = "Email", help }: Notif
     setState("sending");
     const result = await subscribe({ email, source, productSlug }).catch(() => null);
     if (result?.ok) {
+      track("back_in_stock_notification_requested", { source, product_slug: productSlug ?? null });
       setState("done");
     } else {
       setState("error");

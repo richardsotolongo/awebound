@@ -3,6 +3,7 @@
 import { Button } from "@awebound/brand";
 import { CONTACT_TOPIC_LABELS, CONTACT_TOPICS, type ContactTopic } from "@/shared";
 import { useId, useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics";
 import { sendContact } from "@/server/actions";
 
 type Fields = Partial<Record<"name" | "email" | "topic" | "message", string>>;
@@ -27,6 +28,9 @@ export function ContactForm() {
       website: String(data.get("website") ?? ""),
     }).catch(() => null);
     if (result?.ok) {
+      track("contact_message_sent", {
+        topic: String(data.get("topic") ?? "other"),
+      });
       setState("done");
     } else {
       setState("error");

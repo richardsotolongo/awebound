@@ -2,6 +2,7 @@
 
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics";
 import { updateProfile } from "@/server/actions";
 
 export function ProfileForm({ initialName }: { initialName: string }) {
@@ -16,6 +17,7 @@ export function ProfileForm({ initialName }: { initialName: string }) {
     setState("saving");
     const result = await updateProfile({ fullName: name }).catch(() => null);
     if (result?.ok) {
+      track("profile_updated");
       setName(result.data.fullName);
       setSavedName(result.data.fullName);
       setState("saved");

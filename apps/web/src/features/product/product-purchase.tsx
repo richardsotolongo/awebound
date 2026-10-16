@@ -8,6 +8,7 @@ import { useBag } from "@/features/bag/bag-store";
 import { NotifyForm } from "@/features/bag/notify-form";
 import { priceLabel } from "@/features/catalog/query";
 import { SaveHeart } from "@/features/archive/save-heart";
+import { track } from "@/lib/analytics";
 import { DeliverySummary } from "./delivery-summary";
 import { SizeGuide } from "./size-guide";
 
@@ -97,6 +98,13 @@ export function ProductPurchase({
       preview: product.preview,
     });
     openBag();
+    track("product_added_to_bag", {
+      product_slug: product.slug,
+      product_category: product.category.slug,
+      color: variant.color,
+      size: variant.size,
+      price_cents: variant.priceCents,
+    });
   }
 
   return (

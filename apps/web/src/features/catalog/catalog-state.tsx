@@ -10,6 +10,7 @@ import {
   useTransition,
   type ReactNode,
 } from "react";
+import { track } from "@/lib/analytics";
 
 type Change = Record<string, string | string[] | number | null | undefined>;
 
@@ -46,6 +47,16 @@ export function CatalogStateProvider({
   const navigate = useCallback(
     (next: URLSearchParams) => {
       for (const key of lockedKeys) next.delete(key);
+      track("shop_filtered", {
+        collection: next.get("collection"),
+        category: next.get("category"),
+        sort: next.get("sort"),
+        color: next.get("color"),
+        size: next.get("size"),
+        min_price: next.get("minPrice"),
+        max_price: next.get("maxPrice"),
+        search: next.get("q"),
+      });
       const qs = next.toString();
       startTransition(() => {
         setOptimistic(qs);

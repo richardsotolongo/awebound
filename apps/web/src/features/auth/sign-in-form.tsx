@@ -3,6 +3,7 @@
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent } from "react";
 import { GoogleMark } from "@/components/icons";
+import { track } from "@/lib/analytics";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,7 +33,10 @@ export function SignInForm({ next }: { next: string }) {
     if (err) {
       setBusy(false);
       setError("Google sign-in didn’t start. Try again, or use your email.");
+      return;
     }
+    // Sent now: the page is already on its way to Google.
+    track("sign_in_google_started", undefined, { send_instantly: true });
   }
 
   async function sendLink(e: FormEvent) {
@@ -58,6 +62,7 @@ export function SignInForm({ next }: { next: string }) {
       );
       return;
     }
+    track("sign_in_link_requested");
     setStep("code");
   }
 
