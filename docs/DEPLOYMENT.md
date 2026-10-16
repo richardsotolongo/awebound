@@ -37,9 +37,10 @@ SCRIPTURE_TRANSLATION=NIV
 FOURTHWALL_WEBHOOK_SECRET=<Fourthwall admin → Settings → For developers → Webhooks>
 FOURTHWALL_API_USERNAME=<same page → Open API → Create API user>
 FOURTHWALL_API_PASSWORD=<same>
-CRON_SECRET=<a long random string; Vercel sends it to the daily reconcile cron>
+CRON_SECRET=<a long random string; Vercel sends it to the daily crons>
 ARCHIVE_STORAGE_BUCKET=archive-assets
 NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=<PostHog → Project settings → Project token; Production only>
+INDEXNOW_KEY=<openssl rand -hex 16; Production only>
 ```
 
 - `NEXT_PUBLIC_SITE_URL` is the one address search engines and AI assistants are told about: every canonical link, the sitemap, `llms.txt`, share images and the links in emails are built from it. It must be the live host exactly (`https://www.awebound.store`, with `www`). A production build fails while it is unset or localhost, so a deploy can't publish `localhost` addresses.
@@ -51,6 +52,7 @@ NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=<PostHog → Project settings → Project toke
 - `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` turns on analytics. Set it for **Production only**, so preview deploys don't count as visits; without it nothing is sent. `NEXT_PUBLIC_POSTHOG_HOST` is optional (PostHog US Cloud by default). Session replay stays off in code whatever the PostHog project says.
 - `NEXT_PUBLIC_*` values are baked in at build time: redeploy after changing them.
 - The My Archive variables are optional: each feature stays unavailable until its variable is set, and the owner Health page says which is missing. `vercel.json` registers the daily `/api/fourthwall/reconcile` cron; set `CRON_SECRET` before the first deploy that carries it. Setup steps for the webhook, the API user, the first admin and the drafts are in [ARCHIVE.md](ARCHIVE.md).
+- `INDEXNOW_KEY` turns on IndexNow, which tells Bing and the other engines that take it when a page is new, changed or gone. Generate it once with `openssl rand -hex 16` and set it for **Production only**. The key is public by design: it is served at `/indexnow-key.txt`. IndexNow also needs Supabase and the `indexnow_pages` table (`supabase db push`). `vercel.json` registers a daily `/api/indexnow` cron, which the Hobby plan allows (one run a day per cron). For a sync right after each production deploy, add the same `CRON_SECRET` value as a repository secret in GitHub (Settings → Secrets and variables → Actions → New repository secret, named `CRON_SECRET`). `.github/workflows/indexnow.yml` then calls `/api/indexnow` once Vercel reports the deployment. If the site ever moves to another address, set a repository variable `SITE_URL` there too.
 
 ## 3. Domains and DNS
 
@@ -68,6 +70,8 @@ Then update the services that know the site's address:
 Walk through shop → product → bag → checkout (it should land on Fourthwall's checkout) and send a test contact message.
 
 Then check what search engines and AI assistants read: `/robots.txt`, `/sitemap.xml` and `/llms.txt` should show `https://www.awebound.store` addresses and never `localhost`, and the home page should load with no errors in the browser console.
+
+IndexNow: `/indexnow-key.txt` should show the key. In GitHub → Actions → IndexNow, the run after the deploy should end with a report whose `status` is 200 or 202 (202 means the key is still being checked, which is normal the first time). To see what a run would send without sending it, call `curl -H "Authorization: Bearer $CRON_SECRET" "https://www.awebound.store/api/indexnow?dry=1"`. Bing Webmaster Tools → IndexNow lists the pages it received.
 
 ## Notes
 

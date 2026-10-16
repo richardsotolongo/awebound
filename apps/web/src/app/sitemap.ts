@@ -1,36 +1,24 @@
 import type { MetadataRoute } from "next";
-import { EMPTY_FACETS, EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
-import { getFacets, getReleases, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
-import { ALL_COLLECTIONS, pieceHref } from "@/shared";
+import { indexablePages } from "@/server/indexable";
+import { indexNowDates } from "@/server/indexnow";
 
 export const revalidate = 3600;
 
-const PAGES = ["", "/shop", "/about", "/contact", "/faq", "/refunds", "/privacy", "/terms"];
-
-/** Every indexable address: the pages, each release, each category with pieces, each piece. */
+/**
+ * Every indexable address (server/indexable.ts). A page's date is the last time IndexNow saw
+ * what a reader sees on it change, so Google, which doesn't take IndexNow, gets the same signal;
+ * a piece not sent yet keeps its release date.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [releases, facets, products] = await Promise.all([
-    withFallback(getReleases, []),
-    withFallback(() => getFacets({}), EMPTY_FACETS),
-    withFallback(() => searchProducts({ pageSize: 48 }), EMPTY_LIST),
-  ]);
-  const paths = [
-    ...PAGES,
-    ...releases.map((r) => shopCanonical(r.slug)),
-    ...facets.categories
-      .filter((c) => c.count > 0)
-      .map((c) => shopCanonical(ALL_COLLECTIONS, c.slug)),
-  ];
-  return [
-    // Next writes the address into the XML as it is, so the "&" between two params is escaped here.
-    ...paths.map((path) => ({ url: `${siteUrl}${path}`.replace(/&/g, "&amp;") })),
-    ...products.items.map((p) => ({
-      url: `${siteUrl}${pieceHref(p.slug)}`,
-      lastModified: p.releasedAt,
-      images: [p.image, p.hoverImage].flatMap((i) =>
-        i ? [new URL(i.url, siteUrl).toString()] : [],
-      ),
-    })),
-  ];
+  const [pages, dates] = await Promise.all([indexablePages(), indexNowDates()]);
+  return pages.map(({ path, lastModified, images }) => {
+    const url = `${siteUrl}${path}`;
+    return {
+      // Next writes the address into the XML as it is, so the "&" between two params is escaped here.
+      url: url.replace(/&/g, "&amp;"),
+      lastModified: dates.get(url) ?? lastModified,
+      ...(images ? { images } : {}),
+    };
+  });
 }

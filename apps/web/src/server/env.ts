@@ -23,8 +23,16 @@ export const serverEnv = z
     /** Fourthwall Open API user (same page). Order sync, past-order claims and Founding settlement. */
     FOURTHWALL_API_USERNAME: optional,
     FOURTHWALL_API_PASSWORD: optional,
-    /** Bearer token Vercel sends with the daily reconcile cron (any long random string). */
+    /**
+     * Bearer token for the daily crons (reconcile, IndexNow), which Vercel sends, and for the
+     * IndexNow deploy workflow (any long random string).
+     */
     CRON_SECRET: optional,
+    /**
+     * IndexNow key: 8–128 letters, digits or dashes (`openssl rand -hex 16`), served at
+     * /indexnow-key.txt. Without it nothing is submitted. Set it for Production only.
+     */
+    INDEXNOW_KEY: optional,
     /** Private Supabase Storage bucket holding the wallpapers. */
     ARCHIVE_STORAGE_BUCKET: optional.transform((v) => v ?? "archive-assets"),
     RESEND_API_KEY: optional,

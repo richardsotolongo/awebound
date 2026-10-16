@@ -1,0 +1,128 @@
+/* Guides under /christian-apparel: pages built from the catalog for search. Type comes from the
+   brand classes; this only lays them out. */
+@layer components {
+  .guide {
+    padding-bottom: var(--space-24);
+  }
+  .guide-section {
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-16);
+  }
+  .guide :where(p, li, dd) a {
+    color: var(--accent-text);
+    text-underline-offset: 3px;
+  }
+  .guide :where(p, li, dd) a:hover {
+    text-decoration: underline;
+  }
+  .guide :where(h2, h3, dt) a:hover {
+    color: var(--accent-text);
+  }
+
+  /* A list of pieces or facts, one under another. */
+  .guide-list {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 68ch;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .guide-list dd {
+    margin: var(--space-1) 0 0;
+  }
+  ul.guide-list {
+    gap: var(--space-3);
+  }
+
+  .guide-fit {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 640px;
+  }
+  .guide-fit + .guide-fit {
+    margin-top: var(--space-8);
+  }
+
+  /* One piece per entry: the close-up of its print beside its words. */
+  .guide-entries {
+    display: grid;
+  }
+  .guide-entry {
+    display: grid;
+    grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+    padding-block: var(--space-12);
+    border-top: 1px solid var(--line);
+  }
+  .guide-entry:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .guide-entry-text {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 68ch;
+  }
+  .guide-closeup {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .guide-art {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  @media (max-width: 599px) {
+    .guide-entry {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+    .guide-closeup {
+      max-width: 240px;
+    }
+    .guide-art {
+      font-size: 18px;
+    }
+  }
+
+  /* The hub's list of guides. */
+  .guide-index {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-8) var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .guide-index li {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .guide-prose {
+    gap: var(--space-4);
+  }
+
+  .guide-more ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .guide-more a {
+    color: var(--ink-muted);
+  }
+  .guide-more a:hover {
+    color: var(--accent-text);
+  }
+}

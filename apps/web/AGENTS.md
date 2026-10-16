@@ -6,20 +6,22 @@ The whole site: Next.js 16 App Router. Server Components read the catalog direct
 
 ```
 src/
-├─ app/                    routes (pages, route handlers, sitemap, robots, llms.txt, icons)
+├─ app/                    routes (pages, route handlers, sitemap, robots, llms.txt, indexnow-key.txt, icons)
 │  ├─ page.tsx             home, rendered per visit: the tagline on the pieces' plates in turn (opening on the release's primary piece), the piece on the plate up close (it follows the plate), the founder's note, the release as a wall, My Archive's introduction
 │  ├─ shop/                (list)/ the listing (search, then collection, category and sort selects) with its loading state; [slug]/ product pages, cached for a minute
 │  ├─ collections/         /collections redirects to the shop while there is one release; /collections/<slug> opens the shop filtered to it
 │  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in (Join Awebound: the form first, then what the account brings, free and with a purchase)
+│  ├─ christian-apparel/   the unlisted guides: the hub, and [slug]/ each guide (features/guides), cached like product pages
 │  ├─ account/             My Archive (layout guards the session and shows the nav): overview, saved, collection, collection/[slug]
 │  │                       (the owned card), orders, orders/link (claim a past order), settings, admin/* (owner pages, role `admin`)
-│  ├─ api/                 fourthwall/webhook (signed order events), fourthwall/reconcile (cron), archive/assets/[id], archive/designs/[slug]/card.pdf and share.png
+│  ├─ api/                 fourthwall/webhook (signed order events), fourthwall/reconcile (cron), indexnow (cron and deploy workflow), archive/assets/[id], archive/designs/[slug]/card.pdf and share.png
 │  └─ auth/                callback (OAuth/PKCE), confirm (email token hash), sign-out (POST)
 ├─ features/               one folder per feature (UI)
 │  ├─ home/                Campaign (the opening plate), HeroRotator (its pieces taking turns), HeroPieceProvider (the piece the plate and the lead piece share), LeadPiece (the brand paragraph, then the piece on the plate up close: close-up, name, price, status, Scripture), Founder (Richard's note), ArchiveIntro (My Archive with a preview of one design's card)
 │  ├─ release/             ReleaseCard (the brand ProductCard fed from a ProductSummary, with a save heart), ReleaseWall (tiles with no gaps)
 │  ├─ catalog/             CatalogView, ShopHeader, URL state, toolbar (search, then collection, category and sort selects, filters), filters, chips, grid, query helpers
 │  ├─ product/             gallery (the stage), purchase (type and price, color/size with the 2XL/3XL price note, Add to bag, the phone buy bar), StoryBand, PieceNav, delivery and returns summary, size guide
+│  ├─ guides/              guides.ts (each guide's copy, pieces and blocks), guide-blocks.tsx (cards, artwork, fabric, fit, verses, symbols; More guides)
 │  ├─ bag/                 zustand store (persisted), drawer, bag page, checkout + notify form
 │  ├─ archive/             My Archive UI: offer.ts (what the Archive can promise and every word for it), nav, benefits list, the overview's welcome, seal, claim/export/consent/email-change forms,
 │  │                       product page story section and Archive note, Bible link, save hearts and their shared store; admin/ for the owner forms
@@ -33,6 +35,9 @@ src/
 │  ├─ catalog-merge.ts     merges Fourthwall products with the brand content by slug; previews for the rest
 │  ├─ catalog-search.ts    search, filters, facets and sorting over the merged catalog
 │  ├─ fourthwall.ts        Storefront API client (product list cached 60 s, cart creation)
+│  ├─ indexable.ts         every indexable address, for the sitemap and IndexNow
+│  ├─ indexnow.ts          syncIndexNow (sends new, changed and gone pages) and indexNowDates (the sitemap's lastmod)
+│  ├─ cron.ts              the CRON_SECRET bearer check for cron routes
 │  ├─ bag.ts               re-pricing the bag, creating the checkout
 │  ├─ messages.ts          contact messages and drop-note sign-ups (Supabase + email)
 │  ├─ email.ts, email-templates.ts   Resend, or the terminal in development
@@ -48,7 +53,7 @@ src/
 │                          pageMeta, usePath, delivery.ts (confirmed fulfillment facts; null until confirmed),
 │                          useSwipe (a sideways touch swipe, for the home page's opening plate),
 │                          analytics.ts (track, captureError, identify) and analytics-events.json (every event)
-├─ styles/                 site.css, sheet.css, shop.css, product.css, home.css, prose.css (all @layer components)
+├─ styles/                 site.css, sheet.css, shop.css, product.css, home.css, prose.css, guides.css (all @layer components)
 ├─ instrumentation-client.ts  starts PostHog (analytics) before the app hydrates
 └─ proxy.ts                Next 16 proxy (formerly middleware): refreshes Supabase session, guards /account
 ```
@@ -62,7 +67,9 @@ src/
 - **Scripture**: never hard-code a verse in a component. Products carry `scripture` (a `ScriptureQuote` resolved on the server); site verses come from `VERSES` in `server/scripture.ts`. Render with the brand `ScriptureQuote` / `ScriptureRef`, which add the quotation marks and the "— NIV, excerpt" label.
 - **The site always reads as ready to order** (owner's decision). There is no release status: no sentence, label or notice anywhere says ordering isn't open, a piece is in preview or a release is coming soon. A piece's `availability` is `available`, `partial` (some sizes sold out) or `sold_out`, and unpublished pieces count as `available`. Cards, the home page's piece and the product page say only “Sold out” or “Some sizes sold out” (`pieceStatus`) and show the base price with no “From” (`priceLabel`, `features/catalog/query.ts`); the product page notes a 2XL/3XL upcharge under the sizes once one is chosen. Customer-facing copy never names the supplier: “our print and fulfillment partner”, “our checkout partner”.
 - **Internal codes**: `code` stays in data (SKUs, records) but is never rendered, searched or put in metadata. Structured data and `llms.txt` carry no SKU for the same reason.
-- **Metadata**: an indexable page exports `pageMeta({ path, title, description })` from `lib/site.ts`, which sets the canonical address and the whole share card (a page's `openGraph` replaces the layout's). Shop views build their address with `shopCanonical`, which the sitemap shares. Structured data goes through `<JsonLd>`. Only confirmed facts: no offer for a preview, no shipping or return details until they are confirmed, Scripture by reference only in `llms.txt`.
+- **Metadata**: an indexable page exports `pageMeta({ path, title, description })` from `lib/site.ts`, which sets the canonical address and the whole share card (a page's `openGraph` replaces the layout's). Shop views build their address with `shopCanonical`, which the sitemap shares. Structured data goes through `<JsonLd>`. Only confirmed facts: no offer for a preview, no shipping or return details until they are confirmed, Scripture by reference only in `llms.txt`. A new indexable page goes in `server/indexable.ts`, so the sitemap lists it and IndexNow sends it.
+- **Guides are unlisted** (owner's decision): the pages under `/christian-apparel` are never linked from the header, footer, shop, home or product pages. They stay in the sitemap and `llms.txt` and link to each other. Every visitor and crawler gets the same page: never gate them by user agent, which search engines treat as cloaking. Their copy runs the brand voice and de-AI-ify checks, names pieces only where it must, and takes prices, Scripture, art and fabric from the catalog.
+- **IndexNow** (`server/indexnow.ts`): `syncIndexNow()` sends only what a reader would see as new, changed or gone, so any event may call it. It runs after a production deploy (`.github/workflows/indexnow.yml`), after the owner publishes or retires Archive content, and from the daily cron. Don't render dates, counters or random text into public pages: they change the fingerprint and resend pages that didn't change.
 - **Current path**: use `usePath()` (`lib/pathname.ts`), never `usePathname()` directly, for anything rendered on the server. Vercel renders the prerendered home page as `/index`; the raw value once made the footer and header differ from the browser's render (a hydration error in production only).
 - **Bag**: `useBag` (zustand, persisted to localStorage, rehydrated after mount). The `validateBag` action re-prices it whenever it's shown; never trust client prices. `startCheckout` answers `{ url }` and the browser goes to Fourthwall's hosted checkout. Every in-stock line is in the subtotal and goes to checkout. A bag holding a piece that isn't published in Fourthwall yet can't check out: `startCheckout` refuses it with “Checkout isn’t available right now. Your bag is saved, so please try again a little later.” and the bag stays as it is. A piece's SKUs change when it goes from preview to on sale (they become Fourthwall's variant ids), so each line is sent with its piece, color and size (`toLineInput`) and `CatalogIndex.findVariants` finds it again: a saved selection survives publishing. A line that matches nothing is removed with a notice.
 - **Auth**: Supabase via `@supabase/ssr`. Passwordless only (Google OAuth, email link or 6-digit code). Everything degrades to "Accounts open soon" when `NEXT_PUBLIC_SUPABASE_*` is unset. Server code takes the user from `server/session.ts` (`currentUser`, `requireUser`, `requireAdmin`; `sessionUserId` for pages that only personalize a link). After the email code is accepted, the form loads the destination in full: a client navigation could reuse a prefetch made while signed out, which the proxy answered with a redirect to sign-in.
