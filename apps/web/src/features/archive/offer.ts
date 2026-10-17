@@ -175,9 +175,6 @@ export function lockedRows(wallpapers: AssetFormat[]): string[] {
   ];
 }
 
-/** Remembers which welcome was dismissed: `free` still lets the buyer's welcome show later. */
-export const WELCOME_COOKIE = "aw-archive-welcome";
-
 export interface Welcome {
   kind: "free" | "buyer";
   title: string;
@@ -186,19 +183,17 @@ export interface Welcome {
 }
 
 /**
- * The overview's first-visit welcome: for a new account, saving and exploring; for a buyer, the
- * designs that opened (owned and published). `dismissed` is the cookie's value. Null once there is
- * nothing new to say.
+ * The overview's welcome, always shown (the owner's choice, October 2026: with the tiles moved to
+ * the navigation, it and Idea Submissions are the overview): for an account with no design open
+ * yet, saving and exploring; for a buyer, the designs that opened (owned and published).
  */
 export function welcomeFor(
   o: ArchiveOffer,
-  dismissed: string | undefined,
   opened: { slug: string; name: string }[],
   firstWallpapers: AssetFormat[],
-): Welcome | null {
+): Welcome {
   const first = opened[0];
   if (first) {
-    if (dismissed === "buyer") return null;
     const extras = extrasPhrase(o, firstWallpapers);
     return opened.length > 1
       ? {
@@ -216,7 +211,6 @@ export function welcomeFor(
           action: { href: collectionHref(first.slug), label: `Open ${first.name}` },
         };
   }
-  if (dismissed) return null;
   const body = [
     "Save pieces with the heart. Each design you buy opens here with its deeper story, a founder’s note from Richard and its wallpapers and extras.",
   ];

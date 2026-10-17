@@ -1,24 +1,11 @@
-"use client";
-
 import { Button } from "@awebound/brand";
-import { useState } from "react";
-import { WELCOME_COOKIE, type Welcome } from "./offer";
+import type { Welcome } from "./offer";
 
 /**
- * A short welcome at the top of the overview, shown until it is dismissed. It sits in the page
- * (never a popup) and dismissing it is remembered for a year in this browser.
+ * The welcome at the top of the overview, always shown (the owner's choice, October 2026). It sits
+ * in the page, never a popup, with one next step.
  */
-export function ArchiveWelcome({ kind, title, body, action }: Welcome) {
-  const [open, setOpen] = useState(true);
-  if (!open) return null;
-
-  function dismiss() {
-    document.cookie = `${WELCOME_COOKIE}=${kind}; Max-Age=31536000; Path=/account; SameSite=Lax`;
-    setOpen(false);
-    // The panel and its button are gone; keep the keyboard on the page.
-    document.getElementById("archive-title")?.focus();
-  }
-
+export function ArchiveWelcome({ title, body, action }: Welcome) {
   return (
     <section className="archive-welcome" aria-labelledby="welcome-title">
       <div className="archive-welcome-words">
@@ -34,9 +21,6 @@ export function ArchiveWelcome({ kind, title, body, action }: Welcome) {
       <div className="archive-welcome-actions">
         <Button variant="secondary" href={action.href}>
           {action.label}
-        </Button>
-        <Button variant="link" onClick={dismiss}>
-          Dismiss
         </Button>
       </div>
     </section>

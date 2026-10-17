@@ -673,12 +673,10 @@
     }
   }
   /* A text-height link button keeps its underline at the words; an invisible band gives it a
-     44px tap area (the welcome's Dismiss, the product page's Archive link). */
-  .archive-welcome .aw-btn-link,
+     44px tap area (the product page's Archive link). */
   .buy-archive .aw-btn-link {
     position: relative;
   }
-  .archive-welcome .aw-btn-link::before,
   .buy-archive .aw-btn-link::before {
     content: "";
     position: absolute;
