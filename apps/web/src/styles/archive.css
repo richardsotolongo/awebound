@@ -1015,15 +1015,27 @@
     margin: 0;
   }
 
-  /* Idea Submissions: the fourth tile, centred beneath the other three and half as wide again as
-     one of them, in the feature color with a gold rule so it reads as the one apart. The locked
+  /* The overview: Your collection beside Idea Submissions, which is half as wide again, in the
+     feature color with a gold rule so it reads as the one apart; stacked below 1024px. The locked
      reason takes the place of the tile's words in the same grid cell, so nothing moves. */
+  .archive-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: var(--space-6);
+  }
+  .archive-overview > :only-child {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 1023px) {
+    .archive-overview {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
   .idea-tile-row {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: var(--space-3);
-    margin-top: var(--space-6);
+    min-width: 0;
   }
   /* The owner's switch between the open tile and the locked one customers see. */
   .idea-owner-view {
@@ -1081,8 +1093,8 @@
     --focus-ring: var(--on-feature);
     display: flex;
     flex-direction: column;
+    flex: 1;
     gap: var(--space-6);
-    width: calc((100% - 2 * var(--space-6)) / 2);
     min-width: 0;
     padding: var(--space-8);
     background: var(--panel-feature);
@@ -1212,11 +1224,6 @@
     font-weight: 700;
     font-size: 14px;
     letter-spacing: 0.04em;
-  }
-  @media (max-width: 1023px) {
-    .idea-tile {
-      width: 100%;
-    }
   }
   @media (max-width: 767px) {
     .idea-tile {

@@ -43,8 +43,8 @@ export function IdeaLockReason() {
 }
 
 /**
- * The fourth tile on the My Archive overview, set apart beneath the other three: Idea
- * Submissions. Locked until the account has 5 purchases; the reason shows while a mouse rests on
+ * Idea Submissions on the My Archive overview, beside Your collection, wider and in the feature
+ * color. Locked until the account has 5 purchases; the reason shows while a mouse rests on
  * the tile, or on a tap (the lock button does the same from the keyboard), in place of the tile's
  * own words, so nothing below it moves. The owner sees it open from the start, with a switch
  * (shown to the owner only) to see the locked tile exactly as a customer does.

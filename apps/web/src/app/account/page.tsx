@@ -13,22 +13,17 @@ import { getFoundingForUser } from "@/server/archive/founding";
 import { getIdeaAllowance } from "@/server/archive/ideas";
 import { queueWelcomeIfNew } from "@/server/archive/email-outbox";
 import { getArchiveOffer, getDesignWallpapers } from "@/server/archive/offer";
-import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
+import { autoLinkByEmail } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
-import { listSavedPieces } from "@/server/archive/saved";
 import { currentUser } from "@/server/session";
-import { collectionHref, pieceHref } from "@/shared";
+import { collectionHref } from "@/shared";
 
 export const metadata: Metadata = { title: "My Archive" };
 
-const date = (iso: string | null) =>
-  iso
-    ? new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
-    : null;
-
 /**
- * The overview: three tiles of the same size (saved pieces, the collection, orders), then Idea
- * Submissions beneath them, wider and in the feature color.
+ * The overview: the welcome (until it is dismissed), then two tiles side by side: Your collection
+ * and Idea Submissions, wider and in the feature color. Saved and Orders live in the navigation
+ * above (the owner's choice, October 2026), so they have no tiles here.
  */
 export default async function ArchivePage() {
   const user = await currentUser();
@@ -37,24 +32,20 @@ export default async function ArchivePage() {
     autoLinkByEmail(user).catch(() => 0),
     queueWelcomeIfNew(user).catch(() => undefined),
   ]);
-  const [readiness, offer, saved, entitlements, designs, orders, founding, ideas, jar] =
-    await Promise.all([
-      getArchiveReadiness(),
-      getArchiveOffer(),
-      listSavedPieces(user.id),
-      listEntitlements(user.id),
-      listDesigns(),
-      listOrdersForUser(user.id),
-      getFoundingForUser(user.id),
-      getIdeaAllowance(user).catch(() => null),
-      cookies(),
-    ]);
+  const [readiness, offer, entitlements, designs, founding, ideas, jar] = await Promise.all([
+    getArchiveReadiness(),
+    getArchiveOffer(),
+    listEntitlements(user.id),
+    listDesigns(),
+    getFoundingForUser(user.id),
+    getIdeaAllowance(user).catch(() => null),
+    cookies(),
+  ]);
   const owned = designs.filter((d) =>
     entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
   );
   // Only a published design has a card to open.
   const opened = owned.filter((d) => d.published_content_id);
-  const latest = readiness.orders ? orders[0] : undefined;
   const welcome = welcomeFor(
     offer,
     jar.get(WELCOME_COOKIE)?.value,
@@ -75,43 +66,7 @@ export default async function ArchivePage() {
       {welcome ? <ArchiveWelcome {...welcome} /> : null}
       {founding && readiness.founding ? <FoundingSeal /> : null}
 
-      <div className="account-panels account-tiles">
-        <section className="account-panel" aria-labelledby="saved-title">
-          <h2 id="saved-title" className="aw-h3">
-            Saved pieces
-          </h2>
-          {saved.length > 0 ? (
-            <>
-              <p className="aw-small">{saved.length === 1 ? "1 saved" : `${saved.length} saved`}</p>
-              <div className="archive-thumbs">
-                {saved.slice(0, 4).map((s) =>
-                  s.piece ? (
-                    <Link key={s.slug} href={pieceHref(s.slug)} aria-label={s.piece.name}>
-                      {/* eslint-disable-next-line @next/next/no-img-element -- site image, plain img like the shop */}
-                      <img src={s.piece.image.url} alt="" />
-                    </Link>
-                  ) : null,
-                )}
-              </div>
-            </>
-          ) : (
-            <p className="aw-body">
-              Nothing saved yet. Use the heart on any piece to keep it here.
-            </p>
-          )}
-          <div className="account-panel-foot">
-            {saved.length > 0 ? (
-              <Button variant="link" href="/account/saved">
-                See your saved pieces
-              </Button>
-            ) : (
-              <Button variant="secondary" href="/shop">
-                Visit the shop
-              </Button>
-            )}
-          </div>
-        </section>
-
+      <div className="archive-overview">
         <section className="account-panel" aria-labelledby="collection-title">
           <h2 id="collection-title" className="aw-h3">
             Your collection
@@ -138,50 +93,8 @@ export default async function ArchivePage() {
           </div>
         </section>
 
-        <section className="account-panel" aria-labelledby="orders-title">
-          <h2 id="orders-title" className="aw-h3">
-            Orders
-          </h2>
-          {!readiness.orders ? (
-            <p className="aw-body">
-              Order history isn’t connected yet. Order confirmations and tracking still come by
-              email.
-            </p>
-          ) : latest ? (
-            <>
-              <p className="aw-small">
-                Latest order {latest.friendlyId ?? latest.id}
-                {latest.placedAt ? `, ${date(latest.placedAt)}` : ""}
-              </p>
-              <div className="archive-thumbs">
-                {latest.lines.slice(0, 4).map((l, i) =>
-                  l.image && l.slug ? (
-                    <Link key={i} href={pieceHref(l.slug)} aria-label={l.name}>
-                      {/* eslint-disable-next-line @next/next/no-img-element -- site image, plain img like the shop */}
-                      <img src={l.image} alt="" />
-                    </Link>
-                  ) : null,
-                )}
-              </div>
-            </>
-          ) : (
-            <p className="aw-body">No orders linked yet.</p>
-          )}
-          <div className="account-panel-foot account-actions">
-            {readiness.orders ? (
-              <Button variant="link" href="/account/orders">
-                See your orders
-              </Button>
-            ) : null}
-            {readiness.claims ? (
-              <Button variant="link" href="/account/orders/link">
-                Link a past order
-              </Button>
-            ) : null}
-          </div>
-        </section>
+        {ideas ? <IdeaTile allowance={ideas} /> : null}
       </div>
-      {ideas ? <IdeaTile allowance={ideas} /> : null}
     </>
   );
 }

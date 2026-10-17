@@ -108,7 +108,7 @@ The Orders page shows every order the webhook or reconciliation recorded (emails
 
 ### Ideas (Idea Submissions)
 
-Shoppers send design ideas from the fourth tile on the My Archive overview, which sits beneath the other three, half as wide again, in the feature color with a gold rule. The rules are in `apps/web/src/shared/ideas.ts` and the server enforces them (`server/archive/ideas.ts`):
+Shoppers send design ideas from the Idea Submissions tile on the My Archive overview, which sits beside Your collection (the overview's only other tile; Saved and Orders are in the navigation above), half as wide again, in the feature color with a gold rule. The rules are in `apps/web/src/shared/ideas.ts` and the server enforces them (`server/archive/ideas.ts`):
 
 - **Locked** until the account has 5 purchases. A purchase is one paid, real (not test) order linked to the account with at least one line still eligible, so an order refunded or cancelled in full stops counting. Signing in is what links orders, so only purchases on the account count (a guest order counts once it links by email or a claim). While locked, the tile shows the purchases so far as five gold marks; the reason (why it's locked and how it opens) takes the place of the tile's words while a mouse rests on it, or on a tap on a phone, or from the "Why it’s locked" button by keyboard.
 - **Open**: 5 purchases open the first submission; every 3 more open another (8 for the second, 11 for the third). Every submission counts, whatever its status.

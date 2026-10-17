@@ -519,9 +519,6 @@
     grid-auto-rows: 1fr;
     gap: var(--space-6);
   }
-  .account-tiles {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
   .account-panel {
     display: flex;
     flex-direction: column;
