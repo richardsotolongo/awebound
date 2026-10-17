@@ -12,9 +12,9 @@ const LINKS = [
 /**
  * The account's sections. My Archive (the overview) and Your collection, where each bought
  * design's story, Richard's note and extras live, are the red buttons; a rule, then plain links.
- * The current one is marked.
+ * The current one is marked. Who is signed in sits at the row's far end on wide screens.
  */
-export function ArchiveNav({ admin }: { admin: boolean }) {
+export function ArchiveNav({ admin, email }: { admin: boolean; email: string | null }) {
   const pathname = usePath();
   const links = admin ? [...LINKS, { label: "Owner", href: "/account/admin" }] : LINKS;
   const current = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -43,6 +43,11 @@ export function ArchiveNav({ admin }: { admin: boolean }) {
           </Link>
         ))}
       </div>
+      {email ? (
+        <p className="aw-small archive-nav-who">
+          Signed in as <span className="account-email">{email}</span>
+        </p>
+      ) : null}
     </nav>
   );
 }

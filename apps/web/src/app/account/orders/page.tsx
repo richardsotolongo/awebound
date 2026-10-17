@@ -93,7 +93,7 @@ export default async function OrdersPage() {
       ) : null}
       <section
         className="account-panel"
-        style={{ marginTop: "var(--space-8)" }}
+        style={{ marginTop: orders.length > 0 ? "var(--space-8)" : "var(--space-2)" }}
         aria-labelledby="help-title"
       >
         <h2 id="help-title" className="aw-h3">

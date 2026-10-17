@@ -28,7 +28,7 @@ export default async function AccountLayout({ children }: { children: ReactNode 
   const admin = await hasRole(user, "admin");
   return (
     <div className="aw-container account">
-      <ArchiveNav admin={admin} />
+      <ArchiveNav admin={admin} email={user.email ?? null} />
       {children}
     </div>
   );

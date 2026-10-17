@@ -49,14 +49,9 @@ export default async function ArchivePage() {
 
   return (
     <>
-      <header className="page-header account-head">
-        <h1 id="archive-title" className="visually-hidden">
-          My Archive
-        </h1>
-        <p className="aw-small">
-          Signed in as <span className="account-email">{user.email}</span>
-        </p>
-      </header>
+      <h1 id="archive-title" className="visually-hidden">
+        My Archive
+      </h1>
       <ArchiveWelcome {...welcome} />
       {founding && readiness.founding ? <FoundingSeal /> : null}
 

@@ -532,9 +532,21 @@
   .account-panel-foot {
     margin-top: auto;
   }
-  /* The overview's header: the nav above already names the page. */
-  .account-head {
-    padding-block: 0 var(--space-8);
+  /* My Archive's pages start close under their navigation (the owner's call, October 2026): a
+     smaller title and less air around it than the site's other pages, and an empty state that
+     follows the title straight away. */
+  .account .page-header {
+    padding-block: 0 var(--space-6);
+    gap: var(--space-3);
+  }
+  .account .page-header .aw-h1 {
+    font-size: clamp(36px, 4vw, 52px);
+  }
+  .account .page-header .account-actions:empty {
+    display: none;
+  }
+  .account .shop-empty {
+    padding-block: 0 var(--space-12);
   }
   .account-actions {
     display: flex;

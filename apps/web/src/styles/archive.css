@@ -7,9 +7,9 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-3) var(--space-6);
-    padding: var(--space-6) 0;
+    padding: var(--space-4) 0;
     border-bottom: 1px solid var(--line);
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
   }
   .archive-nav-main {
     display: flex;
@@ -38,6 +38,15 @@
       flex-basis: 100%;
       padding-left: 0;
       border-left: 0;
+    }
+  }
+  .archive-nav-who {
+    margin-left: auto;
+  }
+  @media (max-width: 1023px) {
+    .archive-nav-who {
+      flex-basis: 100%;
+      margin-left: 0;
     }
   }
   .archive-nav-links a {
@@ -648,9 +657,9 @@
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: space-between;
-    gap: var(--space-6) var(--space-12);
-    padding: var(--space-8);
-    margin-bottom: var(--space-6);
+    gap: var(--space-4) var(--space-12);
+    padding: var(--space-6) var(--space-8);
+    margin-bottom: var(--space-4);
     background: var(--altar);
     color: var(--on-altar);
     border-left: 3px solid var(--altar-mark);
@@ -658,7 +667,7 @@
   }
   .archive-welcome-words {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-2);
     flex: 1 1 32ch;
     max-width: 72ch;
   }
@@ -671,12 +680,12 @@
     color: var(--on-altar);
   }
   .archive-welcome-lead {
-    margin-top: var(--space-2) !important;
+    margin-top: var(--space-1) !important;
     font-weight: 700;
   }
   .archive-welcome .collection-holds {
     max-width: none;
-    column-gap: var(--space-8);
+    gap: var(--space-1) var(--space-6);
     color: var(--on-altar);
   }
   .archive-welcome .collection-holds li::before {
@@ -1117,9 +1126,9 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    gap: var(--space-6);
+    gap: var(--space-4);
     min-width: 0;
-    padding: var(--space-8);
+    padding: var(--space-6) var(--space-8);
     background: var(--panel-feature);
     color: var(--on-feature);
     border: 1px solid color-mix(in srgb, var(--scripture) 45%, transparent);
@@ -1134,9 +1143,12 @@
     margin: 0;
     color: var(--on-feature);
   }
-  .idea-tile-face > p,
+  .idea-tile-face > p {
+    max-width: 84ch;
+  }
+  /* The reason runs a little wider, so it needs no more height than the tile's own words. */
   .idea-tile-why > p {
-    max-width: 68ch;
+    max-width: 120ch;
   }
   .idea-tile-head {
     display: flex;
@@ -1187,7 +1199,7 @@
     grid-area: 1 / 1;
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-3);
     min-width: 0;
   }
   .idea-tile-stack > [data-hidden] {
