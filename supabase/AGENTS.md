@@ -1,6 +1,6 @@
 # AGENTS.md — supabase
 
-Postgres schema and auth email templates for the Awebound store. Used by the Supabase CLI locally and applied to the hosted project with `supabase db push`. The catalog is not here: Fourthwall supplies it.
+Postgres schema and auth email templates for the Awebound store. Used by the Supabase CLI locally; the Deploy to Stage and Deploy to Prod workflows apply new migrations to the stage and production projects with `supabase db push`, so a migration must work with the code already running. The catalog is not here: Fourthwall supplies it.
 
 ## Layout
 

@@ -2,6 +2,10 @@
 
 What's left before launch, grouped by who has to act. Check items off as they land and keep this file current.
 
+## Stage environment
+
+- [ ] **One-time setup** in `docs/DEPLOYMENT.md` → Stage and production: the stage Supabase project, five GitHub secrets, Vercel's production branch, the `stage.awebound.store` domain and the Preview variables. Until it's done, every push to `main` still deploys production and previews use production's database.
+
 ## Decisions for the owner
 
 - [ ] **Legal details**: business entity name and the state whose law governs (`LEGAL` in `apps/web/src/lib/site.ts`).

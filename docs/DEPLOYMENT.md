@@ -8,6 +8,8 @@ The site is one Next.js app, deployed as **one Vercel project**:
 
 `apps/web/vercel.json` holds the install and build commands, so the only setting you must change by hand is the **Root Directory** (Vercel reads `vercel.json` from there and cannot set the Root Directory itself).
 
+It runs two environments: production at `www.awebound.store` and stage at `stage.awebound.store`, each with its own Supabase project. Merges to `main` reach them only through two workflows (section 4).
+
 ## Why "No Output Directory named public" happens
 
 That error means the project was imported at the repo root. The root `package.json` has no Next.js, so Vercel falls back to the "Other" preset, which expects a static `public` folder. Setting the Root Directory to `apps/web` fixes it.
@@ -17,12 +19,12 @@ That error means the project was imported at the repo root. The root `package.js
 1. Vercel → the project → **Settings → Build and Deployment**.
 2. **Root Directory**: `apps/web`. Leave "Include files outside the root directory in the Build Step" on (the app imports `packages/*`).
 3. **Framework Preset**: Next.js.
-4. **Build Command, Output Directory, Install Command**: turn every override off. `apps/web/vercel.json` sets install (`pnpm install --filter @awebound/web...`) and build (`pnpm build`).
+4. **Build Command, Output Directory, Install Command**: turn every override off. `apps/web/vercel.json` sets install (`pnpm install --frozen-lockfile --filter @awebound/web...`) and build (`pnpm build`).
 5. **Node.js Version** (same page): 22.x.
 
 ## 2. Environment variables
 
-Settings → Environment Variables. [`apps/web/.env.example`](../apps/web/.env.example) lists every variable with a comment. Apply them to Production and Preview.
+Settings → Environment Variables. [`apps/web/.env.example`](../apps/web/.env.example) lists every variable with a comment. The values below are Production's; Preview (stage and every other preview) gets stage values, listed in section 4.
 
 ```
 NEXT_PUBLIC_SITE_URL=https://www.awebound.store
@@ -57,13 +59,86 @@ INDEXNOW_KEY=<openssl rand -hex 16; Production only>
 1. `awebound-web` → Settings → Domains: add `www.awebound.store` (primary) and `awebound.store` (redirects to `www`). `NEXT_PUBLIC_SITE_URL` and the Supabase Site URL use the same host; if the primary ever changes, change all three together.
 2. At your registrar, create the records Vercel shows (an `A` record for the apex and a `CNAME` for `www`), or move the domain's nameservers to Vercel.
 
-Then update the services that know the site's address:
+Then update the services that know the site's address (stage has its own, in section 4):
 
-- Supabase → Authentication → URL configuration: Site URL `https://www.awebound.store`; redirect URLs `https://www.awebound.store` and `https://www.awebound.store/**` (sign-in returns to `/auth/callback` and `/auth/confirm` on the host the visitor is on).
+- Supabase (the production project) → Authentication → URL configuration: Site URL `https://www.awebound.store`; redirect URLs `https://www.awebound.store` and `https://www.awebound.store/**` (sign-in returns to `/auth/callback` and `/auth/confirm` on the host the visitor is on).
 - Resend: verify `awebound.store` (SPF, DKIM, DMARC) so `noreply@awebound.store` can send.
 - Google OAuth consent screen: privacy and terms URLs on `www.awebound.store`.
 
-## 4. Check a deploy
+## 4. Stage and production
+
+Work reaches the live site in three steps:
+
+1. Feature branch → pull request → merge into `main`. `.github/workflows/ci.yml` lints, typechecks and builds every pull request and push to `main`, and `migrations.yml` applies every migration from scratch when `supabase/` changes. Vercel builds each branch as a preview.
+2. GitHub → Actions → **Deploy to Stage** → Run workflow (from `main` by default, or any branch, tag or commit). It applies new migrations to the stage Supabase project, then moves the `stage` branch to that commit. Vercel builds it at `https://stage.awebound.store`.
+3. Check stage, then Actions → **Deploy to Prod** → Run workflow. It ships exactly what `stage` holds: new migrations to the production Supabase project, then a fast-forward of the `production` branch, which Vercel builds at `https://www.awebound.store`.
+
+| Branch                   | Moved by        | Vercel     | Address                | Supabase   |
+| ------------------------ | --------------- | ---------- | ---------------------- | ---------- |
+| `main`, feature branches | you             | Preview    | `*.vercel.app`         | stage      |
+| `stage`                  | Deploy to Stage | Preview    | `stage.awebound.store` | stage      |
+| `production`             | Deploy to Prod  | Production | `www.awebound.store`   | production |
+
+Never push to `stage` or `production` by hand. Migrations run before the new code is live, so a migration must work with the code that is already running: add columns and tables, and rename or drop only in a later deploy.
+
+### One-time setup
+
+**Stage Supabase project.** Supabase → New project `awebound-stage` on the free plan, in production's region. Keep the database password.
+
+- Authentication → URL configuration: Site URL `https://stage.awebound.store`; redirect URLs `https://stage.awebound.store/**`, `https://*-<vercel-team>.vercel.app/**` (previews) and `http://localhost:3000/**`.
+- Authentication → Emails: paste the templates from `supabase/templates/` and set SMTP to Resend, as in production. Without custom SMTP Supabase only emails the project's own members, a few an hour.
+- Google sign-in (optional): enable Google with production's client ID and secret, and add `https://<stage-ref>.supabase.co/auth/v1/callback` to the client's authorized redirect URIs in Google Cloud.
+- The first Deploy to Stage run creates the tables, buckets and feature flags. Then seed the Archive designs; stage values set in front of the command take precedence over `.env.local`:
+
+  ```bash
+  NEXT_PUBLIC_SUPABASE_URL=<stage URL> SUPABASE_SECRET_KEY=<stage secret key> pnpm --filter @awebound/web archive:seed
+  ```
+
+  Sign in on stage once, then run `grant:admin <your email>` the same way.
+
+- Point your own `apps/web/.env.local` at stage too, so local development never writes to production.
+
+**Production's migration history.** Before the first Deploy to Prod, run `supabase link --project-ref <production ref>`, then `supabase migration list`: every file in `supabase/migrations` should show a Remote version. If one was applied by hand in the SQL editor, record it with `supabase migration repair --status applied <version>` so the workflow doesn't run it again.
+
+**GitHub secrets** (Settings → Secrets and variables → Actions → New repository secret):
+
+| Secret                                                     | Where                                                                                                |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `SUPABASE_ACCESS_TOKEN`                                    | Supabase → Account → Access tokens                                                                   |
+| `STAGE_SUPABASE_PROJECT_REF`, `STAGE_SUPABASE_DB_PASSWORD` | The stage project: the ref is in its dashboard address; the password is the one you kept             |
+| `PROD_SUPABASE_PROJECT_REF`, `PROD_SUPABASE_DB_PASSWORD`   | The production project. A lost password can be reset under Database settings; the site uses API keys |
+
+**Vercel**, in this order, so production never deploys by surprise:
+
+1. GitHub → Branches → New branch `production` from `main`.
+2. Vercel → Settings → Environments → Production → Branch Tracking: `production` (was `main`). From now on a push to `main` builds a preview only.
+3. Settings → Domains → add `stage.awebound.store` for Preview, Git branch `stage`, and add the `CNAME` record Vercel shows at the registrar (nothing to add when the nameservers are Vercel's).
+4. Settings → Environment Variables: give Preview its own values. For a variable shared today, untick Preview on it, then add it again for Preview only.
+
+   | Variable                                                                                  | Production                   | Preview                                 |
+   | ----------------------------------------------------------------------------------------- | ---------------------------- | --------------------------------------- |
+   | `NEXT_PUBLIC_SITE_URL`                                                                    | `https://www.awebound.store` | `https://stage.awebound.store`          |
+   | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` | production project           | stage project                           |
+   | `RESEND_API_KEY`, `EMAIL_FROM`, `FOURTHWALL_STOREFRONT_TOKEN`, `ARCHIVE_STORAGE_BUCKET`   | set                          | the same values                         |
+   | `FOURTHWALL_WEBHOOK_SECRET`, `FOURTHWALL_API_USERNAME`, `FOURTHWALL_API_PASSWORD`         | set                          | unset (the webhook stays on production) |
+   | `CRON_SECRET`, `INDEXNOW_KEY`, `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`                        | set                          | unset (crons run on production only)    |
+
+5. Run Deploy to Stage.
+
+### Rollback
+
+- Site: Vercel → Deployments → the previous production deployment → Instant Rollback. Vercel then holds new production deployments until you undo the rollback or promote one.
+- Database: migrations don't roll back. Fix forward with a new migration, through stage.
+
+### Good to know
+
+- A free Supabase project pauses after about a week without activity. If Deploy to Stage can't connect or stage can't sign in, restore the project from the Supabase dashboard.
+- Stage is the real shop: it reads the live Fourthwall catalog and Check out opens the real checkout, so don't complete orders there. Its contact form emails the real inbox.
+- Stage and previews send `X-Robots-Tag: noindex` (`apps/web/next.config.ts`), so search engines leave them out.
+- Vercel's Deployment Protection may ask for a Vercel login on stage. Keep it to keep stage private, or turn it off under Settings → Deployment Protection.
+- If Vercel refuses to build `stage` or `production` because of the commit's author, create a Deploy Hook for that branch (Settings → Git → Deploy Hooks) and call it at the end of the workflow.
+
+## 5. Check a deploy
 
 Walk through shop → product → bag → checkout (it should land on Fourthwall's checkout) and send a test contact message.
 
@@ -73,5 +148,5 @@ IndexNow: `/indexnow-key.txt` should show the key. In GitHub → Actions → Ind
 
 ## Notes
 
-- Every push to `main` deploys. To skip builds a commit didn't touch, set **Ignored Build Step** to `git diff --quiet HEAD^ HEAD -- . ../../packages ../../pnpm-lock.yaml`.
+- To skip previews for commits that don't touch the app, set **Ignored Build Step** to `[ "$VERCEL_GIT_COMMIT_REF" != stage ] && [ "$VERCEL_GIT_COMMIT_REF" != production ] && git diff --quiet HEAD^ HEAD -- . ../../packages ../../pnpm-lock.yaml`. `stage` and `production` always build: a deploy can move them several commits at once, and `HEAD^` sees only the last.
 - Rate limits are per server instance (in memory). Add a Vercel Firewall rate-limit rule for real protection (see `docs/TODOS.md`).

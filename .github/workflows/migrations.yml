@@ -1,0 +1,26 @@
+# Apply every migration from scratch on a local Postgres whenever the schema changes, so a broken
+# migration fails here instead of in Deploy to Stage.
+name: Migrations
+
+on:
+  pull_request:
+    paths: ["supabase/**"]
+  push:
+    branches: [main]
+    paths: ["supabase/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: migrations-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v3
+      - run: supabase db start

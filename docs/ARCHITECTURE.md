@@ -220,4 +220,4 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 
 ## Deployment
 
-One Vercel project from this repo with Root Directory `apps/web`; `apps/web/vercel.json` sets a filtered pnpm install and the build. Step-by-step setup, variables and DNS: [DEPLOYMENT.md](DEPLOYMENT.md). Supabase: `supabase link`, then `supabase db push` (or `supabase db reset --linked` to start the database over).
+One Vercel project from this repo with Root Directory `apps/web`; `apps/web/vercel.json` sets a filtered pnpm install and the build. It runs two environments, each with its own Supabase project: stage (`stage.awebound.store`, shared by every preview) and production. CI (`ci.yml`, `migrations.yml`) checks pull requests and `main`; the Deploy to Stage and Deploy to Prod workflows apply migrations with `supabase db push`, then move the `stage` or `production` branch for Vercel to build. Step-by-step setup, variables and DNS: [DEPLOYMENT.md](DEPLOYMENT.md).
