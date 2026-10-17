@@ -1,7 +1,5 @@
-import { Button } from "@awebound/brand";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArchiveWelcome } from "@/features/archive/archive-welcome";
 import { FoundingSeal } from "@/features/archive/founding-seal";
@@ -16,14 +14,13 @@ import { getArchiveOffer, getDesignWallpapers } from "@/server/archive/offer";
 import { autoLinkByEmail } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
 import { currentUser } from "@/server/session";
-import { collectionHref } from "@/shared";
 
 export const metadata: Metadata = { title: "My Archive" };
 
 /**
- * The overview: the welcome (until it is dismissed), then two tiles side by side: Your collection
- * and Idea Submissions, wider and in the feature color. Saved and Orders live in the navigation
- * above (the owner's choice, October 2026), so they have no tiles here.
+ * The overview: the welcome (until it is dismissed), then Idea Submissions in the feature color.
+ * Your collection, Saved and Orders live in the navigation above (the owner's choice, October
+ * 2026), so they have no tiles here.
  */
 export default async function ArchivePage() {
   const user = await currentUser();
@@ -66,35 +63,7 @@ export default async function ArchivePage() {
       {welcome ? <ArchiveWelcome {...welcome} /> : null}
       {founding && readiness.founding ? <FoundingSeal /> : null}
 
-      <div className="archive-overview">
-        <section className="account-panel" aria-labelledby="collection-title">
-          <h2 id="collection-title" className="aw-h3">
-            Your collection
-          </h2>
-          {owned.length > 0 ? (
-            <ul className="archive-panel-list">
-              {owned.map((d) => (
-                <li key={d.design_key}>
-                  {d.published_content_id ? (
-                    <Link href={collectionHref(d.product_slug)}>{d.name}</Link>
-                  ) : (
-                    d.name
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="aw-body">Your collection starts with your first piece.</p>
-          )}
-          <div className="account-panel-foot">
-            <Button variant="link" href="/account/collection">
-              Open your collection
-            </Button>
-          </div>
-        </section>
-
-        {ideas ? <IdeaTile allowance={ideas} /> : null}
-      </div>
+      {ideas ? <IdeaTile allowance={ideas} /> : null}
     </>
   );
 }

@@ -1015,22 +1015,9 @@
     margin: 0;
   }
 
-  /* The overview: Your collection beside Idea Submissions, which is half as wide again, in the
-     feature color with a gold rule so it reads as the one apart; stacked below 1024px. The locked
-     reason takes the place of the tile's words in the same grid cell, so nothing moves. */
-  .archive-overview {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    gap: var(--space-6);
-  }
-  .archive-overview > :only-child {
-    grid-column: 1 / -1;
-  }
-  @media (max-width: 1023px) {
-    .archive-overview {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
+  /* Idea Submissions: the overview's one tile, under the welcome, in the feature color with a
+     gold rule so it reads as the one apart. The locked reason takes the place of the tile's words
+     in the same grid cell, so nothing moves. */
   .idea-tile-row {
     display: flex;
     flex-direction: column;
@@ -1110,6 +1097,10 @@
   .idea-tile .aw-body {
     margin: 0;
     color: var(--on-feature);
+  }
+  .idea-tile-face > p,
+  .idea-tile-why > p {
+    max-width: 68ch;
   }
   .idea-tile-head {
     display: flex;
