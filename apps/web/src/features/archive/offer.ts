@@ -179,13 +179,22 @@ export interface Welcome {
   kind: "free" | "buyer";
   title: string;
   body: string[];
+  /** What Your collection holds for each design bought (the empty collection's own list). */
+  lead: string;
+  holds: string[];
   action: { href: string; label: string };
+  /** A second, quieter way in: Your collection, when the first action goes elsewhere. */
+  more: { href: string; label: string } | null;
 }
+
+const WELCOME_LEAD = "Each design you buy is kept in Your collection, with:";
+const OPEN_COLLECTION = { href: "/account/collection", label: "Open your collection" };
 
 /**
  * The overview's welcome, always shown (the owner's choice, October 2026: with the tiles moved to
  * the navigation, it and Idea Submissions are the overview): for an account with no design open
- * yet, saving and exploring; for a buyer, the designs that opened (owned and published).
+ * yet, saving and exploring; for a buyer, the designs that opened (owned and published). Either
+ * way it lists what Your collection keeps for each design, so that isn't hidden behind the button.
  */
 export function welcomeFor(
   o: ArchiveOffer,
@@ -200,7 +209,10 @@ export function welcomeFor(
           kind: "buyer",
           title: "Your designs are in your Archive.",
           body: ["Each one’s full story and a note from Richard are open in your collection."],
-          action: { href: "/account/collection", label: "Open your collection" },
+          lead: WELCOME_LEAD,
+          holds: COLLECTION_HOLDS,
+          action: OPEN_COLLECTION,
+          more: null,
         }
       : {
           kind: "buyer",
@@ -208,17 +220,20 @@ export function welcomeFor(
           body: [
             `Its full story and a note from Richard are open.${extras ? ` You’ll also find ${extras}.` : ""}`,
           ],
+          lead: WELCOME_LEAD,
+          holds: COLLECTION_HOLDS,
           action: { href: collectionHref(first.slug), label: `Open ${first.name}` },
+          more: OPEN_COLLECTION,
         };
   }
-  const body = [
-    "Save pieces with the heart. Each design you buy opens here with its deeper story, a founder’s note from Richard and its wallpapers and extras.",
-  ];
   return {
     kind: "free",
     title: "Welcome to your Archive.",
-    body,
+    body: ["Save the pieces you love with the heart and find them again under Saved."],
+    lead: WELCOME_LEAD,
+    holds: COLLECTION_HOLDS,
     action: { href: "/shop", label: "Explore Behold" },
+    more: OPEN_COLLECTION,
   };
 }
 

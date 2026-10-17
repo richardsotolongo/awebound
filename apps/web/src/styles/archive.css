@@ -640,32 +640,68 @@
     }
   }
   /* The overview's first-visit welcome: words beside their two actions, set in the page. */
+  /* The overview's welcome on bone paper (oxblood heading and edge, coal words), so it stands
+     apart from Idea Submissions below it in the feature color. */
   .archive-welcome {
+    --focus-ring: var(--on-altar);
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
     gap: var(--space-6) var(--space-12);
-    padding: var(--space-6) var(--space-8);
+    padding: var(--space-8);
     margin-bottom: var(--space-6);
-    background: var(--surface-raised);
-    border: 1px solid var(--line);
-    border-left: 2px solid var(--accent-text);
+    background: var(--altar);
+    color: var(--on-altar);
+    border-left: 3px solid var(--altar-mark);
+    border-radius: var(--radius-sm);
   }
   .archive-welcome-words {
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
     flex: 1 1 32ch;
-    max-width: 68ch;
+    max-width: 72ch;
   }
   .archive-welcome-words h2 {
-    color: var(--ink);
+    margin: 0;
+    color: var(--altar-mark);
+  }
+  .archive-welcome-words .aw-body {
+    margin: 0;
+    color: var(--on-altar);
+  }
+  .archive-welcome-lead {
+    margin-top: var(--space-2) !important;
+    font-weight: 700;
+  }
+  .archive-welcome .collection-holds {
+    max-width: none;
+    column-gap: var(--space-8);
+    color: var(--on-altar);
+  }
+  .archive-welcome .collection-holds li::before {
+    background: var(--altar-mark);
+  }
+  @media (min-width: 768px) {
+    .archive-welcome .collection-holds {
+      grid-template-columns: repeat(2, minmax(0, max-content));
+    }
+  }
+  .archive-welcome .aw-btn-secondary {
+    color: var(--on-altar);
+    border-color: var(--on-altar);
+  }
+  .archive-welcome .aw-btn-secondary:hover {
+    background: color-mix(in srgb, var(--on-altar) 8%, transparent);
+  }
+  .archive-welcome .aw-btn-link {
+    color: var(--altar-mark);
   }
   .archive-welcome-actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2) var(--space-6);
+    gap: var(--space-4) var(--space-6);
   }
   @media (max-width: 599px) {
     .archive-welcome {
@@ -673,10 +709,12 @@
     }
   }
   /* A text-height link button keeps its underline at the words; an invisible band gives it a
-     44px tap area (the product page's Archive link). */
+     44px tap area (the welcome's collection link, the product page's Archive link). */
+  .archive-welcome .aw-btn-link,
   .buy-archive .aw-btn-link {
     position: relative;
   }
+  .archive-welcome .aw-btn-link::before,
   .buy-archive .aw-btn-link::before {
     content: "";
     position: absolute;
