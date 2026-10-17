@@ -58,7 +58,8 @@
       "gallery": [
         {
           "photo": "6bf36b5a-5c24-4750-aa45-cebb8fc9d7aa.png",
-          "view": "back"
+          "view": "back",
+          "frame": { "height": 0.572, "top": 0.215 }
         },
         {
           "photo": "ab12e322-3a10-437d-b70a-72dd2ba5a7e6.png",
@@ -81,11 +82,11 @@
       "fourthwallSlug": "stone-in-motion-tee",
       "gallery": [
         {
-          "photo": "d7bc4aac-4c92-4561-ae8c-da4f85f09b57.png",
+          "photo": "d2a6b855-ccbb-495a-89b3-0cdd02a419a9.png",
           "view": "back"
         },
         {
-          "photo": "a4f3d4ab-99f4-4cb4-b55a-aa6338763ca8.png",
+          "photo": "af23b3e3-0f32-40f2-bca3-160456eaeb56.png",
           "view": "front"
         },
         {
