@@ -27,8 +27,9 @@ export function Founder() {
           <p className="aw-small">Richard, founder of Awebound</p>
           <p className="aw-body">
             I started Awebound with a desire to serve Christ and others through clothing rooted in
-            Scripture. I want to create pieces people love wearing, with artwork that reflects
-            biblical stories and opens the door to conversations about Jesus Christ.
+            Scripture. Each piece brings together expressive artwork and biblical meaning, with the
+            hope that it encourages the person wearing it and opens the door to conversations about
+            Jesus Christ.
           </p>
           <Button variant="secondary" href="/about">
             Read my story
