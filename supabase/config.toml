@@ -1,6 +1,6 @@
 # Supabase CLI configuration for local development (`supabase start`).
-# Production settings (redirect URLs, Google client, Resend SMTP) are set in the Supabase dashboard;
-# see docs/ARCHITECTURE.md → "Auth" and docs/TODOS.md.
+# Stage and production auth settings (redirect URLs, Google client, Resend SMTP) are set in each
+# Supabase project's dashboard; see docs/DEPLOYMENT.md. Never `supabase config push` this file.
 project_id = "awebound"
 
 [api]
@@ -51,6 +51,10 @@ content_path = "./supabase/templates/magic-link.html"
 subject = "Confirm your email for Awebound"
 content_path = "./supabase/templates/confirmation.html"
 
+[auth.email.template.email_change]
+subject = "Confirm your new email for Awebound"
+content_path = "./supabase/templates/email-change.html"
+
 # Resend as the SMTP server. Enable in production (dashboard → Authentication → SMTP).
 [auth.email.smtp]
 enabled = false
@@ -58,7 +62,7 @@ host = "smtp.resend.com"
 port = 465
 user = "resend"
 pass = "env(RESEND_API_KEY)"
-admin_email = "no-reply@awebound.store"
+admin_email = "hello@awebound.store"
 sender_name = "Awebound"
 
 # Google sign-in. Create an OAuth client in Google Cloud and set these in supabase/.env.
@@ -67,7 +71,3 @@ enabled = true
 client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 skip_nonce_check = false
-
-[auth.email.template.email_change]
-subject = "Confirm your new email for Awebound"
-content_path = "./supabase/templates/email-change.html"

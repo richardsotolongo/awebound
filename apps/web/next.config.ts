@@ -20,8 +20,13 @@ const config: NextConfig = {
   },
   // server/email.ts reads the wordmark to attach it inline; ship it with every server function.
   outputFileTracingIncludes: { "/**": ["./public/email/wordmark-oxblood.png"] },
+  // Stage and preview deploys run the same site at their own address: keep them out of search.
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    const headers =
+      process.env.VERCEL_ENV === "production"
+        ? securityHeaders
+        : [...securityHeaders, { key: "X-Robots-Tag", value: "noindex" }];
+    return [{ source: "/(.*)", headers }];
   },
 };
 
