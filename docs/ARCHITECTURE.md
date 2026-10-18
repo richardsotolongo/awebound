@@ -148,7 +148,7 @@ sequenceDiagram
 | Contact acknowledgement                                                                     | Server → Resend                   | same                                     |
 | Drop-notes welcome                                                                          | Server → Resend                   | same                                     |
 | Account deleted                                                                             | Server → Resend                   | same                                     |
-| Idea submission to `contact@awebound.store` (image attached)                                | Server → Resend                   | same                                     |
+| Idea submission to `ideas@awebound.store` (image attached)                                  | Server → Resend                   | same                                     |
 | Order claim code                                                                            | Server → Resend                   | same                                     |
 | Archive welcome, design unlocked, collection update (outbox, each behind an `email.*` flag) | Server → Resend                   | same                                     |
 | Guest follow-up, cart reminder (outbox, `email.*` flags; daily follow-ups cron)             | Server → Resend                   | same                                     |

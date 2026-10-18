@@ -6,6 +6,9 @@ import { z } from "zod";
  */
 export const CONTACT_EMAIL = "contact@awebound.store";
 
+/** The inbox for Idea Submissions from My Archive (each emailed with its image attached). */
+export const IDEAS_EMAIL = "ideas@awebound.store";
+
 export const CONTACT_TOPICS = [
   "order",
   "sizing",
