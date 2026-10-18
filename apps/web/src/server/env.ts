@@ -36,6 +36,6 @@ export const serverEnv = z
     /** Private Supabase Storage bucket holding the wallpapers. */
     ARCHIVE_STORAGE_BUCKET: optional.transform((v) => v ?? "archive-assets"),
     RESEND_API_KEY: optional,
-    EMAIL_FROM: optional.transform((v) => v ?? "Awebound <noreply@awebound.store>"),
+    EMAIL_FROM: optional.transform((v) => v ?? "Awebound <hello@awebound.store>"),
   })
   .parse(process.env);

@@ -22,7 +22,7 @@ There is no separate backend. Pages read data in Server Components; the browser 
 | `supabase`          | SQL migrations, auth email templates                                                                                                            | `supabase/AGENTS.md`                                                                |
 | `assets/mockups`    | Fourthwall product images (`fourthwall.json`, `fourthwall.py`), source mockups (kept intact), cutout, zoom-out (`widen.py`) and styling scripts | regenerate site images, close-ups and plates with `fourthwall.py` then `compose.py` |
 | `docs`              | `ARCHITECTURE.md`, `DEPLOYMENT.md`, `TODOS.md`, `BRAND.md`                                                                                      | keep them current when you change structure                                         |
-| `.github/workflows` | `indexnow.yml`: runs IndexNow right after each production deploy                                                                                | needs the `CRON_SECRET` repository secret                                           |
+| `.github/workflows` | `ci.yml`, `migrations.yml` (checks); `stage-migrations.yml`, `deploy-prod.yml` (deploys); `indexnow.yml` (after each production deploy)         | secrets listed in `docs/DEPLOYMENT.md`                                              |
 
 `packages/brand` is consumed as TypeScript source (no build step); Next transpiles it via `transpilePackages`.
 
@@ -38,7 +38,7 @@ pnpm build            # every package
 
 Copy `apps/web/.env.example` to `apps/web/.env.local`; it lists every variable. The catalog and checkout need `FOURTHWALL_STOREFRONT_TOKEN`. Without Supabase keys accounts show "open soon" and contact messages and back-in-stock requests aren't stored; without `RESEND_API_KEY` emails print to the terminal in development; without `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` no analytics are sent.
 
-Deployment is one Vercel project (Root Directory `apps/web`); see `docs/DEPLOYMENT.md`.
+Deployment is one Vercel project (Root Directory `apps/web`) with two environments, each with its own Supabase project: stage (`stage.awebound.store`, shared by every preview) and production. Feature branches merge into `stage`, which Vercel deploys to stage; `stage` merges into `main` (with a merge commit, never squashed), and `deploy-prod.yml` applies production's migrations and then has Vercel build `main`. See `docs/DEPLOYMENT.md`.
 
 ## Rules
 
