@@ -68,13 +68,13 @@ If the primary address changes, change `NEXT_PUBLIC_SITE_URL`, the Supabase Site
 
 Settings → Secrets and variables → Actions:
 
-| Name                                                       | Kind               | Used by                                                                                                 |
-| ---------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------- |
-| `CRON_SECRET`                                              | secret             | `indexnow.yml`; the same value as in Vercel                                                             |
-| `SUPABASE_ACCESS_TOKEN`                                    | secret             | Both deploy workflows (Supabase → Account → Access tokens)                                              |
-| `STAGE_SUPABASE_PROJECT_REF`, `STAGE_SUPABASE_DB_PASSWORD` | secret             | Deploy to Stage                                                                                         |
-| `PROD_SUPABASE_PROJECT_REF`, `PROD_SUPABASE_DB_PASSWORD`   | secret             | Deploy to Prod. A lost password can be reset under Database settings; the site itself uses the API keys |
-| `SITE_URL`                                                 | variable, optional | `indexnow.yml`; defaults to `https://www.awebound.store`                                                |
+| Name                                                       | Kind               | Used by                                                                                                                                                                                                                               |
+| ---------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CRON_SECRET`                                              | secret             | `indexnow.yml`; the same value as in Vercel                                                                                                                                                                                           |
+| `SUPABASE_ACCESS_TOKEN`                                    | secret             | Both deploy workflows. A scoped token (Supabase → Account → Access tokens) for the two projects, with Read on Project Settings, API Keys and API Key Secrets: the workflows pass the database password, so nothing needs write access |
+| `STAGE_SUPABASE_PROJECT_REF`, `STAGE_SUPABASE_DB_PASSWORD` | secret             | Deploy to Stage                                                                                                                                                                                                                       |
+| `PROD_SUPABASE_PROJECT_REF`, `PROD_SUPABASE_DB_PASSWORD`   | secret             | Deploy to Prod. A lost password can be reset under Database settings; the site itself uses the API keys                                                                                                                               |
+| `SITE_URL`                                                 | variable, optional | `indexnow.yml`; defaults to `https://www.awebound.store`                                                                                                                                                                              |
 
 The project ref is in each project's dashboard address.
 
@@ -83,7 +83,7 @@ The project ref is in each project's dashboard address.
 Once, in this order, so production never deploys by surprise:
 
 1. **Stage Supabase project**: Supabase → New project `awebound-stage` on the free plan, in production's region; keep the database password. Set its URL configuration (above). Under Authentication → Emails, paste the templates from `supabase/templates/` and set SMTP to Resend, as in production: without custom SMTP Supabase only emails the project's own members, a few an hour. For Google sign-in, enable Google with production's client ID and secret, and add `https://<stage-ref>.supabase.co/auth/v1/callback` to the client's authorized redirect URIs in Google Cloud.
-2. **Production's migration history**: `supabase link --project-ref <production ref>`, then `supabase migration list`. Every file in `supabase/migrations` should show a Remote version; record any applied by hand in the SQL editor with `supabase migration repair --status applied <version>`, so Deploy to Prod doesn't run it again.
+2. **Production's migration history**: `supabase link --project-ref <production ref>` (the bare id, not the URL), then `supabase migration list -p '<production DB password>'` (without the password the CLI needs a token with Database write). Every file in `supabase/migrations` should show a Remote version; record any applied by hand in the SQL editor with `supabase migration repair --status applied <version>`, so Deploy to Prod doesn't run it again. Then `supabase unlink`, so local commands can't reach production.
 3. **GitHub**: add the secrets above, then Branches → New branch `production` from `main`.
 4. **Vercel**: set Production's Branch Tracking to `production` (from then on a push to `main` builds a preview only), add the `stage.awebound.store` domain, and give Preview its own values from the table above (for a variable shared with Production, untick Preview on it, then add it again for Preview only).
 5. **Run Deploy to Stage.** It creates the tables, buckets and feature flags. Then seed the Archive designs and make yourself an admin; stage values set in front of a command take precedence over `.env.local`:
