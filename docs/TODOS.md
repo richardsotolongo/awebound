@@ -4,7 +4,7 @@ Open work, grouped by who has to act. Delete an item when it's done.
 
 ## Stage environment
 
-- [ ] **One-time setup**: `docs/DEPLOYMENT.md` → Setting up stage (the stage Supabase project, the GitHub secrets and `production` branch, Vercel's production branch, the `stage.awebound.store` domain and the Preview variables). Until it's done, every push to `main` still deploys production and previews use production's database.
+- [ ] **One-time setup**: `docs/DEPLOYMENT.md` → Setting up stage (the stage Supabase project, the Vercel Deploy Hook and Preview variables, the GitHub secrets, the `stage` branch and the `stage.awebound.store` domain). Until it's done, previews use production's database.
 
 ## Decisions for the owner
 

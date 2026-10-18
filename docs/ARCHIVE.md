@@ -163,7 +163,7 @@ Constants: `FOUNDING_CAP = 50`, `FOUNDING_SETTLE_FROM = 45` in `apps/web/src/ser
 
 ## Connecting services
 
-- **Database**: Deploy to Stage and Deploy to Prod apply the migrations ([DEPLOYMENT.md](DEPLOYMENT.md)). They create the private `archive-assets` and `idea-submissions` buckets and seed the flags.
+- **Database**: the Stage migrations and Deploy to Prod workflows apply the migrations ([DEPLOYMENT.md](DEPLOYMENT.md)). They create the private `archive-assets` and `idea-submissions` buckets and seed the flags.
 - **Supabase → Authentication → Emails**: paste the three templates from `supabase/templates/` (`magic-link.html`, `confirmation.html`, `email-change.html`). `supabase/config.toml` is for the local stack only.
 - **Fourthwall** (production only): Settings → For developers → Webhooks, `https://www.awebound.store/api/fourthwall/webhook` for `ORDER_PLACED` and `ORDER_UPDATED`, its secret in `FOURTHWALL_WEBHOOK_SECRET`; Open API → Create API user, in `FOURTHWALL_API_USERNAME` and `FOURTHWALL_API_PASSWORD`.
 - **Vercel**: the variables in [DEPLOYMENT.md](DEPLOYMENT.md), including `CRON_SECRET` for the daily reconcile cron in `vercel.json`.

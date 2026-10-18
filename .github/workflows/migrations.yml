@@ -1,12 +1,12 @@
 # Apply every migration from scratch on a local Postgres whenever the schema changes, so a broken
-# migration fails here instead of in Deploy to Stage.
+# migration fails here instead of on stage or production.
 name: Migrations
 
 on:
   pull_request:
     paths: ["supabase/**"]
   push:
-    branches: [main]
+    branches: [main, stage]
     paths: ["supabase/**"]
 
 permissions:

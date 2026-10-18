@@ -3,6 +3,11 @@
   "framework": "nextjs",
   "installCommand": "pnpm install --frozen-lockfile --filter @awebound/web...",
   "buildCommand": "pnpm build",
+  "git": {
+    "deploymentEnabled": {
+      "main": false
+    }
+  },
   "crons": [
     {
       "path": "/api/fourthwall/reconcile",

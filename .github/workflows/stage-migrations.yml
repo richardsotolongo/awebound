@@ -1,21 +1,21 @@
-# Deploy to Stage: applies new migrations to the stage Supabase project, then moves the `stage`
-# branch to the chosen commit, which Vercel builds at stage.awebound.store with the Preview
-# variables. Run it from Actions → Deploy to Stage. Secrets and setup: docs/DEPLOYMENT.md.
-name: Deploy to Stage
+# Applies new migrations to the stage Supabase project when they reach the `stage` branch. Vercel
+# deploys `stage` to stage.awebound.store on its own; a minute of new code on the old schema
+# doesn't matter there. Run it by hand (on any branch) the first time and after restoring a paused
+# project.
+# Secrets and setup: docs/DEPLOYMENT.md.
+name: Stage migrations
 
 on:
+  push:
+    branches: [stage]
+    paths: ["supabase/migrations/**"]
   workflow_dispatch:
-    inputs:
-      ref:
-        description: Branch, tag or commit to deploy
-        required: true
-        default: main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: deploy-stage
+  group: stage-migrations
   cancel-in-progress: false
 
 defaults:
@@ -23,7 +23,7 @@ defaults:
     shell: bash
 
 jobs:
-  deploy:
+  migrate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -32,8 +32,6 @@ jobs:
       PROJECT_REF: ${{ secrets.STAGE_SUPABASE_PROJECT_REF }}
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ inputs.ref }}
       - uses: supabase/setup-cli@v3
       - name: Apply migrations to stage
         run: |
@@ -43,12 +41,10 @@ jobs:
           fi
           supabase link --project-ref "$PROJECT_REF"
           supabase db push --yes 2>&1 | tee push.log
-      - name: Move stage to this commit
-        run: git push --force origin HEAD:refs/heads/stage
       - name: Summary
         run: |
           {
-            echo "Stage is at \`$(git rev-parse --short HEAD)\`. Vercel is building it at https://stage.awebound.store."
+            echo "Stage database is at \`$(git rev-parse --short HEAD)\`."
             echo '```'
             cat push.log
             echo '```'
