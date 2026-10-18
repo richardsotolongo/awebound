@@ -144,11 +144,11 @@ sequenceDiagram
 | Email                                                                                       | Sent by                           | Template                                 |
 | ------------------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------- |
 | Sign-in link and code, confirm email, confirm new email                                     | Supabase Auth through Resend SMTP | `supabase/templates/*.html`              |
-| Contact notification to `aweboundstore@gmail.com` (reply-to sender)                         | Server → Resend                   | `apps/web/src/server/email-templates.ts` |
+| Contact notification to `contact@awebound.store` (reply-to sender)                         | Server → Resend                   | `apps/web/src/server/email-templates.ts` |
 | Contact acknowledgement                                                                     | Server → Resend                   | same                                     |
 | Drop-notes welcome                                                                          | Server → Resend                   | same                                     |
 | Account deleted                                                                             | Server → Resend                   | same                                     |
-| Idea submission to `aweboundstore@gmail.com` (image attached)                               | Server → Resend                   | same                                     |
+| Idea submission to `contact@awebound.store` (image attached)                               | Server → Resend                   | same                                     |
 | Order claim code                                                                            | Server → Resend                   | same                                     |
 | Archive welcome, design unlocked, collection update (outbox, each behind an `email.*` flag) | Server → Resend                   | same                                     |
 | Guest follow-up, cart reminder (outbox, `email.*` flags; daily follow-ups cron)             | Server → Resend                   | same                                     |
