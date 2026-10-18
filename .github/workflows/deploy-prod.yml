@@ -1,8 +1,7 @@
 # Deploy to Prod: ships exactly what is on `stage`. Applies new migrations to the production
 # Supabase project, then fast-forwards the `production` branch, which Vercel builds at
 # www.awebound.store. The push never forces, so it stops if `production` has commits `stage`
-# lacks. Run it from Actions → Deploy to Prod. Secrets and setup: docs/DEPLOYMENT.md → Stage and
-# production.
+# lacks. Run it from Actions → Deploy to Prod. Secrets and setup: docs/DEPLOYMENT.md.
 name: Deploy to Prod
 
 on:

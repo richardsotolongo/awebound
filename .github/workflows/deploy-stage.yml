@@ -1,7 +1,6 @@
 # Deploy to Stage: applies new migrations to the stage Supabase project, then moves the `stage`
 # branch to the chosen commit, which Vercel builds at stage.awebound.store with the Preview
-# variables. Run it from Actions → Deploy to Stage. Secrets and setup: docs/DEPLOYMENT.md →
-# Stage and production.
+# variables. Run it from Actions → Deploy to Stage. Secrets and setup: docs/DEPLOYMENT.md.
 name: Deploy to Stage
 
 on:
