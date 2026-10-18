@@ -28,10 +28,10 @@ function Names({ pieces }: { pieces: ProductDetail[] }) {
 
 function Closeup({ piece }: { piece: ProductDetail }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py for every piece
+    // eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py, or imported with the piece
     <img
       className="guide-closeup"
-      src={`/products/${piece.slug}/detail.webp`}
+      src={piece.media.detail}
       alt={`Close-up of the ${piece.name} artwork`}
       width={640}
       height={800}

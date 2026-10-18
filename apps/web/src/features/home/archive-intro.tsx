@@ -15,19 +15,21 @@ export function ArchiveIntro({
   offer,
   preview,
   plate,
+  garment,
   signedIn,
   owned,
   saved,
 }: {
   offer: ArchiveOffer;
   preview: ArchivePreview | null;
-  /** The previewed piece's plate color, as a CSS value. */
+  /** The previewed piece's plate color, as a CSS value, and its cut-out garment. */
   plate: string | null;
+  garment: string | null;
   signedIn: boolean;
   /** The signed-in member owns the previewed design: its parts are open, not locked. */
   owned: boolean;
   /** Pieces to picture as saved in the short form: the release's first three with plates. */
-  saved: { slug: string; plate: string }[];
+  saved: { slug: string; plate: string; garment: string }[];
 }) {
   if (!offer.accounts) return null;
   const copy = homeIntro(offer, signedIn);
@@ -64,12 +66,7 @@ export function ArchiveIntro({
                   style={{ "--plate": p.plate } as CSSProperties}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py */}
-                  <img
-                    src={`/products/${p.slug}/piece.webp`}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <img src={p.garment} alt="" loading="lazy" decoding="async" />
                   <span className="archive-tile-heart">
                     <HeartIcon size={18} filled />
                   </span>
@@ -88,15 +85,17 @@ export function ArchiveIntro({
               className="archive-intro-media"
               style={plate ? ({ "--plate": plate } as CSSProperties) : undefined}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py for every piece */}
-              <img
-                src={`/products/${card.slug}/piece.webp`}
-                alt=""
-                width={960}
-                height={1200}
-                loading="lazy"
-                decoding="async"
-              />
+              {garment ? (
+                // eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py, or imported with the piece
+                <img
+                  src={garment}
+                  alt=""
+                  width={960}
+                  height={1200}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : null}
             </div>
             <div className="archive-intro-body">
               <p className="archive-intro-name">{card.name}</p>

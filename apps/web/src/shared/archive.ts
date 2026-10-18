@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { SizeGuide } from "./catalog";
 
 /** Schemas and types for My Archive shared by the server and the browser. No content lives here. */
 
@@ -181,17 +180,6 @@ export interface SavedPiece {
     image: { url: string; alt: string };
     status: string | null;
   } | null;
-}
-
-export interface FitGuide {
-  id: string;
-  name: string;
-  fit: string | null;
-  note: string | null;
-  sizes: string[];
-  isCap: boolean;
-  /** The same guide the shop shows (measurements and image; the supplier is never in it). */
-  guide: SizeGuide;
 }
 
 export interface OrderSummary {

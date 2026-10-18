@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "Content", robots: { index: false } }
 
 export default async function ContentPage() {
   const [rows, pending] = await Promise.all([listContentStatus(), pendingSuggestions()]);
-  const checks = validateDraftsAgainstCatalog();
+  const checks = await validateDraftsAgainstCatalog();
   const check = (designKey: string) => {
     const c = checks.find((x) => x.designKey === designKey);
     return c ? c.problems.join("; ") || "ok" : "no draft";

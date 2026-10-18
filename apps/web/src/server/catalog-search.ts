@@ -51,6 +51,7 @@ export function toSummary(p: ProductDetail): ProductSummary {
     hoverImage: p.hoverImage,
     gallery: p.gallery,
     plate: p.plate,
+    media: p.media,
     featured: p.featured,
     releasedAt: p.releasedAt,
   };

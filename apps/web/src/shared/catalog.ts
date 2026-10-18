@@ -52,6 +52,20 @@ export const ScriptureQuoteSchema = z.object({
 export type ScriptureQuote = z.infer<typeof ScriptureQuoteSchema>;
 
 /**
+ * One Scripture record: the exact wording in each translation the website can quote. Products
+ * and site sections keep one record each, so every place a verse appears shows the same words.
+ */
+export const ScriptureRecordSchema = z.object({
+  /** Full book name, chapter and verse: "Matthew 9:21". */
+  reference: z.string(),
+  /** True when the website quotes only part of the verse. */
+  excerpt: z.boolean(),
+  niv: z.string(),
+  kjv: z.string(),
+});
+export type ScriptureRecord = z.infer<typeof ScriptureRecordSchema>;
+
+/**
  * A release: the pieces that drop together under one name and one call. The site launches with a
  * single release, Behold. (Kept as "collection" in code.)
  */
@@ -113,25 +127,37 @@ export const ColorSchema = z.object({
 });
 export type Color = z.infer<typeof ColorSchema>;
 
-/** CSS value for a color chip: the brand token when there is one, else the provider's swatch. */
+/**
+ * CSS value for a color chip: the brand token when there is one, else the provider's swatch, else
+ * a neutral swatch (a color name the brand tokens don't know yet, on a piece not live in the shop).
+ */
 export function colorCss(color: Pick<Color, "token" | "swatch">): string {
   if (color.token) return `var(--${color.token})`;
-  return color.swatch && /^#[0-9a-fA-F]{3,8}$/.test(color.swatch) ? color.swatch : "transparent";
+  return color.swatch && /^#[0-9a-fA-F]{3,8}$/.test(color.swatch)
+    ? color.swatch
+    : "var(--garment-fallback)";
 }
 
 /**
  * A piece's plate: its own surface as a full-bleed field. `token` names its `--plate-*` color
  * and `ink` is what lettering and buttons take on it (chosen from the rendered plate images).
+ * `swatch` is the surface's color read from its plate image when the piece was imported: it
+ * stands in until the token is in the brand tokens (product data, like a provider's swatch).
  */
 export const PlateSchema = z.object({
   token: z.string().regex(/^plate-[a-z-]+$/),
   ink: z.enum(["bone", "coal"]),
+  swatch: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/)
+    .optional(),
 });
 export type Plate = z.infer<typeof PlateSchema>;
 
 /** CSS value for a plate's color; coal for a piece without one. */
 export function plateCss(plate: Plate | null): string {
-  return plate ? `var(--${plate.token})` : "var(--surface)";
+  if (!plate) return "var(--surface)";
+  return plate.swatch ? `var(--${plate.token}, ${plate.swatch})` : `var(--${plate.token})`;
 }
 
 export const ImageViewSchema = z.enum(["back", "front", "side", "detail"]);
@@ -141,6 +167,26 @@ export const ProductImageSchema = z.object({
   view: ImageViewSchema,
 });
 export type ProductImage = z.infer<typeof ProductImageSchema>;
+
+/**
+ * The images beside a piece's gallery: the close-up of its print, the garment cut out for the
+ * home page, and its plate as a wide and a tall field.
+ */
+export const MediaSchema = z.object({
+  detail: z.string(),
+  piece: z.string(),
+  plateWide: z.string(),
+  plateTall: z.string(),
+});
+export type Media = z.infer<typeof MediaSchema>;
+
+/** Where Behold's pieces keep those images: beside their gallery in public/products/<slug>/. */
+export const mediaAt = (folder: string): Media => ({
+  detail: `${folder}/detail.webp`,
+  piece: `${folder}/piece.webp`,
+  plateWide: `${folder}/plate-wide.webp`,
+  plateTall: `${folder}/plate-tall.webp`,
+});
 
 export const VariantSchema = z.object({
   sku: z.string(),
@@ -186,6 +232,7 @@ export const ProductSummarySchema = z.object({
   gallery: z.array(z.string()),
   /** Null for a piece with no plate images: it shows on coal. */
   plate: PlateSchema.nullable(),
+  media: MediaSchema,
   featured: z.boolean(),
   releasedAt: z.string(),
 });

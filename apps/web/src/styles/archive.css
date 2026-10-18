@@ -1499,3 +1499,53 @@
     }
   }
 }
+
+/* Owner pages: collections and pieces. */
+@layer components {
+  .admin-pdf {
+    width: 100%;
+    height: 80vh;
+    border: 1px solid var(--line);
+    background: var(--surface-raised);
+  }
+  .admin-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .admin-gallery li {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+  .admin-gallery img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: contain;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .admin-gallery .admin-wide {
+    aspect-ratio: 16 / 9;
+  }
+  .admin-checks {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .admin-checks li[data-ok="false"] {
+    color: var(--accent-text);
+    font-weight: 700;
+  }
+  .admin-preview-note {
+    padding: var(--space-3) 0;
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+}

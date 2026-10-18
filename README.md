@@ -51,7 +51,7 @@ pnpm dev
 
 Open http://localhost:3000. `apps/web/.env.example` lists every variable with a comment.
 
-The catalog and checkout come from the Fourthwall shop when `FOURTHWALL_STOREFRONT_TOKEN` is set (Fourthwall admin → Settings → For developers). Pieces in the content file that aren't in Fourthwall yet, or all of them without a token, look ready to order with the site's prices and images, but checkout shows a try-again message until they're published.
+The catalog and checkout come from the Fourthwall shop when `FOURTHWALL_STOREFRONT_TOKEN` is set (Fourthwall admin → Settings → For developers). The pieces themselves (releases, stories, Scripture, images) live in Supabase and are added from the owner's Admin pages, one zip per garment, with `apps/web/src/server/content/catalog.json` as the fallback. Published pieces that aren't in Fourthwall yet, or all of them without a token, look ready to order with the site's prices and images, but checkout shows a try-again message until they're published.
 
 Without Supabase keys accounts show "open soon" and contact messages and back-in-stock requests aren't stored; without `RESEND_API_KEY` emails print to the terminal in development.
 

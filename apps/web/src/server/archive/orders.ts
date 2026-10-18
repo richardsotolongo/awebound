@@ -74,6 +74,12 @@ async function resolveDesign(
       .eq("design_key", bySlug.design_key);
     if (!error) {
       bySlug.fourthwall_offer_id = offerId;
+      // The piece keeps the same id, so the catalog matches Fourthwall by it too.
+      await admin()
+        .from("pieces")
+        .update({ fourthwall_offer_id: offerId })
+        .eq("slug", bySlug.product_slug)
+        .is("fourthwall_offer_id", null);
       await audit(null, "design.map_offer", "design", bySlug.design_key, null, {
         offerId,
         from: "order",

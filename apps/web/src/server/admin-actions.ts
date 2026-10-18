@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
-import { after } from "next/server";
 import {
   ApproveRequestSchema,
   AssetAssignRequestSchema,
@@ -27,7 +25,6 @@ import {
   retireAsset,
 } from "./archive/assets";
 import { approveDraft, publishContent, retireContent, saveDraft } from "./archive/content";
-import { ARCHIVE_PUBLIC_TAG } from "./archive/offer";
 import { mapOffer } from "./archive/designs";
 import { applySuggestions } from "./archive/suggestions";
 import { importDrafts, type ImportReport } from "./archive/drafts";
@@ -38,21 +35,10 @@ import { reviewIdea } from "./archive/ideas";
 import { adjustOrderLines, markOrderReviewed, relinkOrder } from "./archive/orders";
 import { reconcileOrders, type ReconcileReport } from "./archive/reconcile";
 import { parse, run, type Result } from "./errors";
-import { syncIndexNow } from "./indexnow";
+import { refreshPublicPages } from "./refresh";
 import { requireAdmin } from "./session";
 
 // Owner actions for My Archive. Each one checks the admin role from the session and is audited by the module it calls.
-
-/**
- * After content goes live or comes down, the public pages show it now rather than within the
- * minute their caches last: the Archive reads and every page's cached render. Once the answer is
- * sent, IndexNow hears about the pages that changed.
- */
-function refreshPublicPages() {
-  updateTag(ARCHIVE_PUBLIC_TAG);
-  revalidatePath("/", "layout");
-  after(() => syncIndexNow().catch((err) => console.error("[indexnow]", err)));
-}
 
 export async function importDraftsAction(): Promise<Result<ImportReport>> {
   return run(async () => importDrafts((await requireAdmin()).id));
@@ -212,6 +198,8 @@ export async function mapOfferAction(input: unknown): Promise<Result<null>> {
     const actor = (await requireAdmin()).id;
     const { designKey, offerId } = parse(MapOfferRequestSchema, input);
     await mapOffer(designKey, offerId, actor);
+    // The catalog matches Fourthwall by the offer id first.
+    refreshPublicPages();
     return null;
   });
 }
