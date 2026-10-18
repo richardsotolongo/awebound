@@ -310,7 +310,11 @@ export async function pieceReadiness(found: PieceWithCollection) {
       ok: content.categories.some((c) => c.slug === piece.category),
       note: piece.category,
     },
-    { label: "Price", ok: piece.price_cents > 0 },
+    {
+      label: "Price",
+      ok: piece.price_cents >= 0,
+      note: piece.price_cents === 0 ? "free" : undefined,
+    },
     {
       label: "Four gallery images",
       ok: piece.images.length >= 4,
