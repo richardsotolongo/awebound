@@ -1,6 +1,6 @@
 # Supabase CLI configuration for local development (`supabase start`).
-# Production settings (redirect URLs, Google client, Resend SMTP) are set in the Supabase dashboard;
-# see docs/ARCHITECTURE.md → "Auth" and docs/TODOS.md.
+# Stage and production auth settings (redirect URLs, Google client, Resend SMTP) are set in each
+# Supabase project's dashboard; see docs/DEPLOYMENT.md. Never `supabase config push` this file.
 project_id = "awebound"
 
 [api]
@@ -58,7 +58,7 @@ host = "smtp.resend.com"
 port = 465
 user = "resend"
 pass = "env(RESEND_API_KEY)"
-admin_email = "no-reply@awebound.store"
+admin_email = "hello@awebound.store"
 sender_name = "Awebound"
 
 # Google sign-in. Create an OAuth client in Google Cloud and set these in supabase/.env.
