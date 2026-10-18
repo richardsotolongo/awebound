@@ -23,6 +23,7 @@ import {
 import {
   deletePieceDraft,
   editPiece,
+  matchFourthwall,
   publishPiece,
   replaceImage,
   saveSizeGuide,
@@ -53,23 +54,27 @@ export async function saveCollectionAction(input: unknown): Promise<Result<{ slu
   });
 }
 
-export async function publishCollectionAction(input: unknown): Promise<Result<{ pieces: number }>> {
+export async function publishCollectionAction(
+  input: unknown,
+): Promise<Result<{ pieces: number; fourthwall: string | null }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { slug } = parse(CollectionRequestSchema, input);
-    const pieces = await publishCollection(slug, actor);
+    const { pieces, fourthwall } = await publishCollection(slug, actor);
     refreshPublicPages();
-    return { pieces: pieces.length };
+    return { pieces: pieces.length, fourthwall };
   });
 }
 
-export async function unpublishCollectionAction(input: unknown): Promise<Result<null>> {
+export async function unpublishCollectionAction(
+  input: unknown,
+): Promise<Result<{ fourthwall: string | null }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { slug } = parse(CollectionRequestSchema, input);
-    await unpublishCollection(slug, actor);
+    const fourthwall = await unpublishCollection(slug, actor);
     refreshPublicPages();
-    return null;
+    return { fourthwall };
   });
 }
 
@@ -141,21 +146,36 @@ export async function replaceImageAction(input: unknown): Promise<Result<null>> 
   });
 }
 
-export async function publishPieceAction(input: unknown): Promise<Result<{ live: boolean }>> {
+export async function publishPieceAction(
+  input: unknown,
+): Promise<Result<{ live: boolean; fourthwall: string | null }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { slug, archive, wallpapers } = parse(PublishPieceRequestSchema, input);
-    const live = await publishPiece(slug, { archive, wallpapers }, actor);
-    refreshIf(live);
-    return { live };
+    const result = await publishPiece(slug, { archive, wallpapers }, actor);
+    refreshIf(result.live);
+    return result;
   });
 }
 
-export async function unpublishPieceAction(input: unknown): Promise<Result<null>> {
+export async function unpublishPieceAction(
+  input: unknown,
+): Promise<Result<{ fourthwall: string | null }>> {
   return run(async () => {
     const actor = (await requireAdmin()).id;
     const { slug } = parse(PieceRequestSchema, input);
-    return refreshIf(await unpublishPiece(slug, actor));
+    const { live, fourthwall } = await unpublishPiece(slug, actor);
+    refreshIf(live);
+    return { fourthwall };
+  });
+}
+
+/** Sets the piece's Fourthwall product to public or hidden, whichever the site expects. */
+export async function matchFourthwallAction(input: unknown): Promise<Result<{ message: string }>> {
+  return run(async () => {
+    const actor = (await requireAdmin()).id;
+    const { slug } = parse(PieceRequestSchema, input);
+    return { message: await matchFourthwall(slug, actor) };
   });
 }
 

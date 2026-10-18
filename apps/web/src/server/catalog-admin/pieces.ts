@@ -14,6 +14,14 @@ import { designKeyFor, getDesign, mapOffer } from "../archive/designs";
 import { checkPiece, readContent } from "../content";
 import { UserError } from "../errors";
 import { listProducts, type FourthwallProduct } from "../fourthwall";
+import {
+  describeVisibility,
+  expectedVisibility,
+  resolveOffer,
+  setVisibility,
+  visibilityOf,
+  type OfferLink,
+} from "./fourthwall-sync";
 import { removeImages, db, IMPORT_BUCKET, storeImage, takeUpload, toWebp } from "./storage";
 import type { CollectionRow, Extras, PieceRow, SizeGuideRow } from "./types";
 
@@ -276,12 +284,14 @@ export interface Check {
 export async function pieceReadiness(found: PieceWithCollection) {
   const { piece, collection } = found;
   const designKey = designKeyOf(found);
-  const [content, products, assets, versions] = await Promise.all([
+  const [content, products, assets, versions, link] = await Promise.all([
     readContent(db()),
     listProducts().catch(() => null),
     listAssets(designKey),
     listContentVersions(designKey),
+    resolveOffer(piece),
   ]);
+  const expected = expectedVisibility(piece, collection);
   const guide = piece.size_guide_id ? content.sizeGuides[piece.size_guide_id] : undefined;
   const live = matchProduct(products, piece);
   const copy =
@@ -311,15 +321,7 @@ export async function pieceReadiness(found: PieceWithCollection) {
       ok: Boolean(piece.scripture.reference.trim() && piece.scripture.kjv.trim()),
     },
     { label: "Size guide", ok: Boolean(guide), note: piece.size_guide_id ?? "none chosen" },
-    {
-      label: "Fourthwall product",
-      ok: Boolean(live),
-      note: products
-        ? live
-          ? `${live.slug} (${live.id ?? "no id"})`
-          : `no product with offer id ${piece.fourthwall_offer_id ?? "–"} or slug ${piece.fourthwall_slug}`
-        : "Fourthwall isn’t reachable (or the storefront token isn’t set)",
-    },
+    fourthwallCheck(link, live, products !== null, piece),
   ];
   const warned: Check[] = [
     {
@@ -333,14 +335,58 @@ export async function pieceReadiness(found: PieceWithCollection) {
       note: copy ? undefined : "no draft",
     },
     {
-      label: "Fourthwall product public and available",
-      ok:
-        !live ||
-        ((!live.access || live.access.type === "PUBLIC") && live.state.type === "AVAILABLE"),
-      note: live ? `${live.access?.type ?? "PUBLIC"}, ${live.state.type}` : undefined,
+      label: "In step with Fourthwall",
+      ok: link.status !== "linked" || visibilityOf(link.offer) === expected,
+      note:
+        link.status === "linked"
+          ? `${visibilityOf(link.offer) === "PUBLIC" ? "public" : "hidden"} in Fourthwall; ${expected === "PUBLIC" ? "public" : "hidden"} to match the site`
+          : undefined,
     },
   ];
-  return { required, warned, live, ready: required.every((c) => c.ok) };
+  return { required, warned, live, link, expected, ready: required.every((c) => c.ok) };
+}
+
+const suggest = (link: OfferLink) =>
+  "suggestion" in link && link.suggestion
+    ? `; use ${link.suggestion.id} (${link.suggestion.slug})`
+    : "";
+
+/** The Fourthwall product, hidden or public, as the Platform API sees it; else the storefront. */
+function fourthwallCheck(
+  link: OfferLink,
+  live: FourthwallProduct | null,
+  storefront: boolean,
+  piece: PieceRow,
+): Check {
+  const label = "Fourthwall product";
+  switch (link.status) {
+    case "linked": {
+      const state = visibilityOf(link.offer) === "PUBLIC" ? "public" : "hidden";
+      return { label, ok: true, note: `${link.offer.slug} (${link.offer.id}), ${state}` };
+    }
+    case "archived":
+      return {
+        label,
+        ok: false,
+        note: `the linked product ${link.offer.id} is archived in Fourthwall${suggest(link)}`,
+      };
+    case "missing":
+      return {
+        label,
+        ok: false,
+        note: `no product with offer id ${piece.fourthwall_offer_id ?? "–"} or slug ${piece.fourthwall_slug}${suggest(link)}`,
+      };
+    case "unavailable":
+      return {
+        label,
+        ok: Boolean(live),
+        note: live
+          ? `${live.slug} (${live.id ?? "no id"}); hidden products can’t be checked: ${link.reason}`
+          : storefront
+            ? `not among Fourthwall’s public products, and hidden ones can’t be checked: ${link.reason}`
+            : "Fourthwall isn’t reachable (or the storefront token isn’t set)",
+      };
+  }
 }
 
 /** Publishes a design's Archive copy and its newest wallpapers, as chosen. */
@@ -362,13 +408,15 @@ export async function applyExtras(designKey: string, extras: Extras, actor: stri
 }
 
 /**
- * Approve & publish. In a published release the piece goes live now with what was chosen; in a
- * draft release it is approved and waits, and goes live with the release. Returns whether it is live.
+ * Approve & publish. In a published release the piece goes live now with what was chosen, and its
+ * Fourthwall product is made public first (nothing changes if Fourthwall refuses); in a draft
+ * release it is approved and waits, and goes live with the release. A product found by slug is
+ * pinned by its offer id here.
  */
 export async function publishPiece(slug: string, extras: Extras, actor: string) {
   const found = await requirePiece(slug);
   const { piece, collection } = found;
-  const { required, ready } = await pieceReadiness(found);
+  const { required, ready, link } = await pieceReadiness(found);
   if (!ready)
     throw new UserError(
       `Not ready: ${required
@@ -378,7 +426,19 @@ export async function publishPiece(slug: string, extras: Extras, actor: string) 
     );
   const designKey = designKeyOf(found);
   if (!(await getDesign(designKey))) throw new UserError("Its Archive design is missing.");
+  const offerId = link.status === "linked" ? link.offer.id : piece.fourthwall_offer_id;
+  if (offerId && offerId !== piece.fourthwall_offer_id) await mapOffer(designKey, offerId, actor);
   const now = collection.status === "published";
+  const target = { slug: piece.slug, fourthwall_offer_id: offerId };
+  let fourthwall: string | null = null;
+  if (now) {
+    const shown = await setVisibility([target], "PUBLIC");
+    if (shown.failed.length)
+      throw new UserError(
+        `Fourthwall didn’t make the product public (${shown.failed[0]!.message}), so nothing was published. Try again.`,
+      );
+    fourthwall = describeVisibility(shown, "PUBLIC");
+  }
   const { error } = await db()
     .from("pieces")
     .update(
@@ -392,15 +452,24 @@ export async function publishPiece(slug: string, extras: Extras, actor: string) 
         : { status: "in_review", publish_with: extras },
     )
     .eq("id", piece.id);
-  if (error) throw new Error(`piece publish failed: ${error.message}`);
+  if (error) {
+    if (now) await setVisibility([target], "HIDDEN");
+    throw new Error(`piece publish failed: ${error.message}`);
+  }
   if (now) await applyExtras(designKey, extras, actor);
   else if (extras.archive && (await getOpenDraft(designKey))?.status === "draft")
     await approveDraft(designKey, actor);
-  await audit(actor, now ? "piece.publish" : "piece.approve", "piece", piece.id, null, extras);
-  return now;
+  await audit(actor, now ? "piece.publish" : "piece.approve", "piece", piece.id, null, {
+    ...extras,
+    fourthwall,
+  });
+  return { live: now, fourthwall };
 }
 
-/** Takes a piece off the site (back to draft). Its Archive copy and wallpapers stay as they are. */
+/**
+ * Takes a piece off the site (back to draft) and hides its Fourthwall product. Its Archive copy and
+ * wallpapers stay as they are. If Fourthwall refuses, the piece still comes down here.
+ */
 export async function unpublishPiece(slug: string, actor: string) {
   const found = await requirePiece(slug);
   const { error } = await db()
@@ -408,8 +477,19 @@ export async function unpublishPiece(slug: string, actor: string) {
     .update({ status: "draft", published_at: null })
     .eq("id", found.piece.id);
   if (error) throw new Error(`piece unpublish failed: ${error.message}`);
-  await audit(actor, "piece.unpublish", "piece", found.piece.id, null, null);
-  return isLive(found);
+  const fourthwall = describeVisibility(await setVisibility([found.piece], "HIDDEN"), "HIDDEN");
+  await audit(actor, "piece.unpublish", "piece", found.piece.id, null, { fourthwall });
+  return { live: isLive(found), fourthwall };
+}
+
+/** Sets the piece's Fourthwall product to what the site expects (the "Match the site" button). */
+export async function matchFourthwall(slug: string, actor: string) {
+  const found = await requirePiece(slug);
+  const state = expectedVisibility(found.piece, found.collection);
+  const result = await setVisibility([found.piece], state);
+  if (result.failed.length) throw new UserError(describeVisibility(result, state)!);
+  await audit(actor, "piece.fourthwall_state", "piece", found.piece.id, null, { state });
+  return describeVisibility(result, state) ?? "Nothing to change: no Fourthwall product is linked.";
 }
 
 /**
@@ -422,6 +502,8 @@ export async function deletePieceDraft(slug: string, actor: string) {
   const { piece } = found;
   if (piece.status === "published") throw new UserError("Unpublish the piece first.");
   const designKey = designKeyOf(found);
+  // Its Fourthwall product is hidden, never archived: it may be reused by a new import.
+  await setVisibility([piece], "HIDDEN");
 
   const assets = (await listAssets(designKey)).filter((a) => a.status === "uploaded");
   for (const a of assets) {

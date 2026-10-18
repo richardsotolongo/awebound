@@ -3,13 +3,28 @@ import Link from "next/link";
 import { Button } from "@awebound/brand";
 import { PageHeader } from "@/components/page-header";
 import { PIECE_STATUS } from "@/features/catalog-admin/status";
+import {
+  expectedVisibility,
+  offersById,
+  visibilityOf,
+} from "@/server/catalog-admin/fourthwall-sync";
 import { listPieces, type PieceWithCollection } from "@/server/catalog-admin/pieces";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Pieces", robots: { index: false } };
 
 export default async function PiecesPage() {
-  const pieces = await listPieces();
+  const [pieces, offers] = await Promise.all([listPieces(), offersById()]);
+  // Where each piece's Fourthwall product stands against what the site expects of it.
+  const fourthwall = ({ piece, collection }: PieceWithCollection) => {
+    if (!offers) return "–";
+    const offer = piece.fourthwall_offer_id ? offers.get(piece.fourthwall_offer_id) : undefined;
+    if (!offer) return "Not linked";
+    if (offer.access.type === "ARCHIVED") return "Archived: relink it";
+    const state = visibilityOf(offer);
+    const label = state === "PUBLIC" ? "Public" : "Hidden";
+    return state === expectedVisibility(piece, collection) ? label : `${label}: out of step`;
+  };
   const groups = new Map<string, PieceWithCollection[]>();
   for (const p of pieces) groups.set(p.collection.id, [...(groups.get(p.collection.id) ?? []), p]);
 
@@ -41,20 +56,25 @@ export default async function PiecesPage() {
                     <th>Piece</th>
                     <th>Slug</th>
                     <th>Status</th>
+                    <th>Fourthwall</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {group.map(({ piece }) => (
-                    <tr key={piece.id}>
-                      <td>
-                        <Link href={`/account/admin/pieces/${piece.slug}`}>{piece.name}</Link>
-                      </td>
-                      <td>
-                        <code className="admin-code">{piece.slug}</code>
-                      </td>
-                      <td>{PIECE_STATUS[piece.status]}</td>
-                    </tr>
-                  ))}
+                  {group.map((found) => {
+                    const { piece } = found;
+                    return (
+                      <tr key={piece.id}>
+                        <td>
+                          <Link href={`/account/admin/pieces/${piece.slug}`}>{piece.name}</Link>
+                        </td>
+                        <td>
+                          <code className="admin-code">{piece.slug}</code>
+                        </td>
+                        <td>{PIECE_STATUS[piece.status]}</td>
+                        <td>{fourthwall(found)}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

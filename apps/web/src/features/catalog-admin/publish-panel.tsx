@@ -55,8 +55,8 @@ export function PublishPanel({
                 () => publishPieceAction({ slug, archive, wallpapers }),
                 (r) =>
                   r.live
-                    ? "Published. It is on the site now."
-                    : "Approved. It goes live when its collection is published.",
+                    ? `Published. It is on the site now.${r.fourthwall ? ` ${r.fourthwall}` : ""}`
+                    : "Approved. It goes live, and its Fourthwall product becomes public, when its collection is published.",
               )
             }
           >
@@ -68,8 +68,13 @@ export function PublishPanel({
             variant="secondary"
             disabled={busy}
             onClick={() =>
-              confirm("Take this piece off the site and back to draft?") &&
-              run(() => unpublishPieceAction({ slug }), "Back to draft.")
+              confirm(
+                "Take this piece off the site and back to draft? Its Fourthwall product will be hidden too.",
+              ) &&
+              run(
+                () => unpublishPieceAction({ slug }),
+                (r) => `Back to draft.${r.fourthwall ? ` ${r.fourthwall}` : ""}`,
+              )
             }
           >
             Unpublish
@@ -90,6 +95,10 @@ export function PublishPanel({
           </Button>
         ) : null}
       </div>
+      <p className="field-help">
+        Publishing here also makes the piece’s Fourthwall product public; unpublishing or deleting
+        the draft hides it. Fourthwall follows this page.
+      </p>
       <Outcome message={message} failed={failed} />
     </div>
   );

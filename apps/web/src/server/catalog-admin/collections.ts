@@ -3,6 +3,7 @@ import type { CollectionFields } from "@/shared/pieces";
 import { audit } from "../archive/audit";
 import { designKeyFor } from "../archive/designs";
 import { UserError } from "../errors";
+import { describeVisibility, setVisibility } from "./fourthwall-sync";
 import { applyExtras } from "./pieces";
 import { db } from "./storage";
 import type { CollectionRow, PieceRow } from "./types";
@@ -88,23 +89,48 @@ export async function saveCollection(
 
 /**
  * Puts a release live with its approved pieces, and what each was approved with (Archive copy,
- * wallpapers). Returns the pieces that went live now.
+ * wallpapers). Their Fourthwall products are made public first; if Fourthwall refuses any, the
+ * ones already changed are hidden again and nothing is published. Returns the pieces that went
+ * live now and a line about Fourthwall.
  */
-export async function publishCollection(slug: string, actor: string): Promise<string[]> {
+export async function publishCollection(slug: string, actor: string) {
   const collection = await requireCollection(slug);
+  const going = (await collectionPieces(collection.id)).filter(
+    (p) => p.status === "in_review" || p.status === "published",
+  );
+  const shown = await setVisibility(going, "PUBLIC");
+  const undo = () =>
+    setVisibility(
+      going.filter((p) => shown.changed.includes(p.slug)),
+      "HIDDEN",
+    );
+  if (shown.failed.length) {
+    await undo();
+    throw new UserError(
+      `Fourthwall didn’t make ${shown.failed.map((f) => f.slug).join(", ")} public (${shown.failed[0]!.message}), so the collection wasn’t published. Try again.`,
+    );
+  }
   const { data, error } = await db().rpc("catalog_publish_collection", { p_id: collection.id });
-  if (error) throw new Error(`collection publish failed: ${error.message}`);
+  if (error) {
+    await undo();
+    throw new Error(`collection publish failed: ${error.message}`);
+  }
   const ids = ((data ?? []) as string[]).map(String);
   const pieces = (await collectionPieces(collection.id)).filter((p) => ids.includes(p.id));
   for (const piece of pieces)
     await applyExtras(designKeyFor(collection.slug, piece.slug), piece.publish_with, actor);
+  const fourthwall = describeVisibility(shown, "PUBLIC");
   await audit(actor, "collection.publish", "collection", collection.id, null, {
     pieces: pieces.map((p) => p.slug),
+    fourthwall,
   });
-  return pieces.map((p) => p.slug);
+  return { pieces: pieces.map((p) => p.slug), fourthwall };
 }
 
-/** Takes a release off the site with all its pieces; they keep their status for next time. */
+/**
+ * Takes a release off the site with all its pieces (they keep their status for next time) and
+ * hides their Fourthwall products.
+ */
 export async function unpublishCollection(slug: string, actor: string) {
   const collection = await requireCollection(slug);
   const { error } = await db()
@@ -112,7 +138,10 @@ export async function unpublishCollection(slug: string, actor: string) {
     .update({ status: "draft" })
     .eq("id", collection.id);
   if (error) throw new Error(`collection unpublish failed: ${error.message}`);
-  await audit(actor, "collection.unpublish", "collection", collection.id, null, null);
+  const hidden = await setVisibility(await collectionPieces(collection.id), "HIDDEN");
+  const fourthwall = describeVisibility(hidden, "HIDDEN");
+  await audit(actor, "collection.unpublish", "collection", collection.id, null, { fourthwall });
+  return fourthwall;
 }
 
 /** Sets the pieces' order within the release, from 1, on the pieces and their Archive designs. */

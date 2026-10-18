@@ -9,6 +9,7 @@ import { DraftEditor } from "@/features/archive/admin/draft-editor";
 import { ImageReplace } from "@/features/catalog-admin/image-replace";
 import { ImageTile } from "@/features/catalog-admin/image-tile";
 import {
+  FourthwallFixes,
   FourthwallForm,
   GalleryForm,
   GuidePicker,
@@ -29,6 +30,7 @@ import {
   pieceReadiness,
   type Check,
 } from "@/server/catalog-admin/pieces";
+import { visibilityOf } from "@/server/catalog-admin/fourthwall-sync";
 import { db, signedImportUrl } from "@/server/catalog-admin/storage";
 import type { ImportRow } from "@/server/catalog-admin/types";
 import { fileContent } from "@/server/content";
@@ -361,14 +363,36 @@ async function Step({
 
     case "fourthwall": {
       const product = readiness.live;
+      const link = readiness.link;
+      const offer = link.status === "linked" ? link.offer : null;
       const price = (size: string) => piece.size_price_cents[size] ?? piece.price_cents;
-      const gaps = (product?.variants ?? []).flatMap((v) => {
-        const size = v.attributes.size?.name ?? "One size";
-        const theirs = Math.round(v.unitPrice.value * 100);
-        return theirs !== price(size)
-          ? [`${size}: Fourthwall ${formatPrice(theirs)}, here ${formatPrice(price(size))}`]
-          : [];
-      });
+      // Fourthwall's prices by size: from the storefront when the product is public, else the API.
+      const theirs = (
+        product?.variants.map((v) => [v.attributes.size?.name ?? "One size", v.unitPrice.value]) ??
+        offer?.variants.map((v) => [v.attributes?.size?.name ?? "One size", v.unitPrice.value]) ??
+        []
+      ).map(([size, value]) => [size as string, Math.round((value as number) * 100)] as const);
+      const gaps = theirs.flatMap(([size, cents]) =>
+        cents !== price(size)
+          ? [`${size}: Fourthwall ${formatPrice(cents)}, here ${formatPrice(price(size))}`]
+          : [],
+      );
+      const base = theirs.length ? Math.min(...theirs.map(([, c]) => c)) : 0;
+      const fourthwallPrices = gaps.length
+        ? {
+            priceCents: base,
+            sizePriceCents: Object.fromEntries(theirs.filter(([, c]) => c !== base)),
+          }
+        : null;
+      const state = offer ? visibilityOf(offer) : null;
+      const where =
+        link.status === "linked"
+          ? `Linked: ${link.offer.slug} (${link.offer.id}), ${state === "PUBLIC" ? "public" : "hidden"} in Fourthwall. The site expects it ${readiness.expected === "PUBLIC" ? "public" : "hidden"}.`
+          : link.status === "archived"
+            ? `The linked product (${link.offer.id}) is archived in Fourthwall.`
+            : link.status === "missing"
+              ? `Fourthwall has no product with offer id ${piece.fourthwall_offer_id ?? "–"} or slug ${piece.fourthwall_slug}.`
+              : `Fourthwall’s API can’t be read (${link.reason}).${product ? ` Matched among its public products: ${product.slug}.` : ""}`;
       const refs = await importRefs(piece.import_id, (n) => n.startsWith("fourthwall-images/"));
       return (
         <>
@@ -380,31 +404,28 @@ async function Step({
               offerId={piece.fourthwall_offer_id}
             />
             <div className="admin-editor">
-              {product ? (
-                <>
-                  <p className="aw-body">
-                    Matched: {product.slug}, {product.state.type.toLowerCase()},{" "}
-                    {(product.access?.type ?? "PUBLIC").toLowerCase()}.
-                  </p>
-                  {gaps.length ? (
-                    <ul className="admin-list">
-                      {gaps.map((g) => (
-                        <li key={g} className="aw-form-error">
-                          Price differs: {g}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="field-help">Its prices match the piece’s.</p>
-                  )}
-                </>
-              ) : (
-                <p className="aw-body">
-                  No Fourthwall product matches yet. Fourthwall’s storefront lists only public
-                  products, so make it public there; it still stays off this site until you publish
-                  the piece here.
-                </p>
-              )}
+              <p className="aw-body">{where}</p>
+              <p className="field-help">
+                Fourthwall follows this site: publishing a piece makes its product public, and
+                unpublishing hides it. Prices are set in Fourthwall.
+              </p>
+              {gaps.length ? (
+                <ul className="admin-list">
+                  {gaps.map((g) => (
+                    <li key={g} className="aw-form-error">
+                      Price differs: {g}
+                    </li>
+                  ))}
+                </ul>
+              ) : theirs.length ? (
+                <p className="field-help">Its prices match the piece’s.</p>
+              ) : null}
+              <FourthwallFixes
+                slug={piece.slug}
+                suggestion={"suggestion" in link ? link.suggestion : null}
+                mismatch={state && state !== readiness.expected ? readiness.expected : null}
+                prices={fourthwallPrices}
+              />
             </div>
           </div>
           {product ? (

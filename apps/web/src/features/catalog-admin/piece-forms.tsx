@@ -3,7 +3,11 @@
 import { Button } from "@awebound/brand";
 import { useId, useState, type FormEvent, type ReactNode } from "react";
 import { Outcome, useOwnerAction } from "@/features/archive/admin/owner-action";
-import { editPieceAction, saveSizeGuideAction } from "@/server/catalog-admin-actions";
+import {
+  editPieceAction,
+  matchFourthwallAction,
+  saveSizeGuideAction,
+} from "@/server/catalog-admin-actions";
 import type { Category, Plate, ProductImage, ProductStory, ScriptureRecord } from "@/shared";
 import type { PiecePatch, SizeGuideFields } from "@/shared/pieces";
 import { Check, Field, toCents, toDollars } from "./fields";
@@ -476,6 +480,70 @@ export function FourthwallForm({
         help="Stored with the Archive design too, as Mappings does."
       />
     </PatchForm>
+  );
+}
+
+/**
+ * The Fourthwall tab's fixes, each one click: link the live product Fourthwall has under the same
+ * slug, set the product public or hidden to match the site, and take Fourthwall's prices (they are
+ * set in Fourthwall; its API can't change them).
+ */
+export function FourthwallFixes({
+  slug,
+  suggestion,
+  mismatch,
+  prices,
+}: {
+  slug: string;
+  suggestion: { id: string; slug: string } | null;
+  mismatch: "PUBLIC" | "HIDDEN" | null;
+  prices: { priceCents: number; sizePriceCents: Record<string, number> } | null;
+}) {
+  const { busy, message, failed, run } = useOwnerAction();
+  if (!suggestion && !mismatch && !prices) return null;
+  return (
+    <div className="admin-editor">
+      <div className="admin-inline">
+        {suggestion ? (
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={() =>
+              run(
+                () => editPieceAction({ slug, patch: { fourthwallOfferId: suggestion.id } }),
+                "Linked.",
+              )
+            }
+          >
+            Use {suggestion.id}
+          </Button>
+        ) : null}
+        {mismatch ? (
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={() =>
+              run(
+                () => matchFourthwallAction({ slug }),
+                (r) => r.message,
+              )
+            }
+          >
+            Match the site: make it {mismatch === "PUBLIC" ? "public" : "hidden"}
+          </Button>
+        ) : null}
+        {prices ? (
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={() => run(() => editPieceAction({ slug, patch: prices }), "Prices updated.")}
+          >
+            Use Fourthwall’s prices
+          </Button>
+        ) : null}
+      </div>
+      <Outcome message={message} failed={failed} />
+    </div>
   );
 }
 
