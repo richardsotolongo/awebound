@@ -34,9 +34,10 @@ export default async function SettingsPage({
   const provider = (user.app_metadata as { provider?: string } | undefined)?.provider;
   const email = user.email ?? "";
   const readiness = await getArchiveReadiness();
-  const consent = readiness.emails.preferencesUi
-    ? await getConsent(user.id, "collection_updates")
-    : null;
+  const [consent, reminders] = await Promise.all([
+    readiness.emails.preferencesUi ? getConsent(user.id, "collection_updates") : null,
+    readiness.emails.cartReminder ? getConsent(user.id, "cart_reminders") : null,
+  ]);
   const recent = signedInRecently(user, RECENT_MINUTES);
 
   return (
@@ -111,8 +112,22 @@ export default async function SettingsPage({
               Email preferences
             </h2>
             <ConsentForm
+              topic="collection_updates"
               initial={consent?.consented === true}
               wording={CONSENT_WORDING.collection_updates.wording}
+            />
+          </section>
+        ) : null}
+
+        {readiness.emails.cartReminder ? (
+          <section id="reminders" className="account-panel" aria-labelledby="reminders-title">
+            <h2 id="reminders-title" className="aw-h3">
+              Checkout reminders
+            </h2>
+            <ConsentForm
+              topic="cart_reminders"
+              initial={reminders?.consented !== false}
+              wording={CONSENT_WORDING.cart_reminders.wording}
             />
           </section>
         ) : null}

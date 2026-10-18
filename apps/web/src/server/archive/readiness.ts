@@ -26,7 +26,14 @@ export interface ArchiveReadiness {
   cron: boolean;
   fonts: boolean;
   storage: boolean;
-  emails: { preferencesUi: boolean; welcome: boolean; unlock: boolean; collectionUpdates: boolean };
+  emails: {
+    preferencesUi: boolean;
+    welcome: boolean;
+    unlock: boolean;
+    collectionUpdates: boolean;
+    guestFollowUp: boolean;
+    cartReminder: boolean;
+  };
   missing: string[];
 }
 
@@ -94,6 +101,8 @@ export const getArchiveReadiness = cache(async (): Promise<ArchiveReadiness> => 
       welcome: flags["email.welcome"],
       unlock: flags["email.unlock"],
       collectionUpdates: flags["email.collection_updates"],
+      guestFollowUp: flags["email.guest_follow_up"],
+      cartReminder: flags["email.cart_reminder"],
     },
     missing,
   };

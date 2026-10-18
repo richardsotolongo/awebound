@@ -41,7 +41,7 @@ export const NO_OFFER: ArchiveOffer = {
   foundingOpen: false,
 };
 
-const join = (items: string[]) =>
+export const join = (items: string[]) =>
   items.length < 2 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
 
 /** What a tile on the sign-in page shows, so its picture can be drawn. */
@@ -250,5 +250,24 @@ export function homeIntro(o: ArchiveOffer, signedIn: boolean) {
     title: "Wear the piece. Know its story.",
     body: `My Archive is your personal space for the Awebound pieces you love. ${save} Each design you buy unlocks its deeper story, a personal note from Richard and digital extras like phone and desktop wallpapers, all kept with its Scripture and biblical context, bringing you closer to the meaning behind what you wear.`,
     cta,
+  };
+}
+
+/**
+ * After a guest purchase, on the band under the header and in the next morning's email: the pieces
+ * bought and what an account with the checkout email opens. The order links itself by that email,
+ * so it is shown only while orders reach accounts (`offer.orders`).
+ */
+export function guestOrderNote(names: string[]) {
+  const one = names.length === 1;
+  const opens = one
+    ? "its deeper story, a founder’s note from Richard and digital extras like phone and desktop wallpapers, kept with its Scripture and biblical context"
+    : "the deeper story behind each, a founder’s note from Richard and digital extras like phone and desktop wallpapers, kept with their Scripture and biblical context";
+  return {
+    title: "Thank you for your order.",
+    lead: `${join(names)} ${one ? "continues" : "continue"} in My Archive.`,
+    site: `Create a free account with the email you used at checkout to open ${opens}.`,
+    email: `Create a free account with this email address to open ${opens}.`,
+    cta: { href: "/sign-in?next=%2Faccount", label: "Create your free Archive" },
   };
 }

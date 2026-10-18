@@ -671,7 +671,7 @@
     flex: 1 1 32ch;
     max-width: 72ch;
   }
-  .archive-welcome-words h2 {
+  .archive-welcome-words .aw-h3 {
     margin: 0;
     color: var(--altar-mark);
   }
@@ -715,6 +715,23 @@
   @media (max-width: 599px) {
     .archive-welcome {
       padding: var(--space-6);
+    }
+  }
+  /* After a guest's order arrives: the welcome's bone paper, under the header on any page. */
+  .guest-order {
+    padding-top: var(--space-4);
+  }
+  .guest-order .archive-welcome {
+    margin-bottom: 0;
+  }
+  /* Its button label is long: on phones it takes the width and a tighter padding, so it fits at 320px. */
+  @media (max-width: 599px) {
+    .guest-order .archive-welcome {
+      padding-inline: var(--space-4);
+    }
+    .guest-order .aw-btn-secondary {
+      width: 100%;
+      padding-inline: var(--space-4);
     }
   }
   /* A text-height link button keeps its underline at the words; an invisible band gives it a

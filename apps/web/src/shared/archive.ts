@@ -13,6 +13,8 @@ export const FLAG_KEYS = [
   "email.welcome",
   "email.unlock",
   "email.collection_updates",
+  "email.guest_follow_up",
+  "email.cart_reminder",
 ] as const;
 export type FlagKey = (typeof FLAG_KEYS)[number];
 
@@ -22,7 +24,7 @@ export const AssetFormatSchema = z.enum(["phone", "desktop"]);
 export type AssetFormat = z.infer<typeof AssetFormatSchema>;
 export const ShareFormatSchema = z.enum(["portrait", "square"]);
 export type ShareFormat = z.infer<typeof ShareFormatSchema>;
-export const ConsentTopicSchema = z.enum(["collection_updates"]);
+export const ConsentTopicSchema = z.enum(["collection_updates", "cart_reminders"]);
 export type ConsentTopic = z.infer<typeof ConsentTopicSchema>;
 
 // Shopper actions
@@ -45,6 +47,11 @@ export const ClaimVerifyRequestSchema = z.object({
 export type ClaimVerifyRequest = z.infer<typeof ClaimVerifyRequestSchema>;
 export const ConsentRequestSchema = z.object({ topic: ConsentTopicSchema, consented: z.boolean() });
 export type ConsentRequest = z.infer<typeof ConsentRequestSchema>;
+/** The cart ids a browser kept after checking out as a guest. */
+export const GuestOrderRequestSchema = z.object({
+  cartIds: z.array(z.string().min(1).max(100)).min(1).max(5),
+});
+export type GuestOrderRequest = z.infer<typeof GuestOrderRequestSchema>;
 
 // Owner actions
 export const DraftFieldsSchema = z.object({

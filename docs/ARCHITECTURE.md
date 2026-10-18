@@ -151,6 +151,7 @@ sequenceDiagram
 | Idea submission to `aweboundstore@gmail.com` (image attached)                               | Server → Resend                   | same                                     |
 | Order claim code                                                                            | Server → Resend                   | same                                     |
 | Archive welcome, design unlocked, collection update (outbox, each behind an `email.*` flag) | Server → Resend                   | same                                     |
+| Guest follow-up, cart reminder (outbox, `email.*` flags; daily follow-ups cron)             | Server → Resend                   | same                                     |
 
 Every email shares one table layout (`layout` in `email-templates.ts`; the three Supabase files copy its markup): the oxblood wordmark on warm bone, a paper card, inline hex colors (email clients ignore CSS variables and strip SVG), and only widely supported CSS (no styles on `<body>`, no margins, no rounded corners). The site attaches the wordmark inline (`cid:wordmark`), so it shows without loading a hosted image; Supabase emails load `{{ .SiteURL }}/email/wordmark-oxblood.png`. Check changes with Mailpit's HTML check (`supabase start`, then http://localhost:54324).
 
@@ -159,10 +160,11 @@ Every email shares one table layout (`layout` in `email-templates.ts`; the three
 1. The bag lives in the browser (zustand, persisted to localStorage, keyed by SKU).
 2. Whenever the bag is shown, the `validateBag` action re-prices it. The client's prices are display copies only.
 3. **Check out** calls `startCheckout`, which re-reads the bag from the catalog, creates a Fourthwall cart from the available lines and answers `{ url }`; the browser goes to Fourthwall's hosted checkout.
+4. Fourthwall never sends the buyer back (its confirmation page is the end of checkout), so a guest's browser keeps the cart id (`awebound-guest-checkouts` in localStorage). On their next visit, once the webhook has recorded the paid order, a band under the header (`GuestOrderNotice`) invites them into My Archive; the next morning one email does the same (`docs/ARCHIVE.md`, Discovery and Order pipeline).
 
 ### Fourthwall
 
-Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code. My Archive keeps a copy of each order from Fourthwall's webhooks and Open API (`provider_orders`) to link it to an account; the cart created at checkout is recorded in `checkout_sessions` and matched to the order's `checkoutId`. Route handlers: `POST /api/fourthwall/webhook`, `GET /api/fourthwall/reconcile` (cron), `GET /api/archive/assets/[assetId]`, `GET /api/archive/designs/[slug]/card.pdf` and `share.png`. Without `FOURTHWALL_STOREFRONT_TOKEN` every piece is a preview (below).
+Fourthwall takes payment, prints and ships, and sends order emails, so the site needs no payment code. My Archive keeps a copy of each order from Fourthwall's webhooks and Open API (`provider_orders`) to link it to an account; the cart created at checkout is recorded in `checkout_sessions` and matched to the order's `checkoutId`. Route handlers: `POST /api/fourthwall/webhook`, `GET /api/fourthwall/reconcile` (cron), `GET /api/archive/follow-ups` (cron: the guest follow-up and cart reminder emails), `GET /api/archive/assets/[assetId]`, `GET /api/archive/designs/[slug]/card.pdf` and `share.png`. Without `FOURTHWALL_STOREFRONT_TOKEN` every piece is a preview (below).
 
 - **Catalog**. `server/fourthwall.ts` loads every product from the Storefront API (`GET /collections/all/products`, only public products are returned) and `server/catalog-merge.ts` merges it with the brand content: the published releases, pieces and size guides in Supabase (`server/content`, read with the publishable key under row-level security, cached a minute under the `catalog-content` tag), or `server/content/catalog.json` when the database can't be read:
   - Fourthwall is the truth for what can be bought: variants, prices, stock and photos.

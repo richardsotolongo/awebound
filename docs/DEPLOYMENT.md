@@ -24,7 +24,7 @@ A fix made straight on `main` goes back into `stage` too (a pull request from `m
 
 ## Vercel project settings
 
-- **Build and Deployment**: Root Directory `apps/web`, with "Include files outside the root directory in the Build Step" on (the app imports `packages/*`); Framework Preset Next.js; the Build Command, Output Directory and Install Command overrides off, because `apps/web/vercel.json` sets the install (`pnpm install --frozen-lockfile --filter @awebound/web...`) and the build (`pnpm build`) and registers the two daily crons; Node.js 22.x.
+- **Build and Deployment**: Root Directory `apps/web`, with "Include files outside the root directory in the Build Step" on (the app imports `packages/*`); Framework Preset Next.js; the Build Command, Output Directory and Install Command overrides off, because `apps/web/vercel.json` sets the install (`pnpm install --frozen-lockfile --filter @awebound/web...`) and the build (`pnpm build`) and registers the three daily crons (reconcile, follow-up emails, IndexNow); Node.js 22.x.
 - **Ignored Build Step** (optional, skips previews for commits that don't touch the app): `[ "$VERCEL_GIT_COMMIT_REF" != stage ] && [ "$VERCEL_GIT_COMMIT_REF" != main ] && git diff --quiet HEAD^ HEAD -- . ../../packages ../../pnpm-lock.yaml`. `stage` and `main` always build: a skipped build would also cancel the Deploy Hook's.
 - **Environments → Production → Branch Tracking**: `main`.
 - **Git → Deploy Hooks**: one hook for branch `main`, its URL in the GitHub secret `VERCEL_PROD_DEPLOY_HOOK`.

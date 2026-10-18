@@ -1,11 +1,14 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { siteUrl } from "@/lib/env";
+import type { FlagKey } from "@/shared";
 import { sendEmail } from "../email";
 import {
   archiveWelcome,
+  cartReminder,
   collectionUpdate,
   designUnlocked,
+  guestFollowUp,
   type RenderedEmail,
 } from "../email-templates";
 import { getFlags } from "./flags";
@@ -14,18 +17,19 @@ import { getConsent } from "./consents";
 
 /**
  * Custom Archive emails go through here and nowhere else. While a template's flag is off the
- * call only records that nothing was sent; when on, it queues and sends through Resend. Nothing
- * runs on a schedule: sending is explicit.
+ * call only records that nothing was sent; when on, it queues and sends through Resend. The guest
+ * follow-up and the cart reminder come from the daily follow-ups cron (follow-ups.ts); the rest are
+ * sent by what causes them, never on a schedule.
  */
-export type OutboxTemplate = "archive_welcome" | "design_unlocked" | "collection_update";
+export type OutboxTemplate =
+  "archive_welcome" | "design_unlocked" | "collection_update" | "guest_follow_up" | "cart_reminder";
 
-const FLAG_FOR: Record<
-  OutboxTemplate,
-  "email.welcome" | "email.unlock" | "email.collection_updates"
-> = {
+const FLAG_FOR: Record<OutboxTemplate, FlagKey> = {
   archive_welcome: "email.welcome",
   design_unlocked: "email.unlock",
   collection_update: "email.collection_updates",
+  guest_follow_up: "email.guest_follow_up",
+  cart_reminder: "email.cart_reminder",
 };
 
 function render(template: OutboxTemplate, payload: Record<string, unknown>): RenderedEmail {
@@ -45,7 +49,20 @@ function render(template: OutboxTemplate, payload: Record<string, unknown>): Ren
         body: String(payload.body ?? ""),
         siteUrl,
       });
+    case "guest_follow_up":
+      return guestFollowUp({ names: payload.names as string[], siteUrl });
+    case "cart_reminder":
+      return cartReminder({ pieces: payload.pieces as { name: string; slug: string }[], siteUrl });
   }
+}
+
+/** Collection updates need a yes; cart reminders go unless the account turned them off in Settings. */
+async function consented(template: OutboxTemplate, userId: string | null): Promise<boolean> {
+  if (template === "collection_update")
+    return Boolean(userId) && (await getConsent(userId!, "collection_updates"))?.consented === true;
+  if (template === "cart_reminder")
+    return Boolean(userId) && (await getConsent(userId!, "cart_reminders"))?.consented !== false;
+  return true;
 }
 
 export async function queueEmail(input: {
@@ -57,12 +74,10 @@ export async function queueEmail(input: {
   if (!supabaseAdmin) return;
   const flags = await getFlags();
   const on = flags[FLAG_FOR[input.template]];
-  const consented =
-    input.template !== "collection_update" ||
-    (input.userId
-      ? (await getConsent(input.userId, "collection_updates"))?.consented === true
-      : false);
-  const status = on && consented && input.to ? "queued" : "skipped_disabled";
+  const status =
+    on && input.to && (await consented(input.template, input.userId))
+      ? "queued"
+      : "skipped_disabled";
   const { data, error } = await supabaseAdmin
     .from("email_outbox")
     .insert({

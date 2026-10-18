@@ -5,6 +5,7 @@ import {
   ClaimVerifyRequestSchema,
   ConsentRequestSchema,
   DesignAccessRequestSchema,
+  GuestOrderRequestSchema,
   IdeaSubmitRequestSchema,
   IdeaUploadRequestSchema,
   SavePieceRequestSchema,
@@ -12,6 +13,7 @@ import {
   type ClaimVerifyRequest,
   type ConsentRequest,
   type DesignAccessRequest,
+  type GuestOrderRequest,
   type IdeaSubmitRequest,
   type IdeaUploadRequest,
   type SavePieceRequest,
@@ -20,6 +22,7 @@ import { startClaim, verifyClaim } from "./archive/claims";
 import { setConsent } from "./archive/consents";
 import { getDesignBySlug } from "./archive/designs";
 import { getEntitlement } from "./archive/entitlements";
+import { guestOrderStatus } from "./archive/guest-orders";
 import { createIdeaUploadTarget, submitIdea } from "./archive/ideas";
 import { getArchiveReadiness } from "./archive/readiness";
 import { reconcileOrders } from "./archive/reconcile";
@@ -75,6 +78,21 @@ export async function designAccessAction(
   });
 }
 
+/**
+ * The band under the header asks, for the carts this browser checked out as a guest, whether an
+ * order arrived that an account would open. The cart ids are the only key; nothing about the order
+ * leaves the server but the pieces' names.
+ */
+export async function guestOrderAction(
+  input: GuestOrderRequest,
+): Promise<Result<{ names: string[]; paid: string[]; waiting: string[] }>> {
+  return run(async () => {
+    const { cartIds } = parse(GuestOrderRequestSchema, input);
+    await limit("guest-orders", 30, 10);
+    return guestOrderStatus(cartIds);
+  });
+}
+
 export async function startOrderClaim(
   input: ClaimStartRequest,
 ): Promise<Result<{ claimId: string }>> {
@@ -117,7 +135,8 @@ export async function setEmailConsent(
   return run(async () => {
     const user = await requireUser();
     const { topic, consented } = parse(ConsentRequestSchema, input);
-    if (!(await getArchiveReadiness()).emails.preferencesUi)
+    const { emails } = await getArchiveReadiness();
+    if (!(topic === "cart_reminders" ? emails.cartReminder : emails.preferencesUi))
       throw new UserError("Email preferences aren’t available yet.");
     const row = await setConsent(user.id, topic, consented, "settings");
     return { consented: row.consented };

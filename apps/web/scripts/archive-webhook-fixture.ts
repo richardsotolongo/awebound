@@ -2,15 +2,17 @@
  * Posts a signed, made-up Fourthwall order event to a running site so the purchase flow can be
  * walked without a real order: the webhook links the order to the account with that email (guest
  * provenance), unlocks the design, and with --registered first records a checkout session for the
- * account so the order counts as made while signed in (the Founding Member rule).
+ * account so the order counts as made while signed in (the Founding Member rule). With --guest it
+ * records a guest checkout instead and prints the line that puts its cart id in the browser, so the
+ * band a guest sees after their order can be walked (sign out, paste it in the console, reload).
  *
  * Usage: pnpm --filter @awebound/web archive:webhook -- --email you@example.com --slug thorns-to-lilies
  *          [--status CONFIRMED] [--type ORDER_PLACED|ORDER_UPDATED] [--order <id>] [--quantity 1]
- *          [--registered] [--test] [--url http://localhost:3000/api/fourthwall/webhook] [--dry-run]
+ *          [--registered | --guest] [--test] [--url http://localhost:3000/api/fourthwall/webhook] [--dry-run]
  *
  * Re-send the same --order with --type ORDER_UPDATED --status REFUNDED to see a refund land.
  * Needs FOURTHWALL_WEBHOOK_SECRET in .env.local (the dev server must use the same value);
- * --registered also needs the Supabase variables.
+ * --registered and --guest also need the Supabase variables.
  */
 import { createHmac, randomUUID } from "node:crypto";
 import { arg, hasFlag, requireEnv } from "./_env";
@@ -61,6 +63,16 @@ if (hasFlag("--registered")) {
     user: { id: user.id, email: user.email, email_confirmed_at: new Date().toISOString() },
     lines: [{ sku, productSlug: slug, color, size, quantity }],
   });
+} else if (hasFlag("--guest")) {
+  requireEnv("NEXT_PUBLIC_SUPABASE_URL");
+  requireEnv("SUPABASE_SECRET_KEY");
+  const { recordCheckoutSession } = await import("../src/server/archive/orders");
+  checkoutId = `cart-${randomUUID()}`;
+  await recordCheckoutSession({
+    cartId: checkoutId,
+    user: null,
+    lines: [{ sku, productSlug: slug, color, size, quantity }],
+  });
 }
 
 const now = new Date().toISOString();
@@ -105,7 +117,7 @@ const body = JSON.stringify(envelope);
 const signature = createHmac("sha256", secret).update(body, "utf8").digest("base64");
 
 console.info(
-  `order ${orderId} (${type}, ${status}${testMode ? ", test mode" : ""}${checkoutId ? ", registered checkout" : ""}) → ${url}`,
+  `order ${orderId} (${type}, ${status}${testMode ? ", test mode" : ""}${checkoutId ? (hasFlag("--guest") ? ", guest checkout" : ", registered checkout") : ""}) → ${url}`,
 );
 if (hasFlag("--dry-run")) {
   console.info(`x-fourthwall-hmac-sha256: ${signature}`);
@@ -122,3 +134,7 @@ const text = await response.text();
 console.info(`${response.status} ${text}`);
 if (!response.ok) process.exit(1);
 console.info(`Re-send this order later with: --order ${orderId}`);
+if (hasFlag("--guest"))
+  console.info(
+    `In the browser's console, signed out: localStorage.setItem("awebound-guest-checkouts", '["${checkoutId}"]')`,
+  );

@@ -10,6 +10,10 @@ export const CONSENT_WORDING: Record<ConsentTopic, { version: string; wording: s
     version: "collection_updates.v1",
     wording: "Email me about new pieces and stories in the collection.",
   },
+  cart_reminders: {
+    version: "cart_reminders.v1",
+    wording: "Email me once if I start a checkout and don’t finish it.",
+  },
 };
 
 export async function getConsent(userId: string, topic: ConsentTopic): Promise<ConsentRow | null> {

@@ -2,18 +2,28 @@
 
 import { useId, useState } from "react";
 import { setEmailConsent } from "@/server/archive-actions";
+import type { ConsentTopic } from "@/shared";
 
-/** Optional collection updates. Never pre-checked; the choice is stored with its wording. */
-export function ConsentForm({ initial, wording }: { initial: boolean; wording: string }) {
+/**
+ * One email choice, stored with its wording. Collection updates are never pre-checked; cart
+ * reminders are on until turned off.
+ */
+export function ConsentForm({
+  topic,
+  initial,
+  wording,
+}: {
+  topic: ConsentTopic;
+  initial: boolean;
+  wording: string;
+}) {
   const id = useId();
   const [checked, setChecked] = useState(initial);
   const [status, setStatus] = useState("");
   async function change(next: boolean) {
     setChecked(next);
     setStatus("");
-    const result = await setEmailConsent({ topic: "collection_updates", consented: next }).catch(
-      () => null,
-    );
+    const result = await setEmailConsent({ topic, consented: next }).catch(() => null);
     if (result?.ok) setStatus("Saved.");
     else {
       setChecked(!next);

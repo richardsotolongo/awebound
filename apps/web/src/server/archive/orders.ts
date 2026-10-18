@@ -22,6 +22,9 @@ function admin() {
   return supabaseAdmin;
 }
 
+/** An email as a case-insensitive ILIKE pattern matching only itself: `_` and `%` aren't wildcards. */
+const exactly = (email: string) => email.trim().replace(/[\\%_]/g, "\\$&");
+
 export interface CheckoutUser {
   id: string;
   email?: string | null;
@@ -313,7 +316,7 @@ export async function linkOrder(
     const { data } = await db
       .from("profiles")
       .select("id, email, full_name, email_verified_at")
-      .ilike("email", order.email.trim())
+      .ilike("email", exactly(order.email))
       .not("email_verified_at", "is", null)
       .limit(2);
     const profiles = (data ?? []) as ProfileRow[];
@@ -343,7 +346,7 @@ export async function autoLinkByEmail(user: CheckoutUser): Promise<number> {
     .update({ user_id: user.id, link_method: "email_match", linked_at: new Date().toISOString() })
     .is("user_id", null)
     .eq("test_mode", false)
-    .ilike("email", user.email.trim())
+    .ilike("email", exactly(user.email))
     .select("id, registered_checkout");
   if (error) throw new Error(`auto-link failed: ${error.message}`);
   const linked = (data ?? []) as Pick<OrderRow, "id" | "registered_checkout">[];

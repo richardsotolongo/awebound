@@ -185,6 +185,31 @@
       },
       "required": ["image"],
       "additionalProperties": false
+    },
+    "guest_order_notice_shown": {
+      "description": "A guest's order arrived and the band under the header invited them into My Archive, on their next visit after checking out.",
+      "type": "object",
+      "properties": {
+        "piece_count": {
+          "type": "integer",
+          "description": "Pieces the band named."
+        }
+      },
+      "required": ["piece_count"],
+      "additionalProperties": false
+    },
+    "guest_order_notice_answered": {
+      "description": "A guest answered the band after their order: Create your free Archive, or Not now.",
+      "type": "object",
+      "properties": {
+        "answer": {
+          "type": "string",
+          "enum": ["join", "not_now"],
+          "description": "join went to sign-in; not_now hid the band for that order."
+        }
+      },
+      "required": ["answer"],
+      "additionalProperties": false
     }
   }
 }

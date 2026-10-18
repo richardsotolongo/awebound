@@ -1,4 +1,5 @@
-import { collectionHref, CONTACT_TOPIC_LABELS, type ContactTopic } from "@/shared";
+import { guestOrderNote, join } from "@/features/archive/offer";
+import { collectionHref, CONTACT_TOPIC_LABELS, pieceHref, type ContactTopic } from "@/shared";
 
 /**
  * Transactional email templates. Every email uses `layout` (the Supabase sign-in templates in
@@ -258,6 +259,65 @@ export function designUnlocked({
     ],
   });
   const text = `${name} is in your Archive.\n\nIts full story, the note from Richard and its published extras are ready for you.\n\nRead its story: ${href}`;
+  return { subject, html, text };
+}
+
+/** The morning after a paid guest order: what an account with the order's email opens. Once per address. */
+export function guestFollowUp({
+  names,
+  siteUrl,
+}: {
+  names: string[];
+  siteUrl: string;
+}): RenderedEmail {
+  const note = guestOrderNote(names);
+  const subject = note.lead.replace(/\.$/, "");
+  const href = `${siteUrl}${note.cta.href}`;
+  const once =
+    "Accounts are free and never needed to order. This is the only email we’ll send about it.";
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead(note.title),
+      row(`${escapeHtml(note.lead)} ${escapeHtml(note.email)}`),
+      button(note.cta.label, href),
+      small(once),
+    ],
+  });
+  const text = `${note.title}\n\n${note.lead} ${note.email}\n\n${note.cta.label}: ${href}\n\n${once}`;
+  return { subject, html, text };
+}
+
+/** A day after a signed-in checkout that wasn't finished: its pieces, at most once a month. */
+export function cartReminder({
+  pieces,
+  siteUrl,
+}: {
+  pieces: { name: string; slug: string }[];
+  siteUrl: string;
+}): RenderedEmail {
+  const subject = "Your bag at Awebound";
+  const sentence = (names: string) =>
+    `You started a checkout with ${names} and didn’t finish it. Your bag is kept on the device you used, whenever you’re ready to come back to it.`;
+  const links = pieces.map(
+    (p) =>
+      `<a href="${siteUrl}${pieceHref(p.slug)}" style="color:${C.oxblood};">${escapeHtml(p.name)}</a>`,
+  );
+  const bag = `${siteUrl}/bag`;
+  const settings = `${siteUrl}/account/settings#reminders`;
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead("Your bag is saved."),
+      row(sentence(join(links))),
+      button("Return to your bag", bag),
+    ],
+    note: `We send at most one of these a month. <a href="${settings}" style="color:${C.muted};">Turn them off in Settings</a>.`,
+  });
+  const list = pieces.map((p) => `${p.name}: ${siteUrl}${pieceHref(p.slug)}`).join("\n");
+  const text = `Your bag is saved.\n\n${sentence(join(pieces.map((p) => p.name)))}\n\n${list}\n\nReturn to your bag: ${bag}\n\nWe send at most one of these a month. Turn them off in Settings: ${settings}`;
   return { subject, html, text };
 }
 

@@ -17,7 +17,7 @@ src/
 │  │                       admin/* (owner pages, role `admin`; admin/ideas is the submissions inbox; admin/collections and
 │  │                       admin/pieces manage the catalog: releases, piece zip import, each piece's review page)
 │  ├─ preview/[slug]       the owner's preview of a draft piece as a customer sees it (admin only, never indexed)
-│  ├─ api/                 fourthwall/webhook (signed order events), fourthwall/reconcile (cron), indexnow (cron and deploy workflow), archive/assets/[id], archive/designs/[slug]/card.pdf and share.png
+│  ├─ api/                 fourthwall/webhook (signed order events), fourthwall/reconcile (cron), archive/follow-ups (cron: the guest follow-up and cart reminder emails), indexnow (cron and deploy workflow), archive/assets/[id], archive/designs/[slug]/card.pdf and share.png
 │  └─ auth/                callback (OAuth/PKCE), confirm (email token hash), sign-out (POST)
 ├─ features/               one folder per feature (UI)
 │  ├─ home/                Campaign (the opening plate), HeroRotator (its pieces taking turns), HeroPieceProvider (the piece the plate and the lead piece share), LeadPiece (the brand paragraph, then the piece on the plate up close: close-up, name, price, status, Scripture), Founder (Richard's note), ArchiveIntro (My Archive with a preview of one design's card)
@@ -27,7 +27,7 @@ src/
 │  ├─ guides/              guides.ts (each guide's copy, pieces and blocks), guide-blocks.tsx (cards, artwork, fabric, fit, verses, symbols; More guides)
 │  ├─ bag/                 zustand store (persisted), drawer, bag page, checkout + notify form
 │  ├─ archive/             My Archive UI: offer.ts (what the Archive can promise and every word for it), nav, benefits list, the overview's welcome, seal, claim/export/consent/email-change forms,
-│  │                       product page story section and Archive note, Bible link, save hearts and their shared store, the Idea Submissions tile
+│  │                       product page story section and Archive note, Bible link, save hearts and their shared store, the band after a guest's order (guest-order-notice.tsx), the Idea Submissions tile
 │  │                       and form; admin/ for the owner forms
 │  ├─ contact/ auth/ account/ legal/
 ├─ server/                 server-only code (never import it from a Client Component, except actions.ts)
@@ -36,7 +36,7 @@ src/
 │  ├─ catalog-admin/       the owner's catalog: collections, pieces (edits, images, readiness, publish), zip (a piece zip checked and imported), storage (the product-images and piece-imports buckets)
 │  ├─ refresh.ts           refreshPublicPages(): the catalog and Archive tags, every page, then IndexNow
 │  ├─ session.ts, limit.ts the session user and roles; the rate limit
-│  ├─ archive/             My Archive's server modules (docs/ARCHIVE.md): two serializers in content.ts, offer.ts (the public offer and the home preview, cached a minute), entitlements, orders, founding, reconcile, claims, assets, exports, ideas (Idea Submissions: purchases, allowance, uploads, the inbox)
+│  ├─ archive/             My Archive's server modules (docs/ARCHIVE.md): two serializers in content.ts, offer.ts (the public offer and the home preview, cached a minute), entitlements, orders, guest-orders (what a guest's browser hears about its carts), follow-ups (the daily emails), founding, reconcile, claims, assets, exports, ideas (Idea Submissions: purchases, allowance, uploads, the inbox)
 │  ├─ catalog.ts           getCatalog (Fourthwall + published brand content), getDraftCatalog (drafts too, for the preview), searchProducts, getFacets, getProduct, withFallback
 │  ├─ catalog-merge.ts     merges Fourthwall products with the brand content by offer id, then slug; previews for the rest
 │  ├─ catalog-search.ts    search, filters, facets and sorting over the merged catalog
