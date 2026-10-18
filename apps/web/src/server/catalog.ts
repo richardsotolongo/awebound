@@ -3,19 +3,24 @@ import { cache } from "react";
 import { ProductQuerySchema, type ProductQueryInput } from "@/shared";
 import { mergeFourthwallCatalog } from "./catalog-merge";
 import { CatalogIndex } from "./catalog-search";
-import { brandContent } from "./content";
+import { getAllContent, getBrandContent, type BrandContent } from "./content";
 import { serverEnv } from "./env";
 import { listProducts } from "./fourthwall";
 
 let lastMismatch = "";
 
+async function buildCatalog(content: BrandContent) {
+  const live = serverEnv.FOURTHWALL_STOREFRONT_TOKEN ? await listProducts() : [];
+  return mergeFourthwallCatalog(content, live);
+}
+
 /**
- * The live Fourthwall shop merged with the brand content. Built once per request. Without a
- * storefront token (local development, or before Fourthwall is set up) every piece is a preview.
+ * The live Fourthwall shop merged with the published brand content. Built once per request.
+ * Without a storefront token (local development, or before Fourthwall is set up) every piece is a
+ * preview.
  */
 export const getCatalog = cache(async () => {
-  const live = serverEnv.FOURTHWALL_STOREFRONT_TOKEN ? await listProducts() : [];
-  const { catalog, unmatched, missing } = mergeFourthwallCatalog(brandContent, live);
+  const { catalog, unmatched, missing } = await buildCatalog(await getBrandContent());
   const mismatch = JSON.stringify({ notOnSite: unmatched, notInFourthwall: missing });
   if (mismatch !== lastMismatch && (unmatched.length || missing.length)) {
     console.warn(
@@ -26,8 +31,22 @@ export const getCatalog = cache(async () => {
   return new CatalogIndex(catalog);
 });
 
+/** Every piece, drafts and unreleased collections included: the owner's preview. */
+export async function getDraftCatalog() {
+  return new CatalogIndex((await buildCatalog(await getAllContent())).catalog);
+}
+
 export async function searchProducts(query: ProductQueryInput = {}) {
   return (await getCatalog()).search(ProductQuerySchema.parse(query));
+}
+
+/**
+ * Every piece on the site in the shop's default order, with no page limit: for the sitemap,
+ * IndexNow, llms.txt and the guides, which must list every piece however many releases there are.
+ */
+export async function allProducts() {
+  const query = ProductQuerySchema.parse({});
+  return (await getCatalog()).search({ ...query, pageSize: Number.MAX_SAFE_INTEGER }).items;
 }
 
 export async function getFacets(query: ProductQueryInput = {}) {

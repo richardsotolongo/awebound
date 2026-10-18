@@ -1,9 +1,9 @@
 import "server-only";
-import { EMPTY_FACETS, EMPTY_LIST, shopCanonical } from "@/features/catalog/query";
+import { EMPTY_FACETS, shopCanonical } from "@/features/catalog/query";
 import { GUIDES, GUIDES_PATH, guideHref } from "@/features/guides/guides";
 import { siteUrl } from "@/lib/env";
 import { ALL_COLLECTIONS, pieceHref } from "@/shared";
-import { getFacets, getReleases, searchProducts, withFallback } from "./catalog";
+import { allProducts, getFacets, getReleases, withFallback } from "./catalog";
 
 const PAGES = ["", "/shop", "/about", "/contact", "/faq", "/refunds", "/privacy", "/terms"];
 
@@ -23,7 +23,7 @@ export async function indexablePages(): Promise<IndexablePage[]> {
   const [releases, facets, products] = await Promise.all([
     withFallback(getReleases, []),
     withFallback(() => getFacets({}), EMPTY_FACETS),
-    withFallback(() => searchProducts({ pageSize: 48 }), EMPTY_LIST),
+    withFallback(allProducts, []),
   ]);
   const paths = [
     ...PAGES,
@@ -36,7 +36,7 @@ export async function indexablePages(): Promise<IndexablePage[]> {
   ];
   return [
     ...paths.map((path) => ({ path })),
-    ...products.items.map((p) => ({
+    ...products.map((p) => ({
       path: pieceHref(p.slug),
       lastModified: p.releasedAt,
       images: [p.image, p.hoverImage].flatMap((i) =>

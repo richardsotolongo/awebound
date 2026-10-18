@@ -5,6 +5,8 @@ import { usePath } from "@/lib/pathname";
 
 const LINKS = [
   { label: "Health", href: "/account/admin" },
+  { label: "Collections", href: "/account/admin/collections" },
+  { label: "Pieces", href: "/account/admin/pieces" },
   { label: "Content", href: "/account/admin/content" },
   { label: "Assets", href: "/account/admin/assets" },
   { label: "Mappings", href: "/account/admin/mappings" },

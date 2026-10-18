@@ -14,7 +14,7 @@ import {
 import { ArrowLeftIcon, ArrowRightIcon, PauseIcon, PlayIcon } from "@/components/icons";
 import { useSwipe } from "@/lib/use-swipe";
 import { useHeroPiece } from "./hero-piece";
-import { pieceHref } from "@/shared";
+import { pieceHref, type Media } from "@/shared";
 
 export interface HeroSlide {
   slug: string;
@@ -23,11 +23,11 @@ export interface HeroSlide {
   /** The piece's plate color as a CSS value. */
   plate: string;
   ink: "bone" | "coal";
+  media: Media;
 }
 
 const ADVANCE_MS = 7000;
 const REDUCED = "(prefers-reduced-motion: reduce)";
-const files = (slug: string) => `/products/${slug}`;
 
 function subscribeReduced(onChange: () => void) {
   const query = window.matchMedia(REDUCED);
@@ -39,14 +39,10 @@ function subscribeReduced(onChange: () => void) {
  * The surface this screen shows, the garment and its close-up in the lead piece below, decoded
  * before a slide appears, so the plate and the lead piece change together.
  */
-function preload(slug: string): Promise<unknown> {
+function preload(media: Media): Promise<unknown> {
   const wide = window.matchMedia("(min-width: 900px)").matches;
   return Promise.all(
-    [
-      `${files(slug)}/plate-${wide ? "wide" : "tall"}.webp`,
-      `${files(slug)}/piece.webp`,
-      `${files(slug)}/detail.webp`,
-    ].map((src) => {
+    [wide ? media.plateWide : media.plateTall, media.piece, media.detail].map((src) => {
       const img = new Image();
       img.src = src;
       return img.decode().catch(() => undefined);
@@ -98,7 +94,7 @@ export function HeroRotator({
       const next = (to + slides.length) % slides.length;
       // Mount it hidden first so the switch can fade it in.
       setMounted((m) => (m.includes(next) ? m : [...m, next]));
-      await preload(slides[next]!.slug);
+      await preload(slides[next]!.media);
       setIndex(next);
     },
     [slides, setIndex],
@@ -168,9 +164,9 @@ export function HeroRotator({
         const s = slides[i]!;
         return (
           <picture key={s.slug} className="aw-plate-bg campaign-layer" data-on={i === index}>
-            <source media="(min-width: 900px)" srcSet={`${files(s.slug)}/plate-wide.webp`} />
+            <source media="(min-width: 900px)" srcSet={s.media.plateWide} />
             <img
-              src={`${files(s.slug)}/plate-tall.webp`}
+              src={s.media.plateTall}
               alt=""
               loading="eager"
               fetchPriority={i === start ? "high" : undefined}
@@ -231,7 +227,7 @@ export function HeroRotator({
               // eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py for every piece
               <img
                 key={s.slug}
-                src={`${files(s.slug)}/piece.webp`}
+                src={s.media.piece}
                 alt={i === index ? s.alt : ""}
                 data-on={i === index}
                 width={960}

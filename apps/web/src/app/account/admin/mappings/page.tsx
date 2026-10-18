@@ -3,16 +3,19 @@ import { PageHeader } from "@/components/page-header";
 import { MapOfferForm } from "@/features/archive/admin/map-offer-form";
 import { listContentStatus } from "@/server/archive/content";
 import { validateDraftsAgainstCatalog } from "@/server/archive/drafts";
-import { fitGuideForSlug } from "@/server/archive/fit";
-import { brandContent } from "@/server/content";
+import { getAllContent } from "@/server/content";
 import { listProducts } from "@/server/fourthwall";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Mappings", robots: { index: false } };
 
 export default async function MappingsPage() {
-  const [rows, live] = await Promise.all([listContentStatus(), listProducts().catch(() => null)]);
-  const checks = validateDraftsAgainstCatalog();
+  const [rows, live, content] = await Promise.all([
+    listContentStatus(),
+    listProducts().catch(() => null),
+    getAllContent(),
+  ]);
+  const checks = await validateDraftsAgainstCatalog();
   const check = (designKey: string) => {
     const c = checks.find((x) => x.designKey === designKey);
     return c ? c.problems.join("; ") || "ok" : "no draft";
@@ -45,8 +48,7 @@ export default async function MappingsPage() {
           </thead>
           <tbody>
             {rows.map(({ design }) => {
-              const product = brandContent.products.find((p) => p.slug === design.product_slug);
-              const guide = fitGuideForSlug(design.product_slug);
+              const product = content.products.find((p) => p.slug === design.product_slug);
               return (
                 <tr key={design.design_key}>
                   <td>{design.name}</td>
@@ -66,7 +68,11 @@ export default async function MappingsPage() {
                       current={design.fourthwall_offer_id}
                     />
                   </td>
-                  <td>{guide ? `${guide.id}: ${guide.name}` : "none"}</td>
+                  <td>
+                    {product?.sizeGuide
+                      ? `${product.sizeGuideId}: ${product.sizeGuide.name}`
+                      : "none"}
+                  </td>
                   <td>{check(design.design_key)}</td>
                 </tr>
               );

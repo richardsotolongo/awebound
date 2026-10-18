@@ -29,12 +29,12 @@ const orderId = arg("--order") ?? `local-${Date.now().toString(36)}`;
 const url = arg("--url") ?? "http://localhost:3000/api/fourthwall/webhook";
 const testMode = hasFlag("--test");
 
-const { brandContent } = await import("../src/server/content");
+const { getBrandContent } = await import("../src/server/content");
 const { getCatalog } = await import("../src/server/catalog");
 
-const content = brandContent.products.find((p) => p.slug === slug);
+const content = (await getBrandContent()).products.find((p) => p.slug === slug);
 if (!content) {
-  console.error(`No design with the slug ${slug} in catalog.json.`);
+  console.error(`No design with the slug ${slug} in the catalog.`);
   process.exit(1);
 }
 const catalog = await getCatalog().catch(() => null);

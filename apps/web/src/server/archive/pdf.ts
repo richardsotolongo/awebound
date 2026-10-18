@@ -1,6 +1,4 @@
 import "server-only";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import fontkit from "@pdf-lib/fontkit";
 import { BRAND_HEX } from "@awebound/brand/hex";
 import { WORDMARK } from "@awebound/brand/marks";
@@ -8,6 +6,7 @@ import { quoted } from "@awebound/brand/scripture-quote";
 import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import sharp from "sharp";
 import type { ProductDetail } from "@/shared";
+import { readImage } from "../read-image";
 import { TRANSLATION_NOTICE } from "../scripture";
 import { loadFonts } from "./fonts";
 import type { ContentRow, DesignRow } from "./types";
@@ -154,9 +153,7 @@ export async function renderDesignCardPdf(
   const textWidth = width - artWidth - 24;
   const artTop = y;
   try {
-    const webp = await readFile(
-      join(process.cwd(), "public", "products", design.product_slug, "detail.webp"),
-    );
+    const webp = await readImage(product.media.detail);
     const png = await doc.embedPng(await sharp(webp).png().toBuffer());
     page!.drawImage(png, {
       x: right - artWidth,

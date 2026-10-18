@@ -65,6 +65,7 @@ function previewProduct(item: ProductContent): ProductDetail {
     hoverImage,
     gallery: item.images.map((i) => i.url),
     plate: item.plate,
+    media: item.media,
     featured: item.featured,
     releasedAt: item.releasedAt,
     story: item.story,
@@ -78,16 +79,17 @@ function previewProduct(item: ProductContent): ProductDetail {
  * Fourthwall is the source of truth for what can be bought (variants, prices, stock); the brand
  * content is the source of truth for the story (ID, release, position, Scripture, copy) and the
  * site's styled product images, which are made from Fourthwall's renders.
- * Matched by slug. A content entry with no Fourthwall product yet is listed as a preview.
+ * Matched by offer id, then by slug (how orders map too). A content entry with no Fourthwall
+ * product yet is listed as a preview; a Fourthwall product with no published piece isn't shown.
  * Variant SKUs on the site are the Fourthwall variant ids, so checkout can build the cart directly.
  */
 export function mergeFourthwallCatalog(
   content: BrandContent,
   products: FourthwallProduct[],
 ): MergedCatalog {
-  const bySlug = new Map(
-    products.filter((p) => !p.access || p.access.type === "PUBLIC").map((p) => [p.slug, p]),
-  );
+  const listed = products.filter((p) => !p.access || p.access.type === "PUBLIC");
+  const bySlug = new Map(listed.map((p) => [p.slug, p]));
+  const byId = new Map(listed.flatMap((p) => (p.id ? [[p.id, p] as const] : [])));
   const tokens = new Map(
     Object.entries(content.colorTokens).map(([name, token]) => [norm(name), token]),
   );
@@ -96,7 +98,9 @@ export function mergeFourthwallCatalog(
   const merged: ProductDetail[] = [];
 
   for (const item of content.products) {
-    const fw = bySlug.get(item.fourthwallSlug);
+    const fw =
+      (item.fourthwallOfferId ? byId.get(item.fourthwallOfferId) : undefined) ??
+      bySlug.get(item.fourthwallSlug);
     const first = fw?.variants[0];
     if (!fw || !first) {
       missing.push(item.slug);
@@ -172,6 +176,7 @@ export function mergeFourthwallCatalog(
       hoverImage: images[1] ?? null,
       gallery: (images.length > 0 ? images : item.images).map((i) => i.url),
       plate: item.plate,
+      media: item.media,
       featured: item.featured,
       releasedAt: item.releasedAt,
       story: item.story,

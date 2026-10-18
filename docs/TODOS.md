@@ -14,6 +14,12 @@ Open work, grouped by who has to act. Delete an item when it's done.
 
 - [ ] **Publish the products.** All ten Behold products are in the shop but hidden, so the Storefront API doesn't return them and the site lists them as previews. Publishing them (public access, available) turns on live prices, sizes and checkout.
 - [ ] Place a test order end to end, then refund it in Fourthwall.
+- [ ] **Webhook events**: add `PRODUCT_CREATED`, `PRODUCT_UPDATED` and `COLLECTION_UPDATED` to the existing webhook (Settings → For developers → Webhooks), so price, stock and product changes show at once.
+
+## Catalog
+
+- [ ] **Run the catalog migration** (`supabase/migrations/20261018000000_catalog.sql`) on stage, then production (the workflows do it). It copies Behold from `catalog.json`; after it, catalog changes are made in Admin, not in the file.
+- [ ] **New plate tokens**: a piece imported with a plate token the brand tokens lack shows its surface from the color read off its plate image. Add the token to `packages/brand/src/styles/tokens.css` and `PLATE_HEX` (`packages/brand/src/hex.ts`) when convenient, and new garment colors to `colors` in `catalog.json` and `tokens.css`.
 
 ## Search and AI discovery
 

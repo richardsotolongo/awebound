@@ -24,7 +24,8 @@ const MAX_BYTES = 50 * 1024 * 1024;
 export function AssetUploader({ designs }: { designs: { key: string; name: string }[] }) {
   const id = useId();
   const router = useRouter();
-  const [designKey, setDesignKey] = useState("");
+  // A piece's own review page offers only that design: it is chosen already.
+  const [designKey, setDesignKey] = useState(designs.length === 1 ? designs[0]!.key : "");
   const [format, setFormat] = useState<AssetFormat>("phone");
   const [title, setTitle] = useState(TITLES.phone);
   const [ready, setReady] = useState<PreparedImage | null>(null);

@@ -17,6 +17,9 @@ const WIDTHS: Record<string, number> = {
 /** For a character not in the table: wider than most, so the name can only come up short. */
 const UNKNOWN = 650;
 
+/** Characters of a name the table doesn't have yet (the name would set a little short). */
+export const unmeasured = (name: string) => [...new Set([...name].filter((ch) => !(ch in WIDTHS)))];
+
 /**
  * A release's name set to fill its line (`.aw-fit` in the brand package): the name's width in
  * ems is worked out here, so the size is right on the first paint at any width.

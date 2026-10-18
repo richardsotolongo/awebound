@@ -1,11 +1,10 @@
 import "server-only";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { INK_HEX, PLATE_HEX } from "@awebound/brand/hex";
 import { WORDMARK } from "@awebound/brand/marks";
 import { ImageResponse } from "next/og";
 import sharp from "sharp";
 import { pieceHref, type ProductDetail, type ShareFormat } from "@/shared";
+import { readImage } from "../read-image";
 import { loadFonts } from "./fonts";
 import type { ContentRow, DesignRow } from "./types";
 
@@ -19,9 +18,9 @@ const SIZES: Record<ShareFormat, { width: number; height: number }> = {
   square: { width: 1080, height: 1080 },
 };
 
-async function artworkDataUrl(slug: string): Promise<string | null> {
+async function artworkDataUrl(url: string): Promise<string | null> {
   try {
-    const webp = await readFile(join(process.cwd(), "public", "products", slug, "piece.webp"));
+    const webp = await readImage(url);
     const png = await sharp(webp).png().toBuffer();
     return `data:image/png;base64,${png.toString("base64")}`;
   } catch {
@@ -38,9 +37,9 @@ export async function renderShareImage(
   const fonts = loadFonts();
   const size = SIZES[format];
   const token = (product.plate?.token ?? "plate-slate") as keyof typeof PLATE_HEX;
-  const background = PLATE_HEX[token] ?? PLATE_HEX["plate-slate"];
+  const background = PLATE_HEX[token] ?? product.plate?.swatch ?? PLATE_HEX["plate-slate"];
   const ink = INK_HEX[product.plate?.ink ?? "bone"];
-  const art = await artworkDataUrl(design.product_slug);
+  const art = await artworkDataUrl(product.media.piece);
   const reference =
     `${product.scripture.reference} · ${product.scripture.translation}`.toUpperCase();
   const wordmark = (

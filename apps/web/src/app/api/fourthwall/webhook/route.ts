@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase/admin";
@@ -8,14 +9,17 @@ import { upsertOrderFromParsed } from "@/server/archive/orders";
 import { verifyWebhookSignature } from "@/server/archive/webhook";
 import { serverEnv } from "@/server/env";
 import { getCatalog } from "@/server/catalog";
+import { FOURTHWALL_CATALOG_TAG } from "@/server/fourthwall";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Fourthwall's order webhooks. The raw body is verified against the shop's secret
- * (X-Fourthwall-Hmac-SHA256, base64 HMAC-SHA256), every event is stored once by its id, and only
- * ORDER_PLACED and ORDER_UPDATED change anything. Deliveries can repeat and arrive out of order;
- * the reconcile job covers what never arrives.
+ * Fourthwall's webhooks. The raw body is verified against the shop's secret
+ * (X-Fourthwall-Hmac-SHA256, base64 HMAC-SHA256) and every event is stored once by its id.
+ * ORDER_PLACED and ORDER_UPDATED link orders; deliveries can repeat and arrive out of order, and
+ * the reconcile job covers what never arrives. A product or collection change refreshes the cached
+ * product list, and with it every page that read it, so prices and stock show within seconds (a
+ * Fourthwall product still appears only once its piece is published in Admin).
  */
 
 const Envelope = z.object({
@@ -29,6 +33,7 @@ const Envelope = z.object({
 });
 
 const ORDER_EVENTS = new Set(["ORDER_PLACED", "ORDER_UPDATED"]);
+const CATALOG_EVENTS = new Set(["PRODUCT_CREATED", "PRODUCT_UPDATED", "COLLECTION_UPDATED"]);
 
 export async function POST(request: NextRequest) {
   const secret = serverEnv.FOURTHWALL_WEBHOOK_SECRET;
@@ -81,6 +86,12 @@ export async function POST(request: NextRequest) {
       .update({ status, processed_at: new Date().toISOString(), ...patch })
       .eq("id", event.id);
   };
+
+  if (CATALOG_EVENTS.has(event.type)) {
+    revalidateTag(FOURTHWALL_CATALOG_TAG, { expire: 0 });
+    await finish("processed");
+    return NextResponse.json({ ok: true });
+  }
 
   if (!ORDER_EVENTS.has(event.type)) {
     await finish("ignored", { notes: { reason: "type" } });

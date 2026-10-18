@@ -44,9 +44,9 @@ export function LeadPiece({ leads, start }: { leads: (LeadSlide | null)[]; start
         {piece ? (
           <>
             <figure className="lead-detail">
-              {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py for every piece */}
+              {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py, or imported with the piece */}
               <img
-                src={`/products/${piece.slug}/detail.webp`}
+                src={piece.detail}
                 alt={`Close-up of the ${piece.name} artwork`}
                 width={640}
                 height={800}

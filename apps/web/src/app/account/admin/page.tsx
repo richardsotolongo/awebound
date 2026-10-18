@@ -12,7 +12,7 @@ import { listFlags } from "@/server/archive/flags";
 import { orderCounts, providerAssumptions } from "@/server/archive/orders-admin";
 import { getArchiveReadiness } from "@/server/archive/readiness";
 import { listAdmins } from "@/server/archive/roles";
-import { brandContent } from "@/server/content";
+import { getBrandContent } from "@/server/content";
 import { serverEnv } from "@/server/env";
 import { FLAG_KEYS } from "@/shared";
 
@@ -54,16 +54,18 @@ function Counts({ title, rows }: { title: string; rows: [string, number][] }) {
 }
 
 export default async function HealthPage() {
-  const [readiness, admins, counts, flags, assumptions, outbox] = await Promise.all([
+  const [readiness, admins, counts, flags, assumptions, outbox, content] = await Promise.all([
     getArchiveReadiness(),
     listAdmins(),
     orderCounts(),
     listFlags(),
     providerAssumptions(),
     listOutbox() as Promise<OutboxRow[]>,
+    getBrandContent(),
   ]);
-  const designs = brandContent.products.length;
+  const designs = content.products.length;
   const facts: [string, string][] = [
+    ["Catalog", content.source === "database" ? "Database" : "catalog.json (database not read)"],
     ["Webhook secret", state(Boolean(serverEnv.FOURTHWALL_WEBHOOK_SECRET))],
     ["API user", state(readiness.platformApi)],
     ["Resend", state(Boolean(serverEnv.RESEND_API_KEY))],

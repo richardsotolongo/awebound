@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
-import { EMPTY_LIST } from "@/features/catalog/query";
 import { GUIDES, GUIDES_PATH, guideHref } from "@/features/guides/guides";
 import { ReleaseWall } from "@/features/release/release-wall";
 import { DELIVERY } from "@/lib/delivery";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
-import { searchProducts, withFallback } from "@/server/catalog";
+import { allProducts, withFallback } from "@/server/catalog";
 import { pieceHref } from "@/shared";
 
 export const metadata = pageMeta({
@@ -24,7 +23,7 @@ export const revalidate = 60;
  * the guides (features/guides/guides.ts): nothing in the site's navigation links here.
  */
 export default async function ChristianApparel() {
-  const { items: pieces } = await withFallback(() => searchProducts({ pageSize: 48 }), EMPTY_LIST);
+  const pieces = await withFallback(allProducts, []);
   const url = `${siteUrl}${GUIDES_PATH}`;
   const jsonLd = {
     "@context": "https://schema.org",

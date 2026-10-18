@@ -1,21 +1,11 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { brandContent } from "../content";
 import { audit } from "./audit";
 import type { DesignRow } from "./types";
 
 /** One Archive design per piece in the content file, keyed `${collection}:${slug}`. */
 export const designKeyFor = (collectionSlug: string, productSlug: string) =>
   `${collectionSlug}:${productSlug}`;
-
-/**
- * The catalog names a piece. A row made before a rename (The Passage, now Fear Not) shows the new
- * name until the owner's next import refreshes it.
- */
-function named(row: DesignRow): DesignRow {
-  const name = brandContent.products.find((p) => p.slug === row.product_slug)?.name;
-  return name && name !== row.name ? { ...row, name } : row;
-}
 
 function admin() {
   if (!supabaseAdmin) throw new Error("database not configured");
@@ -26,7 +16,7 @@ export async function listDesigns(): Promise<DesignRow[]> {
   if (!supabaseAdmin) return [];
   const { data, error } = await supabaseAdmin.from("archive_designs").select("*").order("position");
   if (error) throw new Error(`designs read failed: ${error.message}`);
-  return ((data ?? []) as DesignRow[]).map(named);
+  return (data ?? []) as DesignRow[];
 }
 
 export async function getDesignBySlug(slug: string): Promise<DesignRow | null> {
@@ -36,7 +26,7 @@ export async function getDesignBySlug(slug: string): Promise<DesignRow | null> {
     .select("*")
     .eq("product_slug", slug)
     .maybeSingle();
-  return data ? named(data as DesignRow) : null;
+  return (data as DesignRow | null) ?? null;
 }
 
 export async function getDesign(designKey: string): Promise<DesignRow | null> {
@@ -46,15 +36,25 @@ export async function getDesign(designKey: string): Promise<DesignRow | null> {
     .select("*")
     .eq("design_key", designKey)
     .maybeSingle();
-  return data ? named(data as DesignRow) : null;
+  return (data as DesignRow | null) ?? null;
 }
 
 /**
- * Creates or refreshes the design rows from catalog.json (name, Scripture reference, Fourthwall
- * slug, position). Idempotent; never touches the offer id or the published content pointer.
+ * Creates or refreshes the design rows from the catalog's pieces (name, Scripture reference,
+ * Fourthwall slug, position), so a rename shows in My Archive too. Idempotent; never touches the
+ * offer id or the published content pointer.
  */
-export async function upsertDesignsFromCatalog(): Promise<number> {
-  const rows = brandContent.products.map((p) => ({
+export async function upsertDesigns(
+  products: {
+    slug: string;
+    name: string;
+    fourthwallSlug: string;
+    position: number;
+    collection: { slug: string };
+    scripture: { reference: string };
+  }[],
+): Promise<number> {
+  const rows = products.map((p) => ({
     design_key: designKeyFor(p.collection.slug, p.slug),
     product_slug: p.slug,
     collection_slug: p.collection.slug,
@@ -70,7 +70,10 @@ export async function upsertDesignsFromCatalog(): Promise<number> {
   return rows.length;
 }
 
-/** Pins the Fourthwall offer id a design's orders arrive under (seen on the first order, or set by the owner). */
+/**
+ * Pins the Fourthwall offer id a design's orders arrive under (seen on the first order, or set by
+ * the owner), on the design and on its piece in the catalog.
+ */
 export async function mapOffer(designKey: string, offerId: string, actor: string | null) {
   const before = await getDesign(designKey);
   const { error } = await admin()
@@ -78,6 +81,13 @@ export async function mapOffer(designKey: string, offerId: string, actor: string
     .update({ fourthwall_offer_id: offerId })
     .eq("design_key", designKey);
   if (error) throw new Error(`offer mapping failed: ${error.message}`);
+  if (before) {
+    const { error: pieceError } = await admin()
+      .from("pieces")
+      .update({ fourthwall_offer_id: offerId })
+      .eq("slug", before.product_slug);
+    if (pieceError) throw new Error(`offer mapping failed: ${pieceError.message}`);
+  }
   await audit(
     actor,
     "design.map_offer",

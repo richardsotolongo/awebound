@@ -1,0 +1,1145 @@
+-- The catalog moves from catalog.json into the database, so the owner can add releases and pieces
+-- from Admin without a code change. `collections` are releases, `pieces` the garments (everything a
+-- catalog.json product holds), `size_guides` the measurements per blank, and `piece_imports` the
+-- zips pieces arrive in. The public site reads only published releases, their published pieces and
+-- the size guides those pieces use (RLS, through the publishable key); every write goes through the
+-- server with the secret key after the admin check. Behold, its five size guides and ten pieces are
+-- copied in as published, with their existing image paths, so the live site is unchanged.
+
+create table public.collections (
+  id               uuid primary key default gen_random_uuid(),
+  slug             text not null unique check (slug ~ '^[a-z0-9-]+$' and char_length(slug) <= 64),
+  name             text not null check (char_length(name) between 1 and 80),
+  number           text not null check (char_length(number) between 1 and 10),
+  tagline          text not null default '' check (char_length(tagline) <= 300),
+  story            text not null default '' check (char_length(story) <= 3000),
+  scripture_ref    text not null default '' check (char_length(scripture_ref) <= 120),
+  cover_image      text,
+  plate_image      text,
+  -- collection-preview.pdf from the release's zip, in the private piece-imports bucket (reference only)
+  preview_pdf_path text,
+  released_at      date,
+  position         int not null default 1,
+  status           text not null default 'draft' check (status in ('draft', 'published')),
+  published_at     timestamptz,
+  created_at       timestamptz not null default now(),
+  updated_at       timestamptz not null default now()
+);
+
+create table public.size_guides (
+  id         text primary key check (id ~ '^[a-z0-9-]+$' and char_length(id) <= 64),
+  name       text not null check (char_length(name) between 1 and 120),
+  -- the supplier product (brand, model, Fourthwall id), for our records; never shown
+  blank      text not null default '',
+  fit        text,
+  note       text,
+  tolerance  text,
+  image      jsonb,
+  measures   jsonb not null check (jsonb_typeof(measures) = 'array'),
+  rows       jsonb not null check (jsonb_typeof(rows) = 'array'),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table public.piece_imports (
+  id         uuid primary key default gen_random_uuid(),
+  zip_path   text not null unique,
+  file_name  text not null,
+  bytes      bigint,
+  report     jsonb,
+  -- reference files copied out of the zip (Fourthwall images, site preview PDF)
+  ref_paths  jsonb not null default '{}',
+  created_by uuid references auth.users (id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+-- draft: imported or being edited. in_review: approved by the owner, held until its collection is
+-- published. published: approved, and live while its collection is published.
+create table public.pieces (
+  id                  uuid primary key default gen_random_uuid(),
+  slug                text not null unique check (slug ~ '^[a-z0-9-]+$' and char_length(slug) <= 64),
+  code                text not null unique check (char_length(code) between 1 and 40),
+  name                text not null check (char_length(name) between 1 and 80),
+  collection_id       uuid not null references public.collections (id) on delete restrict,
+  position            int not null check (position > 0),
+  category            text not null,
+  colors              text[] not null check (cardinality(colors) > 0),
+  price_cents         int not null check (price_cents >= 0),
+  size_price_cents    jsonb not null default '{}',
+  size_guide_id       text references public.size_guides (id) on delete restrict,
+  scripture           jsonb not null,
+  story               jsonb not null,
+  plate               jsonb,
+  images              jsonb not null check (jsonb_typeof(images) = 'array'),
+  -- detail, piece, plateWide, plateTall: the close-up, the cut-out garment and the plate fields
+  media               jsonb not null,
+  featured            boolean not null default false,
+  released_at         date not null default current_date,
+  fourthwall_slug     text not null unique,
+  fourthwall_offer_id text unique,
+  status              text not null default 'draft'
+                      check (status in ('draft', 'in_review', 'published')),
+  -- what goes live with the piece when its collection is published
+  publish_with        jsonb not null default '{"archive": true, "wallpapers": true}',
+  import_id           uuid references public.piece_imports (id) on delete set null,
+  published_at        timestamptz,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now()
+);
+create index pieces_collection_idx on public.pieces (collection_id, position);
+create index pieces_size_guide_idx on public.pieces (size_guide_id);
+
+create trigger collections_set_updated_at
+  before update on public.collections
+  for each row execute function public.set_updated_at();
+create trigger size_guides_set_updated_at
+  before update on public.size_guides
+  for each row execute function public.set_updated_at();
+create trigger pieces_set_updated_at
+  before update on public.pieces
+  for each row execute function public.set_updated_at();
+
+alter table public.collections enable row level security;
+alter table public.size_guides enable row level security;
+alter table public.piece_imports enable row level security;
+alter table public.pieces enable row level security;
+
+create policy collections_public_read on public.collections
+  for select to anon, authenticated
+  using (status = 'published');
+
+create policy pieces_public_read on public.pieces
+  for select to anon, authenticated
+  using (
+    status = 'published'
+    and exists (
+      select 1 from public.collections c where c.id = collection_id and c.status = 'published'
+    )
+  );
+
+create policy size_guides_public_read on public.size_guides
+  for select to anon, authenticated
+  using (
+    exists (
+      select 1
+      from public.pieces p
+      join public.collections c on c.id = p.collection_id
+      where p.size_guide_id = size_guides.id and p.status = 'published' and c.status = 'published'
+    )
+  );
+
+-- Column grants keep the internal columns (the blank, private paths, import links) server-only, so
+-- public reads name their columns.
+grant select (id, slug, name, number, tagline, story, scripture_ref, cover_image, plate_image,
+              released_at, position, status)
+  on public.collections to anon, authenticated;
+grant select (id, slug, code, name, collection_id, position, category, colors, price_cents,
+              size_price_cents, size_guide_id, scripture, story, plate, images, media, featured,
+              released_at, fourthwall_slug, fourthwall_offer_id, status)
+  on public.pieces to anon, authenticated;
+grant select (id, name, fit, note, tolerance, image, measures, rows)
+  on public.size_guides to anon, authenticated;
+
+grant select, insert, update, delete on public.collections to service_role;
+grant select, insert, update, delete on public.size_guides to service_role;
+grant select, insert, update, delete on public.piece_imports to service_role;
+grant select, insert, update, delete on public.pieces to service_role;
+
+-- Publishing a release in one step: the collection goes live (dated today unless it has a date),
+-- its approved pieces with it, and every piece takes the release's date (the shop sorts by release,
+-- then position). Returns the pieces that went live now.
+create function public.catalog_publish_collection(p_id uuid)
+returns setof uuid
+language plpgsql
+set search_path = ''
+as $$
+declare
+  v_date date;
+begin
+  update public.collections
+     set status = 'published',
+         released_at = coalesce(released_at, current_date),
+         published_at = coalesce(published_at, now())
+   where id = p_id
+  returning released_at into v_date;
+  if v_date is null then
+    raise exception 'collection % not found', p_id;
+  end if;
+  update public.pieces set released_at = v_date where collection_id = p_id;
+  return query
+    update public.pieces
+       set status = 'published', published_at = now()
+     where collection_id = p_id and status = 'in_review'
+    returning id;
+end;
+$$;
+
+revoke execute on function public.catalog_publish_collection(uuid) from public, anon, authenticated;
+grant execute on function public.catalog_publish_collection(uuid) to service_role;
+
+-- product-images is public (new pieces' and size guides' images, served straight to shoppers);
+-- piece-imports is private (the zips and their reference files). Guarded so the file also applies
+-- on a plain Postgres. piece-imports takes the project's own upload limit.
+do $$
+begin
+  if to_regclass('storage.buckets') is not null then
+    insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+    values
+      ('product-images', 'product-images', true, 15728640,
+       array['image/webp', 'image/png', 'image/jpeg']),
+      ('piece-imports', 'piece-imports', false, null,
+       array['application/zip', 'application/x-zip-compressed', 'application/pdf', 'image/png'])
+    on conflict (id) do nothing;
+  end if;
+end
+$$;
+
+-- Behold as catalog.json held it on October 18, 2026.
+create temporary table catalog_seed (j jsonb);
+insert into catalog_seed values ($json$
+{
+  "collections": [
+    {
+      "slug": "behold",
+      "name": "Behold",
+      "number": "01",
+      "tagline": "Clothes that ask you to look at Jesus, and keep looking.",
+      "story": "“Behold” is an old word for look, and keep looking. It’s the word older English Bibles use when John the Baptist sees Jesus walking toward him and points Him out to the crowd: “Behold the Lamb of God.” Each piece in this release points to who Jesus is and what He has done. He makes scarlet sins white as snow. He gives a life worth living. He healed the woman who touched the hem of His garment. On the third day the stone was rolled away. He calmed the storm, and His death tore the temple veil. He walks with us through the valley of the shadow of death, He made us with care, and He is the Lamb who takes away the sin of the world.",
+      "scriptureRef": "John 1:29"
+    }
+  ],
+  "sizeGuides": {
+    "middleweight-oversized-tee": {
+      "name": "Middleweight Oversized T-shirt",
+      "blank": "AS Colour 5052 Middleweight Oversized T-shirt (Fourthwall pro_sxGQGvBmRWSpOQOf7imPEg)",
+      "fit": "Oversized fit. Size down one size for a closer fit.",
+      "note": null,
+      "tolerance": "Actual garment measurements may vary by up to 2 inches.",
+      "image": {
+        "url": "/size-guides/middleweight-oversized-tee.webp",
+        "width": 1600,
+        "height": 2577
+      },
+      "measures": [
+        {
+          "label": "Width",
+          "how": "Underarm seam to underarm seam."
+        },
+        {
+          "label": "Length",
+          "how": "High point of shoulder to bottom hem."
+        }
+      ],
+      "rows": [
+        {
+          "size": "S",
+          "values": [
+            "22¾",
+            "28¼"
+          ]
+        },
+        {
+          "size": "M",
+          "values": [
+            "23¾",
+            "29"
+          ]
+        },
+        {
+          "size": "L",
+          "values": [
+            "24¾",
+            "30"
+          ]
+        },
+        {
+          "size": "XL",
+          "values": [
+            "25¾",
+            "30¾"
+          ]
+        },
+        {
+          "size": "2XL",
+          "values": [
+            "26¾",
+            "31½"
+          ]
+        },
+        {
+          "size": "3XL",
+          "values": [
+            "27¾",
+            "32¼"
+          ]
+        }
+      ]
+    },
+    "organic-oversized-tee": {
+      "name": "Organic Oversized T-shirt",
+      "blank": "Stanley/Stella SATU020 Unisex Organic Oversized T-Shirt (Fourthwall pro_nbzZuIKIRnGSoOHdUmRN9w)",
+      "fit": "Oversized fit with dropped shoulders and a wide neckline.",
+      "note": null,
+      "tolerance": "Actual garment measurements may vary by up to 2 inches (5 cm).",
+      "image": {
+        "url": "/size-guides/organic-oversized-tee.webp",
+        "width": 1600,
+        "height": 2463
+      },
+      "measures": [
+        {
+          "label": "Length",
+          "how": "High point of shoulder to bottom hem."
+        },
+        {
+          "label": "Width",
+          "how": "Underarm seam to underarm seam."
+        },
+        {
+          "label": "Sleeve",
+          "how": "Shoulder seam to sleeve edge."
+        }
+      ],
+      "rows": [
+        {
+          "size": "S",
+          "values": [
+            "28¾",
+            "24¾",
+            "9½"
+          ]
+        },
+        {
+          "size": "M",
+          "values": [
+            "29½",
+            "26⅜",
+            "9⅝"
+          ]
+        },
+        {
+          "size": "L",
+          "values": [
+            "30¼",
+            "28",
+            "9⅞"
+          ]
+        },
+        {
+          "size": "XL",
+          "values": [
+            "31½",
+            "29⅞",
+            "10"
+          ]
+        },
+        {
+          "size": "2XL",
+          "values": [
+            "32½",
+            "31⅞",
+            "10¼"
+          ]
+        }
+      ]
+    },
+    "premium-relaxed-hoodie": {
+      "name": "Premium Relaxed Hoodie",
+      "blank": "AS Colour 5161 Unisex Premium Relaxed Hoodie (Fourthwall pro_oEH9q7C-T2uYRwekI8XCSg)",
+      "fit": "Relaxed fit, roomier than standard.",
+      "note": null,
+      "tolerance": null,
+      "image": {
+        "url": "/size-guides/premium-relaxed-hoodie.webp",
+        "width": 1600,
+        "height": 2427
+      },
+      "measures": [
+        {
+          "label": "Length",
+          "how": "High point of shoulder to bottom hem."
+        },
+        {
+          "label": "Width",
+          "how": "Underarm seam to underarm seam."
+        },
+        {
+          "label": "Sleeve",
+          "how": "Top of sleeve seam to cuff edge."
+        }
+      ],
+      "rows": [
+        {
+          "size": "S",
+          "values": [
+            "27¾",
+            "22½",
+            "22½"
+          ]
+        },
+        {
+          "size": "M",
+          "values": [
+            "28¾",
+            "23½",
+            "22½"
+          ]
+        },
+        {
+          "size": "L",
+          "values": [
+            "29¾",
+            "24¾",
+            "24¼"
+          ]
+        },
+        {
+          "size": "XL",
+          "values": [
+            "30¾",
+            "26",
+            "24¼"
+          ]
+        },
+        {
+          "size": "2XL",
+          "values": [
+            "31¾",
+            "27¼",
+            "25½"
+          ]
+        },
+        {
+          "size": "3XL",
+          "values": [
+            "32¾",
+            "28¼",
+            "27"
+          ]
+        }
+      ]
+    },
+    "low-profile-adjustable-cap": {
+      "name": "Low-Profile Adjustable Cap",
+      "blank": "Otto Cap 104-1018 Distressed Dad Hat (Fourthwall pro_bd2e2b0d02e04dd8b4)",
+      "fit": "One size fits most. Low-profile cap with a hook-and-loop strap to adjust the fit.",
+      "note": null,
+      "tolerance": null,
+      "image": {
+        "url": "/size-guides/low-profile-adjustable-cap.webp",
+        "width": 1600,
+        "height": 1840
+      },
+      "measures": [
+        {
+          "label": "Head circumference",
+          "how": "Around your head, just above your ears. Keep the tape level and snug, not tight."
+        }
+      ],
+      "rows": [
+        {
+          "size": "One size",
+          "values": [
+            "19–22"
+          ]
+        }
+      ]
+    },
+    "mid-profile-snapback-cap": {
+      "name": "Mid-Profile Snapback Cap",
+      "blank": "Otto Cap 31-069 Mid-Profile Baseball Cap (Fourthwall pro_yik3Xfh7RlmBN1yymFa6JA)",
+      "fit": "One size fits most. Mid-profile cap with a snap strap to adjust the fit.",
+      "note": null,
+      "tolerance": null,
+      "image": {
+        "url": "/size-guides/mid-profile-snapback-cap.webp",
+        "width": 1600,
+        "height": 1840
+      },
+      "measures": [
+        {
+          "label": "Head circumference",
+          "how": "Around your head, just above your ears. Keep the tape level and snug, not tight."
+        }
+      ],
+      "rows": [
+        {
+          "size": "One size",
+          "values": [
+            "23¼–25¼"
+          ]
+        }
+      ]
+    }
+  },
+  "products": [
+    {
+      "code": "A3-B03",
+      "slug": "thorns-to-lilies",
+      "plate": {
+        "token": "plate-oxblood",
+        "ink": "bone"
+      },
+      "fourthwallSlug": "thorns-to-lillies-tee",
+      "sizeGuide": "middleweight-oversized-tee",
+      "name": "Thorns to Lilies",
+      "position": 1,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": [
+        "Ecru"
+      ],
+      "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200,
+        "3XL": 4400
+      },
+      "featured": true,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Isaiah 1:18",
+        "excerpt": true,
+        "niv": "Though your sins are like scarlet, they shall be as white as snow",
+        "kjv": "Though your sins be as scarlet, they shall be as white as snow"
+      },
+      "story": {
+        "theme": "Mercy",
+        "call": "Behold His mercy",
+        "art": "A crown of thorns breaks into lilies around the wordmark, under a cross.",
+        "meaning": "Through Isaiah, God invites His people to come and reason together with Him, and promises that sins red as scarlet will be made white as snow. The crown of thorns is what that mercy cost. The lilies are what grows from it. The print is deep red on a pale ecru shirt, the scarlet and the snow of the verse.",
+        "front": "Large Awebound wordmark across the chest in deep red",
+        "back": "A crown of thorns blooming into lilies around the wordmark, with Isaiah 1:18",
+        "inks": "Deep red, gray",
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/thorns-to-lilies/1.webp",
+          "alt": "Thorns to Lilies oversized tee, back: a crown of thorns blooming into lilies around the wordmark, Isaiah 1:18"
+        },
+        {
+          "view": "front",
+          "url": "/products/thorns-to-lilies/2.webp",
+          "alt": "Thorns to Lilies oversized tee, front: large red wordmark on ecru"
+        },
+        {
+          "view": "back",
+          "url": "/products/thorns-to-lilies/3.webp",
+          "alt": "Thorns to Lilies oversized tee, back: a crown of thorns blooming into lilies around the wordmark, Isaiah 1:18"
+        },
+        {
+          "view": "front",
+          "url": "/products/thorns-to-lilies/4.webp",
+          "alt": "Thorns to Lilies oversized tee, front: large red wordmark on ecru"
+        }
+      ]
+    },
+    {
+      "code": "A3-B05",
+      "slug": "to-live-is-christ",
+      "plate": {
+        "token": "plate-ochre",
+        "ink": "coal"
+      },
+      "fourthwallSlug": "to-live-is-christ-to-die-is-gain-tee",
+      "sizeGuide": "organic-oversized-tee",
+      "name": "To Live Is Christ, To Die Is Gain",
+      "position": 2,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": [
+        "French Navy"
+      ],
+      "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200
+      },
+      "featured": true,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Philippians 1:21",
+        "excerpt": false,
+        "niv": "For to me, to live is Christ and to die is gain.",
+        "kjv": "For to me to live is Christ, and to die is gain."
+      },
+      "story": {
+        "theme": "Life",
+        "call": "Behold what we live for",
+        "art": "An hourglass holds a cross above and a sprouting seed below, between the words of Philippians 1:21.",
+        "meaning": "Paul wrote this from prison, not knowing whether he would be released or executed, and decided he couldn’t lose either way. If he lived, he would keep serving Christ. If he died, he would be with Him. The hourglass holds a cross above and a sprouting seed below, time running out and a life that keeps going.",
+        "front": "“To live is Christ, to die is gain” around an hourglass, with Philippians 1:21",
+        "back": "Large Awebound wordmark with thorn branches across the upper back",
+        "inks": "Bone",
+        "fit": "Larger oversized · dropped shoulder, extra-boxy body",
+        "material": "100% organic combed ring-spun cotton (5.9 oz) · GOTS-certified organic",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "front",
+          "url": "/products/to-live-is-christ/1.webp",
+          "alt": "To Live Is Christ oversized tee in navy, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
+        },
+        {
+          "view": "back",
+          "url": "/products/to-live-is-christ/2.webp",
+          "alt": "To Live Is Christ oversized tee in navy, back: large Awebound wordmark across the upper back"
+        },
+        {
+          "view": "front",
+          "url": "/products/to-live-is-christ/3.webp",
+          "alt": "To Live Is Christ oversized tee in navy, front: “To live is Christ, to die is gain” around an hourglass, Philippians 1:21"
+        },
+        {
+          "view": "back",
+          "url": "/products/to-live-is-christ/4.webp",
+          "alt": "To Live Is Christ oversized tee in navy, back: large Awebound wordmark across the upper back"
+        }
+      ]
+    },
+    {
+      "code": "A3-B07",
+      "slug": "by-his-hem",
+      "plate": {
+        "token": "plate-sage",
+        "ink": "bone"
+      },
+      "fourthwallSlug": "by-his-hem-tee",
+      "sizeGuide": "middleweight-oversized-tee",
+      "name": "By His Hem",
+      "position": 3,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": [
+        "Ecru"
+      ],
+      "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200,
+        "3XL": 4400
+      },
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 9:21",
+        "excerpt": true,
+        "niv": "If I only touch his cloak, I will be healed.",
+        "kjv": "If I may but touch his garment, I shall be whole."
+      },
+      "story": {
+        "theme": "Healing",
+        "call": "Behold the One who heals",
+        "art": "A woman’s hand reaches through a spray of rust to take hold of His garment, beside the words she said within herself.",
+        "meaning": "She had been bleeding for twelve years, and nothing had helped. She didn’t ask Jesus for anything. She came up behind Him in the crowd and touched the hem of His garment, sure that would be enough. Jesus turned, saw her, and told her that her faith had made her whole. The back shows her hand closing on His garment, with her words above it in the King James wording.",
+        "front": "Small Awebound wordmark in black, center chest",
+        "back": "“If I may but touch his garment, I shall be whole.” with Matthew 9:21, in the King James wording, beside a hand grasping the garment in a spray of rust",
+        "inks": "Black, rust",
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/by-his-hem/1.webp",
+          "alt": "By His Hem oversized tee, back: “If I may but touch his garment, I shall be whole,” Matthew 9:21, beside a hand grasping a garment in a spray of rust"
+        },
+        {
+          "view": "front",
+          "url": "/products/by-his-hem/2.webp",
+          "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
+        },
+        {
+          "view": "back",
+          "url": "/products/by-his-hem/3.webp",
+          "alt": "By His Hem oversized tee, back up close: “If I may but touch his garment, I shall be whole,” Matthew 9:21, beside a hand grasping a garment in a spray of rust"
+        },
+        {
+          "view": "front",
+          "url": "/products/by-his-hem/4.webp",
+          "alt": "By His Hem oversized tee, front: small black wordmark, center chest"
+        }
+      ]
+    },
+    {
+      "code": "A3-B04",
+      "slug": "stone-in-motion",
+      "plate": {
+        "token": "plate-cornflower",
+        "ink": "bone"
+      },
+      "fourthwallSlug": "stone-in-motion-tee",
+      "sizeGuide": "middleweight-oversized-tee",
+      "name": "Stone in Motion",
+      "position": 4,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": [
+        "Ecru"
+      ],
+      "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200,
+        "3XL": 4400
+      },
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 28:6",
+        "excerpt": false,
+        "niv": "He is not here; he has risen, just as he said. Come and see the place where he lay.",
+        "kjv": "He is not here: for he is risen, as he said. Come, see the place where the Lord lay."
+      },
+      "story": {
+        "theme": "Resurrection",
+        "call": "Behold, He is risen",
+        "art": "The stone rolls away in a sweep of blue under the angel’s words.",
+        "meaning": "At dawn on the first day of the week, an angel rolled the stone away from the tomb and sat on it. He told the women who had come that Jesus wasn’t there. He had risen, as He said. The back prints the angel’s words in heavy capitals, plain as a headline, with the stone still rolling in a sweep of blue. The front keeps only the wordmark.",
+        "front": "Awebound wordmark in black, center chest",
+        "back": "“He is not here: for he is risen” in heavy capitals (Matthew 28:6, King James wording) above the stone rolling away in a sweep of blue",
+        "inks": "Black, cobalt blue",
+        "fit": "Regular oversized · dropped shoulder, boxy body",
+        "material": "100% carded cotton · midweight (5.9 oz) · pre-shrunk",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/stone-in-motion/1.webp",
+          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
+        },
+        {
+          "view": "front",
+          "url": "/products/stone-in-motion/2.webp",
+          "alt": "Stone in Motion oversized tee, front: the Awebound wordmark in black, center chest"
+        },
+        {
+          "view": "back",
+          "url": "/products/stone-in-motion/3.webp",
+          "alt": "Stone in Motion oversized tee, back: “He is not here: for he is risen,” Matthew 28:6, above the stone rolling away in a sweep of blue"
+        },
+        {
+          "view": "front",
+          "url": "/products/stone-in-motion/4.webp",
+          "alt": "Stone in Motion oversized tee, front: the Awebound wordmark in black, center chest"
+        }
+      ]
+    },
+    {
+      "code": "A3-B02",
+      "slug": "still-the-storm",
+      "plate": {
+        "token": "plate-slate",
+        "ink": "bone"
+      },
+      "fourthwallSlug": "still-the-storm-tee",
+      "sizeGuide": "organic-oversized-tee",
+      "name": "Still the Storm",
+      "position": 5,
+      "collection": "behold",
+      "category": "oversized-tees",
+      "colors": [
+        "Black"
+      ],
+      "priceCents": 4000,
+      "sizePriceCents": {
+        "2XL": 4200
+      },
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Mark 4:41",
+        "excerpt": false,
+        "niv": "They were terrified and asked each other, “Who is this? Even the wind and the waves obey him!”",
+        "kjv": "And they feared exceedingly, and said one to another, What manner of man is this, that even the wind and the sea obey him?"
+      },
+      "story": {
+        "theme": "Power",
+        "call": "Behold His power",
+        "art": "Storm waves break through the Awebound wordmark on the front, and the disciples’ question from Mark 4:41 rises above a breaking wave on the back.",
+        "meaning": "The disciples were fishermen. They knew that lake, and the storm still scared them. Jesus got up, spoke to the wind and the waves, and everything went calm. Then they turned to each other and asked who He was. The front carries the storm in the wordmark itself, with waves breaking through its letters. The back carries their question in full.",
+        "front": "Awebound wordmark in bone with thorn branches, storm waves breaking through its letters, across the chest",
+        "back": "Mark 4:41 in engraved capitals, in the King James wording, above a breaking wave",
+        "inks": "Bone",
+        "fit": "Larger oversized · dropped shoulder, extra-boxy body",
+        "material": "100% organic combed ring-spun cotton (5.9 oz) · GOTS-certified organic",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "front",
+          "url": "/products/still-the-storm/1.webp",
+          "alt": "Still the Storm oversized tee, front: the wordmark across the chest, with storm waves breaking through its letters"
+        },
+        {
+          "view": "back",
+          "url": "/products/still-the-storm/2.webp",
+          "alt": "Still the Storm oversized tee, back: the words of Mark 4:41 (King James wording) above a breaking wave"
+        },
+        {
+          "view": "front",
+          "url": "/products/still-the-storm/3.webp",
+          "alt": "Still the Storm oversized tee, front up close: the wordmark across the chest, with storm waves breaking through its letters"
+        },
+        {
+          "view": "back",
+          "url": "/products/still-the-storm/4.webp",
+          "alt": "Still the Storm oversized tee, back up close: the words of Mark 4:41 (King James wording) above a breaking wave"
+        }
+      ]
+    },
+    {
+      "code": "A3-B06",
+      "slug": "torn-veil",
+      "plate": {
+        "token": "plate-crimson",
+        "ink": "bone"
+      },
+      "fourthwallSlug": "torn-veil-hoodie",
+      "sizeGuide": "premium-relaxed-hoodie",
+      "name": "Torn Veil",
+      "position": 6,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": [
+        "Black"
+      ],
+      "priceCents": 6000,
+      "sizePriceCents": {
+        "2XL": 6200,
+        "3XL": 6400
+      },
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Matthew 27:51",
+        "excerpt": true,
+        "niv": "At that moment the curtain of the temple was torn in two from top to bottom.",
+        "kjv": "And, behold, the veil of the temple was rent in twain from the top to the bottom"
+      },
+      "story": {
+        "theme": "Presence",
+        "call": "Behold, the way is open",
+        "art": "A red temple veil torn from top to bottom, with light pouring through above the clouds, over the words “The veil is torn.”",
+        "meaning": "When Jesus died on the cross, the veil of the temple that closed off the holiest place was rent in twain, from the top to the bottom. It tore from the top, from God’s side. Through Christ’s death, the way into God’s presence is open. The back shows the veil torn wide with light coming through. The front carries the wordmark with red thorns.",
+        "front": "Awebound wordmark in bone with red thorns, center chest",
+        "back": "A red veil torn open, light breaking through over the clouds, above “The veil is torn” in heavy gothic capitals, with Matthew 27:51 below",
+        "inks": "Bone, deep red",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/torn-veil/1.webp",
+          "alt": "Torn Veil hoodie, back: a red veil torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
+        },
+        {
+          "view": "front",
+          "url": "/products/torn-veil/2.webp",
+          "alt": "Torn Veil hoodie, front: the wordmark in bone with red thorns, center chest"
+        },
+        {
+          "view": "back",
+          "url": "/products/torn-veil/3.webp",
+          "alt": "Torn Veil hoodie, back: a red veil torn open with light breaking through, above “The veil is torn” and Matthew 27:51"
+        },
+        {
+          "view": "front",
+          "url": "/products/torn-veil/4.webp",
+          "alt": "Torn Veil hoodie, front: the wordmark in bone with red thorns, center chest"
+        }
+      ]
+    },
+    {
+      "code": "A3-B08",
+      "slug": "the-passage",
+      "plate": {
+        "token": "plate-sandstone",
+        "ink": "coal"
+      },
+      "fourthwallSlug": "fear-not-hoodie",
+      "sizeGuide": "premium-relaxed-hoodie",
+      "name": "Fear Not",
+      "position": 7,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": [
+        "Cypress"
+      ],
+      "priceCents": 6000,
+      "sizePriceCents": {
+        "2XL": 6200,
+        "3XL": 6400
+      },
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Psalm 23:4",
+        "excerpt": true,
+        "niv": "Even though I walk through the darkest valley, I will fear no evil, for you are with me",
+        "kjv": "Yea, though I walk through the valley of the shadow of death, I will fear no evil: for thou art with me"
+      },
+      "story": {
+        "theme": "Protection",
+        "call": "Behold the Shepherd",
+        "art": "“I will fear no evil” in tall letters of cracked stone, each one holding a mountain valley with pines and a winding path, with red cracks running through the last word.",
+        "meaning": "David knew dark valleys. He kept sheep in the wild as a boy, and later spent years running from a king who wanted him dead. In Psalm 23 he writes that even walking through the valley of the shadow of death he will fear no evil, because the Lord is with him, guiding and guarding him like a shepherd with his rod and staff. Jesus later called Himself the good shepherd. The back carves David’s words in stone, with the valley and its winding path inside the letters.",
+        "front": "Awebound wordmark in bone, center chest",
+        "back": "“I will fear no evil” in tall cracked-stone capitals filled with a mountain valley, pines and a winding path, red cracks through “evil”, with Psalm 23:4 below",
+        "inks": "Bone, charcoal, red",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/the-passage/1.webp",
+          "alt": "Fear Not hoodie in cypress, back: “I will fear no evil” in letters of cracked stone holding a mountain valley, Psalm 23:4"
+        },
+        {
+          "view": "front",
+          "url": "/products/the-passage/2.webp",
+          "alt": "Fear Not hoodie in cypress, front: the wordmark in bone, center chest"
+        },
+        {
+          "view": "back",
+          "url": "/products/the-passage/3.webp",
+          "alt": "Fear Not hoodie in cypress, back: “I will fear no evil” in letters of cracked stone holding a mountain valley, Psalm 23:4"
+        },
+        {
+          "view": "front",
+          "url": "/products/the-passage/4.webp",
+          "alt": "Fear Not hoodie in cypress, front: the wordmark in bone, center chest"
+        }
+      ]
+    },
+    {
+      "code": "A3-B09",
+      "slug": "wonderfully-made",
+      "plate": {
+        "token": "plate-rose",
+        "ink": "coal"
+      },
+      "fourthwallSlug": "wonderfully-made-hoodie",
+      "sizeGuide": "premium-relaxed-hoodie",
+      "name": "Wonderfully Made",
+      "position": 8,
+      "collection": "behold",
+      "category": "hoodies",
+      "colors": [
+        "Carolina Blue"
+      ],
+      "priceCents": 6000,
+      "sizePriceCents": {
+        "2XL": 6200,
+        "3XL": 6400
+      },
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Psalm 139:14",
+        "excerpt": false,
+        "niv": "I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.",
+        "kjv": "I will praise thee; for I am fearfully and wonderfully made: marvellous are thy works; and that my soul knoweth right well."
+      },
+      "story": {
+        "theme": "Creation",
+        "call": "Behold the One who made you",
+        "art": "Roses and red leaves wind around the words “Fearfully & wonderfully made” and a wooden cross.",
+        "meaning": "In Psalm 139, David is amazed at how completely God knows him: every thought, every word, every day of his life, written down before one of them came to be. God formed him in his mother’s womb, and David answers with praise, because he is fearfully and wonderfully made. The back sets those words among roses in bloom beside a wooden cross. The front carries the wordmark in deep red.",
+        "front": "Awebound wordmark in deep red, center chest",
+        "back": "“Fearfully & wonderfully made” in ornate red lettering among roses and leaves, beside a wooden cross, with Psalm 139:14 below",
+        "inks": "Deep red, rose, cream, wood brown",
+        "fit": "Relaxed hoodie · dropped shoulder, kangaroo pocket, ribbed cuffs and hem",
+        "material": "80% cotton, 20% recycled polyester fleece · heavyweight (9.4 oz) · brushed inside",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "back",
+          "url": "/products/wonderfully-made/1.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, back: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
+        },
+        {
+          "view": "front",
+          "url": "/products/wonderfully-made/2.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, front: the wordmark in deep red, center chest"
+        },
+        {
+          "view": "back",
+          "url": "/products/wonderfully-made/3.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, back up close: “Fearfully & wonderfully made” among roses beside a wooden cross, Psalm 139:14"
+        },
+        {
+          "view": "front",
+          "url": "/products/wonderfully-made/4.webp",
+          "alt": "Wonderfully Made hoodie in Carolina blue, front up close: the wordmark in deep red"
+        }
+      ]
+    },
+    {
+      "code": "A3-H01",
+      "slug": "lambs-mark",
+      "plate": {
+        "token": "plate-linen",
+        "ink": "coal"
+      },
+      "fourthwallSlug": "lambs-mark-hat",
+      "sizeGuide": "low-profile-adjustable-cap",
+      "name": "Lamb’s Mark",
+      "position": 9,
+      "collection": "behold",
+      "category": "hats",
+      "colors": [
+        "Black"
+      ],
+      "priceCents": 3000,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "John 1:29",
+        "excerpt": true,
+        "niv": "Look, the Lamb of God, who takes away the sin of the world!",
+        "kjv": "Behold the Lamb of God, which taketh away the sin of the world."
+      },
+      "story": {
+        "theme": "Sacrifice",
+        "call": "Behold the Lamb",
+        "art": "The Lamb of God in white thread inside a red crown of thorns, with one mark of red on the lamb.",
+        "meaning": "When John the Baptist saw Jesus coming toward him, he pointed Him out to the crowd as the Lamb of God, who takes away the sin of the world. The King James Bible gives his words as “Behold the Lamb of God,” and this release takes its name from them. The lamb is stitched in white inside a red crown of thorns, with a single mark of red. The wordmark sits on the back.",
+        "front": "Embroidered lamb in white thread inside a red crown of thorns",
+        "back": "Awebound wordmark in white with red thorns, above the strap",
+        "inks": "White and red thread",
+        "fit": "Distressed cap · curved brim, adjustable strap back",
+        "material": "100% pre-shrunk cotton twill, distressed",
+        "process": "embroidered"
+      },
+      "images": [
+        {
+          "view": "front",
+          "url": "/products/lambs-mark/1.webp",
+          "alt": "Lamb’s Mark distressed cap, front: the embroidered lamb inside a red crown of thorns"
+        },
+        {
+          "view": "side",
+          "url": "/products/lambs-mark/2.webp",
+          "alt": "Lamb’s Mark distressed cap, three-quarter view: the embroidered lamb and the frayed brim"
+        },
+        {
+          "view": "back",
+          "url": "/products/lambs-mark/3.webp",
+          "alt": "Lamb’s Mark distressed cap, from behind at an angle: the Awebound wordmark with red thorns above the strap"
+        }
+      ]
+    },
+    {
+      "code": "A3-H02",
+      "slug": "signature-cap",
+      "plate": {
+        "token": "plate-concrete",
+        "ink": "coal"
+      },
+      "fourthwallSlug": "awebound-signature-cap",
+      "sizeGuide": "mid-profile-snapback-cap",
+      "name": "Signature Cap",
+      "position": 10,
+      "collection": "behold",
+      "category": "hats",
+      "colors": [
+        "Black"
+      ],
+      "priceCents": 2500,
+      "featured": false,
+      "releasedAt": "2026-10-09",
+      "scripture": {
+        "reference": "Ephesians 1:7",
+        "excerpt": true,
+        "niv": "In him we have redemption through his blood, the forgiveness of sins",
+        "kjv": "In whom we have redemption through his blood, the forgiveness of sins"
+      },
+      "story": {
+        "theme": "Redemption",
+        "call": "Behold your Redeemer",
+        "art": "The Awebound wordmark in ivory with crimson running through its letters, framed by red thorn branches.",
+        "meaning": "This is the everyday Awebound cap: the wordmark and its thorns, nothing more. The red along the thorns and through the letters means the same thing as the Lamb’s Mark. It stands for the sacrifice of our Lord Jesus Christ, who wore a crown of thorns and gave His life for us. Through His blood we are forgiven.",
+        "front": "Awebound wordmark printed in ivory with crimson accents, framed by red thorn branches",
+        "back": "Plain, with an adjustable snap strap",
+        "inks": "Ivory, deep red",
+        "fit": "Structured cap · mid-profile crown, curved brim, adjustable snap back",
+        "material": "65% polyester, 35% cotton",
+        "process": "printed"
+      },
+      "images": [
+        {
+          "view": "front",
+          "url": "/products/signature-cap/1.webp",
+          "alt": "Signature Cap in black, front: the Awebound wordmark in ivory, framed by red thorn branches"
+        },
+        {
+          "view": "side",
+          "url": "/products/signature-cap/2.webp",
+          "alt": "Signature Cap in black, three-quarter view: the printed wordmark with its red thorns, and the curved brim"
+        },
+        {
+          "view": "back",
+          "url": "/products/signature-cap/3.webp",
+          "alt": "Signature Cap in black, from behind at an angle: plain, with the adjustable snap strap"
+        }
+      ]
+    }
+  ]
+}
+$json$::jsonb);
+
+insert into public.collections
+  (slug, name, number, tagline, story, scripture_ref, released_at, position, status, published_at)
+select c->>'slug', c->>'name', c->>'number', c->>'tagline', c->>'story', c->>'scriptureRef',
+       (select max((p->>'releasedAt')::date)
+          from jsonb_array_elements(s.j->'products') p
+         where p->>'collection' = c->>'slug'),
+       n, 'published', now()
+from catalog_seed s, jsonb_array_elements(s.j->'collections') with ordinality as t(c, n);
+
+insert into public.size_guides (id, name, blank, fit, note, tolerance, image, measures, rows)
+select g.key, g.value->>'name', g.value->>'blank', g.value->>'fit', g.value->>'note',
+       g.value->>'tolerance', nullif(g.value->'image', 'null'::jsonb), g.value->'measures',
+       g.value->'rows'
+from catalog_seed s, jsonb_each(s.j->'sizeGuides') g;
+
+insert into public.pieces
+  (slug, code, name, collection_id, position, category, colors, price_cents, size_price_cents,
+   size_guide_id, scripture, story, plate, images, media, featured, released_at, fourthwall_slug,
+   status, published_at)
+select p->>'slug', p->>'code', p->>'name', c.id, (p->>'position')::int, p->>'category',
+       array(select jsonb_array_elements_text(p->'colors')), (p->>'priceCents')::int,
+       coalesce(p->'sizePriceCents', '{}'::jsonb), p->>'sizeGuide', p->'scripture', p->'story',
+       p->'plate', p->'images',
+       jsonb_build_object(
+         'detail', '/products/' || (p->>'slug') || '/detail.webp',
+         'piece', '/products/' || (p->>'slug') || '/piece.webp',
+         'plateWide', '/products/' || (p->>'slug') || '/plate-wide.webp',
+         'plateTall', '/products/' || (p->>'slug') || '/plate-tall.webp'),
+       (p->>'featured')::boolean, (p->>'releasedAt')::date,
+       coalesce(p->>'fourthwallSlug', p->>'slug'), 'published', now()
+from catalog_seed s, jsonb_array_elements(s.j->'products') p
+join public.collections c on c.slug = p->>'collection';
+
+-- Offer ids pinned so far (by the owner in Mappings or by a first order) belong to the pieces too.
+update public.pieces p
+   set fourthwall_offer_id = d.fourthwall_offer_id
+  from public.archive_designs d
+ where d.product_slug = p.slug and d.fourthwall_offer_id is not null;
+
+-- The pieces now name the designs (The Passage is Fear Not).
+update public.archive_designs d
+   set name = p.name
+  from public.pieces p
+ where p.slug = d.product_slug and d.name <> p.name;
+
+drop table catalog_seed;

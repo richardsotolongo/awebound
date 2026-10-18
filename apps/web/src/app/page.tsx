@@ -72,6 +72,7 @@ export default async function Home() {
             alt: p.image.alt,
             plate: plateCss(p.plate),
             ink: p.plate.ink,
+            media: p.media,
           },
         ]
       : [],
@@ -104,9 +105,10 @@ export default async function Home() {
           wallpapers: [],
         }
       : null);
-  const previewPlate =
-    pieces.find((p) => p.slug === card?.slug)?.plate ??
-    (card ? (await withFallback(() => getProduct(card.slug), null))?.plate : null);
+  const previewPiece =
+    pieces.find((p) => p.slug === card?.slug) ??
+    (card ? await withFallback(() => getProduct(card.slug), null) : null);
+  const previewPlate = previewPiece?.plate;
   // The lead piece follows the plate: one entry per slide, in the same order. Without slides the
   // plate stands still on the one piece.
   const rotating = slides.length > 1;
@@ -157,7 +159,10 @@ export default async function Home() {
         plate={previewPlate ? plateCss(previewPlate) : null}
         signedIn={Boolean(userId)}
         owned={ownsPreview}
-        saved={slides.slice(0, 3).map((s) => ({ slug: s.slug, plate: s.plate }))}
+        garment={previewPiece?.media.piece ?? null}
+        saved={slides
+          .slice(0, 3)
+          .map((s) => ({ slug: s.slug, plate: s.plate, garment: s.media.piece }))}
       />
 
       <JsonLd data={STORE} />
