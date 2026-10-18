@@ -51,6 +51,10 @@ content_path = "./supabase/templates/magic-link.html"
 subject = "Confirm your email for Awebound"
 content_path = "./supabase/templates/confirmation.html"
 
+[auth.email.template.email_change]
+subject = "Confirm your new email for Awebound"
+content_path = "./supabase/templates/email-change.html"
+
 # Resend as the SMTP server. Enable in production (dashboard → Authentication → SMTP).
 [auth.email.smtp]
 enabled = false
@@ -67,7 +71,3 @@ enabled = true
 client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 skip_nonce_check = false
-
-[auth.email.template.email_change]
-subject = "Confirm your new email for Awebound"
-content_path = "./supabase/templates/email-change.html"
