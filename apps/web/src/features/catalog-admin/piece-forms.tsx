@@ -8,8 +8,31 @@ import type { Category, Plate, ProductImage, ProductStory, ScriptureRecord } fro
 import type { PiecePatch, SizeGuideFields } from "@/shared/pieces";
 import { Check, Field, toCents, toDollars } from "./fields";
 import { ImageReplace } from "./image-replace";
+import { ImageTile } from "./image-tile";
 
-/** One section's form: its own fields, one Save, the outcome under it. */
+/** Save, and what came of it beside the button. */
+function SaveBar({
+  busy,
+  label,
+  message,
+  failed,
+}: {
+  busy: boolean;
+  label: string;
+  message: string;
+  failed: boolean;
+}) {
+  return (
+    <div className="review-save">
+      <Button variant="secondary" type="submit" disabled={busy}>
+        {busy ? "Working…" : label}
+      </Button>
+      <Outcome message={message} failed={failed} />
+    </div>
+  );
+}
+
+/** One step's form: its own fields and one Save. */
 function PatchForm({
   slug,
   patch,
@@ -17,7 +40,7 @@ function PatchForm({
   label = "Save",
 }: {
   slug: string;
-  /** The section's fields as a patch, or a message when one isn't valid yet. */
+  /** The step's fields as a patch, or a message when one isn't valid yet. */
   patch: () => PiecePatch | string;
   children: ReactNode;
   label?: string;
@@ -37,13 +60,51 @@ function PatchForm({
   return (
     <form onSubmit={submit} className="admin-editor" noValidate>
       {children}
-      <div>
-        <Button variant="secondary" type="submit" disabled={busy}>
-          {busy ? "Working…" : label}
-        </Button>
-      </div>
-      <Outcome message={message} failed={failed} />
+      <SaveBar busy={busy} label={label} message={message} failed={failed} />
     </form>
+  );
+}
+
+/** A group of fields under its own heading. */
+function Group({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <fieldset className="review-group">
+      <legend className="aw-h3">{title}</legend>
+      {children}
+    </fieldset>
+  );
+}
+
+function Select({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: [string, string][];
+}) {
+  const id = useId();
+  return (
+    <div className="field">
+      <label htmlFor={id} className="aw-label">
+        {label}
+      </label>
+      <select
+        id={id}
+        className="aw-select"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {options.map(([v, text]) => (
+          <option key={v} value={v}>
+            {text}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
 
@@ -72,9 +133,10 @@ export function ShopCardForm({
     >
       <Field label="Name" value={f.name} max={80} onChange={(v) => setF({ ...f, name: v })} />
       <Field
-        label="Price in dollars (shown until Fourthwall’s price takes over)"
+        label="Price in dollars"
         value={f.price}
         onChange={(v) => setF({ ...f, price: v })}
+        help="Shown until the piece is on sale in Fourthwall; Fourthwall’s price wins then."
       />
       <Check
         label="Featured: the home page opens on the release’s first featured piece"
@@ -85,19 +147,23 @@ export function ShopCardForm({
   );
 }
 
-const STORY: { key: keyof ProductStory; label: string; lines?: number; max: number }[] = [
-  { key: "theme", label: "Theme, in one word", max: 60 },
-  { key: "call", label: "Call (the design story’s headline: Behold His mercy)", max: 120 },
-  { key: "art", label: "What the art shows, in one sentence", lines: 2, max: 500 },
-  { key: "meaning", label: "What it means", lines: 6, max: 3000 },
-  { key: "front", label: "Front", lines: 2, max: 300 },
-  { key: "back", label: "Back", lines: 2, max: 300 },
-  { key: "inks", label: "Inks or thread", max: 200 },
-  { key: "fit", label: "Fit", max: 200 },
-  { key: "material", label: "Material", max: 300 },
-];
+const STORY: Record<
+  Exclude<keyof ProductStory, "process">,
+  { label: string; lines?: number; max: number }
+> = {
+  theme: { label: "Theme, in one word", max: 60 },
+  call: { label: "Call: the design story’s headline", max: 120 },
+  art: { label: "What the art shows, in one sentence", lines: 2, max: 500 },
+  meaning: { label: "What it means", lines: 6, max: 3000 },
+  front: { label: "Front", lines: 2, max: 300 },
+  back: { label: "Back", lines: 2, max: 300 },
+  inks: { label: "Inks or thread", max: 200 },
+  fit: { label: "Fit", max: 200 },
+  material: { label: "Fabric", max: 300 },
+};
+type StoryKey = keyof typeof STORY;
 
-/** The product page's words: code, garment, colors, per-size prices, Scripture and the design story. */
+/** The product page's words, grouped as the page shows them. */
 export function ProductForm({
   slug,
   code,
@@ -119,7 +185,6 @@ export function ProductForm({
   scripture: ScriptureRecord;
   story: ProductStory;
 }) {
-  const id = useId();
   const [f, setF] = useState({ code, category, colors: colors.join(", ") });
   const [prices, setPrices] = useState<Record<string, string>>(
     Object.fromEntries(
@@ -127,10 +192,22 @@ export function ProductForm({
     ),
   );
   const [verse, setVerse] = useState(scripture);
-  const [words, setWords] = useState<Record<string, string>>(
-    Object.fromEntries(STORY.map((s) => [s.key, story[s.key] ?? ""])),
+  const [words, setWords] = useState<Record<StoryKey, string>>(
+    Object.fromEntries(Object.keys(STORY).map((k) => [k, story[k as StoryKey] ?? ""])) as Record<
+      StoryKey,
+      string
+    >,
   );
   const [process, setProcess] = useState(story.process);
+  const word = (key: StoryKey) => (
+    <Field
+      label={STORY[key].label}
+      value={words[key]}
+      lines={STORY[key].lines}
+      max={STORY[key].max}
+      onChange={(v) => setWords({ ...words, [key]: v })}
+    />
+  );
 
   return (
     <PatchForm
@@ -153,110 +230,111 @@ export function ProductForm({
           sizePriceCents: sizePrices,
           scripture: verse,
           story: {
-            theme: words.theme ?? "",
-            call: words.call ?? "",
-            art: words.art ?? "",
-            meaning: words.meaning ?? "",
-            front: words.front ?? "",
-            back: words.back ?? "",
-            inks: words.inks ?? "",
-            fit: words.fit ?? "",
-            material: words.material?.trim() ? words.material : null,
+            ...words,
+            material: words.material.trim() ? words.material : null,
             process,
           },
         };
       }}
     >
-      <Field
-        label="Internal code (never shown)"
-        value={f.code}
-        onChange={(v) => setF({ ...f, code: v })}
-      />
-      <div className="field">
-        <label htmlFor={`${id}-category`} className="aw-label">
-          Garment
-        </label>
-        <select
-          id={`${id}-category`}
-          className="aw-select"
-          value={f.category}
-          onChange={(e) => setF({ ...f, category: e.target.value })}
-        >
-          {categories.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <Field
-        label="Colors, the base color first"
-        value={f.colors}
-        onChange={(v) => setF({ ...f, colors: v })}
-        help="Separated by commas, named as Fourthwall names them."
-      />
-      <fieldset className="field">
-        <legend className="aw-label">Sizes and per-size prices</legend>
-        <p className="field-help">
-          The sizes come from the size guide. Leave a price empty for the base price.
-        </p>
-        <div className="admin-inline">
-          {sizes.map((size) => (
-            <Field
-              key={size}
-              label={size}
-              value={prices[size] ?? ""}
-              onChange={(v) => setPrices({ ...prices, [size]: v })}
-            />
-          ))}
+      <Group title="Garment">
+        <div className="review-fields">
+          <Select
+            label="Garment"
+            value={f.category}
+            onChange={(v) => setF({ ...f, category: v })}
+            options={categories.map((c) => [c.slug, c.name])}
+          />
+          <Field
+            label="Internal code (never shown)"
+            value={f.code}
+            onChange={(v) => setF({ ...f, code: v })}
+          />
         </div>
-      </fieldset>
-      <Field
-        label="Scripture reference (Isaiah 1:18)"
-        value={verse.reference}
-        onChange={(v) => setVerse({ ...verse, reference: v })}
-      />
-      <Field
-        label="King James text, exact wording, no quotation marks"
-        value={verse.kjv}
-        lines={3}
-        max={1000}
-        onChange={(v) => setVerse({ ...verse, kjv: v })}
-      />
-      <Check
-        label="An excerpt (part of the verse)"
-        checked={verse.excerpt}
-        onChange={(v) => setVerse({ ...verse, excerpt: v })}
-      />
-      {STORY.map((s) => (
         <Field
-          key={s.key}
-          label={s.label}
-          value={words[s.key] ?? ""}
-          lines={s.lines}
-          max={s.max}
-          onChange={(v) => setWords({ ...words, [s.key]: v })}
+          label="Colors, the base color first"
+          value={f.colors}
+          onChange={(v) => setF({ ...f, colors: v })}
+          help="Separated by commas, named as Fourthwall names them."
         />
-      ))}
-      <div className="field">
-        <label htmlFor={`${id}-process`} className="aw-label">
-          Process
-        </label>
-        <select
-          id={`${id}-process`}
-          className="aw-select"
-          value={process}
-          onChange={(e) => setProcess(e.target.value === "embroidered" ? "embroidered" : "printed")}
-        >
-          <option value="printed">Printed</option>
-          <option value="embroidered">Embroidered</option>
-        </select>
-      </div>
+      </Group>
+
+      <Group title="Sizes and prices">
+        {sizes.length ? (
+          <>
+            <p className="field-help">
+              The sizes come from the size guide. A price left empty is the base price.
+            </p>
+            <div className="review-sizes">
+              {sizes.map((size) => (
+                <Field
+                  key={size}
+                  label={size}
+                  value={prices[size] ?? ""}
+                  onChange={(v) => setPrices({ ...prices, [size]: v })}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="field-help">Choose a size guide first: its sizes are the piece’s sizes.</p>
+        )}
+      </Group>
+
+      <Group title="Scripture">
+        <Field
+          label="Reference (Isaiah 1:18)"
+          value={verse.reference}
+          onChange={(v) => setVerse({ ...verse, reference: v })}
+        />
+        <Field
+          label="King James text, exact wording, no quotation marks"
+          value={verse.kjv}
+          lines={3}
+          max={1000}
+          onChange={(v) => setVerse({ ...verse, kjv: v })}
+        />
+        <Check
+          label="An excerpt (part of the verse)"
+          checked={verse.excerpt}
+          onChange={(v) => setVerse({ ...verse, excerpt: v })}
+        />
+      </Group>
+
+      <Group title="Design story">
+        <div className="review-fields">
+          {word("theme")}
+          {word("call")}
+        </div>
+        {word("art")}
+        {word("meaning")}
+      </Group>
+
+      <Group title="Product details">
+        <div className="review-fields">
+          {word("front")}
+          {word("back")}
+          {word("inks")}
+          {word("fit")}
+          {word("material")}
+          <Select
+            label="Process"
+            value={process}
+            onChange={(v) => setProcess(v === "embroidered" ? "embroidered" : "printed")}
+            options={[
+              ["printed", "Printed"],
+              ["embroidered", "Embroidered"],
+            ]}
+          />
+        </div>
+      </Group>
     </PatchForm>
   );
 }
 
-/** The gallery in order: alt text and view per image, moved up and down; each replaced on its own. */
+const ROLE = ["the listing image", "the hover image"];
+
+/** The gallery in order: view and alt text per image, moved earlier or later; each replaced on its own. */
 export function GalleryForm({ slug, images }: { slug: string; images: ProductImage[] }) {
   const [list, setList] = useState(images);
   const move = (i: number, by: number) =>
@@ -268,50 +346,44 @@ export function GalleryForm({ slug, images }: { slug: string; images: ProductIma
     });
   const set = (i: number, image: ProductImage) =>
     setList(list.map((x, j) => (j === i ? image : x)));
+  const moved = list.some((x, j) => x.url !== images[j]?.url);
   return (
     <PatchForm slug={slug} patch={() => ({ images: list })} label="Save order and alt text">
-      <ol className="admin-gallery">
+      <ol className="review-tiles">
         {list.map((img, i) => (
           <li key={img.url}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- owner preview */}
-            <img src={img.url} alt="" />
-            <p className="aw-small">
-              {i === 0 ? "1, the listing image" : i === 1 ? "2, the hover image" : String(i + 1)}
-            </p>
-            <Field
-              label="Alt text"
-              value={img.alt}
-              lines={2}
-              onChange={(v) => set(i, { ...img, alt: v })}
-            />
-            <div className="field">
-              <label className="aw-small">
-                View{" "}
-                <select
-                  className="aw-select"
-                  value={img.view}
-                  onChange={(e) => set(i, { ...img, view: e.target.value as ProductImage["view"] })}
-                >
-                  <option value="back">Back</option>
-                  <option value="front">Front</option>
-                  <option value="side">Side</option>
-                  <option value="detail">Detail</option>
-                </select>
-              </label>
-            </div>
-            <div className="admin-inline">
-              <Button variant="link" disabled={i === 0} onClick={() => move(i, -1)}>
-                Earlier
-              </Button>
-              <Button variant="link" disabled={i === list.length - 1} onClick={() => move(i, 1)}>
-                Later
-              </Button>
-            </div>
-            {list === images || list.every((x, j) => x.url === images[j]?.url) ? (
-              <ImageReplace target={{ kind: "piece", slug, slot: "gallery", index: i }} />
-            ) : (
-              <p className="field-help">Save the order to replace this image.</p>
-            )}
+            <ImageTile src={img.url} label={`${i + 1}${ROLE[i] ? `, ${ROLE[i]}` : ""}`}>
+              <Select
+                label="View"
+                value={img.view}
+                onChange={(v) => set(i, { ...img, view: v as ProductImage["view"] })}
+                options={[
+                  ["back", "Back"],
+                  ["front", "Front"],
+                  ["side", "Side"],
+                  ["detail", "Detail"],
+                ]}
+              />
+              <Field
+                label="Alt text"
+                value={img.alt}
+                lines={3}
+                onChange={(v) => set(i, { ...img, alt: v })}
+              />
+              <div className="admin-inline">
+                <Button variant="link" disabled={i === 0} onClick={() => move(i, -1)}>
+                  Earlier
+                </Button>
+                <Button variant="link" disabled={i === list.length - 1} onClick={() => move(i, 1)}>
+                  Later
+                </Button>
+              </div>
+              {moved ? (
+                <p className="field-help">Save the order before replacing an image.</p>
+              ) : (
+                <ImageReplace target={{ kind: "piece", slug, slot: "gallery", index: i }} />
+              )}
+            </ImageTile>
           </li>
         ))}
       </ol>
@@ -319,9 +391,10 @@ export function GalleryForm({ slug, images }: { slug: string; images: ProductIma
   );
 }
 
+const HEX = /^#[0-9a-fA-F]{6}$/;
+
 /** The plate: its token, the ink its lettering takes, and the color standing in for a new token. */
 export function PlateForm({ slug, plate }: { slug: string; plate: Plate | null }) {
-  const id = useId();
   const [f, setF] = useState({
     token: plate?.token ?? "",
     ink: plate?.ink ?? "bone",
@@ -348,26 +421,29 @@ export function PlateForm({ slug, plate }: { slug: string; plate: Plate | null }
         onChange={(v) => setF({ ...f, token: v })}
         help="Empty: no plate, and the piece shows on coal."
       />
-      <div className="field">
-        <label htmlFor={`${id}-ink`} className="aw-label">
-          Ink (lettering on the plate)
-        </label>
-        <select
-          id={`${id}-ink`}
-          className="aw-select"
-          value={f.ink}
-          onChange={(e) => setF({ ...f, ink: e.target.value === "coal" ? "coal" : "bone" })}
-        >
-          <option value="bone">Bone</option>
-          <option value="coal">Coal</option>
-        </select>
-      </div>
-      <Field
-        label="Surface color (#rrggbb)"
-        value={f.swatch}
-        onChange={(v) => setF({ ...f, swatch: v })}
-        help="Read from plate-wide.webp on import. It shows until the token is in the brand tokens."
+      <Select
+        label="Ink: what lettering and buttons take on the plate"
+        value={f.ink}
+        onChange={(v) => setF({ ...f, ink: v === "coal" ? "coal" : "bone" })}
+        options={[
+          ["bone", "Bone"],
+          ["coal", "Coal"],
+        ]}
       />
+      <div className="admin-inline">
+        {HEX.test(f.swatch) ? (
+          // The surface's own color, read from its plate image: product data, like a swatch.
+          <span className="review-swatch" style={{ background: f.swatch }} aria-hidden="true" />
+        ) : null}
+        <Field
+          label="Surface color (#rrggbb)"
+          value={f.swatch}
+          onChange={(v) => setF({ ...f, swatch: v })}
+        />
+      </div>
+      <p className="field-help">
+        Read from the wide plate on import. It shows until the token is in the brand tokens.
+      </p>
     </PatchForm>
   );
 }
@@ -413,28 +489,18 @@ export function GuidePicker({
   current: string | null;
   guides: { id: string; name: string }[];
 }) {
-  const id = useId();
   const [value, setValue] = useState(current ?? "");
   return (
     <PatchForm slug={slug} patch={() => ({ sizeGuideId: value || null })} label="Use this guide">
-      <div className="field">
-        <label htmlFor={`${id}-guide`} className="aw-label">
-          Size guide
-        </label>
-        <select
-          id={`${id}-guide`}
-          className="aw-select"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        >
-          <option value="">None</option>
-          {guides.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.name} ({g.id})
-            </option>
-          ))}
-        </select>
-      </div>
+      <Select
+        label="Size guide"
+        value={value}
+        onChange={setValue}
+        options={[
+          ["", "None"],
+          ...guides.map((g): [string, string] => [g.id, `${g.name} (${g.id})`]),
+        ]}
+      />
     </PatchForm>
   );
 }
@@ -459,72 +525,77 @@ export function SizeGuideForm({ id: guideId, guide }: { id: string; guide: SizeG
         run(() => saveSizeGuideAction({ id: guideId, fields: f }), "Saved.");
       }}
     >
-      <Field
-        label="Name, as the guide prints it"
-        value={f.name}
-        onChange={(v) => setF({ ...f, name: v })}
-      />
-      <Field
-        label="Blank (internal, never shown)"
-        value={f.blank}
-        onChange={(v) => setF({ ...f, blank: v })}
-      />
-      <Field label="Fit" value={f.fit ?? ""} onChange={(v) => setF({ ...f, fit: v || null })} />
-      <Field
-        label="Sizing note (shown beside the sizes)"
-        value={f.note ?? ""}
-        onChange={(v) => setF({ ...f, note: v || null })}
-      />
-      <Field
-        label="Tolerance"
-        value={f.tolerance ?? ""}
-        onChange={(v) => setF({ ...f, tolerance: v || null })}
-      />
-      {f.measures.map((m, i) => (
+      <Group title="The guide">
+        <div className="review-fields">
+          <Field
+            label="Name, as the guide prints it"
+            value={f.name}
+            onChange={(v) => setF({ ...f, name: v })}
+          />
+          <Field
+            label="Blank (internal, never shown)"
+            value={f.blank}
+            onChange={(v) => setF({ ...f, blank: v })}
+          />
+          <Field label="Fit" value={f.fit ?? ""} onChange={(v) => setF({ ...f, fit: v || null })} />
+          <Field
+            label="Tolerance"
+            value={f.tolerance ?? ""}
+            onChange={(v) => setF({ ...f, tolerance: v || null })}
+          />
+        </div>
         <Field
-          key={i}
-          label={`How to measure ${m.label}`}
-          value={m.how}
-          onChange={(v) =>
-            setF({ ...f, measures: f.measures.map((x, j) => (j === i ? { ...x, how: v } : x)) })
-          }
+          label="Sizing note (shown beside the sizes)"
+          value={f.note ?? ""}
+          onChange={(v) => setF({ ...f, note: v || null })}
         />
-      ))}
-      <div className="admin-wrap">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Size</th>
-              {f.measures.map((m) => (
-                <th key={m.label}>{m.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {f.rows.map((row, r) => (
-              <tr key={row.size}>
-                <td>{row.size}</td>
-                {row.values.map((v, c) => (
-                  <td key={c}>
-                    <input
-                      className="aw-input"
-                      aria-label={`${row.size} ${f.measures[c]?.label ?? ""}`}
-                      value={v}
-                      onChange={(e) => cell(r, c, e.target.value)}
-                    />
-                  </td>
+      </Group>
+      <Group title="How to measure">
+        <div className="review-fields">
+          {f.measures.map((m, i) => (
+            <Field
+              key={i}
+              label={m.label}
+              value={m.how}
+              onChange={(v) =>
+                setF({ ...f, measures: f.measures.map((x, j) => (j === i ? { ...x, how: v } : x)) })
+              }
+            />
+          ))}
+        </div>
+      </Group>
+      <Group title="Measurements, in inches">
+        <div className="admin-wrap">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Size</th>
+                {f.measures.map((m) => (
+                  <th key={m.label}>{m.label}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <Button variant="secondary" type="submit" disabled={busy}>
-          {busy ? "Working…" : "Save size guide"}
-        </Button>
-      </div>
-      <Outcome message={message} failed={failed} />
+            </thead>
+            <tbody>
+              {f.rows.map((row, r) => (
+                <tr key={row.size}>
+                  <td>{row.size}</td>
+                  {row.values.map((v, c) => (
+                    <td key={c}>
+                      <input
+                        className="aw-input"
+                        aria-label={`${row.size} ${f.measures[c]?.label ?? ""}`}
+                        value={v}
+                        onChange={(e) => cell(r, c, e.target.value)}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Group>
+      <SaveBar busy={busy} label="Save size guide" message={message} failed={failed} />
     </form>
   );
 }

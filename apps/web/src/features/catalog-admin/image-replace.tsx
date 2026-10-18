@@ -1,6 +1,5 @@
 "use client";
 
-import { useId, useRef } from "react";
 import { Outcome, useOwnerAction } from "@/features/archive/admin/owner-action";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
 import { createImageUploadAction, replaceImageAction } from "@/server/catalog-admin-actions";
@@ -13,8 +12,8 @@ const EXT: Record<string, string> = {
 };
 
 /**
- * Replace one image: the file goes straight to storage, then the server stores it as WebP under a
- * new address and removes the old one.
+ * A Replace button for one image: the file goes straight to storage, then the server stores it as
+ * WebP under a new address and removes the old one.
  */
 export function ImageReplace({
   target,
@@ -23,11 +22,10 @@ export function ImageReplace({
   target: ImageTarget;
   label?: string;
 }) {
-  const id = useId();
-  const input = useRef<HTMLInputElement>(null);
   const { busy, message, failed, run } = useOwnerAction();
 
-  async function choose(file: File | undefined) {
+  async function choose(input: HTMLInputElement) {
+    const file = input.files?.[0];
     if (!file) return;
     await run(async () => {
       const ext = EXT[file.type];
@@ -43,23 +41,21 @@ export function ImageReplace({
       if (error) return { ok: false as const, error: `The upload didn’t arrive: ${error.message}` };
       return replaceImageAction({ target, path });
     }, "Replaced.");
-    if (input.current) input.current.value = "";
+    input.value = "";
   }
 
   return (
-    <div className="field">
-      <label htmlFor={id} className="aw-small">
+    <div className="review-replace">
+      <label className="aw-btn aw-btn-secondary" aria-disabled={busy || undefined}>
         {busy ? "Uploading…" : label}
+        <input
+          className="visually-hidden"
+          type="file"
+          accept="image/webp,image/png,image/jpeg"
+          disabled={busy}
+          onChange={(e) => void choose(e.currentTarget)}
+        />
       </label>
-      <input
-        ref={input}
-        id={id}
-        className="asset-file"
-        type="file"
-        accept="image/webp,image/png,image/jpeg"
-        disabled={busy}
-        onChange={(e) => void choose(e.target.files?.[0])}
-      />
       <Outcome message={message} failed={failed} />
     </div>
   );
