@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
-import { EMPTY_LIST } from "@/features/catalog/query";
 import { GuideBlocks, MoreGuides } from "@/features/guides/guide-blocks";
 import { GUIDES_PATH, findGuide, guideHref, type Guide } from "@/features/guides/guides";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
-import { getProduct, searchProducts, withFallback } from "@/server/catalog";
+import { allProducts, getProduct, withFallback } from "@/server/catalog";
 import { pieceHref } from "@/shared";
 
 // Cached like product pages: rendered on the first visit, then refreshed every minute, so a
@@ -21,13 +20,13 @@ type Params = Promise<{ slug: string }>;
 
 /** The pieces a guide shows, with their stories and size guides, in the guide's order. */
 async function guidePieces({ pieces }: Guide) {
-  const list = await withFallback(() => searchProducts({ pageSize: 48 }), EMPTY_LIST);
+  const list = await withFallback(allProducts, []);
   const chosen =
     pieces === "all"
-      ? list.items
+      ? list
       : "slugs" in pieces
-        ? pieces.slugs.flatMap((slug) => list.items.filter((p) => p.slug === slug))
-        : list.items.filter((p) => p.category.slug === pieces.category);
+        ? pieces.slugs.flatMap((slug) => list.filter((p) => p.slug === slug))
+        : list.filter((p) => p.category.slug === pieces.category);
   const details = await Promise.all(
     chosen.map((p) => withFallback(() => getProduct(p.slug), null)),
   );
