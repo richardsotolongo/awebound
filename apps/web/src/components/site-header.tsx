@@ -20,12 +20,12 @@ function currentLabel(pathname: string, account: NavLink | undefined): string | 
 }
 
 /**
- * "Sign in" (back to this page afterwards) or "Account"; nothing while accounts are off. The phone
- * menu offers the same link as "Join Awebound" to someone signed out.
+ * "Sign in" (back to this page afterwards) or "My Archive"; nothing while accounts are off. The
+ * phone menu offers the same link as "Join Awebound" to someone signed out.
  */
 function accountLink(signedIn: boolean, pathname: string): NavLink | undefined {
   if (!accountsEnabled) return undefined;
-  if (signedIn) return { label: "Account", href: "/account" };
+  if (signedIn) return { label: "My Archive", href: "/account" };
   const next = isAccountPage(pathname) ? "" : `?next=${encodeURIComponent(pathname)}`;
   return { label: "Sign in", href: `/sign-in${next}` };
 }

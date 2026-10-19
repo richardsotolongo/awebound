@@ -307,10 +307,10 @@ export function cartReminder({
       row(sentence(join(links))),
       button("Return to your bag", bag),
     ],
-    note: `We send at most one of these a month. <a href="${settings}" style="color:${C.muted};">Turn them off in Settings</a>.`,
+    note: `We send at most one of these a month. <a href="${settings}" style="color:${C.muted};">Turn them off in your account</a>.`,
   });
   const list = pieces.map((p) => `${p.name}: ${siteUrl}${pieceHref(p.slug)}`).join("\n");
-  const text = `Your bag is saved.\n\n${sentence(join(pieces.map((p) => p.name)))}\n\n${list}\n\nReturn to your bag: ${bag}\n\nWe send at most one of these a month. Turn them off in Settings: ${settings}`;
+  const text = `Your bag is saved.\n\n${sentence(join(pieces.map((p) => p.name)))}\n\n${list}\n\nReturn to your bag: ${bag}\n\nWe send at most one of these a month. Turn them off in your account: ${settings}`;
   return { subject, html, text };
 }
 
@@ -333,9 +333,9 @@ export function collectionUpdate({
       row(escapeHtml(body).replace(/\r?\n/g, "<br>")),
       button("See the pieces", `${siteUrl}/shop`),
     ],
-    note: `You asked for these in your Archive settings. <a href="${siteUrl}/account/settings#email" style="color:${C.muted};">Change that here</a>.`,
+    note: `You asked for these in My Archive. <a href="${siteUrl}/account/settings#preferences" style="color:${C.muted};">Change that here</a>.`,
   });
-  const text = `${leadText}\n\n${body}\n\nSee the pieces: ${siteUrl}/shop\n\nYou asked for these in your Archive settings. Change that here: ${siteUrl}/account/settings#email`;
+  const text = `${leadText}\n\n${body}\n\nSee the pieces: ${siteUrl}/shop\n\nYou asked for these in My Archive. Change that here: ${siteUrl}/account/settings#preferences`;
   return { subject, html, text };
 }
 

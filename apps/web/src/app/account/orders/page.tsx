@@ -35,12 +35,13 @@ export default async function OrdersPage() {
     <>
       <PageHeader
         title="Orders"
+        hideTitle
         intro={
           !readiness.orders
-            ? "Order history isn’t connected yet. Order confirmations and tracking still come by email."
+            ? "Order history isn’t connected yet. Confirmations and tracking come by email."
             : orders.length > 0
-              ? "Orders linked to your account. Confirmations and tracking still come by email."
-              : "No orders linked yet. Orders placed while signed in appear here after payment is confirmed."
+              ? "Confirmations and tracking come by email."
+              : "No orders yet. Orders placed while signed in show here once paid."
         }
       >
         <div className="account-actions">
@@ -101,9 +102,7 @@ export default async function OrdersPage() {
         <h2 id="help-title" className="aw-h3">
           Questions about an order?
         </h2>
-        <p className="aw-body">
-          Write to us with your order number. Confirmations and tracking come by email.
-        </p>
+        <p className="aw-body">Write to us with your order number.</p>
         <div className="account-actions">
           <Button variant="secondary" href="/contact">
             Contact us

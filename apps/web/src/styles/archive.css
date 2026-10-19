@@ -1,53 +1,21 @@
 /* My Archive: the account area, its cards and the owner's admin tables. Layout only; colors are tokens. */
 @layer components {
-  /* My Archive and Your collection as the red buttons, a rule, then the other sections. On phones
-     the two buttons share the first row, the links take their own and the rule goes. */
+  /* My Archive's title, then its sections as one row of equal tabs over a rule. On phones the
+     tabs wrap rather than scroll, so none is hidden. */
   .archive-nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3) var(--space-6);
-    padding: var(--space-4) 0;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: var(--space-6);
-  }
-  .archive-nav-main {
-    display: flex;
+    display: grid;
     gap: var(--space-3);
+    padding-top: var(--space-6);
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid var(--line);
   }
-  /* The current section's button carries a bone rule along its foot. */
-  .archive-nav-main .aw-btn[aria-current="page"] {
-    box-shadow: inset 0 -3px 0 var(--on-primary);
+  .archive-nav-title {
+    font-size: clamp(36px, 4vw, 52px);
   }
   .archive-nav-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-6);
-    padding-left: var(--space-6);
-    border-left: 1px solid var(--line-strong);
-  }
-  @media (max-width: 639px) {
-    .archive-nav-main {
-      flex-basis: 100%;
-    }
-    .archive-nav-main .aw-btn {
-      flex: 1 1 0;
-      padding-inline: var(--space-3);
-    }
-    .archive-nav-links {
-      flex-basis: 100%;
-      padding-left: 0;
-      border-left: 0;
-    }
-  }
-  .archive-nav-who {
-    margin-left: auto;
-  }
-  @media (max-width: 1023px) {
-    .archive-nav-who {
-      flex-basis: 100%;
-      margin-left: 0;
-    }
+    gap: 0 var(--space-6);
   }
   .archive-nav-links a {
     min-height: var(--tap-min);
@@ -58,10 +26,19 @@
     color: var(--ink-muted);
     text-decoration: none;
     border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .archive-nav-links a:hover {
+    color: var(--ink);
   }
   .archive-nav-links a[aria-current="page"] {
     color: var(--ink);
     border-bottom-color: var(--ink);
+  }
+  @media (max-width: 479px) {
+    .archive-nav-links {
+      gap: 0 var(--space-4);
+    }
   }
   .archive-seal {
     display: flex;
@@ -134,11 +111,6 @@
   .archive-card .aw-product-name {
     margin: 0;
   }
-  /* An empty collection: what each design brings to it, why it is empty, then one next step. */
-  .collection-empty > p {
-    margin: 0;
-    max-width: 60ch;
-  }
   .collection-holds {
     display: grid;
     gap: var(--space-2);
@@ -160,11 +132,6 @@
     border-radius: 50%;
     background: var(--accent-text);
     transform: translateY(-2px);
-  }
-  .collection-empty a {
-    color: var(--accent-text);
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
   .archive-story {
     display: grid;
@@ -648,9 +615,8 @@
       gap: var(--space-2);
     }
   }
-  /* The overview's first-visit welcome: words beside their two actions, set in the page. */
-  /* The overview's welcome on bone paper (oxblood heading and edge, coal words), so it stands
-     apart from Idea Submissions below it in the feature color. */
+  /* The empty collection's welcome on bone paper (oxblood heading and edge, coal words): words
+     beside their actions, the line about Saved under both. */
   .archive-welcome {
     --focus-ring: var(--on-altar);
     display: flex;
@@ -680,8 +646,18 @@
     color: var(--on-altar);
   }
   .archive-welcome-lead {
-    margin-top: var(--space-1) !important;
     font-weight: 700;
+  }
+  .archive-welcome .aw-small {
+    color: var(--on-altar-muted);
+  }
+  .archive-welcome-words .aw-small {
+    margin-top: var(--space-1);
+  }
+  .archive-welcome-saved {
+    flex-basis: 100%;
+    padding-top: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, var(--on-altar) 15%, transparent);
   }
   .archive-welcome .collection-holds {
     max-width: none;
@@ -1085,6 +1061,7 @@
     flex-direction: column;
     gap: var(--space-3);
     min-width: 0;
+    margin-bottom: var(--space-8);
   }
   /* The owner's switch between the open tile and the locked one customers see. */
   .idea-owner-view {
@@ -1298,18 +1275,8 @@
   .idea-page-section > p {
     margin: 0;
   }
-  .idea-reason {
-    display: grid;
-    gap: var(--space-3);
-    max-width: 62ch;
-  }
-  .idea-reason p {
-    margin: 0;
-    color: var(--ink-muted);
-  }
-  .idea-reason .idea-fine {
-    font-size: 14px;
-    color: var(--ink-subtle);
+  .idea-page-section > .aw-btn {
+    justify-self: start;
   }
   .idea-form {
     display: grid;

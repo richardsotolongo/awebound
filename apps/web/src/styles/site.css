@@ -513,11 +513,12 @@
   }
   /* Cards side by side share one height, whatever they hold; a card's closing link or button
      sits at its foot. */
+  /* One column, so each setting reads on its own (the owner's call, October 2026: changing the
+     email and signing out sat side by side and read as one thing). */
   .account-panels {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 1fr;
-    gap: var(--space-6);
+    gap: var(--space-4);
+    max-width: 760px;
   }
   .account-panel {
     display: flex;
@@ -532,6 +533,11 @@
   .account-panel-foot {
     margin-top: auto;
   }
+  .account-panel .aw-small a {
+    color: var(--accent-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
   /* My Archive's pages start close under their navigation (the owner's call, October 2026): a
      smaller title and less air around it than the site's other pages, and an empty state that
      follows the title straight away. */
@@ -545,6 +551,10 @@
   .account .page-header .account-actions:empty {
     display: none;
   }
+  /* A page whose tab names it and that has no intro starts straight under the tabs. */
+  .account .page-header:has(> .visually-hidden:only-child) {
+    padding: 0;
+  }
   .account .shop-empty {
     padding-block: 0 var(--space-12);
   }
@@ -556,6 +566,7 @@
   }
   /* Set apart from everyday settings: it can't be undone. */
   .account-danger {
+    max-width: 760px;
     margin-top: var(--space-16);
     background: none;
     border-left: 2px solid var(--primary);
@@ -564,12 +575,6 @@
     display: grid;
     gap: var(--space-4);
     max-width: 62ch;
-  }
-  @media (max-width: 1023px) {
-    .account-panels {
-      grid-template-columns: minmax(0, 1fr);
-      grid-auto-rows: auto;
-    }
   }
   @media (max-width: 767px) {
     .account-panel {

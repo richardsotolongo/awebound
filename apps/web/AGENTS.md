@@ -12,8 +12,9 @@ src/
 │  ├─ collections/         /collections redirects to the shop while there is one release; /collections/<slug> opens the shop filtered to it
 │  ├─ about, contact, faq, refunds, privacy, terms, bag, sign-in (Join Awebound: the form first, then what the account brings, free and with a purchase)
 │  ├─ christian-apparel/   the unlisted guides: the hub, and [slug]/ each guide (features/guides), cached like product pages
-│  ├─ account/             My Archive (layout guards the session and shows the nav): overview, saved, collection, collection/[slug]
-│  │                       (the owned card), orders, orders/link (claim a past order), ideas (Idea Submissions), settings,
+│  ├─ account/             My Archive (layout guards the session and shows the title and tabs): the Collection tab (owned
+│  │                       designs, or the welcome; collection/ redirects there), collection/[slug] (the owned card), saved,
+│  │                       orders, orders/link (claim a past order), ideas (Idea Submissions), settings (the Account tab),
 │  │                       admin/* (owner pages, role `admin`; admin/ideas is the submissions inbox; admin/collections and
 │  │                       admin/pieces manage the catalog: releases, piece zip import, each piece's review page)
 │  ├─ preview/[slug]       the owner's preview of a draft piece as a customer sees it (admin only, never indexed)
