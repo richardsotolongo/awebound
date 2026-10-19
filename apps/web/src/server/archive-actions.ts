@@ -25,7 +25,7 @@ import { getEntitlement } from "./archive/entitlements";
 import { guestOrderStatus } from "./archive/guest-orders";
 import { createIdeaUploadTarget, submitIdea } from "./archive/ideas";
 import { getArchiveReadiness } from "./archive/readiness";
-import { reconcileOrders } from "./archive/reconcile";
+import { pullMyMissingOrders, reconcileOrders } from "./archive/reconcile";
 import { savePiece, savedSlugs, unsavePiece } from "./archive/saved";
 import { parse, run, UserError, type Result } from "./errors";
 import { limit } from "./limit";
@@ -119,13 +119,14 @@ export async function verifyOrderClaim(
   });
 }
 
-/** Re-reads the shopper's own pending orders from our checkout partner. */
+/** Re-reads the shopper's own pending orders from our checkout partner and brings in missing ones. */
 export async function refreshMyOrders(): Promise<Result<{ checked: number; changed: number }>> {
   return run(async () => {
     const user = await requireUser();
     await limit("refresh", 3, 10, user.id);
     const report = await reconcileOrders({ trigger: "user", userId: user.id });
-    return { checked: report.checked, changed: report.changed };
+    const pulled = await pullMyMissingOrders(user);
+    return { checked: report.checked, changed: report.changed + pulled };
   });
 }
 

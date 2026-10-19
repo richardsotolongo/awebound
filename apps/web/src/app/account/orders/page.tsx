@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/page-header";
 import { RefreshOrdersButton } from "@/features/archive/refresh-orders-button";
 import { autoLinkByEmail, listOrdersForUser } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
+import { pullMyMissingOrders } from "@/server/archive/reconcile";
 import { currentUser } from "@/server/session";
 import { pieceHref } from "@/shared";
 
@@ -27,6 +28,7 @@ export default async function OrdersPage() {
   const user = await currentUser();
   if (!user) redirect("/sign-in?next=%2Faccount%2Forders");
   const readiness = await getArchiveReadiness();
+  if (readiness.orders) await pullMyMissingOrders(user).catch(() => 0);
   await autoLinkByEmail(user).catch(() => 0);
   const orders = readiness.orders ? await listOrdersForUser(user.id) : [];
   return (
