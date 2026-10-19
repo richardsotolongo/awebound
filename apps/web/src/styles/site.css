@@ -584,4 +584,23 @@
       margin-top: var(--space-12);
     }
   }
+
+  /* The signed-in header link, My Archive, filled in oxblood (the owner's trial on stage, October
+     2026). "Sign in" stays a plain link. */
+  .site-header .aw-header-account[href="/account"] {
+    padding: 0 var(--space-4);
+    background: var(--primary);
+    color: var(--on-primary);
+    border-radius: var(--radius-sm);
+  }
+  .site-header .aw-header-account[href="/account"]:hover,
+  .site-header .aw-header-account[href="/account"][aria-current="page"] {
+    background: var(--primary-hover);
+    color: var(--on-primary);
+  }
+  @media (max-width: 899px) {
+    .site-header .aw-header-account[href="/account"] {
+      padding: 0;
+    }
+  }
 }
