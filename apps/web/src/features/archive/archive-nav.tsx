@@ -31,7 +31,13 @@ export function ArchiveNav({ admin }: { admin: boolean }) {
             key={l.href}
             href={l.href}
             aria-current={current(l.href) ? "page" : undefined}
-            data-feature={l.href === "/account/ideas" || undefined}
+            data-tone={
+              l.href === "/account/ideas"
+                ? "ideas"
+                : l.href === "/account"
+                  ? "collection"
+                  : undefined
+            }
           >
             {l.label}
           </Link>

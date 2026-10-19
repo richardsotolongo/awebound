@@ -15,7 +15,8 @@
   .archive-nav-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 var(--space-6);
+    align-items: center;
+    gap: var(--space-1) var(--space-6);
   }
   .archive-nav-links a {
     min-height: var(--tap-min);
@@ -35,14 +36,32 @@
     color: var(--ink);
     border-bottom-color: var(--ink);
   }
-  /* Ideas is the Archive's one distinct feature: its tab is set in the gold of the Idea Submissions
-     band and tile, and underlined in gold when open. */
-  .archive-nav-links a[data-feature],
-  .archive-nav-links a[data-feature]:hover {
-    color: var(--scripture);
+  /* Collection and Ideas are filled in their panels' colors, so each tab matches what it opens:
+     Collection the welcome's bone paper (oxblood lettering), Ideas the Idea Submissions oxblood
+     (bone lettering). The open one carries a rule along its foot. */
+  .archive-nav-links a[data-tone] {
+    align-self: center;
+    min-height: 36px;
+    padding: 0 var(--space-4);
+    margin-bottom: 0;
+    border-bottom: 0;
+    border-radius: var(--radius-sm);
   }
-  .archive-nav-links a[data-feature][aria-current="page"] {
-    border-bottom-color: var(--scripture);
+  .archive-nav-links a[data-tone="collection"],
+  .archive-nav-links a[data-tone="collection"]:hover {
+    background: var(--altar);
+    color: var(--altar-mark);
+  }
+  .archive-nav-links a[data-tone="ideas"],
+  .archive-nav-links a[data-tone="ideas"]:hover {
+    background: var(--panel-feature);
+    color: var(--on-feature);
+  }
+  .archive-nav-links a[data-tone="collection"][aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--altar-mark);
+  }
+  .archive-nav-links a[data-tone="ideas"][aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--scripture);
   }
   /* Idea Submissions on the Collection tab: a slim band in the feature color with a gold rule. */
   .idea-band {
@@ -84,7 +103,7 @@
   }
   @media (max-width: 479px) {
     .archive-nav-links {
-      gap: 0 var(--space-4);
+      gap: var(--space-1) var(--space-4);
     }
   }
   .archive-seal {
