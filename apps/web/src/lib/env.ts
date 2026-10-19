@@ -25,6 +25,10 @@ export const publicEnv = PublicEnvSchema.parse({
 
 export const siteUrl = publicEnv.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
 
+const host = new URL(siteUrl).hostname;
+/** Which site this is, beside the wordmark: stage (and the previews that share it) or local. */
+export const envLabel = host === "localhost" ? "Local" : host.startsWith("stage.") ? "Stage" : null;
+
 // Canonicals, the sitemap, share images and email links are built from siteUrl, so a production
 // build without the live address would publish localhost everywhere.
 if (process.env.VERCEL_ENV === "production" && new URL(siteUrl).hostname === "localhost") {

@@ -416,6 +416,7 @@ var Awebound = (() => {
     onMenu,
     menuOpen = false,
     menuId,
+    badge,
     className,
   }) {
     const bagLabel = /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(import_jsx_runtime7.Fragment, {
@@ -449,14 +450,19 @@ var Awebound = (() => {
               /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", {}),
             ],
           }),
-          /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(BrandLink, {
+          /* @__PURE__ */ (0, import_jsx_runtime7.jsxs)(BrandLink, {
             href: homeHref,
             className: "aw-header-logo",
-            "aria-label": "Awebound home",
-            children: /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Wordmark, {
-              height: 56,
-              title: "",
-            }),
+            "aria-label": badge ? `Awebound home (${badge})` : "Awebound home",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(Wordmark, { height: 56, title: "" }),
+              badge
+                ? /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("span", {
+                    className: "aw-header-env",
+                    children: badge,
+                  })
+                : null,
+            ],
           }),
           /* @__PURE__ */ (0, import_jsx_runtime7.jsx)("nav", {
             className: "aw-header-nav",

@@ -62,6 +62,7 @@ module.exports = {
         "garment-french-navy": "var(--garment-french-navy)",
         "garment-cypress": "var(--garment-cypress)",
         "garment-carolina-blue": "var(--garment-carolina-blue)",
+        "garment-fallback": "var(--garment-fallback)",
         "cap-washed-black-twill": "var(--cap-washed-black-twill)",
         "cap-oxblood-corduroy": "var(--cap-oxblood-corduroy)",
         "cap-washed-charcoal-twill": "var(--cap-washed-charcoal-twill)",

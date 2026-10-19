@@ -4,7 +4,7 @@ import { Header, ThornCross, type NavLink } from "@awebound/brand";
 import Link from "next/link";
 import { useState } from "react";
 import { bagCount, useBag } from "@/features/bag/bag-store";
-import { accountsEnabled } from "@/lib/env";
+import { accountsEnabled, envLabel } from "@/lib/env";
 import { usePath } from "@/lib/pathname";
 import { MAIN_NAV } from "@/lib/site";
 import { useSignedIn } from "@/lib/supabase/browser";
@@ -57,6 +57,7 @@ export function SiteHeader() {
         onMenu={() => setMenuOpen((o) => !o)}
         menuOpen={menuOpen}
         menuId="site-menu"
+        badge={envLabel ?? undefined}
       />
       <Sheet
         id="site-menu"

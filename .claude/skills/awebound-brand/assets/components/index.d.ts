@@ -226,6 +226,8 @@ export interface HeaderProps {
   menuOpen?: boolean;
   /** id of the phone menu panel, for aria-controls. */
   menuId?: string;
+  /** A short word beside the wordmark naming the site, such as "Stage". Omit in production. */
+  badge?: string;
   className?: string;
 }
 /**
@@ -243,6 +245,7 @@ export declare function Header({
   onMenu,
   menuOpen,
   menuId,
+  badge,
   className,
 }: HeaderProps): JSX.Element;
 

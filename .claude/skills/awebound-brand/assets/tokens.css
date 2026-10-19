@@ -64,6 +64,8 @@
   --garment-french-navy: #24283a;
   --garment-cypress: #545541;
   --garment-carolina-blue: #a1c2d9;
+  /* A color name with no token yet, on a piece not live in the shop (Fourthwall's swatch once it is). */
+  --garment-fallback: #8a8580;
   --cap-washed-black-twill: #242322;
   --cap-oxblood-corduroy: #672c3b;
   --cap-washed-charcoal-twill: #41403c;
