@@ -56,9 +56,6 @@ export function row(
   return `<tr><td style="padding:0 0 ${gap}px;font-family:${FONT};font-size:${size}px;line-height:${Math.round(size * 1.6)}px;color:${color};${extra}">${caps ? html.toUpperCase() : html}</td></tr>`;
 }
 
-export const eyebrow = (text: string) =>
-  row(text, { size: 12, color: C.muted, gap: 12, caps: true });
-
 export const lead = (html: string) => row(html, { size: 20, gap: 16 });
 export const small = (html: string) => row(html, { size: 14, color: C.muted, gap: 0 });
 
@@ -130,7 +127,6 @@ export function contactNotification(message: ContactMessage): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("New message"),
       lead(`${name} wrote about ${escapeHtml(topic.toLowerCase())}.`),
       row(`${name} &lt;${escapeHtml(message.email)}&gt;`, { size: 14, color: C.muted }),
       quote(message.message),
@@ -149,7 +145,6 @@ export function contactAcknowledgement(message: ContactMessage): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Message received"),
       lead(`${escapeHtml(first)}, thank you for writing to us.`),
       row("We’ll reply within 72 hours. Here’s what you sent:"),
       row(escapeHtml(topic), { size: 14, color: C.muted, gap: 8, bold: true }),
@@ -167,7 +162,6 @@ export function subscriberWelcome(siteUrl: string): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Drop notes"),
       lead("You’re on the list."),
       row("You’ll hear from us when a new release is ready. Nothing else."),
       button("See the pieces", `${siteUrl}/shop`),
@@ -184,7 +178,6 @@ export function accountDeleted(): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Account deleted"),
       lead("Your Awebound account is deleted."),
       row(
         "We removed your sign-in, your profile, your saved pieces and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.",
@@ -373,7 +366,6 @@ export function ideaSubmissionNotification(s: IdeaSubmissionEmail): RenderedEmai
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Idea submission"),
       lead(`${escapeHtml(who)} sent a design idea.`),
       row(
         `${escapeHtml(s.email)}${s.purchases === null ? " · owner test" : ` · ${s.purchases} purchases`}`,
