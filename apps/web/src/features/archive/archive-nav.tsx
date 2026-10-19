@@ -27,7 +27,12 @@ export function ArchiveNav({ admin }: { admin: boolean }) {
       <p className="aw-h1 archive-nav-title">My Archive</p>
       <div className="archive-nav-links">
         {links.map((l) => (
-          <Link key={l.href} href={l.href} aria-current={current(l.href) ? "page" : undefined}>
+          <Link
+            key={l.href}
+            href={l.href}
+            aria-current={current(l.href) ? "page" : undefined}
+            data-feature={l.href === "/account/ideas" || undefined}
+          >
             {l.label}
           </Link>
         ))}

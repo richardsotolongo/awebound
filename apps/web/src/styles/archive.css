@@ -35,6 +35,53 @@
     color: var(--ink);
     border-bottom-color: var(--ink);
   }
+  /* Ideas is the Archive's one distinct feature: its tab is set in the gold of the Idea Submissions
+     band and tile, and underlined in gold when open. */
+  .archive-nav-links a[data-feature],
+  .archive-nav-links a[data-feature]:hover {
+    color: var(--scripture);
+  }
+  .archive-nav-links a[data-feature][aria-current="page"] {
+    border-bottom-color: var(--scripture);
+  }
+  /* Idea Submissions on the Collection tab: a slim band in the feature color with a gold rule. */
+  .idea-band {
+    --focus-ring: var(--on-feature);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-8);
+    margin-block: var(--space-4) var(--space-8);
+    padding: var(--space-6) var(--space-8);
+    background: var(--panel-feature);
+    color: var(--on-feature);
+    border: 1px solid color-mix(in srgb, var(--scripture) 45%, transparent);
+    border-top: 3px solid var(--scripture);
+    border-radius: var(--radius-sm);
+  }
+  .idea-band-words {
+    display: grid;
+    gap: var(--space-2);
+    flex: 1 1 36ch;
+    min-width: 0;
+  }
+  .idea-band .aw-h3,
+  .idea-band .aw-body {
+    margin: 0;
+    color: var(--on-feature);
+  }
+  .idea-band-side {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
+  }
+  @media (max-width: 767px) {
+    .idea-band {
+      padding: var(--space-6);
+    }
+  }
   @media (max-width: 479px) {
     .archive-nav-links {
       gap: 0 var(--space-4);

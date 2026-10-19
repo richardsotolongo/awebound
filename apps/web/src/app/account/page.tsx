@@ -5,12 +5,14 @@ import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { ArchiveWelcome } from "@/features/archive/archive-welcome";
 import { FoundingSeal } from "@/features/archive/founding-seal";
+import { IdeaBand } from "@/features/archive/idea-band";
 import { welcomeFor } from "@/features/archive/offer";
 import { listPublishedPublicCards } from "@/server/archive/content";
 import { listDesigns } from "@/server/archive/designs";
 import { queueWelcomeIfNew } from "@/server/archive/email-outbox";
 import { listEntitlements } from "@/server/archive/entitlements";
 import { getFoundingForUser } from "@/server/archive/founding";
+import { getIdeaAllowance } from "@/server/archive/ideas";
 import { getArchiveOffer } from "@/server/archive/offer";
 import { autoLinkByEmail } from "@/server/archive/orders";
 import { getArchiveReadiness } from "@/server/archive/readiness";
@@ -32,7 +34,7 @@ export default async function ArchivePage() {
     autoLinkByEmail(user).catch(() => 0),
     queueWelcomeIfNew(user).catch(() => undefined),
   ]);
-  const [readiness, offer, designs, published, entitlements, catalog, founding, release] =
+  const [readiness, offer, designs, published, entitlements, catalog, founding, release, ideas] =
     await Promise.all([
       getArchiveReadiness(),
       getArchiveOffer(),
@@ -42,12 +44,14 @@ export default async function ArchivePage() {
       withFallback(getCatalog, null),
       getFoundingForUser(user.id),
       withFallback(getLatestRelease, null),
+      getIdeaAllowance(user).catch(() => null),
     ]);
   const owned = designs.filter((d) =>
     entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
   );
   const isPublished = new Set(published.map((c) => c.designKey));
   const seal = founding && readiness.founding ? <FoundingSeal /> : null;
+  const band = ideas ? <IdeaBand allowance={ideas} /> : null;
 
   if (owned.length === 0) {
     return (
@@ -62,6 +66,7 @@ export default async function ArchivePage() {
           }
           claims={offer.claims}
         />
+        {band}
         {seal}
       </>
     );
@@ -79,6 +84,7 @@ export default async function ArchivePage() {
         }
       />
       {seal}
+      {band}
       <ul className="archive-grid" style={{ listStyle: "none", margin: 0, padding: 0 }}>
         {owned.map((d) => {
           const product = catalog?.findBySlug(d.product_slug) ?? null;
