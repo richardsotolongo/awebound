@@ -146,4 +146,104 @@
     display: flex;
     align-items: center;
   }
+
+  /* The invitation before a signed-out checkout, while Founding places remain: a centered card on
+     bone paper (oxblood heading and edge), over the bag. */
+  .checkout-invite {
+    --focus-ring: var(--on-altar);
+    width: min(520px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-left: 3px solid var(--altar-mark);
+    border-radius: var(--radius-sm);
+    background: var(--altar);
+    color: var(--on-altar);
+    overflow: auto;
+  }
+  .checkout-invite::backdrop {
+    background: var(--scrim);
+  }
+  .checkout-invite-in {
+    position: relative;
+    outline: none;
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-8);
+  }
+  .checkout-invite-close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--on-altar);
+    cursor: pointer;
+  }
+  .checkout-invite-title {
+    margin: 0;
+    padding-right: var(--space-12);
+    font-size: 1.375rem;
+    line-height: 1.25;
+    font-weight: 800;
+    color: var(--altar-mark);
+  }
+  .checkout-invite-founding {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+    border-block: 1px solid color-mix(in srgb, var(--altar-mark) 35%, transparent);
+  }
+  .checkout-invite-founding p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .checkout-invite-founding strong {
+    color: var(--altar-mark);
+  }
+  .checkout-invite-mark {
+    flex: none;
+    color: var(--altar-mark);
+  }
+  .checkout-invite-lead {
+    margin: 0;
+    color: var(--on-altar);
+  }
+  .checkout-invite .collection-holds {
+    color: var(--on-altar);
+  }
+  .checkout-invite .collection-holds li::before {
+    background: var(--altar-mark);
+  }
+  .checkout-invite-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .checkout-invite .aw-btn-secondary {
+    color: var(--on-altar);
+    border-color: var(--on-altar);
+  }
+  .checkout-invite-fine {
+    margin: 0;
+    color: var(--on-altar-muted);
+  }
+  @media (max-width: 599px) {
+    .checkout-invite-in {
+      padding: var(--space-6);
+    }
+    .checkout-invite-actions > * {
+      flex: 1 1 100%;
+    }
+  }
 }

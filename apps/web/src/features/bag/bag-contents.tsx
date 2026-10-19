@@ -8,8 +8,27 @@ import { track } from "@/lib/analytics";
 import { accountsEnabled } from "@/lib/env";
 import { useSignedIn } from "@/lib/supabase/browser";
 import { startCheckout, validateBag } from "@/server/actions";
+import { getCheckoutInviteAction } from "@/server/archive-actions";
 import { rememberGuestCheckout } from "@/features/archive/guest-order-notice";
 import { bagSubtotal, orderable, toLineInput, useBag } from "./bag-store";
+import { CheckoutInvite } from "./checkout-invite";
+
+const INVITE_KEY = "aw-checkout-invite-answered";
+
+/** Whether this visit already answered the invitation (asked once per visit). */
+function inviteAnswered(): boolean {
+  try {
+    return sessionStorage.getItem(INVITE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberInviteAnswered() {
+  try {
+    sessionStorage.setItem(INVITE_KEY, "1");
+  } catch {}
+}
 
 /** Re-prices the bag on the server whenever it is shown. */
 export function useBagValidation(active: boolean) {
@@ -139,8 +158,33 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
   const signedIn = useSignedIn();
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState("");
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [invite, setInvite] = useState(false);
   const subtotal = bagSubtotal(lines);
   const open = orderable(lines);
+  const guest = accountsEnabled && !signedIn;
+
+  // Asked ahead of the click, so the invitation opens at once: only while Founding places remain.
+  useEffect(() => {
+    if (!guest || inviteAnswered()) return;
+    let live = true;
+    getCheckoutInviteAction()
+      .then((r) => {
+        if (live && r.ok) setInvite(r.data.show);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [guest]);
+
+  function pressCheckout() {
+    if (guest && invite && !inviteAnswered()) {
+      setInviteOpen(true);
+      return;
+    }
+    void checkout();
+  }
 
   async function checkout() {
     setState("loading");
@@ -177,7 +221,7 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
       <Button
         variant="primary"
         block
-        onClick={checkout}
+        onClick={pressCheckout}
         disabled={state === "loading" || open.length === 0}
       >
         {state === "loading" ? "Opening checkout…" : "Check out"}
@@ -194,6 +238,22 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
         <p className="aw-form-error" role="alert">
           {error}
         </p>
+      ) : null}
+      {guest && invite ? (
+        <CheckoutInvite
+          open={inviteOpen}
+          onClose={() => setInviteOpen(false)}
+          onGuest={() => {
+            rememberInviteAnswered();
+            setInviteOpen(false);
+            void checkout();
+          }}
+          onNavigate={() => {
+            rememberInviteAnswered();
+            setInviteOpen(false);
+            onNavigate?.();
+          }}
+        />
       ) : null}
     </>
   );

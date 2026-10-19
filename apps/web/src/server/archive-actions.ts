@@ -24,6 +24,7 @@ import { getDesignBySlug } from "./archive/designs";
 import { getEntitlement } from "./archive/entitlements";
 import { getFoundingForUser } from "./archive/founding";
 import { guestOrderStatus } from "./archive/guest-orders";
+import { getArchiveOffer } from "./archive/offer";
 import { createIdeaUploadTarget, submitIdea } from "./archive/ideas";
 import { getArchiveReadiness } from "./archive/readiness";
 import { pullMyMissingOrders, reconcileOrders } from "./archive/reconcile";
@@ -174,4 +175,12 @@ export async function getFoundingMarkAction(): Promise<Result<boolean>> {
     const user = await requireUser();
     return Boolean(await getFoundingForUser(user.id).catch(() => null));
   });
+}
+
+/**
+ * Whether to invite a signed-out shopper to sign in before checkout: only while Founding Member
+ * places remain (orders reach accounts and fewer than 50 are taken). Public booleans only.
+ */
+export async function getCheckoutInviteAction(): Promise<Result<{ show: boolean }>> {
+  return run(async () => ({ show: (await getArchiveOffer()).foundingOpen }));
 }
