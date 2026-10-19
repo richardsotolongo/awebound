@@ -7,7 +7,8 @@ import { loadFonts } from "./fonts";
 /**
  * The Founding Member wallpaper (approved by the owner, October 2026): the Thorn Cross,
  * "Founding Member" in the display lettering, the member's own place ("No. 12 of 50") and the
- * wordmark, in two colorways. One design; each member's number is drawn when they download it.
+ * wordmark, in two colorways. One design; each member's number is drawn when they download it,
+ * and an honorary seal (`rank` null) reads "Honorary" in its place.
  */
 export type FoundingTheme = "bone" | "coal";
 export type FoundingDevice = "phone" | "desktop";
@@ -39,7 +40,7 @@ const ratio = (viewBox: string) => {
 };
 
 export async function renderFoundingWallpaper(
-  rank: number,
+  rank: number | null,
   theme: FoundingTheme,
   device: FoundingDevice,
 ): Promise<Uint8Array> {
@@ -101,7 +102,7 @@ export async function renderFoundingWallpaper(
           color: c.sub,
         }}
       >
-        {`NO. ${rank} OF 50`}
+        {rank === null ? "HONORARY" : `NO. ${rank} OF 50`}
       </div>
       <div
         style={{

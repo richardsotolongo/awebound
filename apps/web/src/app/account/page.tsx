@@ -50,7 +50,8 @@ export default async function ArchivePage() {
     entitlements.some((e) => e.designKey === d.design_key && e.quantity > 0),
   );
   const isPublished = new Set(published.map((c) => c.designKey));
-  const seal = founding && readiness.founding ? <FoundingSeal /> : null;
+  const seal =
+    founding && readiness.founding ? <FoundingSeal honorary={founding.rank === null} /> : null;
   const band = ideas ? <IdeaBand allowance={ideas} /> : null;
 
   if (owned.length === 0) {

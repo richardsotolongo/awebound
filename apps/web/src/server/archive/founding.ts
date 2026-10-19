@@ -156,29 +156,46 @@ export async function settleFounding(
   return { settled, skipped: null };
 }
 
-/** The account's active seal, with its place (shown only to its holder), or null. */
+/**
+ * The account's seal: a Founding Member's active place (`rank`, shown only to its holder), or an
+ * honorary seal from the owner (`rank` null, no number). Either opens the same features.
+ */
 export async function getFoundingForUser(
   userId: string,
-): Promise<{ status: "active"; rank: number } | null> {
+): Promise<{ status: "active"; rank: number | null } | null> {
   if (!supabaseAdmin) return null;
-  const { data } = await supabaseAdmin
-    .from("founding_members")
-    .select("status, rank")
-    .eq("user_id", userId)
-    .eq("status", "active")
-    .maybeSingle();
+  const [{ data }, { data: honorary }] = await Promise.all([
+    supabaseAdmin
+      .from("founding_members")
+      .select("status, rank")
+      .eq("user_id", userId)
+      .eq("status", "active")
+      .maybeSingle(),
+    supabaseAdmin.from("honorary_members").select("user_id").eq("user_id", userId).maybeSingle(),
+  ]);
   const row = data as { rank: number } | null;
-  return row ? { status: "active", rank: row.rank } : null;
+  if (row) return { status: "active", rank: row.rank };
+  return honorary ? { status: "active", rank: null } : null;
 }
 
-/** Active members' accounts, for the owner's note before a release. */
+/** Active and honorary members' accounts, for the owner's note before a release. */
 export async function listActiveFoundingMembers(): Promise<{ userId: string; email: string }[]> {
-  const { data: members, error } = await admin()
-    .from("founding_members")
-    .select("user_id")
-    .eq("status", "active");
+  const [{ data: members, error }, { data: honorary, error: herr }] = await Promise.all([
+    admin().from("founding_members").select("user_id").eq("status", "active"),
+    admin().from("honorary_members").select("user_id"),
+  ]);
   if (error) throw new Error(`founding members read failed: ${error.message}`);
-  const ids = ((members ?? []) as { user_id: string }[]).map((m) => m.user_id);
+  if (herr) throw new Error(`honorary members read failed: ${herr.message}`);
+  const ids = [
+    ...new Set(
+      [
+        ...((members ?? []) as { user_id: string | null }[]),
+        ...((honorary ?? []) as { user_id: string }[]),
+      ]
+        .map((m) => m.user_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
   if (ids.length === 0) return [];
   const { data: profiles, error: perr } = await admin()
     .from("profiles")
@@ -290,4 +307,102 @@ export async function sendFoundingNote(
     },
   );
   return { queued: to.length };
+}
+
+export interface HonoraryRow {
+  userId: string;
+  email: string | null;
+  name: string | null;
+  reason: string;
+  grantedAt: string;
+}
+
+/** The honorary seals, newest first, with each account's email and name (owner only). */
+export async function listHonorary(): Promise<HonoraryRow[]> {
+  const { data, error } = await admin()
+    .from("honorary_members")
+    .select("user_id, reason, granted_at")
+    .order("granted_at", { ascending: false });
+  if (error) throw new Error(`honorary read failed: ${error.message}`);
+  const rows = (data ?? []) as { user_id: string; reason: string; granted_at: string }[];
+  if (rows.length === 0) return [];
+  const { data: profiles } = await admin()
+    .from("profiles")
+    .select("id, email, full_name")
+    .in(
+      "id",
+      rows.map((r) => r.user_id),
+    );
+  const byId = new Map(
+    ((profiles ?? []) as { id: string; email: string | null; full_name: string | null }[]).map(
+      (p) => [p.id, p],
+    ),
+  );
+  return rows.map((r) => ({
+    userId: r.user_id,
+    email: byId.get(r.user_id)?.email ?? null,
+    name: byId.get(r.user_id)?.full_name ?? null,
+    reason: r.reason,
+    grantedAt: r.granted_at,
+  }));
+}
+
+/**
+ * Grants an honorary seal to the account with this email (they need a free account first), or
+ * removes one. Both are audited with the owner's reason.
+ */
+export async function setHonorary(
+  email: string,
+  action: "grant" | "remove",
+  reason: string,
+  actor: string,
+): Promise<{ email: string }> {
+  const address = email.trim().toLowerCase();
+  const { data: profile } = await admin()
+    .from("profiles")
+    .select("id, email")
+    // ilike for case; escape its wildcards so the address matches only itself.
+    .ilike(
+      "email",
+      address.replace(/[\\%_]/g, (c) => `\\${c}`),
+    )
+    .maybeSingle();
+  const account = profile as { id: string; email: string } | null;
+  if (!account)
+    throw new UserError(
+      "No account uses that email. They need to create their free account first.",
+    );
+  if (action === "grant") {
+    const { data: place } = await admin()
+      .from("founding_members")
+      .select("status")
+      .eq("user_id", account.id)
+      .eq("status", "active")
+      .maybeSingle();
+    if (place) throw new UserError("That account already holds a numbered Founding seal.");
+    const { error } = await admin()
+      .from("honorary_members")
+      .insert({ user_id: account.id, reason, granted_by: actor });
+    if (error?.code === "23505")
+      throw new UserError("That account already holds an honorary seal.");
+    if (error) throw new Error(`honorary grant failed: ${error.message}`);
+  } else {
+    const { data: removed, error } = await admin()
+      .from("honorary_members")
+      .delete()
+      .eq("user_id", account.id)
+      .select("user_id");
+    if (error) throw new Error(`honorary remove failed: ${error.message}`);
+    if (!removed?.length) throw new UserError("That account holds no honorary seal.");
+  }
+  await audit(
+    actor,
+    `founding.honorary_${action}`,
+    "user",
+    account.id,
+    null,
+    { email: account.email },
+    reason,
+  );
+  return { email: account.email };
 }
