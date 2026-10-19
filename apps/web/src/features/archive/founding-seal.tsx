@@ -2,7 +2,7 @@ import { ThornCross } from "@awebound/brand";
 import Link from "next/link";
 
 /** An understated mark on the overview, linking to the Founding tab. No rank or count here. */
-export function FoundingSeal() {
+export function FoundingSeal({ honorary = false }: { honorary?: boolean }) {
   return (
     <div className="archive-seal">
       <span className="archive-seal-mark">
@@ -11,7 +11,9 @@ export function FoundingSeal() {
       <div>
         <p className="aw-h3">Founding Member</p>
         <p className="aw-small">
-          Recognition for an early purchase made with your Awebound account.{" "}
+          {honorary
+            ? "An honorary seal from Richard."
+            : "Recognition for an early purchase made with your Awebound account."}{" "}
           <Link href="/account/founding">See what it includes</Link>
         </p>
       </div>

@@ -10,6 +10,7 @@ import {
   FlagRequestSchema,
   FoundingCorrectionRequestSchema,
   FoundingNoteRequestSchema,
+  HonoraryRequestSchema,
   IdeaReviewRequestSchema,
   MapOfferRequestSchema,
   OrderAdjustRequestSchema,
@@ -31,7 +32,12 @@ import { applySuggestions } from "./archive/suggestions";
 import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
 import { setFlag } from "./archive/flags";
-import { foundingCorrection, sendFoundingNote, settleFounding } from "./archive/founding";
+import {
+  foundingCorrection,
+  sendFoundingNote,
+  setHonorary,
+  settleFounding,
+} from "./archive/founding";
 import { reviewIdea } from "./archive/ideas";
 import { adjustOrderLines, markOrderReviewed, relinkOrder } from "./archive/orders";
 import { reconcileOrders, type ReconcileReport } from "./archive/reconcile";
@@ -239,5 +245,14 @@ export async function sendFoundingNoteAction(input: unknown): Promise<Result<{ q
     const owner = await requireAdmin();
     const note = parse(FoundingNoteRequestSchema, input);
     return sendFoundingNote(note, { id: owner.id, email: owner.email ?? null });
+  });
+}
+
+/** Grants or removes an honorary Founding seal by the account's email. */
+export async function setHonoraryAction(input: unknown): Promise<Result<{ email: string }>> {
+  return run(async () => {
+    const actor = (await requireAdmin()).id;
+    const { email, action, reason } = parse(HonoraryRequestSchema, input);
+    return setHonorary(email, action, reason, actor);
   });
 }

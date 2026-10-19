@@ -132,6 +132,14 @@ export const FoundingCorrectionRequestSchema = z.object({
   orderId: z.string().max(80).optional(),
 });
 
+/** An honorary Founding seal, granted or removed by the account's email. */
+export const HonoraryRequestSchema = z.object({
+  email: z.email("Enter their account email."),
+  action: z.enum(["grant", "remove"]),
+  reason: z.string().trim().min(3, "Say why.").max(300),
+});
+export type HonoraryRequest = z.infer<typeof HonoraryRequestSchema>;
+
 /** The owner's note to Founding Members; a test goes only to the owner. */
 export const FoundingNoteRequestSchema = z.object({
   subject: z.string().trim().min(3, "Add a subject.").max(150),

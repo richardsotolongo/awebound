@@ -3,14 +3,18 @@ import { PageHeader } from "@/components/page-header";
 import { ShortId, when } from "@/features/archive/admin/format";
 import { FoundingNote } from "@/features/archive/admin/founding-note";
 import { FoundingTools } from "@/features/archive/admin/founding-tools";
-import { listFounding } from "@/server/archive/founding";
+import { HonoraryTools } from "@/features/archive/admin/honorary-tools";
+import { listFounding, listHonorary } from "@/server/archive/founding";
 import { FOUNDING_CAP, FOUNDING_RULES } from "@/server/archive/founding-policy";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Founding", robots: { index: false } };
 
 export default async function FoundingPage() {
-  const { members, candidates, placesUsed, placesLeft } = await listFounding();
+  const [{ members, candidates, placesUsed, placesLeft }, honorary] = await Promise.all([
+    listFounding(),
+    listHonorary(),
+  ]);
 
   return (
     <>
@@ -92,12 +96,49 @@ export default async function FoundingPage() {
       </section>
 
       <section className="admin-section">
+        <h2 className="aw-h3">Honorary seals</h2>
+        <p className="aw-body">
+          For people you want to honor beyond the first 50. Same features, no number, and they don’t
+          use a place.
+        </p>
+        {honorary.length === 0 ? (
+          <p className="aw-body">No honorary seals yet.</p>
+        ) : (
+          <div className="admin-wrap">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Reason</th>
+                  <th>Granted</th>
+                </tr>
+              </thead>
+              <tbody>
+                {honorary.map((h) => (
+                  <tr key={h.userId}>
+                    <td>{h.email ?? <ShortId id={h.userId} />}</td>
+                    <td>{h.name ?? ""}</td>
+                    <td>{h.reason}</td>
+                    <td>{when(h.grantedAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <HonoraryTools />
+      </section>
+
+      <section className="admin-section">
         <h2 className="aw-h3">Note to Founding Members</h2>
         <p className="aw-body">
-          Before each release, write to your Founding Members about what’s coming. Send yourself a
-          test first.
+          Before each release, write to your Founding and honorary members about what’s coming. Send
+          yourself a test first.
         </p>
-        <FoundingNote members={members.filter((m) => m.status === "active").length} />
+        <FoundingNote
+          members={members.filter((m) => m.status === "active").length + honorary.length}
+        />
       </section>
 
       <section className="admin-section">
