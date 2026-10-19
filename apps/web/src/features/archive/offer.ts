@@ -116,13 +116,15 @@ export const FOUNDING_LINE =
 
 /**
  * What the seal includes (the owner's choice, October 2026), on the Founding tab and in the FAQ.
- * No discounts or points. Early access joins this list when it is built (docs/TODOS.md).
+ * No discounts or points. Early access is listed as to be announced, with no date, until it is
+ * built (docs/TODOS.md); then this line names it plainly, as do the FAQ and the seal rules.
  */
 export const FOUNDING_PERKS = [
   "Idea Submissions without more purchases: send one whenever the last has been reviewed",
   "Your own numbered Founding Member wallpapers, for phone and desktop",
   "A note from Richard before each release",
   "The Thorn Cross on your My Archive button",
+  "Early access to collections, to be announced",
 ];
 
 const wallpaperNoun = (formats: AssetFormat[]) =>

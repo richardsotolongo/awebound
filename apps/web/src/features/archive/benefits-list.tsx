@@ -121,7 +121,7 @@ function Visual({
       return (
         <span className="archive-tile-visual archive-tile-note">
           {/* eslint-disable-next-line @next/next/no-img-element -- static portrait */}
-          <img src="/about/richard-480.webp" alt="" loading="lazy" />
+          <img src="/about/founder-480.webp" alt="" loading="lazy" />
           <span className="archive-tile-lines">
             <span />
             <span />
