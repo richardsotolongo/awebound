@@ -339,6 +339,30 @@ export function collectionUpdate({
   return { subject, html, text };
 }
 
+/** Richard's note to Founding Members before a release, written in Owner → Founding. */
+export function foundingNote({
+  subject,
+  body,
+  siteUrl,
+}: {
+  subject: string;
+  body: string;
+  siteUrl: string;
+}): RenderedEmail {
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead("To our Founding Members"),
+      row(escapeHtml(body).replace(/\r?\n/g, "<br>")),
+      button("Open My Archive", `${siteUrl}/account/founding`),
+    ],
+    note: `You’re receiving this as an Awebound Founding Member. <a href="${siteUrl}/account/settings#preferences" style="color:${C.muted};">Turn these off here</a>.`,
+  });
+  const text = `To our Founding Members\n\n${body}\n\nOpen My Archive: ${siteUrl}/account/founding\n\nYou’re receiving this as an Awebound Founding Member. Turn these off here: ${siteUrl}/account/settings#preferences`;
+  return { subject, html, text };
+}
+
 export interface IdeaSubmissionEmail {
   id: string;
   name: string | null;

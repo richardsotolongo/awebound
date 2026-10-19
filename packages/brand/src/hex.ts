@@ -12,6 +12,8 @@ export const BRAND_HEX = {
   paper: "#F8F2E7",
   /** Muted text on paper. */
   muted: "#4A443D",
+  /** Scripture references on coal. */
+  gold: "#B89651",
 } as const;
 
 /** Each piece's plate (`--plate-*` in tokens.css), for generated images. */

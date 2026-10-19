@@ -11,11 +11,15 @@ import { IdeaProgress } from "./idea-tile";
 export function IdeaBand({ allowance }: { allowance: IdeaAllowance }) {
   const status = allowance.owner
     ? "Open to you as the owner."
-    : !allowance.unlocked
-      ? null
-      : allowance.remaining > 0
-        ? `You have ${plural(allowance.remaining, "submission")} open.`
-        : `${plural(allowance.toNext, "more purchase")} ${allowance.toNext === 1 ? "opens" : "open"} your next one.`;
+    : allowance.founding
+      ? allowance.remaining > 0
+        ? "Open to you as a Founding Member."
+        : "Your next idea opens once we’ve reviewed this one."
+      : !allowance.unlocked
+        ? null
+        : allowance.remaining > 0
+          ? `You have ${plural(allowance.remaining, "submission")} open.`
+          : `${plural(allowance.toNext, "more purchase")} ${allowance.toNext === 1 ? "opens" : "open"} your next one.`;
   return (
     <section className="idea-band" aria-labelledby="idea-band-title">
       <div className="idea-band-words">

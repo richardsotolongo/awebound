@@ -26,10 +26,25 @@ export interface IdeaAllowance {
   toNext: number;
   /** The owner can always send one, to see the form working; it isn't counted. */
   owner: boolean;
+  /**
+   * A Founding Member sends ideas without more purchases, one waiting for review at a time: the
+   * next opens once the owner has reviewed the last (the owner's choice, October 2026).
+   */
+  founding: boolean;
+  /** The account's ideas still waiting for review (new or being reviewed). */
+  waiting: number;
 }
 
-/** 5 purchases open the first submission; every 3 more open another. */
-export function ideaAllowance(purchases: number, used: number, owner = false): IdeaAllowance {
+/**
+ * 5 purchases open the first submission; every 3 more open another. A Founding Member has one open
+ * whenever nothing is waiting for review.
+ */
+export function ideaAllowance(
+  purchases: number,
+  used: number,
+  owner = false,
+  founding: { waiting: number } | null = null,
+): IdeaAllowance {
   const allowed =
     purchases < IDEA_FIRST_AT ? 0 : 1 + Math.floor((purchases - IDEA_FIRST_AT) / IDEA_EVERY);
   const nextAt = IDEA_FIRST_AT + IDEA_EVERY * used;
@@ -37,11 +52,13 @@ export function ideaAllowance(purchases: number, used: number, owner = false): I
     purchases,
     used,
     allowed,
-    remaining: owner ? 1 : Math.max(0, allowed - used),
-    unlocked: owner || purchases >= IDEA_FIRST_AT,
+    remaining: owner ? 1 : founding ? (founding.waiting > 0 ? 0 : 1) : Math.max(0, allowed - used),
+    unlocked: owner || Boolean(founding) || purchases >= IDEA_FIRST_AT,
     nextAt,
     toNext: Math.max(0, nextAt - purchases),
     owner,
+    founding: Boolean(founding),
+    waiting: founding?.waiting ?? 0,
   };
 }
 

@@ -78,7 +78,7 @@ function archiveGroup(o: ArchiveOffer): { title: string; items: Faq[] } | null {
     items.push(
       plain(
         "What is the Founding Member seal?",
-        `${FOUNDING_LINE} The seal is recognition on your Archive and carries no discount.`,
+        `${FOUNDING_LINE} Founding Members can send Idea Submissions without more purchases, one at a time; get their own numbered Founding Member wallpapers; receive a note from Richard before each release; and carry the Thorn Cross on their My Archive button. The seal carries no discount or points.`,
       ),
     );
   }

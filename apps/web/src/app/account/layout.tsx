@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page-header";
 import { AccountsClosedActions, accountsClosedCopy } from "@/features/account/accounts-closed";
 import { ArchiveNav } from "@/features/archive/archive-nav";
 import { accountsEnabled } from "@/lib/env";
+import { getFoundingForUser } from "@/server/archive/founding";
 import { getLatestRelease, withFallback } from "@/server/catalog";
 import { currentUser, hasRole } from "@/server/session";
 
@@ -25,10 +26,13 @@ export default async function AccountLayout({ children }: { children: ReactNode 
   }
   const user = await currentUser();
   if (!user) redirect("/sign-in?next=%2Faccount");
-  const admin = await hasRole(user, "admin");
+  const [admin, founding] = await Promise.all([
+    hasRole(user, "admin"),
+    getFoundingForUser(user.id).catch(() => null),
+  ]);
   return (
     <div className="aw-container account">
-      <ArchiveNav admin={admin} />
+      <ArchiveNav admin={admin} founding={Boolean(founding) || admin} />
       {children}
     </div>
   );

@@ -114,6 +114,17 @@ export const PURCHASE_NOTE =
 export const FOUNDING_LINE =
   "The first 50 qualifying buyers who use their Awebound account at checkout receive a Founding Member seal. Guest purchases don’t qualify, and signing up alone doesn’t earn it.";
 
+/**
+ * What the seal includes (the owner's choice, October 2026), on the Founding tab and in the FAQ.
+ * No discounts or points. Early access joins this list when it is built (docs/TODOS.md).
+ */
+export const FOUNDING_PERKS = [
+  "Idea Submissions without more purchases: send one whenever the last has been reviewed",
+  "Your own numbered Founding Member wallpapers, for phone and desktop",
+  "A note from Richard before each release",
+  "The Thorn Cross on your My Archive button",
+];
+
 const wallpaperNoun = (formats: AssetFormat[]) =>
   formats.length > 1 ? "phone and desktop wallpapers" : `${formats[0]} wallpaper`;
 
@@ -157,6 +168,8 @@ export interface Welcome {
   /** Why the collection is empty, in words that match what works today. */
   why: string;
   saved: string;
+  /** The Founding Member note, while places are left; gone once all 50 are given out. */
+  founding: { title: string; body: string } | null;
 }
 
 /**
@@ -172,6 +185,12 @@ export function welcomeFor(o: ArchiveOffer): Welcome {
       ? "Orders placed with this email show up here on their own."
       : "Purchases don’t link to accounts yet.",
     saved: "Tap the heart on any piece to keep it under Saved.",
+    founding: o.foundingOpen
+      ? {
+          title: "The first 50 buyers receive a Founding Member seal.",
+          body: "Stay signed in when you check out so your order counts. Guest orders don’t qualify.",
+        }
+      : null,
   };
 }
 

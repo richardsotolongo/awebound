@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { cx } from "../cx";
 import { BrandLink } from "../link";
 import { Wordmark } from "./marks";
@@ -15,6 +16,8 @@ export interface HeaderProps {
   current?: string;
   /** Sign-in or account link, shown beside the bag. Omit when accounts are off. */
   account?: NavLink;
+  /** Replaces the account link's person icon, e.g. the Thorn Cross for a Founding Member. */
+  accountIcon?: ReactNode;
   bagCount?: number;
   /** Opens the bag drawer. When omitted the bag renders as a link to bagHref. */
   onBag?: () => void;
@@ -69,6 +72,7 @@ export function Header({
   links = DEFAULT_LINKS,
   current,
   account,
+  accountIcon,
   bagCount = 0,
   onBag,
   bagHref = "/bag",
@@ -127,7 +131,7 @@ export function Header({
               className="aw-header-account"
               aria-current={current === account.label ? "page" : undefined}
             >
-              <PersonIcon />
+              {accountIcon ?? <PersonIcon />}
               <span className="aw-header-account-label">{account.label}</span>
             </BrandLink>
           ) : null}

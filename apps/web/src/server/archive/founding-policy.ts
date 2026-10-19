@@ -17,7 +17,7 @@ export const FOUNDING_RULES = [
   `Places 1 to ${FOUNDING_SETTLE_FROM} are awarded as payments are confirmed. Places ${FOUNDING_SETTLE_FROM + 1} to ${FOUNDING_CAP} are settled only after the provider's own order list has confirmed the order of payments, so a delayed event can't lose a place to a later buyer.`,
   "Once earned, the seal stays as recognition after an ordinary refund, and its place is not recycled; the refunded design's story and downloads still close.",
   "Failed, cancelled-before-payment, test, duplicate, fraudulent or wrongly linked transactions never establish an award. The owner can revoke or restore an award, and every change is audited.",
-  "The seal carries no discount, points or perks, and no rank or count is shown in public.",
+  "The seal includes Idea Submissions without more purchases (one waiting for review at a time), numbered wallpapers, the owner's note before each release and the Thorn Cross on the My Archive button. It carries no discount or points, and no member's rank is shown in public; each member sees only their own.",
 ];
 
 export type Qualification =

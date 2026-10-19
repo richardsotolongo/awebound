@@ -17,6 +17,7 @@ import { UserError } from "../errors";
 import { hasRole } from "../session";
 import { readImageHeader } from "./assets";
 import { audit } from "./audit";
+import { getFoundingForUser } from "./founding";
 
 /**
  * Idea Submissions. Shoppers with enough purchases send a design idea from My Archive (an image,
@@ -81,14 +82,29 @@ async function countSubmissions(userId: string): Promise<number> {
   return count ?? 0;
 }
 
-/** Where the account stands. The owner's own test submissions are never counted against anyone. */
+async function countWaiting(userId: string): Promise<number> {
+  const { count, error } = await admin()
+    .from("idea_submissions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .in("status", ["new", "reviewing"]);
+  if (error) throw new Error(`waiting count failed: ${error.message}`);
+  return count ?? 0;
+}
+
+/**
+ * Where the account stands. The owner's own test submissions are never counted against anyone; a
+ * Founding Member needs no purchases, only that their last idea has been reviewed.
+ */
 export async function getIdeaAllowance(user: User): Promise<IdeaAllowance> {
-  const [purchases, used, owner] = await Promise.all([
+  const [purchases, used, owner, founding] = await Promise.all([
     countPurchases(user.id),
     countSubmissions(user.id),
     hasRole(user, "admin"),
+    getFoundingForUser(user.id).catch(() => null),
   ]);
-  return ideaAllowance(purchases, used, owner);
+  const waiting = founding ? await countWaiting(user.id) : 0;
+  return ideaAllowance(purchases, used, owner, founding ? { waiting } : null);
 }
 
 async function signedUrls(paths: string[], seconds: number): Promise<Map<string, string>> {
@@ -128,6 +144,8 @@ export async function listIdeasForUser(userId: string): Promise<ShopperIdea[]> {
 async function requireOpenSubmission(user: User): Promise<IdeaAllowance> {
   const allowance = await getIdeaAllowance(user);
   if (allowance.remaining > 0) return allowance;
+  if (allowance.founding)
+    throw new UserError("Your next idea opens once we’ve reviewed the one you sent.");
   throw new UserError(
     allowance.unlocked
       ? `Your next submission opens after ${allowance.toNext} more ${allowance.toNext === 1 ? "purchase" : "purchases"}.`

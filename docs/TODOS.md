@@ -43,6 +43,8 @@ Open work, grouped by who has to act. Delete an item when it's done.
 
 ## Engineering follow-ups
 
+- [ ] Founding Members' 5-day early access to each new release (the owner's choice, October 2026). A database change for the developer: see the brief "Founding Members: 5-day early access". When it ships, add it to `FOUNDING_PERKS` (features/archive/offer.ts), the FAQ answer and the seal rules.
+
 - [ ] **Internal design codes in page source.** Nothing visible shows them, and titles, descriptions, structured data, the sitemap and `llms.txt` are clean, but the data Next sends with the shop and product pages carries `code` (and preview SKUs built from it) inside client-component props, and `ProductPurchase` copies it into the bag line. Strip `code` before a product reaches a Client Component (`ProductGrid`, `ProductPurchase`) and give previews SKUs that don't contain it.
 - [ ] **When Fourthwall is unreachable** the home page falls back to the headline and the founder's note, but a product page shows the error page titled “Not found”, `/collections/behold` returns 404, and a page regenerated during the outage can be cached for a minute. Consider a content-only fallback.
 - [ ] **After a purchase** the bag isn't cleared. Fourthwall's checkout never returns the buyer; a guest's browser keeps the cart id and the band under the header thanks them once the order arrives (signed-in buyers get no such note). Notify sign-ups don't record whether someone asked about “ordering opens” or “back in stock”, and nothing sends either email.

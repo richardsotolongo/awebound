@@ -2,6 +2,7 @@ import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { UserError } from "../errors";
 import { audit } from "./audit";
+import { queueEmail } from "./email-outbox";
 import { getFlags } from "./flags";
 import { CANDIDATE_REASONS, FOUNDING_CAP, qualifies } from "./founding-policy";
 import { logArchive } from "./log";
@@ -155,15 +156,38 @@ export async function settleFounding(
   return { settled, skipped: null };
 }
 
-export async function getFoundingForUser(userId: string): Promise<{ status: "active" } | null> {
+/** The account's active seal, with its place (shown only to its holder), or null. */
+export async function getFoundingForUser(
+  userId: string,
+): Promise<{ status: "active"; rank: number } | null> {
   if (!supabaseAdmin) return null;
   const { data } = await supabaseAdmin
     .from("founding_members")
-    .select("status")
+    .select("status, rank")
     .eq("user_id", userId)
     .eq("status", "active")
     .maybeSingle();
-  return data ? { status: "active" } : null;
+  const row = data as { rank: number } | null;
+  return row ? { status: "active", rank: row.rank } : null;
+}
+
+/** Active members' accounts, for the owner's note before a release. */
+export async function listActiveFoundingMembers(): Promise<{ userId: string; email: string }[]> {
+  const { data: members, error } = await admin()
+    .from("founding_members")
+    .select("user_id")
+    .eq("status", "active");
+  if (error) throw new Error(`founding members read failed: ${error.message}`);
+  const ids = ((members ?? []) as { user_id: string }[]).map((m) => m.user_id);
+  if (ids.length === 0) return [];
+  const { data: profiles, error: perr } = await admin()
+    .from("profiles")
+    .select("id, email")
+    .in("id", ids);
+  if (perr) throw new Error(`founding profiles read failed: ${perr.message}`);
+  return ((profiles ?? []) as { id: string; email: string | null }[]).flatMap((p) =>
+    p.email ? [{ userId: p.id, email: p.email }] : [],
+  );
 }
 
 export async function listFounding(): Promise<{
@@ -236,4 +260,34 @@ export async function foundingCorrection(
     reason,
   );
   return { awarded: next === "active", rank: member.rank, reason: next };
+}
+
+/**
+ * The owner's note before a release: queued to every active member (or, as a test, only to the
+ * owner), through the outbox so the release-email switch and each member's choice apply.
+ */
+export async function sendFoundingNote(
+  input: { subject: string; body: string; test: boolean },
+  owner: { id: string; email: string | null },
+): Promise<{ queued: number }> {
+  const payload = { subject: input.subject, body: input.body };
+  const to = input.test
+    ? owner.email
+      ? [{ userId: owner.id, email: owner.email }]
+      : []
+    : await listActiveFoundingMembers();
+  for (const m of to)
+    await queueEmail({ template: "founding_note", userId: m.userId, to: m.email, payload });
+  await audit(
+    owner.id,
+    input.test ? "founding.note_test" : "founding.note",
+    "founding",
+    "note",
+    null,
+    {
+      subject: input.subject,
+      recipients: to.length,
+    },
+  );
+  return { queued: to.length };
 }
