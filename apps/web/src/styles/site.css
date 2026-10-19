@@ -604,3 +604,10 @@
     }
   }
 }
+
+/* A Founding Member's My Archive button carries the Thorn Cross in place of the person icon. */
+.site-header .aw-header-founding {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+}

@@ -1,9 +1,10 @@
-import { Button } from "@awebound/brand";
+import { Button, ThornCross } from "@awebound/brand";
 import type { Welcome } from "./offer";
 
 /**
  * The welcome on an empty collection, on bone paper: what each design bought opens, why it is
- * empty, one next step and where saved pieces go. It sits in the page, never a popup.
+ * empty, one next step, the Founding Member note while places are left, and where saved pieces
+ * go. It sits in the page, never a popup.
  */
 export function ArchiveWelcome({
   title,
@@ -11,6 +12,7 @@ export function ArchiveWelcome({
   holds,
   why,
   saved,
+  founding,
   explore,
   claims,
 }: Welcome & { explore: { href: string; label: string }; claims: boolean }) {
@@ -38,6 +40,17 @@ export function ArchiveWelcome({
           </Button>
         ) : null}
       </div>
+      {founding ? (
+        <div className="archive-welcome-founding">
+          <span className="archive-welcome-founding-mark">
+            <ThornCross size="small" height={36} title="" />
+          </span>
+          <div>
+            <p className="archive-welcome-founding-title">{founding.title}</p>
+            <p className="aw-small">{founding.body}</p>
+          </div>
+        </div>
+      ) : null}
       <p className="aw-small archive-welcome-saved">{saved}</p>
     </section>
   );

@@ -132,6 +132,14 @@ export const FoundingCorrectionRequestSchema = z.object({
   orderId: z.string().max(80).optional(),
 });
 
+/** The owner's note to Founding Members; a test goes only to the owner. */
+export const FoundingNoteRequestSchema = z.object({
+  subject: z.string().trim().min(3, "Add a subject.").max(150),
+  body: z.string().trim().min(10, "Write the note.").max(5000),
+  test: z.boolean(),
+});
+export type FoundingNoteRequest = z.infer<typeof FoundingNoteRequestSchema>;
+
 // What pages and components receive
 
 /** The published, public part of a design's card: what anyone may read. */

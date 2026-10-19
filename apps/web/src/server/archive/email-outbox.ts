@@ -8,6 +8,7 @@ import {
   cartReminder,
   collectionUpdate,
   designUnlocked,
+  foundingNote,
   guestFollowUp,
   type RenderedEmail,
 } from "../email-templates";
@@ -22,7 +23,12 @@ import { getConsent } from "./consents";
  * sent by what causes them, never on a schedule.
  */
 export type OutboxTemplate =
-  "archive_welcome" | "design_unlocked" | "collection_update" | "guest_follow_up" | "cart_reminder";
+  | "archive_welcome"
+  | "design_unlocked"
+  | "collection_update"
+  | "guest_follow_up"
+  | "cart_reminder"
+  | "founding_note";
 
 const FLAG_FOR: Record<OutboxTemplate, FlagKey> = {
   archive_welcome: "email.welcome",
@@ -30,6 +36,8 @@ const FLAG_FOR: Record<OutboxTemplate, FlagKey> = {
   collection_update: "email.collection_updates",
   guest_follow_up: "email.guest_follow_up",
   cart_reminder: "email.cart_reminder",
+  // The owner's release emails share one switch.
+  founding_note: "email.collection_updates",
 };
 
 function render(template: OutboxTemplate, payload: Record<string, unknown>): RenderedEmail {
@@ -51,15 +59,28 @@ function render(template: OutboxTemplate, payload: Record<string, unknown>): Ren
       });
     case "guest_follow_up":
       return guestFollowUp({ names: payload.names as string[], siteUrl });
+    case "founding_note":
+      return foundingNote({
+        subject: String(payload.subject ?? "A note for Founding Members"),
+        body: String(payload.body ?? ""),
+        siteUrl,
+      });
     case "cart_reminder":
       return cartReminder({ pieces: payload.pieces as { name: string; slug: string }[], siteUrl });
   }
 }
 
-/** Collection updates need a yes; cart reminders go unless the account turned them off in Settings. */
+/**
+ * Collection updates need a yes; cart reminders and the Founding note go unless the account turned
+ * them off in Settings (the Founding note follows the release-updates choice).
+ */
 async function consented(template: OutboxTemplate, userId: string | null): Promise<boolean> {
   if (template === "collection_update")
     return Boolean(userId) && (await getConsent(userId!, "collection_updates"))?.consented === true;
+  if (template === "founding_note")
+    return (
+      Boolean(userId) && (await getConsent(userId!, "collection_updates"))?.consented !== false
+    );
   if (template === "cart_reminder")
     return Boolean(userId) && (await getConsent(userId!, "cart_reminders"))?.consented !== false;
   return true;

@@ -69,11 +69,15 @@ export function IdeaTile({ allowance }: { allowance: IdeaAllowance }) {
 
   const status = allowance.owner
     ? "Open to you as the owner. Your test ideas aren’t counted."
-    : !allowance.unlocked
-      ? `Opens after ${IDEA_FIRST_AT} purchases made while signed in.`
-      : allowance.remaining > 0
-        ? `Unlocked. You have ${plural(allowance.remaining, "submission")} open.`
-        : `Your idea is with us. ${plural(allowance.toNext, "more purchase")} ${allowance.toNext === 1 ? "opens" : "open"} your next submission.`;
+    : allowance.founding
+      ? allowance.remaining > 0
+        ? "Open to you as a Founding Member. Send an idea whenever you like, one at a time."
+        : "Your idea is with us. Your next one opens once we’ve reviewed it."
+      : !allowance.unlocked
+        ? `Opens after ${IDEA_FIRST_AT} purchases made while signed in.`
+        : allowance.remaining > 0
+          ? `Unlocked. You have ${plural(allowance.remaining, "submission")} open.`
+          : `Your idea is with us. ${plural(allowance.toNext, "more purchase")} ${allowance.toNext === 1 ? "opens" : "open"} your next submission.`;
 
   return (
     <div className="idea-tile-row">

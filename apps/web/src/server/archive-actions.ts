@@ -22,6 +22,7 @@ import { startClaim, verifyClaim } from "./archive/claims";
 import { setConsent } from "./archive/consents";
 import { getDesignBySlug } from "./archive/designs";
 import { getEntitlement } from "./archive/entitlements";
+import { getFoundingForUser } from "./archive/founding";
 import { guestOrderStatus } from "./archive/guest-orders";
 import { createIdeaUploadTarget, submitIdea } from "./archive/ideas";
 import { getArchiveReadiness } from "./archive/readiness";
@@ -164,5 +165,13 @@ export async function submitIdeaAction(input: IdeaSubmitRequest): Promise<Result
     if (website) throw new UserError("That didn’t go through.");
     await limit("idea-submit", 3, 30, user.id);
     return submitIdea(user, { idea, verse, context, imagePath });
+  });
+}
+
+/** Whether the signed-in account holds the Founding Member seal (the header marks My Archive). */
+export async function getFoundingMarkAction(): Promise<Result<boolean>> {
+  return run(async () => {
+    const user = await requireUser();
+    return Boolean(await getFoundingForUser(user.id).catch(() => null));
   });
 }

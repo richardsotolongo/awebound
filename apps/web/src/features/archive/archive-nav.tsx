@@ -14,10 +14,15 @@ const LINKS = [
 /**
  * My Archive's title, then its sections as equal tabs (the owner's choice, October 2026). Collection
  * is the landing page and stays marked on a design's own page. The current tab is underlined.
+ * Founding Members also get a Founding tab.
  */
-export function ArchiveNav({ admin }: { admin: boolean }) {
+export function ArchiveNav({ admin, founding }: { admin: boolean; founding: boolean }) {
   const pathname = usePath();
-  const links = admin ? [...LINKS, { label: "Owner", href: "/account/admin" }] : LINKS;
+  // Founding sits before Account for the members who hold the seal; Owner comes last.
+  const base = founding
+    ? [...LINKS.slice(0, 4), { label: "Founding", href: "/account/founding" }, ...LINKS.slice(4)]
+    : LINKS;
+  const links = admin ? [...base, { label: "Owner", href: "/account/admin" }] : base;
   const current = (href: string) =>
     href === "/account"
       ? pathname === href || pathname.startsWith("/account/collection")

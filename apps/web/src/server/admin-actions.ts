@@ -9,6 +9,7 @@ import {
   DesignKeyRequestSchema,
   FlagRequestSchema,
   FoundingCorrectionRequestSchema,
+  FoundingNoteRequestSchema,
   IdeaReviewRequestSchema,
   MapOfferRequestSchema,
   OrderAdjustRequestSchema,
@@ -30,7 +31,7 @@ import { applySuggestions } from "./archive/suggestions";
 import { importDrafts, type ImportReport } from "./archive/drafts";
 import { sendQueued } from "./archive/email-outbox";
 import { setFlag } from "./archive/flags";
-import { foundingCorrection, settleFounding } from "./archive/founding";
+import { foundingCorrection, sendFoundingNote, settleFounding } from "./archive/founding";
 import { reviewIdea } from "./archive/ideas";
 import { adjustOrderLines, markOrderReviewed, relinkOrder } from "./archive/orders";
 import { reconcileOrders, type ReconcileReport } from "./archive/reconcile";
@@ -229,5 +230,14 @@ export async function reviewIdeaAction(input: unknown): Promise<Result<null>> {
     const { id, status, note } = parse(IdeaReviewRequestSchema, input);
     await reviewIdea(id, status, note, actor);
     return null;
+  });
+}
+
+/** Richard's note to Founding Members before a release (or a test to the owner first). */
+export async function sendFoundingNoteAction(input: unknown): Promise<Result<{ queued: number }>> {
+  return run(async () => {
+    const owner = await requireAdmin();
+    const note = parse(FoundingNoteRequestSchema, input);
+    return sendFoundingNote(note, { id: owner.id, email: owner.email ?? null });
   });
 }

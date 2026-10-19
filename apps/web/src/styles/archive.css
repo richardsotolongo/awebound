@@ -1712,4 +1712,173 @@
     font-size: 14px;
     color: var(--ink-muted);
   }
+
+  /* Founding Members (October 2026). The welcome's note while places remain: the Thorn Cross and
+     two lines under an oxblood rule, above the line about Saved. */
+  .archive-welcome-founding {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, var(--altar-mark) 35%, transparent);
+  }
+  .archive-welcome-founding-mark {
+    flex: none;
+    color: var(--altar-mark);
+  }
+  .archive-welcome-founding p {
+    margin: 0;
+  }
+  .archive-welcome-founding-title {
+    font-weight: 700;
+    color: var(--altar-mark);
+  }
+  .archive-welcome-founding + .archive-welcome-saved {
+    padding-top: var(--space-4);
+  }
+
+  /* The Founding tab: the seal on bone paper (the signature oxblood on bone), then what it
+     includes and the wallpapers on coal. */
+  .founding-owner-note {
+    margin-bottom: var(--space-4);
+  }
+  .founding-seal {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding: var(--space-8);
+    margin-bottom: var(--space-12);
+    background: var(--altar);
+    color: var(--on-altar);
+    border-left: 3px solid var(--altar-mark);
+    border-radius: var(--radius-sm);
+  }
+  .founding-seal-mark {
+    flex: none;
+    color: var(--altar-mark);
+  }
+  .founding-seal-words {
+    display: grid;
+    gap: var(--space-2);
+    max-width: 60ch;
+  }
+  .founding-seal-words .aw-body {
+    margin: 0;
+    color: var(--on-altar);
+  }
+  .founding-seal-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    line-height: 1;
+    color: var(--altar-mark);
+  }
+  .founding-seal-place {
+    margin: 0;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--on-altar-muted);
+  }
+  @media (max-width: 599px) {
+    .founding-seal {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-6);
+    }
+  }
+  .founding-section {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 760px;
+    margin-bottom: var(--space-12);
+  }
+  .founding-section > .aw-h3,
+  .founding-section > p {
+    margin: 0;
+  }
+  .founding-perks {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .founding-perks li {
+    position: relative;
+    padding-left: var(--space-6);
+  }
+  .founding-perks li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    background: var(--scripture);
+  }
+  .founding-walls {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-6);
+  }
+  .founding-wall {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+  .founding-wall .aw-label,
+  .founding-wall .aw-small {
+    margin: 0;
+  }
+  .founding-wall-preview {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .founding-wall[data-theme-name="bone"] .founding-wall-preview {
+    background: var(--brand-warm-bone);
+    color: var(--altar-mark);
+  }
+  .founding-wall[data-theme-name="coal"] .founding-wall-preview {
+    background: var(--brand-coal);
+    color: var(--brand-warm-bone);
+  }
+  .founding-wall-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .founding-wall-no {
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+  .founding-wall[data-theme-name="coal"] .founding-wall-no {
+    color: var(--scripture-gold);
+  }
+  .founding-wall-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .admin-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+  }
 }

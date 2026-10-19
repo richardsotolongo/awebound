@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { ShortId, when } from "@/features/archive/admin/format";
+import { FoundingNote } from "@/features/archive/admin/founding-note";
 import { FoundingTools } from "@/features/archive/admin/founding-tools";
 import { listFounding } from "@/server/archive/founding";
 import { FOUNDING_CAP, FOUNDING_RULES } from "@/server/archive/founding-policy";
@@ -88,6 +89,15 @@ export default async function FoundingPage() {
             </table>
           </div>
         )}
+      </section>
+
+      <section className="admin-section">
+        <h2 className="aw-h3">Note to Founding Members</h2>
+        <p className="aw-body">
+          Before each release, write to your Founding Members about what’s coming. Send yourself a
+          test first.
+        </p>
+        <FoundingNote members={members.filter((m) => m.status === "active").length} />
       </section>
 
       <section className="admin-section">

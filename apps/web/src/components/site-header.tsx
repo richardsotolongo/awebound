@@ -2,12 +2,13 @@
 
 import { Header, ThornCross, type NavLink } from "@awebound/brand";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { bagCount, useBag } from "@/features/bag/bag-store";
 import { accountsEnabled, envLabel } from "@/lib/env";
 import { usePath } from "@/lib/pathname";
 import { MAIN_NAV } from "@/lib/site";
 import { useSignedIn } from "@/lib/supabase/browser";
+import { getFoundingMarkAction } from "@/server/archive-actions";
 import { Sheet } from "./sheet";
 
 const isAccountPage = (pathname: string) =>
@@ -30,6 +31,27 @@ function accountLink(signedIn: boolean, pathname: string): NavLink | undefined {
   return { label: "Sign in", href: `/sign-in${next}` };
 }
 
+/**
+ * Whether to mark My Archive with the Thorn Cross. Pages are cached for everyone, so the header
+ * asks once after sign-in; it stays mounted across navigation, so that's once per visit.
+ */
+function useFoundingMark(signedIn: boolean): boolean {
+  const [founding, setFounding] = useState(false);
+  useEffect(() => {
+    if (!signedIn) return;
+    let live = true;
+    getFoundingMarkAction()
+      .then((r) => {
+        if (live && r.ok) setFounding(r.data);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [signedIn]);
+  return signedIn && founding;
+}
+
 export function SiteHeader() {
   const pathname = usePath();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,6 +59,7 @@ export function SiteHeader() {
   const openBag = useBag((s) => s.open);
   const signedIn = useSignedIn();
   const account = accountLink(signedIn, pathname);
+  const founding = useFoundingMark(signedIn);
   const current = currentLabel(pathname, account);
 
   // Close the phone menu after navigating (adjusting state during render, not in an effect).
@@ -52,6 +75,13 @@ export function SiteHeader() {
         links={MAIN_NAV}
         current={current}
         account={account}
+        accountIcon={
+          founding ? (
+            <span className="aw-header-founding" title="Founding Member">
+              <ThornCross size="small" height={20} title="" />
+            </span>
+          ) : undefined
+        }
         bagCount={count}
         onBag={openBag}
         onMenu={() => setMenuOpen((o) => !o)}
