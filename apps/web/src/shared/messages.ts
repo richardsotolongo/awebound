@@ -4,7 +4,10 @@ import { z } from "zod";
  * Awebound's one email address: shown everywhere on the site, and the inbox that receives every
  * contact message (the owner's choice, October 2026). Replies to the site's emails come here too.
  */
-export const CONTACT_EMAIL = "aweboundstore@gmail.com";
+export const CONTACT_EMAIL = "contact@awebound.store";
+
+/** The inbox for Idea Submissions from My Archive (each emailed with its image attached). */
+export const IDEAS_EMAIL = "ideas@awebound.store";
 
 export const CONTACT_TOPICS = [
   "order",

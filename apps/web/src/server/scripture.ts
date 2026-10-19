@@ -1,21 +1,12 @@
 import "server-only";
 import { z } from "zod";
-import type { ScriptureQuote, Translation } from "@/shared";
+import {
+  ScriptureRecordSchema,
+  type ScriptureQuote,
+  type ScriptureRecord,
+  type Translation,
+} from "@/shared";
 import verses from "./content/verses.json";
-
-/**
- * One Scripture record: the exact wording in each translation the website can quote. Products
- * and site sections keep one record each, so every place a verse appears shows the same words.
- */
-export const ScriptureRecordSchema = z.object({
-  /** Full book name, chapter and verse: "Matthew 9:21". */
-  reference: z.string(),
-  /** True when the website quotes only part of the verse. */
-  excerpt: z.boolean(),
-  niv: z.string(),
-  kjv: z.string(),
-});
-export type ScriptureRecord = z.infer<typeof ScriptureRecordSchema>;
 
 /**
  * The translation the website quotes: the King James Version, the owner's decision on October 16,

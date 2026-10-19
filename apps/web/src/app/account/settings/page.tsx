@@ -1,5 +1,6 @@
 import { Button } from "@awebound/brand";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { DeleteAccount } from "@/features/account/delete-account";
@@ -11,7 +12,7 @@ import { CONSENT_WORDING, getConsent } from "@/server/archive/consents";
 import { getArchiveReadiness } from "@/server/archive/readiness";
 import { currentUser, signedInRecently } from "@/server/session";
 
-export const metadata: Metadata = { title: "Settings" };
+export const metadata: Metadata = { title: "Account" };
 
 const RECENT_MINUTES = 15;
 
@@ -34,24 +35,17 @@ export default async function SettingsPage({
   const provider = (user.app_metadata as { provider?: string } | undefined)?.provider;
   const email = user.email ?? "";
   const readiness = await getArchiveReadiness();
-  const consent = readiness.emails.preferencesUi
-    ? await getConsent(user.id, "collection_updates")
-    : null;
+  const [consent, reminders] = await Promise.all([
+    readiness.emails.preferencesUi ? getConsent(user.id, "collection_updates") : null,
+    readiness.emails.cartReminder ? getConsent(user.id, "cart_reminders") : null,
+  ]);
   const recent = signedInRecently(user, RECENT_MINUTES);
 
   return (
     <>
-      <PageHeader
-        title="Settings"
-        intro={
-          <>
-            Signed in as <span className="account-email">{email}</span> with{" "}
-            {provider === "google" ? "Google" : "an email link"}.
-          </>
-        }
-      />
+      <PageHeader title="Account" hideTitle />
       {changed === "email" ? (
-        <div className="notice" role="status" style={{ marginBottom: "var(--space-8)" }}>
+        <div className="notice" role="status" style={{ marginBottom: "var(--space-6)" }}>
           <p className="aw-small" style={{ color: "var(--ink)" }}>
             Your email address is updated.
           </p>
@@ -64,67 +58,72 @@ export default async function SettingsPage({
             Your details
           </h2>
           <ProfileForm initialName={name} />
-          <div className="field">
-            <span className="aw-label">Email</span>
-            <p className="aw-body account-email">{email}</p>
-            <p className="field-help">Sign-in links and codes go to this address.</p>
-          </div>
         </section>
 
         <section className="account-panel" id="email" aria-labelledby="email-title">
           <h2 id="email-title" className="aw-h3">
             Email address
           </h2>
+          <div className="field">
+            <p className="aw-body account-email">{email}</p>
+            <p className="field-help">
+              {provider === "google"
+                ? "You sign in with Google."
+                : "Sign-in links and codes go here."}
+            </p>
+          </div>
           {recent ? (
             <EmailChangeForm current={email} />
           ) : (
-            <>
-              <p className="aw-body">Sign in again to change your email address.</p>
-              <div>
-                <Button variant="secondary" href="/sign-in?next=%2Faccount%2Fsettings">
-                  Sign in again
-                </Button>
-              </div>
-            </>
+            <p className="aw-small">
+              To change it, <Link href="/sign-in?next=%2Faccount%2Fsettings">sign in again</Link>{" "}
+              first.
+            </p>
           )}
         </section>
 
-        <section className="account-panel" aria-labelledby="signin-title">
-          <h2 id="signin-title" className="aw-h3">
-            Signing in
-          </h2>
-          <p className="aw-body">
-            There is no password to recover. To sign in from a new device, request a new link or
-            code with your email.
-          </p>
-          <form action="/auth/sign-out" method="post">
-            <Button variant="secondary" type="submit">
-              Sign out everywhere
-            </Button>
-          </form>
-          <p className="field-help">This ends your session on every device.</p>
-        </section>
-
-        {readiness.emails.preferencesUi ? (
-          <section className="account-panel" aria-labelledby="prefs-title">
+        {readiness.emails.preferencesUi || readiness.emails.cartReminder ? (
+          <section className="account-panel" id="preferences" aria-labelledby="prefs-title">
             <h2 id="prefs-title" className="aw-h3">
-              Email preferences
+              Emails from us
             </h2>
-            <ConsentForm
-              initial={consent?.consented === true}
-              wording={CONSENT_WORDING.collection_updates.wording}
-            />
+            {readiness.emails.preferencesUi ? (
+              <ConsentForm
+                topic="collection_updates"
+                initial={consent?.consented === true}
+                wording={CONSENT_WORDING.collection_updates.wording}
+              />
+            ) : null}
+            {readiness.emails.cartReminder ? (
+              <div id="reminders">
+                <ConsentForm
+                  topic="cart_reminders"
+                  initial={reminders?.consented !== false}
+                  wording={CONSENT_WORDING.cart_reminders.wording}
+                />
+              </div>
+            ) : null}
           </section>
         ) : null}
+
+        <section className="account-panel" aria-labelledby="signout-title">
+          <h2 id="signout-title" className="aw-h3">
+            Sign out
+          </h2>
+          <form action="/auth/sign-out" method="post" className="account-actions">
+            <Button variant="secondary" type="submit">
+              Sign out
+            </Button>
+            <p className="field-help">This signs you out on every device.</p>
+          </form>
+        </section>
 
         <section className="account-panel" aria-labelledby="privacy-title">
           <h2 id="privacy-title" className="aw-h3">
             Privacy
           </h2>
-          <p className="aw-body">
-            What we keep and why is in the privacy policy. Deleting your account is below.
-          </p>
           <div className="account-actions">
+            <p className="aw-body">What we keep and why is in the privacy policy.</p>
             <Button variant="link" href="/privacy">
               Read the privacy policy
             </Button>

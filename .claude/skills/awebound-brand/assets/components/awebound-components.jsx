@@ -292,6 +292,7 @@ function Header({
   onMenu,
   menuOpen = false,
   menuId,
+  badge,
   className,
 }) {
   const bagLabel = /* @__PURE__ */ jsxs4(Fragment, {
@@ -319,11 +320,16 @@ function Header({
             /* @__PURE__ */ jsx7("span", {}),
           ],
         }),
-        /* @__PURE__ */ jsx7(BrandLink, {
+        /* @__PURE__ */ jsxs4(BrandLink, {
           href: homeHref,
           className: "aw-header-logo",
-          "aria-label": "Awebound home",
-          children: /* @__PURE__ */ jsx7(Wordmark, { height: 56, title: "" }),
+          "aria-label": badge ? `Awebound home (${badge})` : "Awebound home",
+          children: [
+            /* @__PURE__ */ jsx7(Wordmark, { height: 56, title: "" }),
+            badge
+              ? /* @__PURE__ */ jsx7("span", { className: "aw-header-env", children: badge })
+              : null,
+          ],
         }),
         /* @__PURE__ */ jsx7("nav", {
           className: "aw-header-nav",

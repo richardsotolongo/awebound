@@ -7,9 +7,13 @@ import { getBrowserSupabase } from "@/lib/supabase/browser";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Changing the sign-in address: both the current and the new address confirm it (Supabase Auth). */
+/**
+ * Changing the sign-in address: a button first, so the address field only shows once someone
+ * means to change it. Both the current and the new address confirm it (Supabase Auth).
+ */
 export function EmailChangeForm({ current }: { current: string }) {
   const id = useId();
+  const [editing, setEditing] = useState(false);
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
@@ -52,10 +56,20 @@ export function EmailChangeForm({ current }: { current: string }) {
     );
   }
 
+  if (!editing) {
+    return (
+      <div>
+        <Button variant="secondary" onClick={() => setEditing(true)}>
+          Change email
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={submit} className="field" noValidate>
       <label htmlFor={`${id}-email`} className="aw-label">
-        New email
+        New email address
       </label>
       <div className="aw-footer-row">
         <input
@@ -70,15 +84,27 @@ export function EmailChangeForm({ current }: { current: string }) {
           }}
           aria-invalid={state === "error"}
           aria-describedby={state === "error" ? `${id}-error` : `${id}-help`}
+          autoFocus
         />
         <Button variant="secondary" type="submit" disabled={state === "sending" || !email}>
-          {state === "sending" ? "Sending…" : "Change email"}
+          {state === "sending" ? "Sending…" : "Send confirmation"}
         </Button>
       </div>
       <p id={`${id}-help`} className="field-help">
-        We’ll send a confirmation to both your current and your new address. Your saved pieces, fit
-        and purchases stay with your account.
+        We’ll email both addresses to confirm. Your saved pieces and orders stay with your account.
       </p>
+      <div>
+        <Button
+          variant="link"
+          onClick={() => {
+            setEditing(false);
+            setEmail("");
+            setState("idle");
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
       {state === "error" && error ? (
         <p id={`${id}-error`} className="aw-form-error" role="alert">
           {error}

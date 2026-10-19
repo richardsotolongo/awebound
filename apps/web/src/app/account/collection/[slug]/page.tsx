@@ -66,7 +66,6 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
     if (!open) notFound();
     return <Locked card={open} />;
   }
-  const files = `/products/${slug}`;
   const isCap = product?.category.slug === "hats";
   const views = isCap ? (product?.images ?? []).slice(0, 3) : [];
   const links = [card.bibleUrl, ...card.additionalBibleUrls].filter(Boolean);
@@ -84,8 +83,8 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
           as="div"
           color={plateCss(product.plate)}
           ink={product.plate.ink}
-          tall={`${files}/plate-tall.webp`}
-          wide={`${files}/plate-wide.webp`}
+          tall={product.media.plateTall}
+          wide={product.media.plateWide}
           className="archive-story-head"
         >
           {isCap ? (
@@ -99,7 +98,7 @@ export default async function OwnedCardPage({ params }: { params: Params }) {
             // eslint-disable-next-line @next/next/no-img-element -- site image
             <img
               className="archive-story-piece"
-              src={`${files}/piece.webp`}
+              src={product.media.piece}
               alt={product.image.alt}
               width={960}
               height={1200}

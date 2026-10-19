@@ -1,7 +1,7 @@
 import { ScriptureQuote } from "@awebound/brand";
 import type { CSSProperties, ReactNode } from "react";
 import { HeartIcon, LockIcon } from "@/components/icons";
-import type { ScriptureQuote as Quote } from "@/shared";
+import type { Media, ScriptureQuote as Quote } from "@/shared";
 import {
   FOUNDING_LINE,
   PURCHASE_NOTE,
@@ -11,22 +11,21 @@ import {
   type TileKind,
 } from "./offer";
 
-/** A piece the tiles can picture: its cut-out garment (piece.webp) on its plate color. */
+/** A piece the tiles can picture: its cut-out garment on its plate color. */
 export interface TilePiece {
   slug: string;
   name: string;
   /** The plate color as a CSS value. */
   plate: string;
   reference: string;
+  media: Media;
 }
-
-const garment = (slug: string) => `/products/${slug}/piece.webp`;
 
 function Garment({ piece, className }: { piece: TilePiece; className?: string }) {
   return (
     <span className={className} style={{ "--plate": piece.plate } as CSSProperties}>
       {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py */}
-      <img src={garment(piece.slug)} alt="" loading="lazy" decoding="async" />
+      <img src={piece.media.piece} alt="" loading="lazy" decoding="async" />
     </span>
   );
 }
@@ -56,7 +55,7 @@ function Visual({
           style={{ "--plate": lead.plate } as CSSProperties}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py */}
-          <img className="archive-tile-garment" src={garment(lead.slug)} alt="" loading="lazy" />
+          <img className="archive-tile-garment" src={lead.media.piece} alt="" loading="lazy" />
           <span className="archive-tile-heart">
             <HeartIcon size={18} filled />
           </span>
@@ -112,7 +111,7 @@ function Visual({
           style={{ "--plate": lead.plate } as CSSProperties}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py */}
-          <img src={`/products/${lead.slug}/detail.webp`} alt="" loading="lazy" />
+          <img src={lead.media.detail} alt="" loading="lazy" />
           <Badge>
             <LockIcon size={14} />
           </Badge>
@@ -153,7 +152,7 @@ function Visual({
             style={{ "--plate": p.plate } as CSSProperties}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py */}
-            <img src={garment(p.slug)} alt="" loading="lazy" />
+            <img src={p.media.piece} alt="" loading="lazy" />
           </span>
           <span className="archive-device archive-device-doc">
             <span />

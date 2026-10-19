@@ -1,9 +1,9 @@
-import { EMPTY_FACETS, EMPTY_LIST, priceLabel, shopCanonical } from "@/features/catalog/query";
+import { EMPTY_FACETS, priceLabel, shopCanonical } from "@/features/catalog/query";
 import { GUIDES, GUIDES_PATH, guideHref } from "@/features/guides/guides";
 import { DELIVERY } from "@/lib/delivery";
 import { siteUrl } from "@/lib/env";
 import { SITE } from "@/lib/site";
-import { getFacets, getProduct, getReleases, searchProducts, withFallback } from "@/server/catalog";
+import { allProducts, getFacets, getProduct, getReleases, withFallback } from "@/server/catalog";
 import { ALL_COLLECTIONS, pieceHref } from "@/shared";
 
 export const revalidate = 3600;
@@ -17,10 +17,10 @@ export async function GET() {
   const [releases, facets, list] = await Promise.all([
     withFallback(getReleases, []),
     withFallback(() => getFacets({}), EMPTY_FACETS),
-    withFallback(() => searchProducts({ pageSize: 48 }), EMPTY_LIST),
+    withFallback(allProducts, []),
   ]);
   const pieces = (
-    await Promise.all(list.items.map((p) => withFallback(() => getProduct(p.slug), null)))
+    await Promise.all(list.map((p) => withFallback(() => getProduct(p.slug), null)))
   ).filter((p) => p !== null);
   const link = (label: string, path: string, note = "") =>
     `- [${label}](${siteUrl}${path})${note && `: ${note}`}`;

@@ -8,6 +8,7 @@ import { track } from "@/lib/analytics";
 import { accountsEnabled } from "@/lib/env";
 import { useSignedIn } from "@/lib/supabase/browser";
 import { startCheckout, validateBag } from "@/server/actions";
+import { rememberGuestCheckout } from "@/features/archive/guest-order-notice";
 import { bagSubtotal, orderable, toLineInput, useBag } from "./bag-store";
 
 /** Re-prices the bag on the server whenever it is shown. */
@@ -152,6 +153,7 @@ export function BagCheckout({ onNavigate }: { onNavigate?: () => void }) {
     if (result?.ok) {
       // Sent now: the page is about to leave for the hosted checkout.
       track("checkout_started", attempt, { send_instantly: true });
+      if (accountsEnabled && !signedIn) rememberGuestCheckout(result.data.url);
       window.location.assign(result.data.url);
     } else {
       track("checkout_failed", {

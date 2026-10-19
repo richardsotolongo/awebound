@@ -3,7 +3,7 @@ import type { User } from "@supabase/supabase-js";
 import { siteUrl } from "@/lib/env";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import {
-  CONTACT_EMAIL,
+  IDEAS_EMAIL,
   IDEA_MAX_BYTES,
   ideaAllowance,
   type IdeaAllowance,
@@ -205,7 +205,7 @@ export async function submitIdea(
     : null;
   try {
     await sendEmail(
-      CONTACT_EMAIL,
+      IDEAS_EMAIL,
       ideaSubmissionNotification({
         id: row.id,
         name: row.name,

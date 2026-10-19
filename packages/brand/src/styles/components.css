@@ -450,6 +450,20 @@
   .aw-header-logo {
     color: var(--ink);
     display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .aw-header-env {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 16px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    padding: 1px var(--space-2);
   }
   .aw-header-nav {
     display: flex;
@@ -557,6 +571,17 @@
     .aw-header-menu {
       display: flex;
     }
+    /* No room beside the centered wordmark: the label hangs from the header's lower edge. */
+    .aw-header-in {
+      position: relative;
+    }
+    .aw-header-env {
+      position: absolute;
+      bottom: 0;
+      left: var(--gutter-mobile);
+      transform: translateY(50%);
+      background: var(--surface);
+    }
     .aw-header-actions {
       justify-self: end;
       gap: var(--space-1);
@@ -585,6 +610,9 @@
   @media (min-width: 768px) and (max-width: 899px) {
     .aw-header-in {
       padding-inline: var(--gutter-desktop);
+    }
+    .aw-header-env {
+      left: var(--gutter-desktop);
     }
   }
 

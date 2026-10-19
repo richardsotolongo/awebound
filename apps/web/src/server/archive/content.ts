@@ -1,7 +1,7 @@
 import "server-only";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import type { DraftFields, OwnedCard, PublicCard } from "@/shared";
-import { brandContent } from "../content";
+import { getAllContent, getBrandContent } from "../content";
 import { UserError } from "../errors";
 import { bibleLink } from "../scripture";
 import { assetsForOwnedCard } from "./assets";
@@ -22,8 +22,10 @@ function admin() {
   return supabaseAdmin;
 }
 
-const collectionName = (slug: string) =>
-  brandContent.collections.find((c) => c.slug === slug)?.name ?? slug;
+async function collectionNames(all = false): Promise<Map<string, string>> {
+  const content = all ? await getAllContent() : await getBrandContent();
+  return new Map(content.collections.map((c) => [c.slug, c.name]));
+}
 
 async function publishedContent(design: DesignRow): Promise<ContentRow | null> {
   if (!supabaseAdmin || !design.published_content_id) return null;
@@ -36,12 +38,19 @@ async function publishedContent(design: DesignRow): Promise<ContentRow | null> {
   return (data as ContentRow | null) ?? null;
 }
 
-function toPublicCard(design: DesignRow, content: ContentRow): PublicCard {
+function toPublicCard(
+  design: DesignRow,
+  content: ContentRow,
+  names: Map<string, string>,
+): PublicCard {
   return {
     designKey: design.design_key,
     slug: design.product_slug,
     name: design.name,
-    collection: { slug: design.collection_slug, name: collectionName(design.collection_slug) },
+    collection: {
+      slug: design.collection_slug,
+      name: names.get(design.collection_slug) ?? design.collection_slug,
+    },
     scriptureReference: design.scripture_reference,
     contextReference: content.context_reference,
     bibleUrl: bibleLink(content.bible_url),
@@ -56,14 +65,23 @@ export async function getPublishedPublicCard(slug: string): Promise<PublicCard |
   const design = await getDesignBySlug(slug);
   if (!design) return null;
   const content = await publishedContent(design);
-  return content ? toPublicCard(design, content) : null;
+  return content ? toPublicCard(design, content, await collectionNames()) : null;
+}
+
+/** A design's public card as its open draft would show it: the owner's preview. */
+export async function getDraftPublicCard(slug: string): Promise<PublicCard | null> {
+  const design = await getDesignBySlug(slug);
+  if (!design) return null;
+  const content = (await getOpenDraft(design.design_key)) ?? (await publishedContent(design));
+  return content ? toPublicCard(design, content, await collectionNames(true)) : null;
 }
 
 export async function listPublishedPublicCards(): Promise<PublicCard[]> {
   const cards: PublicCard[] = [];
+  const names = await collectionNames();
   for (const design of await listDesigns()) {
     const content = await publishedContent(design);
-    if (content) cards.push(toPublicCard(design, content));
+    if (content) cards.push(toPublicCard(design, content, names));
   }
   return cards;
 }
@@ -82,7 +100,7 @@ export async function getOwnedCard(userId: string, slug: string): Promise<OwnedC
     getArchiveReadiness(),
   ]);
   return {
-    ...toPublicCard(design, content),
+    ...toPublicCard(design, content, await collectionNames()),
     designStory: content.design_story,
     imageryMeaning: content.imagery_meaning,
     founderNote: content.founder_note,

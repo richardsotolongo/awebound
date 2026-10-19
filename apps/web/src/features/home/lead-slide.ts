@@ -10,6 +10,8 @@ export interface LeadSlide {
   status: string | null;
   /** One sentence on what the art shows. */
   art: string;
+  /** The close-up of its print. */
+  detail: string;
   scripture: ScriptureQuote;
 }
 
@@ -21,6 +23,7 @@ export function toLeadSlide(piece: ProductDetail): LeadSlide {
     price: priceLabel(piece),
     status: pieceStatus(piece) ?? null,
     art: piece.story.art,
+    detail: piece.media.detail,
     scripture: piece.scripture,
   };
 }

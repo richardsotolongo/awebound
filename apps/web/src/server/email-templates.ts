@@ -1,4 +1,5 @@
-import { collectionHref, CONTACT_TOPIC_LABELS, type ContactTopic } from "@/shared";
+import { guestOrderNote, join } from "@/features/archive/offer";
+import { collectionHref, CONTACT_TOPIC_LABELS, pieceHref, type ContactTopic } from "@/shared";
 
 /**
  * Transactional email templates. Every email uses `layout` (the Supabase sign-in templates in
@@ -54,9 +55,6 @@ export function row(
   const extra = (bold ? "font-weight:bold;" : "") + (caps ? "letter-spacing:2px;" : "");
   return `<tr><td style="padding:0 0 ${gap}px;font-family:${FONT};font-size:${size}px;line-height:${Math.round(size * 1.6)}px;color:${color};${extra}">${caps ? html.toUpperCase() : html}</td></tr>`;
 }
-
-export const eyebrow = (text: string) =>
-  row(text, { size: 12, color: C.muted, gap: 12, caps: true });
 
 export const lead = (html: string) => row(html, { size: 20, gap: 16 });
 export const small = (html: string) => row(html, { size: 14, color: C.muted, gap: 0 });
@@ -129,7 +127,6 @@ export function contactNotification(message: ContactMessage): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("New message"),
       lead(`${name} wrote about ${escapeHtml(topic.toLowerCase())}.`),
       row(`${name} &lt;${escapeHtml(message.email)}&gt;`, { size: 14, color: C.muted }),
       quote(message.message),
@@ -148,7 +145,6 @@ export function contactAcknowledgement(message: ContactMessage): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Message received"),
       lead(`${escapeHtml(first)}, thank you for writing to us.`),
       row("We’ll reply within 72 hours. Here’s what you sent:"),
       row(escapeHtml(topic), { size: 14, color: C.muted, gap: 8, bold: true }),
@@ -166,7 +162,6 @@ export function subscriberWelcome(siteUrl: string): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Drop notes"),
       lead("You’re on the list."),
       row("You’ll hear from us when a new release is ready. Nothing else."),
       button("See the pieces", `${siteUrl}/shop`),
@@ -183,7 +178,6 @@ export function accountDeleted(): RenderedEmail {
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Account deleted"),
       lead("Your Awebound account is deleted."),
       row(
         "We removed your sign-in, your profile, your saved pieces and your email preferences, and unlinked your orders. The orders themselves stay on record with our checkout partner for receipts and returns.",
@@ -261,6 +255,65 @@ export function designUnlocked({
   return { subject, html, text };
 }
 
+/** The morning after a paid guest order: what an account with the order's email opens. Once per address. */
+export function guestFollowUp({
+  names,
+  siteUrl,
+}: {
+  names: string[];
+  siteUrl: string;
+}): RenderedEmail {
+  const note = guestOrderNote(names);
+  const subject = note.lead.replace(/\.$/, "");
+  const href = `${siteUrl}${note.cta.href}`;
+  const once =
+    "Accounts are free and never needed to order. This is the only email we’ll send about it.";
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead(note.title),
+      row(`${escapeHtml(note.lead)} ${escapeHtml(note.email)}`),
+      button(note.cta.label, href),
+      small(once),
+    ],
+  });
+  const text = `${note.title}\n\n${note.lead} ${note.email}\n\n${note.cta.label}: ${href}\n\n${once}`;
+  return { subject, html, text };
+}
+
+/** A day after a signed-in checkout that wasn't finished: its pieces, at most once a month. */
+export function cartReminder({
+  pieces,
+  siteUrl,
+}: {
+  pieces: { name: string; slug: string }[];
+  siteUrl: string;
+}): RenderedEmail {
+  const subject = "Your bag at Awebound";
+  const sentence = (names: string) =>
+    `You started a checkout with ${names} and didn’t finish it. Your bag is kept on the device you used, whenever you’re ready to come back to it.`;
+  const links = pieces.map(
+    (p) =>
+      `<a href="${siteUrl}${pieceHref(p.slug)}" style="color:${C.oxblood};">${escapeHtml(p.name)}</a>`,
+  );
+  const bag = `${siteUrl}/bag`;
+  const settings = `${siteUrl}/account/settings#reminders`;
+  const html = layout({
+    title: subject,
+    logoSrc: LOGO,
+    rows: [
+      lead("Your bag is saved."),
+      row(sentence(join(links))),
+      button("Return to your bag", bag),
+    ],
+    note: `We send at most one of these a month. <a href="${settings}" style="color:${C.muted};">Turn them off in your account</a>.`,
+  });
+  const list = pieces.map((p) => `${p.name}: ${siteUrl}${pieceHref(p.slug)}`).join("\n");
+  const text = `Your bag is saved.\n\n${sentence(join(pieces.map((p) => p.name)))}\n\n${list}\n\nReturn to your bag: ${bag}\n\nWe send at most one of these a month. Turn them off in your account: ${settings}`;
+  return { subject, html, text };
+}
+
 export function collectionUpdate({
   subject,
   lead: leadText,
@@ -280,9 +333,9 @@ export function collectionUpdate({
       row(escapeHtml(body).replace(/\r?\n/g, "<br>")),
       button("See the pieces", `${siteUrl}/shop`),
     ],
-    note: `You asked for these in your Archive settings. <a href="${siteUrl}/account/settings#email" style="color:${C.muted};">Change that here</a>.`,
+    note: `You asked for these in My Archive. <a href="${siteUrl}/account/settings#preferences" style="color:${C.muted};">Change that here</a>.`,
   });
-  const text = `${leadText}\n\n${body}\n\nSee the pieces: ${siteUrl}/shop\n\nYou asked for these in your Archive settings. Change that here: ${siteUrl}/account/settings#email`;
+  const text = `${leadText}\n\n${body}\n\nSee the pieces: ${siteUrl}/shop\n\nYou asked for these in My Archive. Change that here: ${siteUrl}/account/settings#preferences`;
   return { subject, html, text };
 }
 
@@ -313,7 +366,6 @@ export function ideaSubmissionNotification(s: IdeaSubmissionEmail): RenderedEmai
     title: subject,
     logoSrc: LOGO,
     rows: [
-      eyebrow("Idea submission"),
       lead(`${escapeHtml(who)} sent a design idea.`),
       row(
         `${escapeHtml(s.email)}${s.purchases === null ? " · owner test" : ` · ${s.purchases} purchases`}`,

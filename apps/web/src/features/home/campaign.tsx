@@ -66,14 +66,13 @@ export function Campaign({ release, piece, slides, start }: CampaignProps) {
     );
   }
 
-  const files = `/products/${piece.slug}`;
   return (
     <Plate
       className="campaign"
       color={plateCss(piece.plate)}
       ink={piece.plate.ink}
-      tall={`${files}/plate-tall.webp`}
-      wide={`${files}/plate-wide.webp`}
+      tall={piece.media.plateTall}
+      wide={piece.media.plateWide}
       priority
       aria-labelledby="campaign-title"
     >
@@ -81,9 +80,9 @@ export function Campaign({ release, piece, slides, start }: CampaignProps) {
         {words}
         {/* The button is the keyboard stop for this destination. */}
         <Link href={href} className="campaign-garment" tabIndex={-1}>
-          {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py for every piece */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py, or imported with the piece */}
           <img
-            src={`${files}/piece.webp`}
+            src={piece.media.piece}
             alt={piece.image.alt}
             width={960}
             height={1200}

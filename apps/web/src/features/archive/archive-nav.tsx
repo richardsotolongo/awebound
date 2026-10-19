@@ -4,50 +4,45 @@ import Link from "next/link";
 import { usePath } from "@/lib/pathname";
 
 const LINKS = [
+  { label: "Collection", href: "/account" },
   { label: "Saved", href: "/account/saved" },
   { label: "Orders", href: "/account/orders" },
-  { label: "Settings", href: "/account/settings" },
+  { label: "Ideas", href: "/account/ideas" },
+  { label: "Account", href: "/account/settings" },
 ];
 
 /**
- * The account's sections. My Archive (the overview) and Your collection, where each bought
- * design's story, Richard's note and extras live, are the red buttons; a rule, then plain links.
- * The current one is marked. Who is signed in sits at the row's far end on wide screens.
+ * My Archive's title, then its sections as equal tabs (the owner's choice, October 2026). Collection
+ * is the landing page and stays marked on a design's own page. The current tab is underlined.
  */
-export function ArchiveNav({ admin, email }: { admin: boolean; email: string | null }) {
+export function ArchiveNav({ admin }: { admin: boolean }) {
   const pathname = usePath();
   const links = admin ? [...LINKS, { label: "Owner", href: "/account/admin" }] : LINKS;
-  const current = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const current = (href: string) =>
+    href === "/account"
+      ? pathname === href || pathname.startsWith("/account/collection")
+      : pathname === href || pathname.startsWith(`${href}/`);
   return (
-    <nav aria-label="Account" className="archive-nav">
-      <div className="archive-nav-main">
-        <Link
-          href="/account"
-          className="aw-btn aw-btn-primary"
-          aria-current={pathname === "/account" ? "page" : undefined}
-        >
-          My Archive
-        </Link>
-        <Link
-          href="/account/collection"
-          className="aw-btn aw-btn-primary"
-          aria-current={current("/account/collection") ? "page" : undefined}
-        >
-          Your collection
-        </Link>
-      </div>
+    <nav aria-label="My Archive" className="archive-nav">
+      <p className="aw-h1 archive-nav-title">My Archive</p>
       <div className="archive-nav-links">
         {links.map((l) => (
-          <Link key={l.href} href={l.href} aria-current={current(l.href) ? "page" : undefined}>
+          <Link
+            key={l.href}
+            href={l.href}
+            aria-current={current(l.href) ? "page" : undefined}
+            data-tone={
+              l.href === "/account/ideas"
+                ? "ideas"
+                : l.href === "/account"
+                  ? "collection"
+                  : undefined
+            }
+          >
             {l.label}
           </Link>
         ))}
       </div>
-      {email ? (
-        <p className="aw-small archive-nav-who">
-          Signed in as <span className="account-email">{email}</span>
-        </p>
-      ) : null}
     </nav>
   );
 }

@@ -10,6 +10,11 @@ const securityHeaders = [
   },
 ];
 
+// New pieces' and size guides' images are served from the public product-images bucket.
+const storage = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL)
+  : null;
+
 const config: NextConfig = {
   // Internal workspace packages ship TypeScript source; Next compiles them.
   transpilePackages: ["@awebound/brand"],
@@ -17,6 +22,15 @@ const config: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: storage
+      ? [
+          {
+            protocol: storage.protocol === "http:" ? "http" : "https",
+            hostname: storage.hostname,
+            pathname: "/storage/v1/object/public/**",
+          },
+        ]
+      : [],
   },
   // server/email.ts reads the wordmark to attach it inline; ship it with every server function.
   outputFileTracingIncludes: { "/**": ["./public/email/wordmark-oxblood.png"] },

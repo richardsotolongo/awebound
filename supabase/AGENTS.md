@@ -1,6 +1,6 @@
 # AGENTS.md — supabase
 
-Postgres schema and auth email templates for the Awebound store. Used by the Supabase CLI locally; the Stage migrations and Deploy to Prod workflows apply new migrations to the stage and production projects with `supabase db push`, so a migration must work with the code already running. The catalog is not here: Fourthwall supplies it.
+Postgres schema and auth email templates for the Awebound store. Used by the Supabase CLI locally; the Stage migrations and Deploy to Prod workflows apply new migrations to the stage and production projects with `supabase db push`, so a migration must work with the code already running. Fourthwall supplies what can be bought; the brand content (releases, pieces, size guides) is here.
 
 ## Layout
 
@@ -15,7 +15,9 @@ Postgres schema and auth email templates for the Awebound store. Used by the Sup
 - `profiles` — 1:1 with `auth.users`, created by the `on_auth_user_created` trigger.
 - `contact_messages`, `subscribers` — written only by the server with the secret key; RLS on with no policies.
 - My Archive (`2026101300*`): `saved_pieces`, `fit_preferences` (unused since Your Fit was removed); `archive_designs`, `archive_design_content` (versioned, draft → approved → published), `archive_assets` (wallpapers in the private `archive-assets` bucket); `checkout_sessions`, `provider_orders`, `provider_order_lines`, `webhook_events`, `reconciliation_runs`, `order_claims` and the `archive_entitlements` view; `founding_members`, `founding_candidates` and `archive_award_founding()`; `feature_flags`, `email_consents`, `email_outbox`, `owner_audit_log`; `user_roles`. All server-only (RLS on, no policies, `service_role` grants). `profiles` now follows `auth.users` (email, `email_verified_at`) and `authenticated` may update `full_name` only.
+- Catalog (`20261018000000_catalog.sql`): `collections` (releases: draft or published, release date, display order), `pieces` (everything a catalog product holds, its media URLs, its Fourthwall slug and offer id, status draft, `in_review` (approved, waiting for its release) or published, and what goes live with it), `size_guides` (`blank` is internal) and `piece_imports` (each zip and its reference files). The public may read published releases, their published pieces and the size guides those use (policies for `anon` and `authenticated`, column grants that leave out `blank`, private paths and import links); every write goes through the server with the secret key. `catalog_publish_collection(id)` publishes a release with its approved pieces in one transaction (service role only). Buckets: `product-images` (public: imported pieces' and size guides' images) and `piece-imports` (private: the zips, Fourthwall reference images and preview PDFs). The migration copied Behold, its five size guides and ten pieces from `catalog.json` as published.
 - `indexnow_pages` — each indexable page's fingerprint when IndexNow was last told about it (server-only, like the Archive tables).
+- `20261018120000_follow_up_emails.sql` seeds the `email.guest_follow_up` and `email.cart_reminder` flags (off) and adds the `cart_reminders` topic to `email_consents` (reminders go unless an account says no).
 - `idea_submissions` — Idea Submissions from My Archive (image path and size, idea, verse, context, purchases when sent, the owner's status and note); images in the private `idea-submissions` bucket (PNG or JPEG, 10 MB). Server-only.
 
 ## Rules

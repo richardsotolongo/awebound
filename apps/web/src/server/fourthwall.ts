@@ -81,14 +81,20 @@ async function request(path: string, init: RequestInit = {}, params: Record<stri
   return json;
 }
 
-/** Every product in the shop's "all" collection. Cached for a minute by Next's data cache. */
+/** The tag on the product list, refreshed by Fourthwall's product and collection webhooks. */
+export const FOURTHWALL_CATALOG_TAG = "fourthwall-catalog";
+
+/**
+ * Every product in the shop's "all" collection. Cached for a minute by Next's data cache, and
+ * refreshed at once when Fourthwall reports a product or collection change.
+ */
 export async function listProducts(): Promise<FourthwallProduct[]> {
   const products: FourthwallProduct[] = [];
   for (let page = 0; page < 40; page++) {
     const body = Page.parse(
       await request(
         "/collections/all/products",
-        { next: { revalidate: 60 } },
+        { next: { revalidate: 60, tags: [FOURTHWALL_CATALOG_TAG] } },
         { page: String(page), size: "50" },
       ),
     );

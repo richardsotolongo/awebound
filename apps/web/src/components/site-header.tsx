@@ -4,7 +4,7 @@ import { Header, ThornCross, type NavLink } from "@awebound/brand";
 import Link from "next/link";
 import { useState } from "react";
 import { bagCount, useBag } from "@/features/bag/bag-store";
-import { accountsEnabled } from "@/lib/env";
+import { accountsEnabled, envLabel } from "@/lib/env";
 import { usePath } from "@/lib/pathname";
 import { MAIN_NAV } from "@/lib/site";
 import { useSignedIn } from "@/lib/supabase/browser";
@@ -20,12 +20,12 @@ function currentLabel(pathname: string, account: NavLink | undefined): string | 
 }
 
 /**
- * "Sign in" (back to this page afterwards) or "Account"; nothing while accounts are off. The phone
- * menu offers the same link as "Join Awebound" to someone signed out.
+ * "Sign in" (back to this page afterwards) or "My Archive"; nothing while accounts are off. The
+ * phone menu offers the same link as "Join Awebound" to someone signed out.
  */
 function accountLink(signedIn: boolean, pathname: string): NavLink | undefined {
   if (!accountsEnabled) return undefined;
-  if (signedIn) return { label: "Account", href: "/account" };
+  if (signedIn) return { label: "My Archive", href: "/account" };
   const next = isAccountPage(pathname) ? "" : `?next=${encodeURIComponent(pathname)}`;
   return { label: "Sign in", href: `/sign-in${next}` };
 }
@@ -57,6 +57,7 @@ export function SiteHeader() {
         onMenu={() => setMenuOpen((o) => !o)}
         menuOpen={menuOpen}
         menuId="site-menu"
+        badge={envLabel ?? undefined}
       />
       <Sheet
         id="site-menu"

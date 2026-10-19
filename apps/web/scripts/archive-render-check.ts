@@ -12,14 +12,14 @@ const slug =
 const out = arg("--out") ?? join(process.cwd(), ".render-check");
 
 const { drafts } = await import("../src/server/archive/drafts");
-const { brandContent } = await import("../src/server/content");
+const { getBrandContent } = await import("../src/server/content");
 const { renderDesignCardPdf } = await import("../src/server/archive/pdf");
 const { renderShareImage } = await import("../src/server/archive/share");
 const { readImageHeader } = await import("../src/server/archive/assets");
 const { getCatalog } = await import("../src/server/catalog");
 
 const draft = drafts.designs.find((d) => d.catalog_slug === slug);
-const content = brandContent.products.find((p) => p.slug === slug);
+const content = (await getBrandContent()).products.find((p) => p.slug === slug);
 if (!draft || !content) {
   console.error(`No draft or catalog entry for ${slug}.`);
   process.exit(1);

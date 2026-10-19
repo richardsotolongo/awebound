@@ -14,6 +14,12 @@ Open work, grouped by who has to act. Delete an item when it's done.
 
 - [ ] **Publish the products.** All ten Behold products are in the shop but hidden, so the Storefront API doesn't return them and the site lists them as previews. Publishing them (public access, available) turns on live prices, sizes and checkout.
 - [ ] Place a test order end to end, then refund it in Fourthwall.
+- [ ] **Webhook events**: add `PRODUCT_CREATED`, `PRODUCT_UPDATED` and `COLLECTION_UPDATED` to the existing webhook (Settings → For developers → Webhooks), so price, stock and product changes show at once.
+
+## Catalog
+
+- [ ] **Run the catalog migration** (`supabase/migrations/20261018000000_catalog.sql`) on stage, then production (the workflows do it). It copies Behold from `catalog.json`; after it, catalog changes are made in Admin, not in the file.
+- [ ] **New plate tokens**: a piece imported with a plate token the brand tokens lack shows its surface from the color read off its plate image. Add the token to `packages/brand/src/styles/tokens.css` and `PLATE_HEX` (`packages/brand/src/hex.ts`) when convenient, and new garment colors to `colors` in `catalog.json` and `tokens.css`.
 
 ## Search and AI discovery
 
@@ -39,7 +45,7 @@ Open work, grouped by who has to act. Delete an item when it's done.
 
 - [ ] **Internal design codes in page source.** Nothing visible shows them, and titles, descriptions, structured data, the sitemap and `llms.txt` are clean, but the data Next sends with the shop and product pages carries `code` (and preview SKUs built from it) inside client-component props, and `ProductPurchase` copies it into the bag line. Strip `code` before a product reaches a Client Component (`ProductGrid`, `ProductPurchase`) and give previews SKUs that don't contain it.
 - [ ] **When Fourthwall is unreachable** the home page falls back to the headline and the founder's note, but a product page shows the error page titled “Not found”, `/collections/behold` returns 404, and a page regenerated during the outage can be cached for a minute. Consider a content-only fallback.
-- [ ] **After a purchase** the bag isn't cleared and there's no return page from Fourthwall's checkout. Notify sign-ups don't record whether someone asked about “ordering opens” or “back in stock”, and nothing sends either email.
+- [ ] **After a purchase** the bag isn't cleared. Fourthwall's checkout never returns the buyer; a guest's browser keeps the cart id and the band under the header thanks them once the order arrives (signed-in buyers get no such note). Notify sign-ups don't record whether someone asked about “ordering opens” or “back in stock”, and nothing sends either email.
 - [ ] **Latest Drop follows the content's release date**, so adding a Release 02 that is still in preview would replace a Release 01 that can be ordered on the home page. Decide the rule before the second release.
 - [ ] Vercel Firewall rate-limit rule on Server Action POSTs (contact, subscribe, checkout). The in-app limits are per server instance.
 - [ ] **Smaller images**: tiles and thumbnails load the full 1000×1250 product file (`/products/<slug>/N.webp`, plain `<img>` tags). Give them smaller sources (`srcset`, or `next/image`).

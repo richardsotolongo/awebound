@@ -1,4 +1,4 @@
-import { collectionHref, type AssetFormat } from "@/shared";
+import type { AssetFormat } from "@/shared";
 
 /**
  * What My Archive holds, and the words every surface uses for it (home page, product page,
@@ -41,7 +41,7 @@ export const NO_OFFER: ArchiveOffer = {
   foundingOpen: false,
 };
 
-const join = (items: string[]) =>
+export const join = (items: string[]) =>
   items.length < 2 ? (items[0] ?? "") : `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
 
 /** What a tile on the sign-in page shows, so its picture can be drawn. */
@@ -117,16 +117,6 @@ export const FOUNDING_LINE =
 const wallpaperNoun = (formats: AssetFormat[]) =>
   formats.length > 1 ? "phone and desktop wallpapers" : `${formats[0]} wallpaper`;
 
-/** The extras one design's card holds today, as a phrase ("its phone wallpaper and a design card PDF"). */
-export function extrasPhrase(o: ArchiveOffer, wallpapers: AssetFormat[]): string | null {
-  const items = [
-    wallpapers.length > 0 ? `its ${wallpaperNoun(wallpapers)}` : null,
-    o.pdf ? "a design card PDF" : null,
-    o.share ? "story images to share" : null,
-  ].filter((x): x is string => Boolean(x));
-  return items.length > 0 ? join(items) : null;
-}
-
 /** The product page's note: what buying this piece opens in My Archive. */
 export function productNote(name: string) {
   return {
@@ -138,30 +128,15 @@ export function productNote(name: string) {
   };
 }
 
-/** What each design bought brings to the collection, listed under the empty collection's heading. */
+/** What each design bought opens in My Archive, listed in the welcome. */
 export const COLLECTION_HOLDS = [
-  "The deeper story behind the design",
+  "The story behind the design",
   "The meaning of its imagery",
   "A founder’s note from Richard",
   "Its Scripture and biblical context",
   "Phone and desktop wallpapers",
-  "A design card PDF and story images to share",
+  "A design card PDF and story images",
 ];
-
-/**
- * The empty collection: what each design bought brings to it (the whole Archive, as every
- * explanation names it), then why it is empty in words that match what works today. Before orders
- * reach accounts, it says so plainly.
- */
-export function emptyCollection(o: ArchiveOffer): { lead: string; holds: string[]; why: string } {
-  return {
-    lead: "Each design you buy is kept here, with:",
-    holds: COLLECTION_HOLDS,
-    why: o.orders
-      ? "It’s empty because no order is linked to this account yet. Orders placed with your account’s email are added on their own, guest checkout included."
-      : "Purchases don’t link to accounts yet, so it’s empty for now. Order confirmations and tracking still come by email.",
-  };
-}
 
 /** The parts of a design's card that open with a purchase, by name, for previews. */
 export function lockedRows(wallpapers: AssetFormat[]): string[] {
@@ -176,64 +151,27 @@ export function lockedRows(wallpapers: AssetFormat[]): string[] {
 }
 
 export interface Welcome {
-  kind: "free" | "buyer";
   title: string;
-  body: string[];
-  /** What Your collection holds for each design bought (the empty collection's own list). */
   lead: string;
   holds: string[];
-  action: { href: string; label: string };
-  /** A second, quieter way in: Your collection, when the first action goes elsewhere. */
-  more: { href: string; label: string } | null;
+  /** Why the collection is empty, in words that match what works today. */
+  why: string;
+  saved: string;
 }
 
-const WELCOME_LEAD = "Each design you buy is kept in Your collection, with:";
-const OPEN_COLLECTION = { href: "/account/collection", label: "Open your collection" };
-
 /**
- * The overview's welcome, always shown (the owner's choice, October 2026: with the tiles moved to
- * the navigation, it and Idea Submissions are the overview): for an account with no design open
- * yet, saving and exploring; for a buyer, the designs that opened (owned and published). Either
- * way it lists what Your collection keeps for each design, so that isn't hidden behind the button.
+ * The welcome on an empty collection (the owner's choice, October 2026: few words, each point on
+ * its own line). It names everything a design opens, as every explanation of the Archive does.
  */
-export function welcomeFor(
-  o: ArchiveOffer,
-  opened: { slug: string; name: string }[],
-  firstWallpapers: AssetFormat[],
-): Welcome {
-  const first = opened[0];
-  if (first) {
-    const extras = extrasPhrase(o, firstWallpapers);
-    return opened.length > 1
-      ? {
-          kind: "buyer",
-          title: "Your designs are in your Archive.",
-          body: ["Each one’s full story and a note from Richard are open in your collection."],
-          lead: WELCOME_LEAD,
-          holds: COLLECTION_HOLDS,
-          action: OPEN_COLLECTION,
-          more: null,
-        }
-      : {
-          kind: "buyer",
-          title: `${first.name} is in your Archive.`,
-          body: [
-            `Its full story and a note from Richard are open.${extras ? ` You’ll also find ${extras}.` : ""}`,
-          ],
-          lead: WELCOME_LEAD,
-          holds: COLLECTION_HOLDS,
-          action: { href: collectionHref(first.slug), label: `Open ${first.name}` },
-          more: OPEN_COLLECTION,
-        };
-  }
+export function welcomeFor(o: ArchiveOffer): Welcome {
   return {
-    kind: "free",
     title: "Welcome to your Archive.",
-    body: ["Save the pieces you love with the heart and find them again under Saved."],
-    lead: WELCOME_LEAD,
+    lead: "Each design you buy opens here with:",
     holds: COLLECTION_HOLDS,
-    action: { href: "/shop", label: "Explore Behold" },
-    more: OPEN_COLLECTION,
+    why: o.orders
+      ? "Orders placed with this email show up here on their own."
+      : "Purchases don’t link to accounts yet.",
+    saved: "Tap the heart on any piece to keep it under Saved.",
   };
 }
 
@@ -250,5 +188,24 @@ export function homeIntro(o: ArchiveOffer, signedIn: boolean) {
     title: "Wear the piece. Know its story.",
     body: `My Archive is your personal space for the Awebound pieces you love. ${save} Each design you buy unlocks its deeper story, a personal note from Richard and digital extras like phone and desktop wallpapers, all kept with its Scripture and biblical context, bringing you closer to the meaning behind what you wear.`,
     cta,
+  };
+}
+
+/**
+ * After a guest purchase, on the band under the header and in the next morning's email: the pieces
+ * bought and what an account with the checkout email opens. The order links itself by that email,
+ * so it is shown only while orders reach accounts (`offer.orders`).
+ */
+export function guestOrderNote(names: string[]) {
+  const one = names.length === 1;
+  const opens = one
+    ? "its deeper story, a founder’s note from Richard and digital extras like phone and desktop wallpapers, kept with its Scripture and biblical context"
+    : "the deeper story behind each, a founder’s note from Richard and digital extras like phone and desktop wallpapers, kept with their Scripture and biblical context";
+  return {
+    title: "Thank you for your order.",
+    lead: `${join(names)} ${one ? "continues" : "continue"} in My Archive.`,
+    site: `Create a free account with the email you used at checkout to open ${opens}.`,
+    email: `Create a free account with this email address to open ${opens}.`,
+    cta: { href: "/sign-in?next=%2Faccount", label: "Create your free Archive" },
   };
 }

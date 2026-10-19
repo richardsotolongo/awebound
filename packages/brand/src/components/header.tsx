@@ -25,6 +25,8 @@ export interface HeaderProps {
   menuOpen?: boolean;
   /** id of the phone menu panel, for aria-controls. */
   menuId?: string;
+  /** A short word beside the wordmark naming the site, such as "Stage". Omit in production. */
+  badge?: string;
   className?: string;
 }
 
@@ -74,6 +76,7 @@ export function Header({
   onMenu,
   menuOpen = false,
   menuId,
+  badge,
   className,
 }: HeaderProps) {
   const bagLabel = (
@@ -98,8 +101,13 @@ export function Header({
           <span />
           <span />
         </button>
-        <BrandLink href={homeHref} className="aw-header-logo" aria-label="Awebound home">
+        <BrandLink
+          href={homeHref}
+          className="aw-header-logo"
+          aria-label={badge ? `Awebound home (${badge})` : "Awebound home"}
+        >
           <Wordmark height={56} title="" />
+          {badge ? <span className="aw-header-env">{badge}</span> : null}
         </BrandLink>
         <nav className="aw-header-nav" aria-label="Main">
           {links.map((l) => (

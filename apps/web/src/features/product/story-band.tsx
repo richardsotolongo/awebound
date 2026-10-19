@@ -7,8 +7,7 @@ import { plateCss, type ProductDetail } from "@/shared";
  * same on coal.
  */
 export function StoryBand({ product }: { product: ProductDetail }) {
-  const { story, plate, slug, name } = product;
-  const files = `/products/${slug}`;
+  const { story, plate, name, media } = product;
   const inner = (
     <div className="story-in">
       <div className="story-letter">
@@ -16,10 +15,10 @@ export function StoryBand({ product }: { product: ProductDetail }) {
           {story.call}
         </h2>
       </div>
-      {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py for every piece */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- made by assets/mockups/compose.py, or imported with the piece */}
       <img
         className="story-detail"
-        src={`${files}/detail.webp`}
+        src={media.detail}
         alt={`Close-up of the ${name} artwork`}
         width={640}
         height={800}
@@ -35,8 +34,8 @@ export function StoryBand({ product }: { product: ProductDetail }) {
           as="div"
           color={plateCss(plate)}
           ink={plate.ink}
-          tall={`${files}/plate-tall.webp`}
-          wide={`${files}/plate-wide.webp`}
+          tall={media.plateTall}
+          wide={media.plateWide}
         >
           {inner}
         </Plate>

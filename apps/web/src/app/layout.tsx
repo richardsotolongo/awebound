@@ -7,6 +7,7 @@ import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
 import { SocialLinks } from "@/components/social-links";
 import { SiteHeader } from "@/components/site-header";
+import { GuestOrderNotice } from "@/features/archive/guest-order-notice";
 import { BagDrawer } from "@/features/bag/bag-drawer";
 import { siteUrl } from "@/lib/env";
 import { SHARE_IMAGE, SITE } from "@/lib/site";
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </a>
         <Providers>
           <SiteHeader />
+          <GuestOrderNotice />
           <main id="main">{children}</main>
           <SiteFooter notice={TRANSLATION_NOTICE}>
             <SocialLinks />

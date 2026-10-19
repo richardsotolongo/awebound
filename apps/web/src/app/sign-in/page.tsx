@@ -49,6 +49,7 @@ export default async function SignInPage({
       name: p.name,
       plate: plateCss(p.plate),
       reference: p.scripture.reference,
+      media: p.media,
     }));
   const closed = accountsClosedCopy();
 

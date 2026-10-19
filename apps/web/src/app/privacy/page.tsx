@@ -78,7 +78,9 @@ const sections: LegalSection[] = [
           <li>We don’t use advertising cookies or cross-site trackers.</li>
           <li>
             <strong>Your bag</strong> is saved in your own browser’s local storage so it’s there
-            when you return.
+            when you return. After a guest checkout, the browser also keeps that checkout’s
+            reference for up to 30 days, so the site can tell you when your order arrives and what
+            it opens in My Archive. Signing in clears it.
           </li>
           <li>
             <strong>Server logs</strong> such as IP address, browser type and pages requested, used
@@ -95,6 +97,14 @@ const sections: LegalSection[] = [
       <ul>
         <li>To answer your messages and provide customer support.</li>
         <li>To send drop notes and the notices you asked for. You can stop them at any time.</li>
+        <li>
+          After a guest order, to send one email to the address on the order about opening its
+          pieces in My Archive, unless an account already uses that address. We send it once.
+        </li>
+        <li>
+          When you’re signed in and start a checkout you don’t finish, to send one reminder the next
+          day, at most once a month. You can turn these off in your account settings.
+        </li>
         <li>To run your account and to make, ship and support your orders.</li>
         <li>To review the design ideas you send and reply to you about them.</li>
         <li>To keep the store secure, prevent fraud and spam, and fix problems.</li>

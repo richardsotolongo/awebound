@@ -1,53 +1,22 @@
 /* My Archive: the account area, its cards and the owner's admin tables. Layout only; colors are tokens. */
 @layer components {
-  /* My Archive and Your collection as the red buttons, a rule, then the other sections. On phones
-     the two buttons share the first row, the links take their own and the rule goes. */
+  /* My Archive's title, then its sections as one row of equal tabs over a rule. On phones the
+     tabs wrap rather than scroll, so none is hidden. */
   .archive-nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3) var(--space-6);
-    padding: var(--space-4) 0;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: var(--space-6);
-  }
-  .archive-nav-main {
-    display: flex;
+    display: grid;
     gap: var(--space-3);
+    padding-top: var(--space-6);
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid var(--line);
   }
-  /* The current section's button carries a bone rule along its foot. */
-  .archive-nav-main .aw-btn[aria-current="page"] {
-    box-shadow: inset 0 -3px 0 var(--on-primary);
+  .archive-nav-title {
+    font-size: clamp(36px, 4vw, 52px);
   }
   .archive-nav-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-6);
-    padding-left: var(--space-6);
-    border-left: 1px solid var(--line-strong);
-  }
-  @media (max-width: 639px) {
-    .archive-nav-main {
-      flex-basis: 100%;
-    }
-    .archive-nav-main .aw-btn {
-      flex: 1 1 0;
-      padding-inline: var(--space-3);
-    }
-    .archive-nav-links {
-      flex-basis: 100%;
-      padding-left: 0;
-      border-left: 0;
-    }
-  }
-  .archive-nav-who {
-    margin-left: auto;
-  }
-  @media (max-width: 1023px) {
-    .archive-nav-who {
-      flex-basis: 100%;
-      margin-left: 0;
-    }
+    align-items: center;
+    gap: var(--space-1) var(--space-6);
   }
   .archive-nav-links a {
     min-height: var(--tap-min);
@@ -58,10 +27,84 @@
     color: var(--ink-muted);
     text-decoration: none;
     border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .archive-nav-links a:hover {
+    color: var(--ink);
   }
   .archive-nav-links a[aria-current="page"] {
     color: var(--ink);
     border-bottom-color: var(--ink);
+  }
+  /* Collection and Ideas are filled in their panels' colors, so each tab matches what it opens:
+     Collection the welcome's bone paper (oxblood lettering), Ideas the Idea Submissions oxblood
+     (bone lettering). The open one carries a rule along its foot. */
+  .archive-nav-links a[data-tone] {
+    align-self: center;
+    min-height: 36px;
+    padding: 0 var(--space-4);
+    margin-bottom: 0;
+    border-bottom: 0;
+    border-radius: var(--radius-sm);
+  }
+  .archive-nav-links a[data-tone="collection"],
+  .archive-nav-links a[data-tone="collection"]:hover {
+    background: var(--altar);
+    color: var(--altar-mark);
+  }
+  .archive-nav-links a[data-tone="ideas"],
+  .archive-nav-links a[data-tone="ideas"]:hover {
+    background: var(--panel-feature);
+    color: var(--on-feature);
+  }
+  .archive-nav-links a[data-tone="collection"][aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--altar-mark);
+  }
+  .archive-nav-links a[data-tone="ideas"][aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--scripture);
+  }
+  /* Idea Submissions on the Collection tab: a slim band in the feature color with a gold rule. */
+  .idea-band {
+    --focus-ring: var(--on-feature);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-8);
+    margin-block: var(--space-4) var(--space-8);
+    padding: var(--space-6) var(--space-8);
+    background: var(--panel-feature);
+    color: var(--on-feature);
+    border: 1px solid color-mix(in srgb, var(--scripture) 45%, transparent);
+    border-top: 3px solid var(--scripture);
+    border-radius: var(--radius-sm);
+  }
+  .idea-band-words {
+    display: grid;
+    gap: var(--space-2);
+    flex: 1 1 36ch;
+    min-width: 0;
+  }
+  .idea-band .aw-h3,
+  .idea-band .aw-body {
+    margin: 0;
+    color: var(--on-feature);
+  }
+  .idea-band-side {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-6);
+  }
+  @media (max-width: 767px) {
+    .idea-band {
+      padding: var(--space-6);
+    }
+  }
+  @media (max-width: 479px) {
+    .archive-nav-links {
+      gap: var(--space-1) var(--space-4);
+    }
   }
   .archive-seal {
     display: flex;
@@ -134,11 +177,6 @@
   .archive-card .aw-product-name {
     margin: 0;
   }
-  /* An empty collection: what each design brings to it, why it is empty, then one next step. */
-  .collection-empty > p {
-    margin: 0;
-    max-width: 60ch;
-  }
   .collection-holds {
     display: grid;
     gap: var(--space-2);
@@ -160,11 +198,6 @@
     border-radius: 50%;
     background: var(--accent-text);
     transform: translateY(-2px);
-  }
-  .collection-empty a {
-    color: var(--accent-text);
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
   .archive-story {
     display: grid;
@@ -648,9 +681,8 @@
       gap: var(--space-2);
     }
   }
-  /* The overview's first-visit welcome: words beside their two actions, set in the page. */
-  /* The overview's welcome on bone paper (oxblood heading and edge, coal words), so it stands
-     apart from Idea Submissions below it in the feature color. */
+  /* The empty collection's welcome on bone paper (oxblood heading and edge, coal words): words
+     beside their actions, the line about Saved under both. */
   .archive-welcome {
     --focus-ring: var(--on-altar);
     display: flex;
@@ -671,7 +703,7 @@
     flex: 1 1 32ch;
     max-width: 72ch;
   }
-  .archive-welcome-words h2 {
+  .archive-welcome-words .aw-h3 {
     margin: 0;
     color: var(--altar-mark);
   }
@@ -680,8 +712,18 @@
     color: var(--on-altar);
   }
   .archive-welcome-lead {
-    margin-top: var(--space-1) !important;
     font-weight: 700;
+  }
+  .archive-welcome .aw-small {
+    color: var(--on-altar-muted);
+  }
+  .archive-welcome-words .aw-small {
+    margin-top: var(--space-1);
+  }
+  .archive-welcome-saved {
+    flex-basis: 100%;
+    padding-top: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, var(--on-altar) 15%, transparent);
   }
   .archive-welcome .collection-holds {
     max-width: none;
@@ -715,6 +757,23 @@
   @media (max-width: 599px) {
     .archive-welcome {
       padding: var(--space-6);
+    }
+  }
+  /* After a guest's order arrives: the welcome's bone paper, under the header on any page. */
+  .guest-order {
+    padding-top: var(--space-4);
+  }
+  .guest-order .archive-welcome {
+    margin-bottom: 0;
+  }
+  /* Its button label is long: on phones it takes the width and a tighter padding, so it fits at 320px. */
+  @media (max-width: 599px) {
+    .guest-order .archive-welcome {
+      padding-inline: var(--space-4);
+    }
+    .guest-order .aw-btn-secondary {
+      width: 100%;
+      padding-inline: var(--space-4);
     }
   }
   /* A text-height link button keeps its underline at the words; an invisible band gives it a
@@ -1068,6 +1127,7 @@
     flex-direction: column;
     gap: var(--space-3);
     min-width: 0;
+    margin-bottom: var(--space-8);
   }
   /* The owner's switch between the open tile and the locked one customers see. */
   .idea-owner-view {
@@ -1281,18 +1341,8 @@
   .idea-page-section > p {
     margin: 0;
   }
-  .idea-reason {
-    display: grid;
-    gap: var(--space-3);
-    max-width: 62ch;
-  }
-  .idea-reason p {
-    margin: 0;
-    color: var(--ink-muted);
-  }
-  .idea-reason .idea-fine {
-    font-size: 14px;
-    color: var(--ink-subtle);
+  .idea-page-section > .aw-btn {
+    justify-self: start;
   }
   .idea-form {
     display: grid;
@@ -1497,5 +1547,169 @@
     .admin-idea-image {
       max-width: 240px;
     }
+  }
+}
+
+/* Owner pages: collections and pieces. */
+@layer components {
+  .admin-pdf {
+    width: 100%;
+    height: 80vh;
+    border: 1px solid var(--line);
+    background: var(--surface-raised);
+  }
+  .admin-checks {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .admin-checks li[data-ok="false"] {
+    color: var(--accent-text);
+    font-weight: 700;
+  }
+  /* The piece review page: a header, steps as tabs, then one step at a time. */
+  .review-head {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+  .review-head p {
+    margin: 0;
+  }
+  .review-tabs {
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--space-8);
+  }
+  .review-step {
+    display: grid;
+    gap: var(--space-8);
+    padding-bottom: var(--space-12);
+  }
+  .review-step > header p {
+    margin: var(--space-2) 0 0;
+  }
+  .review-split {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--space-8) var(--space-12);
+    align-items: start;
+  }
+  .review-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+    gap: var(--space-6) var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .review-step .admin-editor {
+    max-width: 960px;
+  }
+  .review-tiles > li {
+    min-width: 0;
+  }
+  .review-tile {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+    min-width: 0;
+    margin: 0;
+  }
+  .review-tile img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: contain;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+  }
+  .review-tile[data-shape="wide"] img {
+    aspect-ratio: 16 / 9;
+  }
+  .review-tile[data-shape="tall"] img {
+    aspect-ratio: 9 / 14;
+  }
+  .review-tile[data-shape="free"] img {
+    aspect-ratio: auto;
+  }
+  .review-tile figcaption {
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+  .review-tiles .aw-select {
+    width: 100%;
+  }
+  .review-replace {
+    display: grid;
+    gap: var(--space-1);
+    justify-items: start;
+  }
+  .review-replace label:focus-within {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .review-replace .field-help:empty {
+    display: none;
+  }
+  .review-group {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0 0 var(--space-6);
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    min-width: 0;
+  }
+  .review-group legend {
+    padding: 0;
+    margin-bottom: var(--space-4);
+  }
+  .review-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-6);
+    align-items: start;
+  }
+  .review-sizes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-4);
+  }
+  .review-save {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    align-items: center;
+  }
+  .review-save p {
+    margin: 0;
+  }
+  .review-swatch {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--line-strong);
+    vertical-align: middle;
+  }
+  .review-next {
+    font-weight: 700;
+  }
+  @media (max-width: 899px) {
+    .review-split {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 599px) {
+    .review-fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .admin-preview-note {
+    padding: var(--space-3) 0;
+    font-size: 14px;
+    color: var(--ink-muted);
   }
 }

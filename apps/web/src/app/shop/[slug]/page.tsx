@@ -1,24 +1,15 @@
-import { ScriptureQuote, quoted } from "@awebound/brand";
+import { quoted } from "@awebound/brand";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { ViewTransition } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { shopCanonical } from "@/features/catalog/query";
-import { PieceNav } from "@/features/product/piece-nav";
-import { ProductGallery } from "@/features/product/product-gallery";
-import { ProductPurchase } from "@/features/product/product-purchase";
-import { StoryBand } from "@/features/product/story-band";
-import { DesignContext } from "@/features/archive/design-context";
-import { productNote } from "@/features/archive/offer";
-import { ProductArchiveNote } from "@/features/archive/product-archive-note";
+import { ProductView } from "@/features/product/product-view";
 import { getPublishedPublicCard } from "@/server/archive/content";
 import { getArchiveOffer } from "@/server/archive/offer";
-import { ReleaseWall } from "@/features/release/release-wall";
 import { getProduct, searchProducts, withFallback } from "@/server/catalog";
 import { siteUrl } from "@/lib/env";
 import { SITE, pageMeta } from "@/lib/site";
-import { nameWithCut, pieceHref, plateCss, slugAtAddress } from "@/shared";
+import { nameWithCut, pieceHref, slugAtAddress } from "@/shared";
 
 type Params = Promise<{ slug: string }>;
 
@@ -29,9 +20,6 @@ export const revalidate = 60;
 export function generateStaticParams() {
   return [];
 }
-
-/** Moving between neighbouring pieces: the page slides in from the side it lies on. */
-const SLIDE = { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const product = await getProduct(slugAtAddress((await params).slug).slug).catch(() => null);
@@ -58,18 +46,12 @@ export default async function ProductPage({ params }: { params: Params }) {
     { items: [], total: 0, page: 1, pageSize: 48, hasMore: false },
   );
   const pieces = [...release.items].sort((a, b) => a.position - b.position);
-  const at = pieces.findIndex((p) => p.slug === product.slug);
-  const prev = at > 0 ? pieces[at - 1] : undefined;
-  const next = at >= 0 && at < pieces.length - 1 ? pieces[at + 1] : undefined;
-  const others = pieces.filter((p) => p.slug !== product.slug);
-  const { scripture, story } = product;
+  const { story } = product;
   // Only the published public fields of the Archive card reach this cached page.
   const [card, offer] = await Promise.all([
     withFallback(() => getPublishedPublicCard(product.slug), null),
     getArchiveOffer(),
   ]);
-  // What buying the piece opens in My Archive, shown wherever accounts are open.
-  const note = offer.accounts ? productNote(product.name) : null;
 
   const url = `${siteUrl}${pieceHref(product.slug)}`;
   const prices = product.variants.map((v) => v.priceCents);
@@ -119,88 +101,7 @@ export default async function ProductPage({ params }: { params: Params }) {
 
   return (
     <>
-      <ViewTransition key={product.slug} enter={SLIDE} exit={SLIDE} default="none">
-        <div className="pdp-page">
-          <div className="pdp">
-            <ProductGallery
-              images={product.images}
-              name={product.name}
-              slug={product.slug}
-              plate={plateCss(product.plate)}
-            />
-
-            <div className="buy">
-              <nav aria-label="Breadcrumb" className="aw-small crumbs">
-                <Link href="/shop">Shop</Link>
-                <span aria-hidden="true"> / </span>
-                <Link href={shopCanonical(product.collection.slug)}>{product.collection.name}</Link>
-                <span aria-hidden="true"> / </span>
-                <span aria-current="page">{product.name}</span>
-              </nav>
-              <h1 className="buy-name">{product.name}</h1>
-              <ProductPurchase product={product}>
-                <ScriptureQuote
-                  text={scripture.text}
-                  reference={scripture.reference}
-                  translation={scripture.translation}
-                  excerpt={scripture.excerpt}
-                  size="md"
-                />
-              </ProductPurchase>
-              {note ? <ProductArchiveNote slug={product.slug} {...note} /> : null}
-            </div>
-          </div>
-
-          <StoryBand product={product} />
-          {card ? <DesignContext card={card} opens={offer.accounts} /> : null}
-
-          <section className="aw-container details" aria-labelledby="details-title">
-            <h2 id="details-title" className="aw-h2">
-              Product details
-            </h2>
-            <div>
-              <dl className="spec">
-                <dt>Garment</dt>
-                <dd>{product.category.cut}</dd>
-                <dt>Fit</dt>
-                <dd>{story.fit}</dd>
-                <dt>{product.colors.length > 1 ? "Colors" : "Color"}</dt>
-                <dd>{product.colors.map((c) => c.name).join(", ")}</dd>
-                <dt>Front</dt>
-                <dd>{story.front}</dd>
-                <dt>Back</dt>
-                <dd>{story.back}</dd>
-                <dt>{story.process === "embroidered" ? "Thread" : "Inks"}</dt>
-                <dd>{story.inks}</dd>
-                <dt>Fabric</dt>
-                <dd>{story.material ?? "Ask us for fabric details."}</dd>
-              </dl>
-              <p className="field-help">
-                Questions about fit? <Link href="/contact">Ask us</Link>.
-              </p>
-            </div>
-          </section>
-
-          <PieceNav prev={prev} next={next} />
-
-          {others.length > 0 ? (
-            <section className="more" aria-labelledby="related-title">
-              <h2 id="related-title" className="aw-container aw-h2">
-                More from {product.collection.name}
-              </h2>
-              <ReleaseWall
-                nameOnLeave
-                pieces={others}
-                label={`More ${product.collection.name} pieces`}
-                more={{
-                  href: shopCanonical(product.collection.slug),
-                  label: `See all ${pieces.length} pieces`,
-                }}
-              />
-            </section>
-          ) : null}
-        </div>
-      </ViewTransition>
+      <ProductView product={product} pieces={pieces} card={card} offer={offer} />
 
       <JsonLd data={jsonLd} />
       <JsonLd data={crumbs} />

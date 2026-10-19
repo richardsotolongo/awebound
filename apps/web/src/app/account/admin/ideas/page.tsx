@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { IdeaCard } from "@/features/archive/admin/idea-card";
 import { ideaCounts, listIdeas } from "@/server/archive/ideas";
-import { CONTACT_EMAIL, IDEA_STATUS_LABELS, IDEA_STATUSES, IdeaStatusSchema } from "@/shared";
+import { IDEAS_EMAIL, IDEA_STATUS_LABELS, IDEA_STATUSES, IdeaStatusSchema } from "@/shared";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Ideas", robots: { index: false } };
@@ -31,7 +31,7 @@ export default async function IdeasInboxPage({
     <>
       <PageHeader
         title="Ideas"
-        intro={`Idea Submissions from My Archive, newest first. Each one is also emailed to ${CONTACT_EMAIL} with its image attached; reply there to reach the person who sent it. Mark the one you choose as Selected: their piece is free.`}
+        intro={`Idea Submissions from My Archive, newest first. Each one is also emailed to ${IDEAS_EMAIL} with its image attached; reply there to reach the person who sent it. Mark the one you choose as Selected: their piece is free.`}
       />
 
       <nav aria-label="Filter by status" className="admin-filter">

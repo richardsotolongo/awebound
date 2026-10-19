@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { IdeaForm } from "@/features/archive/idea-form";
-import { IdeaLockReason, IdeaProgress } from "@/features/archive/idea-tile";
+import { IdeaTile } from "@/features/archive/idea-tile";
 import { getIdeaAllowance, listIdeasForUser } from "@/server/archive/ideas";
 import { currentUser } from "@/server/session";
 import Link from "next/link";
-import { IDEA_EVERY, IDEA_FIRST_AT, IDEA_STATUS_LABELS, ideaAllowance, plural } from "@/shared";
+import { IDEA_FIRST_AT, IDEA_STATUS_LABELS, ideaAllowance } from "@/shared";
 
 export const metadata: Metadata = { title: "Idea Submissions" };
 
@@ -15,9 +15,10 @@ const date = (iso: string) =>
   new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
 /**
- * Idea Submissions: the form once a submission is open, the reason while it's locked, and the
- * account's own ideas. The owner always has the form, and can see the locked page as a customer
- * does with `?view=customer` (the switch at the top, shown to the owner only).
+ * The Ideas tab: the Idea Submissions tile (what it is, where the account stands, why it's
+ * locked), the form once a submission is open, and the account's own ideas. The owner always has
+ * the form, and can see the page as a customer does with `?view=customer` (the switch at the top,
+ * shown to the owner only).
  */
 export default async function IdeasPage({
   searchParams,
@@ -38,15 +39,7 @@ export default async function IdeasPage({
 
   return (
     <>
-      <PageHeader
-        title="Idea Submissions"
-        intro={
-          <p>
-            Bring us a design idea for an Awebound piece: an image, what you picture, the verse it
-            carries and its context. If we choose your idea, we make it, and your piece is free.
-          </p>
-        }
-      />
+      <PageHeader title="Idea Submissions" hideTitle />
 
       {sent ? (
         <div className="notice idea-page-section" role="status">
@@ -70,37 +63,19 @@ export default async function IdeasPage({
         </nav>
       ) : null}
 
+      <IdeaTile allowance={allowance} />
+
       {allowance.remaining > 0 ? (
         <section className="idea-page-section" aria-label="Send an idea">
           <IdeaForm email={user.email ?? "your account email"} owner={allowance.owner} />
         </section>
       ) : !allowance.unlocked ? (
-        <section className="idea-page-section idea-locked" aria-labelledby="locked-title">
-          <h2 id="locked-title" className="aw-h3">
-            Locked for now
-          </h2>
-          <div className="idea-reason">
-            <IdeaLockReason />
-          </div>
-          <IdeaProgress purchases={allowance.purchases} />
-          <div>
-            <Button variant="secondary" href="/shop">
-              Visit the shop
-            </Button>
-          </div>
-        </section>
-      ) : (
-        <section className="idea-page-section notice" aria-labelledby="next-title">
-          <h2 id="next-title" className="aw-h3">
-            Your next submission
-          </h2>
-          <p className="aw-body">
-            {plural(allowance.toNext, "more purchase")} {allowance.toNext === 1 ? "opens" : "open"}{" "}
-            your next submission. After your first idea, every {IDEA_EVERY} more purchases open
-            another.
-          </p>
-        </section>
-      )}
+        <div className="idea-page-section">
+          <Button variant="secondary" href="/shop">
+            Visit the shop
+          </Button>
+        </div>
+      ) : null}
 
       {ideas.length > 0 ? (
         <section className="idea-page-section" aria-labelledby="mine-title">
