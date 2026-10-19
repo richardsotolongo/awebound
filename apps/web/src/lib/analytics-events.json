@@ -186,6 +186,25 @@
       "required": ["image"],
       "additionalProperties": false
     },
+    "checkout_invite_shown": {
+      "description": "A signed-out shopper pressed Check out while Founding Member places remain, and the invitation to sign in first opened.",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "checkout_invite_answered": {
+      "description": "The shopper answered the invitation before checkout: sign in or create an account, or continue as a guest.",
+      "type": "object",
+      "properties": {
+        "answer": {
+          "type": "string",
+          "enum": ["join", "guest"],
+          "description": "join went to sign-in with the bag kept; guest went on to checkout."
+        }
+      },
+      "required": ["answer"],
+      "additionalProperties": false
+    },
     "guest_order_notice_shown": {
       "description": "A guest's order arrived and the band under the header invited them into My Archive, on their next visit after checking out.",
       "type": "object",
