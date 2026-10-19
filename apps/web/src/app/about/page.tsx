@@ -99,8 +99,8 @@ export default async function AboutPage() {
             <figure className="founder-photo">
               {/* eslint-disable-next-line @next/next/no-img-element -- static portrait with srcset */}
               <img
-                src="/about/richard-960.webp"
-                srcSet="/about/richard-480.webp 480w, /about/richard-960.webp 960w"
+                src="/about/founder-960.webp"
+                srcSet="/about/founder-480.webp 480w, /about/founder-960.webp 960w"
                 sizes="(max-width: 899px) min(100vw - 32px, 480px), 480px"
                 width={960}
                 height={1200}
