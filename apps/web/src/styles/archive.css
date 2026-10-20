@@ -143,6 +143,15 @@
     padding: 0;
     list-style: none;
   }
+  /* Download buttons with long labels ("Download the desktop wallpaper (2560 x 1440)") wrap on
+     phones instead of running off the screen. */
+  .archive-panel-list .aw-btn {
+    max-width: 100%;
+    height: auto;
+    min-height: var(--tap-min);
+    white-space: normal;
+    text-align: center;
+  }
   .archive-thumbs {
     display: flex;
     gap: var(--space-2);
@@ -220,6 +229,8 @@
   }
   .archive-story {
     display: grid;
+    /* One column that never grows past the screen: a long line inside can't widen the page. */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-12);
     padding-bottom: var(--space-16);
   }
