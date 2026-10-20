@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { ShortId, when } from "@/features/archive/admin/format";
 import { FoundingNote } from "@/features/archive/admin/founding-note";
 import { FoundingTools } from "@/features/archive/admin/founding-tools";
-import { HonoraryTools } from "@/features/archive/admin/honorary-tools";
+import { HonoraryList, HonoraryTools } from "@/features/archive/admin/honorary-tools";
 import { listFounding, listHonorary } from "@/server/archive/founding";
 import { FOUNDING_CAP, FOUNDING_RULES } from "@/server/archive/founding-policy";
 
@@ -101,32 +101,16 @@ export default async function FoundingPage() {
           For people you want to honor beyond the first 50. Same features, no number, and they don’t
           use a place.
         </p>
-        {honorary.length === 0 ? (
-          <p className="aw-body">No honorary seals yet.</p>
-        ) : (
-          <div className="admin-wrap">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Name</th>
-                  <th>Reason</th>
-                  <th>Granted</th>
-                </tr>
-              </thead>
-              <tbody>
-                {honorary.map((h) => (
-                  <tr key={h.userId}>
-                    <td>{h.email ?? <ShortId id={h.userId} />}</td>
-                    <td>{h.name ?? ""}</td>
-                    <td>{h.reason}</td>
-                    <td>{when(h.grantedAt)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <HonoraryList
+          rows={honorary.map((h) => ({
+            userId: h.userId,
+            email: h.email,
+            name: h.name,
+            reason: h.reason,
+            granted: when(h.grantedAt),
+          }))}
+        />
+        <h3 className="aw-label">Grant an honorary seal</h3>
         <HonoraryTools />
       </section>
 

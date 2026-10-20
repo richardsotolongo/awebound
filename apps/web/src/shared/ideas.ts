@@ -31,6 +31,8 @@ export interface IdeaAllowance {
    * next opens once the owner has reviewed the last (the owner's choice, October 2026).
    */
   founding: boolean;
+  /** The seal is an honorary one from the owner (same rules, worded as honorary). */
+  honorary: boolean;
   /** The account's ideas still waiting for review (new or being reviewed). */
   waiting: number;
 }
@@ -43,7 +45,7 @@ export function ideaAllowance(
   purchases: number,
   used: number,
   owner = false,
-  founding: { waiting: number } | null = null,
+  founding: { waiting: number; honorary?: boolean } | null = null,
 ): IdeaAllowance {
   const allowed =
     purchases < IDEA_FIRST_AT ? 0 : 1 + Math.floor((purchases - IDEA_FIRST_AT) / IDEA_EVERY);
@@ -58,6 +60,7 @@ export function ideaAllowance(
     toNext: Math.max(0, nextAt - purchases),
     owner,
     founding: Boolean(founding),
+    honorary: Boolean(founding?.honorary),
     waiting: founding?.waiting ?? 0,
   };
 }

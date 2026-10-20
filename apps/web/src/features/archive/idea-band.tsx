@@ -13,7 +13,7 @@ export function IdeaBand({ allowance }: { allowance: IdeaAllowance }) {
     ? "Open to you as the owner."
     : allowance.founding
       ? allowance.remaining > 0
-        ? "Open to you as a Founding Member."
+        ? `Open to you as ${allowance.honorary ? "an honorary member" : "a Founding Member"}.`
         : "Your next idea opens once we’ve reviewed this one."
       : !allowance.unlocked
         ? null

@@ -104,7 +104,12 @@ export async function getIdeaAllowance(user: User): Promise<IdeaAllowance> {
     getFoundingForUser(user.id).catch(() => null),
   ]);
   const waiting = founding ? await countWaiting(user.id) : 0;
-  return ideaAllowance(purchases, used, owner, founding ? { waiting } : null);
+  return ideaAllowance(
+    purchases,
+    used,
+    owner,
+    founding ? { waiting, honorary: founding.rank === null } : null,
+  );
 }
 
 async function signedUrls(paths: string[], seconds: number): Promise<Map<string, string>> {

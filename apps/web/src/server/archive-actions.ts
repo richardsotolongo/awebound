@@ -169,11 +169,12 @@ export async function submitIdeaAction(input: IdeaSubmitRequest): Promise<Result
   });
 }
 
-/** Whether the signed-in account holds the Founding Member seal (the header marks My Archive). */
-export async function getFoundingMarkAction(): Promise<Result<boolean>> {
+/** The signed-in account's seal, if any (the header marks My Archive): founding or honorary. */
+export async function getFoundingMarkAction(): Promise<Result<"founding" | "honorary" | null>> {
   return run(async () => {
     const user = await requireUser();
-    return Boolean(await getFoundingForUser(user.id).catch(() => null));
+    const seal = await getFoundingForUser(user.id).catch(() => null);
+    return seal ? (seal.rank === null ? "honorary" : "founding") : null;
   });
 }
 
