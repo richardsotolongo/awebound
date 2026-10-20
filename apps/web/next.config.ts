@@ -32,8 +32,16 @@ const config: NextConfig = {
         ]
       : [],
   },
-  // server/email.ts reads the wordmark to attach it inline; ship it with every server function.
-  outputFileTracingIncludes: { "/**": ["./public/email/wordmark-oxblood.png"] },
+  // Files read from disk at runtime, which tracing can't see: the email wordmark (server/email.ts)
+  // and the export fonts (server/archive/fonts.ts). Ship them with every server function.
+  outputFileTracingIncludes: {
+    "/**": [
+      "./public/email/wordmark-oxblood.png",
+      "./node_modules/@fontsource/grenze-gotisch/files/grenze-gotisch-latin-600-normal.woff",
+      "./node_modules/@fontsource/manrope/files/manrope-latin-{400,700}-normal.woff",
+      "./node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff",
+    ],
+  },
   // Stage and preview deploys run the same site at their own address: keep them out of search.
   async headers() {
     const headers =
