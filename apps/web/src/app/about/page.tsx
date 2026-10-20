@@ -58,7 +58,7 @@ const DESIGN_STORY = [
   {
     numeral: "II",
     title: "The art holds the moment",
-    body: "The art tells the moment through symbols, so it’s easy to see and hard to forget. Out of reverence, we never put a face on God.",
+    body: "The art tells the moment so it’s easy to see and hard to forget, made with the same reverence as the words behind it.",
   },
   {
     numeral: "III",
@@ -72,7 +72,7 @@ export default async function AboutPage() {
     await Promise.all(NAMED.map((slug) => withFallback(() => getProduct(slug), null)))
   ).filter((p) => p !== null);
   const reverence = [
-    "We use symbols. Out of reverence, we never show Jesus, God the Father or the Holy Spirit as a person.",
+    "Every design is made with reverence for Scripture: drawn from its words, and shaped to honor the story they tell.",
     `Scripture is quoted word for word, with its full reference. On this website we quote the ${TRANSLATION_NAME}.${
       TRANSLATION === "NIV"
         ? " Some designs print the King James wording, and we keep every approved design exactly as it was drawn."
