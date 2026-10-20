@@ -58,7 +58,7 @@ const DESIGN_STORY = [
   {
     numeral: "II",
     title: "The art holds the moment",
-    body: "The art tells the moment through symbols, so it’s easy to see and hard to forget. Out of reverence, we never put a face on God.",
+    body: "The art tells the moment so it’s easy to see and hard to forget, made with the same reverence as the words behind it.",
   },
   {
     numeral: "III",
