@@ -36,9 +36,10 @@
     color: var(--ink);
     border-bottom-color: var(--ink);
   }
-  /* Collection and Ideas are filled in their panels' colors, so each tab matches what it opens:
-     Collection the welcome's bone paper (oxblood lettering), Ideas the Idea Submissions oxblood
-     (bone lettering). The open one carries a rule along its foot. */
+  /* The special tabs come first, filled: Collection on the welcome's bone paper (oxblood
+     lettering), Ideas in the Idea Submissions oxblood (bone lettering), Founding in the seal's
+     gold (coal lettering). The open one carries a rule along its foot. A thin rule then sets
+     them apart from the plain tabs; on phones it becomes a row break instead. */
   .archive-nav-links a[data-tone] {
     align-self: center;
     min-height: 36px;
@@ -57,11 +58,29 @@
     background: var(--panel-feature);
     color: var(--on-feature);
   }
-  .archive-nav-links a[data-tone="collection"][aria-current="page"] {
+  .archive-nav-links a[data-tone="founding"],
+  .archive-nav-links a[data-tone="founding"]:hover {
+    background: var(--scripture-gold);
+    color: var(--brand-coal);
+  }
+  .archive-nav-links a[data-tone="collection"][aria-current="page"],
+  .archive-nav-links a[data-tone="founding"][aria-current="page"] {
     box-shadow: inset 0 -3px 0 var(--altar-mark);
   }
   .archive-nav-links a[data-tone="ideas"][aria-current="page"] {
     box-shadow: inset 0 -3px 0 var(--scripture);
+  }
+  .archive-nav-break {
+    align-self: center;
+    width: 1px;
+    height: 24px;
+    background: var(--line-strong);
+  }
+  @media (max-width: 767px) {
+    .archive-nav-break {
+      flex-basis: 100%;
+      height: 0;
+    }
   }
   /* Idea Submissions on the Collection tab: a slim band in the feature color with a gold rule. */
   .idea-band {
