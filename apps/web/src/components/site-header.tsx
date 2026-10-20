@@ -35,8 +35,8 @@ function accountLink(signedIn: boolean, pathname: string): NavLink | undefined {
  * Whether to mark My Archive with the Thorn Cross. Pages are cached for everyone, so the header
  * asks once after sign-in; it stays mounted across navigation, so that's once per visit.
  */
-function useFoundingMark(signedIn: boolean): boolean {
-  const [founding, setFounding] = useState(false);
+function useFoundingMark(signedIn: boolean): "founding" | "honorary" | null {
+  const [founding, setFounding] = useState<"founding" | "honorary" | null>(null);
   useEffect(() => {
     if (!signedIn) return;
     let live = true;
@@ -49,7 +49,7 @@ function useFoundingMark(signedIn: boolean): boolean {
       live = false;
     };
   }, [signedIn]);
-  return signedIn && founding;
+  return signedIn ? founding : null;
 }
 
 export function SiteHeader() {
@@ -77,7 +77,10 @@ export function SiteHeader() {
         account={account}
         accountIcon={
           founding ? (
-            <span className="aw-header-founding" title="Founding Member">
+            <span
+              className="aw-header-founding"
+              title={founding === "honorary" ? "Honorary Founding Member" : "Founding Member"}
+            >
               <ThornCross size="small" height={20} title="" />
             </span>
           ) : undefined

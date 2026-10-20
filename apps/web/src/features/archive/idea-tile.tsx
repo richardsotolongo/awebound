@@ -71,7 +71,7 @@ export function IdeaTile({ allowance }: { allowance: IdeaAllowance }) {
     ? "Open to you as the owner. Your test ideas aren’t counted."
     : allowance.founding
       ? allowance.remaining > 0
-        ? "Open to you as a Founding Member. Send an idea whenever you like, one at a time."
+        ? `Open to you as ${allowance.honorary ? "an honorary member" : "a Founding Member"}. Send an idea whenever you like, one at a time.`
         : "Your idea is with us. Your next one opens once we’ve reviewed it."
       : !allowance.unlocked
         ? `Opens after ${IDEA_FIRST_AT} purchases made while signed in.`

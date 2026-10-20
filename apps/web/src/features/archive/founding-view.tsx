@@ -47,7 +47,7 @@ export function FoundingView({ rank, sample }: { rank: number | null; sample: bo
         </h2>
         <ul className="founding-perks aw-body">
           {FOUNDING_PERKS.map((p) => (
-            <li key={p}>{p}</li>
+            <li key={p}>{rank === null ? p.replace("numbered ", "") : p}</li>
           ))}
         </ul>
       </section>
