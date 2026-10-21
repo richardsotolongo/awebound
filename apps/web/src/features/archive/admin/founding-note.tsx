@@ -6,10 +6,12 @@ import { sendFoundingNoteAction } from "@/server/admin-actions";
 import { Outcome, useOwnerAction } from "./owner-action";
 
 /**
- * Richard's note to Founding Members before a release. "Send a test to me" goes only to the
- * owner; "Send to all" goes to every active member who hasn't turned release emails off.
+ * Richard's note to Founding and honorary members before a release. "Send a test to me" goes
+ * only to the owner; "Send to all" goes to every active Founding Member and every honorary member
+ * who hasn't turned release emails off.
  */
-export function FoundingNote({ members }: { members: number }) {
+export function FoundingNote({ founding, honorary }: { founding: number; honorary: number }) {
+  const members = founding + honorary;
   const id = useId();
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
@@ -59,6 +61,10 @@ export function FoundingNote({ members }: { members: number }) {
       <p className="field-help">
         It opens with “To our Founding Members” and ends with a button to their Founding tab.
         Members who turned release emails off in Settings are skipped.
+      </p>
+      <p className="field-help">
+        Goes to {founding} {founding === 1 ? "Founding Member" : "Founding Members"} and {honorary}{" "}
+        {honorary === 1 ? "honorary member" : "honorary members"}.
       </p>
       <div className="admin-actions-row">
         <Button variant="secondary" type="submit" disabled={note.busy || !ready}>
