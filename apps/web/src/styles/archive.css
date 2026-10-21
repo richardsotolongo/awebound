@@ -789,12 +789,23 @@
       padding: var(--space-6);
     }
   }
-  /* After a guest's order arrives: the welcome's bone paper, under the header on any page. */
+  /* After a guest's order arrives, and once an account holds its seal: the welcome's bone paper,
+     under the header on any page. The seal's note keeps the Thorn Cross beside its words. */
   .guest-order {
     padding-top: var(--space-4);
   }
   .guest-order .archive-welcome {
     margin-bottom: 0;
+  }
+  .founding-notice .archive-welcome {
+    align-items: center;
+  }
+  .founding-notice-words {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex: 1 1 32ch;
+    max-width: 72ch;
   }
   /* Its button label is long: on phones it takes the width and a tighter padding, so it fits at 320px. */
   @media (max-width: 599px) {

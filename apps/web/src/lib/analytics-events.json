@@ -229,6 +229,32 @@
       },
       "required": ["answer"],
       "additionalProperties": false
+    },
+    "founding_notice_shown": {
+      "description": "A signed-in account holding a Founding Member seal was told so on the band under the header, once per browser (usually the first visit after the purchase that earned it).",
+      "type": "object",
+      "properties": {
+        "seal": {
+          "type": "string",
+          "enum": ["founding", "honorary"],
+          "description": "A numbered place among the first 50, or an honorary seal from the owner."
+        }
+      },
+      "required": ["seal"],
+      "additionalProperties": false
+    },
+    "founding_notice_answered": {
+      "description": "A Founding Member answered the band: See your seal, or Close.",
+      "type": "object",
+      "properties": {
+        "answer": {
+          "type": "string",
+          "enum": ["see", "close"],
+          "description": "see went to the Founding tab; close hid the band."
+        }
+      },
+      "required": ["answer"],
+      "additionalProperties": false
     }
   }
 }

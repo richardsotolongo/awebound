@@ -80,7 +80,9 @@ const sections: LegalSection[] = [
             <strong>Your bag</strong> is saved in your own browser’s local storage so it’s there
             when you return. After a guest checkout, the browser also keeps that checkout’s
             reference for up to 30 days, so the site can tell you when your order arrives and what
-            it opens in My Archive. Signing in clears it.
+            it opens in My Archive. Signing in clears it. Once your account holds a Founding Member
+            seal, the browser keeps your account’s random ID to remember it has told you, so that
+            note shows only once.
           </li>
           <li>
             <strong>Server logs</strong> such as IP address, browser type and pages requested, used
