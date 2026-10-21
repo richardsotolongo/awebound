@@ -28,7 +28,7 @@ export interface AwardResult {
 
 async function award(
   userId: string,
-  orderId: string,
+  orderId: string | null,
   paidAt: string,
   by: "system" | "reconcile" | "owner",
   settled: boolean,
@@ -98,6 +98,16 @@ export async function evaluateFounding(orderId: string): Promise<AwardResult> {
       );
     logArchive("founding", { order: order.id, result: q.reason });
     return { awarded: false, rank: null, reason: q.reason };
+  }
+  // An honorary seal already opens everything; it never takes one of the 50 numbered places.
+  const { data: honorary } = await admin()
+    .from("honorary_members")
+    .select("user_id")
+    .eq("user_id", order.user_id!)
+    .maybeSingle();
+  if (honorary) {
+    logArchive("founding", { order: order.id, result: "honorary" });
+    return { awarded: false, rank: null, reason: "honorary" };
   }
   const result = await award(
     order.user_id!,
@@ -210,6 +220,8 @@ export async function listActiveFoundingMembers(): Promise<{ userId: string; ema
 export async function listFounding(): Promise<{
   members: FoundingRow[];
   candidates: CandidateRow[];
+  /** Fourthwall's order number for each order id the lists name. */
+  orderNumbers: Record<string, string>;
   placesUsed: number;
   placesLeft: number;
 }> {
@@ -217,10 +229,20 @@ export async function listFounding(): Promise<{
     admin().from("founding_members").select("*").order("rank"),
     admin().from("founding_candidates").select("*").order("paid_at"),
   ]);
+  const rows = [...(members ?? []), ...(candidates ?? [])] as { order_id: string | null }[];
+  const ids = [...new Set(rows.flatMap((r) => (r.order_id ? [r.order_id] : [])))];
+  const { data: orders } = ids.length
+    ? await admin().from("provider_orders").select("id, friendly_id").in("id", ids)
+    : { data: [] };
   const placesUsed = members?.length ?? 0;
   return {
     members: (members ?? []) as FoundingRow[],
     candidates: (candidates ?? []) as CandidateRow[],
+    orderNumbers: Object.fromEntries(
+      ((orders ?? []) as { id: string; friendly_id: string | null }[]).flatMap((o) =>
+        o.friendly_id ? [[o.id, o.friendly_id]] : [],
+      ),
+    ),
     placesUsed,
     placesLeft: Math.max(FOUNDING_CAP - placesUsed, 0),
   };
@@ -242,12 +264,31 @@ export async function foundingCorrection(
   const member = data as FoundingRow | null;
   if (action === "award") {
     if (member) throw new UserError("That account already holds a place.");
-    const loaded = orderId ? await loadOrder(orderId) : null;
-    if (orderId && !loaded) throw new UserError("Unknown order.");
+    // Fourthwall's order number ("#UATDHT5U" or "UATDHT5U"), or our order id.
+    const ref = orderId?.trim().replace(/^#/, "");
+    let loaded = ref ? await loadOrder(ref) : null;
+    if (ref && !loaded) {
+      const { data } = await admin()
+        .from("provider_orders")
+        .select("id")
+        .eq("friendly_id", ref.toUpperCase())
+        .maybeSingle();
+      const found = data as { id: string } | null;
+      loaded = found ? await loadOrder(found.id) : null;
+    }
+    if (ref && !loaded) throw new UserError("No order has that number.");
     const paidAt =
       loaded?.order.paid_at ?? loaded?.order.provider_created_at ?? new Date().toISOString();
-    const result = await award(userId, orderId ?? "", paidAt, "owner", true);
-    await audit(actor, "founding.award", "user", userId, null, { ...result, orderId }, reason);
+    const result = await award(userId, loaded?.order.id ?? null, paidAt, "owner", true);
+    await audit(
+      actor,
+      "founding.award",
+      "user",
+      userId,
+      null,
+      { ...result, orderId: loaded?.order.id ?? null },
+      reason,
+    );
     return result;
   }
   if (!member) throw new UserError("That account holds no place.");

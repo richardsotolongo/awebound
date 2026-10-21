@@ -160,7 +160,7 @@ Every email shares one table layout (`layout` in `email-templates.ts`; the three
 1. The bag lives in the browser (zustand, persisted to localStorage, keyed by SKU).
 2. Whenever the bag is shown, the `validateBag` action re-prices it. The client's prices are display copies only.
 3. **Check out** calls `startCheckout`, which re-reads the bag from the catalog, creates a Fourthwall cart from the available lines and answers `{ url }`; the browser goes to Fourthwall's hosted checkout.
-4. Fourthwall never sends the buyer back (its confirmation page is the end of checkout), so a guest's browser keeps the cart id (`awebound-guest-checkouts` in localStorage). On their next visit, once the webhook has recorded the paid order, a band under the header (`GuestOrderNotice`) invites them into My Archive; the next morning one email does the same (`docs/ARCHIVE.md`, Discovery and Order pipeline).
+4. Fourthwall never sends the buyer back (its confirmation page is the end of checkout), so a guest's browser keeps the cart id (`awebound-guest-checkouts` in localStorage). On their next visit, once the webhook has recorded the paid order, a band under the header (`GuestOrderNotice`) invites them into My Archive; the next morning one email does the same (`docs/ARCHIVE.md`, Discovery and Order pipeline). A signed-in buyer whose order earned a Founding Member seal is told the same way, once per browser (`FoundingNotice`, `awebound-founding-seen`).
 
 ### Fourthwall
 
