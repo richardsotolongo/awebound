@@ -230,3 +230,16 @@ export function guestOrderNote(names: string[]) {
     cta: { href: "/sign-in?next=%2Faccount", label: "Create your free Archive" },
   };
 }
+
+/** Once a signed-in account holds its seal, on the band under the header (the Founding tab's words). */
+export function foundingNotice(honorary: boolean) {
+  return honorary
+    ? {
+        title: "You are an honorary Founding Member.",
+        body: "Richard has given you the seal. Thank you for being part of Awebound.",
+      }
+    : {
+        title: "You are a Founding Member.",
+        body: "You were one of the first 50 people to buy from Awebound with your account. Thank you for being here from the beginning.",
+      };
+}
