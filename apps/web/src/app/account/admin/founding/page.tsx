@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
-import { OrderNumber, ShortId, when } from "@/features/archive/admin/format";
+import { Member, OrderNumber, when } from "@/features/archive/admin/format";
 import { FoundingNote } from "@/features/archive/admin/founding-note";
 import { FoundingTools } from "@/features/archive/admin/founding-tools";
 import { HonoraryList, HonoraryTools } from "@/features/archive/admin/honorary-tools";
@@ -13,24 +13,29 @@ export const metadata: Metadata = { title: "Founding", robots: { index: false } 
 export default async function FoundingPage() {
   const [{ members, candidates, orderNumbers, people, placesUsed, placesLeft }, honorary] =
     await Promise.all([listFounding(), listHonorary()]);
-  // An account by its email (its user id on hover, for Corrections), or its id when it has none.
-  const person = (userId: string | null) =>
-    userId && people[userId]?.email ? (
-      <span title={userId}>{people[userId].email}</span>
-    ) : (
-      <ShortId id={userId} />
-    );
+  const member = (userId: string | null) => (
+    <Member
+      userId={userId}
+      name={userId ? people[userId]?.name : null}
+      email={userId ? people[userId]?.email : null}
+    />
+  );
+  const activeMembers = members.filter((m) => m.status === "active").length;
 
   return (
     <>
-      <PageHeader
-        title="Founding"
-        note={`${placesUsed} of ${FOUNDING_CAP} places used, ${placesLeft} left.`}
-      />
+      <PageHeader title="Founding" />
 
-      <section className="admin-section">
-        <h2 className="aw-h3">Founding Members</h2>
-        <p className="aw-body">The first 50 qualifying buyers, in place order.</p>
+      <section className="admin-panel" data-tone="founding" aria-labelledby="founding-members">
+        <div className="admin-panel-head">
+          <h2 id="founding-members" className="aw-h3">
+            Founding Members
+          </h2>
+          <p className="aw-body">
+            {placesUsed} of {FOUNDING_CAP} places taken, {placesLeft} left. The first 50 qualifying
+            buyers, in place order.
+          </p>
+        </div>
         {members.length === 0 ? (
           <p className="aw-body">No places awarded yet.</p>
         ) : (
@@ -39,8 +44,7 @@ export default async function FoundingPage() {
               <thead>
                 <tr>
                   <th>Place</th>
-                  <th>Email</th>
-                  <th>Name</th>
+                  <th>Member</th>
                   <th>Order</th>
                   <th>Paid</th>
                   <th>Status</th>
@@ -51,8 +55,7 @@ export default async function FoundingPage() {
                 {members.map((m) => (
                   <tr key={m.id}>
                     <td>No. {m.rank}</td>
-                    <td>{person(m.user_id)}</td>
-                    <td>{(m.user_id && people[m.user_id]?.name) ?? ""}</td>
+                    <td>{member(m.user_id)}</td>
                     <td>
                       <OrderNumber id={m.order_id} number={orderNumbers[m.order_id ?? ""]} />
                     </td>
@@ -67,12 +70,16 @@ export default async function FoundingPage() {
         )}
       </section>
 
-      <section className="admin-section">
-        <h2 className="aw-h3">Honorary seals</h2>
-        <p className="aw-body">
-          For people you want to honor beyond the first 50. Same features, no number, and they don’t
-          use a place.
-        </p>
+      <section className="admin-panel" data-tone="honorary" aria-labelledby="honorary-members">
+        <div className="admin-panel-head">
+          <h2 id="honorary-members" className="aw-h3">
+            Honorary members
+          </h2>
+          <p className="aw-body">
+            {honorary.length} {honorary.length === 1 ? "honorary seal" : "honorary seals"}. For
+            people you honor beyond the first 50: the same features, no number, and no place used.
+          </p>
+        </div>
         <HonoraryList
           rows={honorary.map((h) => ({
             userId: h.userId,
@@ -82,8 +89,10 @@ export default async function FoundingPage() {
             granted: when(h.grantedAt),
           }))}
         />
-        <h3 className="aw-label">Grant an honorary seal</h3>
-        <HonoraryTools />
+        <div className="admin-panel-foot">
+          <h3 className="aw-label">Grant an honorary seal</h3>
+          <HonoraryTools />
+        </div>
       </section>
 
       <section className="admin-section">
@@ -95,7 +104,7 @@ export default async function FoundingPage() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Email</th>
+                  <th>Member</th>
                   <th>Order</th>
                   <th>Paid</th>
                   <th>Reason</th>
@@ -104,7 +113,7 @@ export default async function FoundingPage() {
               <tbody>
                 {candidates.map((c) => (
                   <tr key={c.user_id}>
-                    <td>{person(c.user_id)}</td>
+                    <td>{member(c.user_id)}</td>
                     <td>
                       <OrderNumber id={c.order_id} number={orderNumbers[c.order_id ?? ""]} />
                     </td>
@@ -119,14 +128,12 @@ export default async function FoundingPage() {
       </section>
 
       <section className="admin-section">
-        <h2 className="aw-h3">Note to Founding Members</h2>
+        <h2 className="aw-h3">Note to Founding and honorary members</h2>
         <p className="aw-body">
           Before each release, write to your Founding and honorary members about what’s coming. Send
           yourself a test first.
         </p>
-        <FoundingNote
-          members={members.filter((m) => m.status === "active").length + honorary.length}
-        />
+        <FoundingNote founding={activeMembers} honorary={honorary.length} />
       </section>
 
       <section className="admin-section">

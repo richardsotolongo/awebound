@@ -895,6 +895,61 @@
     padding: var(--space-6) 0;
     border-bottom: 1px solid var(--line);
   }
+  /* Owner → Founding: the Founding Members and the honorary members each in their own panel,
+     told apart by the rule along the top (the seal's gold, then copper). */
+  .admin-panel {
+    display: grid;
+    gap: var(--space-4);
+    margin-block: var(--space-6);
+    padding: var(--space-6);
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--scripture);
+    border-radius: var(--radius-sm);
+  }
+  .admin-panel[data-tone="honorary"] {
+    border-top-color: var(--accent-text);
+  }
+  .admin-panel-head {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .admin-panel-head .aw-h3,
+  .admin-panel-head .aw-body {
+    margin: 0;
+  }
+  .admin-panel-head .aw-body {
+    color: var(--ink-muted);
+  }
+  .admin-panel-foot {
+    display: grid;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .admin-member {
+    display: grid;
+  }
+  .admin-member-name {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .admin-member-email {
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  /* On phones the lists scroll sideways inside the panel rather than breaking names and numbers. */
+  .admin-panel .admin-table {
+    min-width: 640px;
+  }
+  .admin-panel .admin-code {
+    white-space: nowrap;
+  }
+  @media (max-width: 599px) {
+    .admin-panel {
+      padding: var(--space-4);
+    }
+  }
   .admin-editor {
     display: grid;
     gap: var(--space-6);

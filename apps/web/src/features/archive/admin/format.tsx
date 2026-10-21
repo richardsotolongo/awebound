@@ -26,3 +26,22 @@ export function OrderNumber({
     </code>
   );
 }
+
+/** A person by name with their email beneath (the email alone without a name), user id on hover. */
+export function Member({
+  userId,
+  name,
+  email,
+}: {
+  userId: string | null | undefined;
+  name?: string | null;
+  email?: string | null;
+}) {
+  if (!name && !email) return <ShortId id={userId} />;
+  return (
+    <span className="admin-member" title={userId ?? undefined}>
+      <span className="admin-member-name">{name || email}</span>
+      {name && email ? <span className="admin-member-email">{email}</span> : null}
+    </span>
+  );
+}
