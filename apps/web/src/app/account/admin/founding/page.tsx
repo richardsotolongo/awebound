@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
-import { ShortId, when } from "@/features/archive/admin/format";
+import { OrderNumber, ShortId, when } from "@/features/archive/admin/format";
 import { FoundingNote } from "@/features/archive/admin/founding-note";
 import { FoundingTools } from "@/features/archive/admin/founding-tools";
 import { HonoraryList, HonoraryTools } from "@/features/archive/admin/honorary-tools";
@@ -11,10 +11,8 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Founding", robots: { index: false } };
 
 export default async function FoundingPage() {
-  const [{ members, candidates, placesUsed, placesLeft }, honorary] = await Promise.all([
-    listFounding(),
-    listHonorary(),
-  ]);
+  const [{ members, candidates, orderNumbers, placesUsed, placesLeft }, honorary] =
+    await Promise.all([listFounding(), listHonorary()]);
 
   return (
     <>
@@ -48,7 +46,7 @@ export default async function FoundingPage() {
                       <ShortId id={m.user_id} />
                     </td>
                     <td>
-                      <ShortId id={m.order_id} />
+                      <OrderNumber id={m.order_id} number={orderNumbers[m.order_id ?? ""]} />
                     </td>
                     <td>{when(m.paid_at)}</td>
                     <td>{m.status}</td>
@@ -83,7 +81,7 @@ export default async function FoundingPage() {
                       <ShortId id={c.user_id} />
                     </td>
                     <td>
-                      <ShortId id={c.order_id} />
+                      <OrderNumber id={c.order_id} number={orderNumbers[c.order_id ?? ""]} />
                     </td>
                     <td>{when(c.paid_at)}</td>
                     <td>{c.reason}</td>

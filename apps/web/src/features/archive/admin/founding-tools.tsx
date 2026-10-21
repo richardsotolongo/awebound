@@ -58,7 +58,7 @@ export function FoundingTools() {
           <option value="award">Award</option>
         </select>
         <label htmlFor={`${id}-order`} className="aw-label">
-          Order id (optional, for an award)
+          Order number (optional, for an award)
         </label>
         <input
           id={`${id}-order`}

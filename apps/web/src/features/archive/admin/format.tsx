@@ -10,3 +10,19 @@ export function ShortId({ id }: { id: string | null | undefined }) {
     </code>
   );
 }
+
+/** An order by the number Fourthwall shows (UATDHT5U), our id on hover; the id if it has none. */
+export function OrderNumber({
+  id,
+  number,
+}: {
+  id: string | null | undefined;
+  number?: string | null;
+}) {
+  if (!number) return <ShortId id={id} />;
+  return (
+    <code className="admin-code" title={id ?? undefined}>
+      {number}
+    </code>
+  );
+}

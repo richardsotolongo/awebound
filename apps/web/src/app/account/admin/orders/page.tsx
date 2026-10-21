@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import { PageHeader } from "@/components/page-header";
-import { ShortId, when } from "@/features/archive/admin/format";
+import { OrderNumber, ShortId, when } from "@/features/archive/admin/format";
 import { OrderTools } from "@/features/archive/admin/order-tools";
 import { hashEmail } from "@/server/archive/log";
 import {
@@ -55,7 +55,7 @@ export default async function OrdersPage() {
                   <Fragment key={o.id}>
                     <tr>
                       <td>
-                        <ShortId id={o.id} /> {o.friendly_id ?? ""}
+                        <OrderNumber id={o.id} number={o.friendly_id} />
                       </td>
                       <td>{emailLabel(o.email)}</td>
                       <td>
