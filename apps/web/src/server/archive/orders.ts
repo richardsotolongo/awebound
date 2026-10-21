@@ -274,10 +274,48 @@ export async function upsertOrderFromParsed(
   };
 }
 
+const MATCH_WINDOW_MS = 24 * 60 * 60_000;
+
 /**
- * Linking precedence: an existing link stays; then the checkout session whose cart id the order
- * names (registered evidence when it had a user, guest evidence otherwise); then an account whose
- * verified email equals the order's email (guest provenance); else unlinked.
+ * The checkout that became this order. Fourthwall's order names its own checkout (`ch_…`), never
+ * our cart id, so it is the latest unmatched checkout started in the day before the order with
+ * exactly the order's variants, one whose email is the order's first. Two people fitting matches
+ * neither.
+ */
+async function findCheckoutSession(order: OrderRow): Promise<CheckoutSessionRow | null> {
+  const db = admin();
+  const { data: lineRows } = await db
+    .from("provider_order_lines")
+    .select("variant_id")
+    .eq("order_id", order.id);
+  const variants = new Set(
+    ((lineRows ?? []) as Pick<OrderLineRow, "variant_id">[]).flatMap((l) =>
+      l.variant_id ? [l.variant_id] : [],
+    ),
+  );
+  if (variants.size === 0) return null;
+  const at = new Date(order.provider_created_at ?? order.paid_at ?? Date.now()).getTime();
+  const { data } = await db
+    .from("checkout_sessions")
+    .select("*")
+    .is("matched_order_id", null)
+    .gt("created_at", new Date(at - MATCH_WINDOW_MS).toISOString())
+    .lte("created_at", new Date(at).toISOString())
+    .order("created_at", { ascending: false });
+  const sameBag = ((data ?? []) as CheckoutSessionRow[]).filter((s) => {
+    const skus = new Set((s.lines as { sku: string }[]).map((l) => l.sku));
+    return skus.size === variants.size && [...variants].every((v) => skus.has(v));
+  });
+  const sameEmail = sameBag.filter((s) => lower(s.user_email_at_checkout) === lower(order.email));
+  const fits = sameEmail.length > 0 ? sameEmail : sameBag;
+  return new Set(fits.map((s) => s.user_id)).size === 1 ? fits[0]! : null;
+}
+
+/**
+ * Linking precedence: an existing link stays (a checkout by the same account upgrades it); then
+ * the checkout session the order came from (registered evidence when it had a user, guest evidence
+ * otherwise); then an account whose verified email equals the order's email (guest provenance);
+ * else unlinked.
  */
 export async function linkOrder(
   order: OrderRow,
@@ -285,21 +323,16 @@ export async function linkOrder(
   const db = admin();
   let checkoutMatch: "hit" | "miss" | "none" = "none";
   const update: Partial<OrderRow> = {};
-  if (order.checkout_id && !order.checkout_session_id) {
-    const { data } = await db
-      .from("checkout_sessions")
-      .select("*")
-      .eq("cart_id", order.checkout_id)
-      .maybeSingle();
-    const session = data as CheckoutSessionRow | null;
+  if (!order.checkout_session_id) {
+    const session = await findCheckoutSession(order);
     checkoutMatch = session ? "hit" : "miss";
     if (session) {
       update.checkout_session_id = session.id;
       update.registered_checkout = Boolean(session.user_id);
-      if (session.user_id && !order.user_id) {
+      if (session.user_id && (!order.user_id || order.user_id === session.user_id)) {
         update.user_id = session.user_id;
         update.link_method = "checkout_session";
-        update.linked_at = new Date().toISOString();
+        update.linked_at = order.linked_at ?? new Date().toISOString();
         if (lower(session.user_email_at_checkout) !== lower(order.email) && !order.needs_review) {
           update.needs_review = true;
           update.review_reason = "email_mismatch";

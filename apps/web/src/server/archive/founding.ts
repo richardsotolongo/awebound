@@ -99,6 +99,16 @@ export async function evaluateFounding(orderId: string): Promise<AwardResult> {
     logArchive("founding", { order: order.id, result: q.reason });
     return { awarded: false, rank: null, reason: q.reason };
   }
+  // An honorary seal already opens everything; it never takes one of the 50 numbered places.
+  const { data: honorary } = await admin()
+    .from("honorary_members")
+    .select("user_id")
+    .eq("user_id", order.user_id!)
+    .maybeSingle();
+  if (honorary) {
+    logArchive("founding", { order: order.id, result: "honorary" });
+    return { awarded: false, rank: null, reason: "honorary" };
+  }
   const result = await award(
     order.user_id!,
     order.id,
