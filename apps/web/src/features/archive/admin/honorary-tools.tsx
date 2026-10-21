@@ -4,6 +4,7 @@ import { Button } from "@awebound/brand";
 import { useRouter } from "next/navigation";
 import { useId, useState, type FormEvent } from "react";
 import { setHonoraryAction } from "@/server/admin-actions";
+import { Member } from "./format";
 import { Outcome, useOwnerAction } from "./owner-action";
 
 export interface HonoraryListRow {
@@ -22,8 +23,7 @@ export function HonoraryList({ rows }: { rows: HonoraryListRow[] }) {
       <table className="admin-table">
         <thead>
           <tr>
-            <th>Email</th>
-            <th>Name</th>
+            <th>Member</th>
             <th>Reason</th>
             <th>Granted</th>
             <th>
@@ -62,8 +62,9 @@ function HonoraryRow({ row }: { row: HonoraryListRow }) {
 
   return (
     <tr>
-      <td>{row.email ?? row.userId.slice(0, 8)}</td>
-      <td>{row.name ?? ""}</td>
+      <td>
+        <Member userId={row.userId} name={row.name} email={row.email} />
+      </td>
       <td>{row.reason}</td>
       <td>{row.granted}</td>
       <td>
