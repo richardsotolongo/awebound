@@ -222,6 +222,8 @@ export async function listFounding(): Promise<{
   candidates: CandidateRow[];
   /** Fourthwall's order number for each order id the lists name. */
   orderNumbers: Record<string, string>;
+  /** Each listed account's email and name. */
+  people: Record<string, { email: string | null; name: string | null }>;
   placesUsed: number;
   placesLeft: number;
 }> {
@@ -229,11 +231,23 @@ export async function listFounding(): Promise<{
     admin().from("founding_members").select("*").order("rank"),
     admin().from("founding_candidates").select("*").order("paid_at"),
   ]);
-  const rows = [...(members ?? []), ...(candidates ?? [])] as { order_id: string | null }[];
-  const ids = [...new Set(rows.flatMap((r) => (r.order_id ? [r.order_id] : [])))];
-  const { data: orders } = ids.length
-    ? await admin().from("provider_orders").select("id, friendly_id").in("id", ids)
-    : { data: [] };
+  const rows = [...(members ?? []), ...(candidates ?? [])] as {
+    order_id: string | null;
+    user_id: string | null;
+  }[];
+  const unique = (key: "order_id" | "user_id") => [
+    ...new Set(rows.flatMap((r) => (r[key] ? [r[key]] : []))),
+  ];
+  const orderIds = unique("order_id");
+  const userIds = unique("user_id");
+  const [{ data: orders }, { data: profiles }] = await Promise.all([
+    orderIds.length
+      ? admin().from("provider_orders").select("id, friendly_id").in("id", orderIds)
+      : { data: [] },
+    userIds.length
+      ? admin().from("profiles").select("id, email, full_name").in("id", userIds)
+      : { data: [] },
+  ]);
   const placesUsed = members?.length ?? 0;
   return {
     members: (members ?? []) as FoundingRow[],
@@ -241,6 +255,11 @@ export async function listFounding(): Promise<{
     orderNumbers: Object.fromEntries(
       ((orders ?? []) as { id: string; friendly_id: string | null }[]).flatMap((o) =>
         o.friendly_id ? [[o.id, o.friendly_id]] : [],
+      ),
+    ),
+    people: Object.fromEntries(
+      ((profiles ?? []) as { id: string; email: string | null; full_name: string | null }[]).map(
+        (p) => [p.id, { email: p.email, name: p.full_name }],
       ),
     ),
     placesUsed,
