@@ -10,6 +10,8 @@ const optedOut =
 if (token && !optedOut) {
   posthog.init(token, {
     api_host: publicEnv.NEXT_PUBLIC_POSTHOG_HOST,
+    // Events go through the managed reverse proxy; the toolbar and links still open PostHog itself.
+    ui_host: "https://us.posthog.com",
     defaults: "2026-08-30",
     capture_exceptions: true,
     // Off until it has had a legal review, even if the project setting is switched on.

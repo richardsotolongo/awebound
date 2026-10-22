@@ -194,7 +194,7 @@ Fourthwall takes payment, prints and ships, and sends order emails, so the site 
 
 ## Analytics
 
-- **PostHog** starts in `src/instrumentation-client.ts` once `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` is set. It records pageviews and page leaves, clicks (autocapture, which never records typed values), heatmaps, web vitals and uncaught exceptions. Session replay is off in code (`disable_session_recording`); turning it on needs a legal review and a Privacy page update. With Do Not Track or Global Privacy Control on, PostHog doesn't start at all: no cookie, no requests.
+- **PostHog** starts in `src/instrumentation-client.ts` once `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` is set. It records pageviews and page leaves, clicks (autocapture, which never records typed values), heatmaps, web vitals and uncaught exceptions. Session replay is off in code (`disable_session_recording`); turning it on needs a legal review and a Privacy page update. With Do Not Track or Global Privacy Control on, PostHog doesn't start at all: no cookie, no requests. Events go through PostHog's managed reverse proxy at `https://p.awebound.store` (a CNAME on our domain) so tracking blockers drop fewer of them.
 - **Named events** are declared in `src/lib/analytics-events.json`, a JSON Schema whose `$defs` are the events and their properties. Features send them only through `track()` in `src/lib/analytics.ts`, which takes its types from that file: an undeclared event, a missing or extra property fails `pnpm typecheck`. Properties never carry an email, a name, an address or other personal details, and nothing typed except the shop search. The same events are registered in PostHog (Data management → Events) with their descriptions.
 - **Identity**: `Providers` passes every Supabase auth change to `identify()`, which links the visitor to the account by the Supabase user id alone (no person properties), and starts a new anonymous visitor on sign-out, on a signed-out page load after "Sign out" (which ends every session), or on an account switch.
 - **Errors**: `app/error.tsx` and `app/global-error.tsx` send what they catch with `captureError()`.
@@ -227,7 +227,7 @@ All live in `apps/web` (`.env.local` locally, the Vercel project in production);
 | `CRON_SECRET`                                                      | Bearer for the daily crons and the IndexNow deploy workflow (also a GitHub secret)   |
 | `INDEXNOW_KEY`                                                     | IndexNow key, served at `/indexnow-key.txt`. Production only; unset, nothing is sent |
 | `ARCHIVE_STORAGE_BUCKET`                                           | Optional; private wallpaper bucket, defaults to `archive-assets`                     |
-| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`, `NEXT_PUBLIC_POSTHOG_HOST`    | Analytics (public). No token, nothing sent; the host defaults to PostHog US Cloud    |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`, `NEXT_PUBLIC_POSTHOG_HOST`    | Analytics (public). No token, nothing sent; the host defaults to the reverse proxy   |
 
 ## Deployment
 
