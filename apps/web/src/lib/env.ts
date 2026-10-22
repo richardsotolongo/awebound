@@ -10,7 +10,7 @@ const PublicEnvSchema = z.object({
   NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: z.preprocess(emptyToUndefined, z.string().optional()),
   NEXT_PUBLIC_POSTHOG_HOST: z.preprocess(
     emptyToUndefined,
-    z.url().default("https://us.i.posthog.com"),
+    z.url().default("https://p.awebound.store"),
   ),
 });
 
